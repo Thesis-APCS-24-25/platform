@@ -1,5 +1,5 @@
 //
-// Copyright © 2024 Hardcore Engineering Inc.
+// Copyright © 2024-2025 Hardcore Engineering Inc.
 //
 // Licensed under the Eclipse Public License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License. You may
@@ -20,8 +20,8 @@ import presence from '@hcengineering/presence'
 import presentation from '@hcengineering/presentation'
 import { type Unsubscriber, get } from 'svelte/store'
 
-import { myPresence, onPersonUpdate, onPersonLeave } from './store'
-import { type RoomPresence } from './types'
+import { myPresence, myData, onPersonUpdate, onPersonLeave, onPersonData } from './store'
+import type { RoomPresence, MyDataItem } from './types'
 
 interface Message {
   id: Ref<Person>
@@ -30,19 +30,32 @@ interface Message {
   lastUpdate?: number
 }
 
+interface DataMessage {
+  id: Ref<Person>
+  type: 'data'
+  key: string
+  data: any
+}
+
 export class PresenceClient implements Disposable {
   private ws: WebSocket | null = null
   private closed = false
   private reconnectTimeout: number | undefined
   private readonly reconnectInterval = 1000
+  private readonly myDataThrottleInterval = 100
 
   private presence: RoomPresence[]
+  private readonly myDataTimestamps = new Map<string, number>()
   private readonly myPresenceUnsub: Unsubscriber
+  private readonly myDataUnsub: Unsubscriber
 
   constructor (private readonly url: string | URL) {
     this.presence = get(myPresence)
     this.myPresenceUnsub = myPresence.subscribe((presence) => {
       this.handlePresenceChanged(presence)
+    })
+    this.myDataUnsub = myData.subscribe((data) => {
+      this.handleMyDataChanged(data)
     })
 
     this.connect()
@@ -53,6 +66,7 @@ export class PresenceClient implements Disposable {
     clearTimeout(this.reconnectTimeout)
 
     this.myPresenceUnsub()
+    this.myDataUnsub()
 
     if (this.ws !== null) {
       this.ws.close()
@@ -114,15 +128,18 @@ export class PresenceClient implements Disposable {
 
   private handleConnect (): void {
     this.sendPresence(getCurrentEmployee(), this.presence)
+    this.sendMyData(getCurrentEmployee(), get(myData))
   }
 
   private handleMessage (data: string): void {
     try {
-      const message = JSON.parse(data) as Message
+      const message = JSON.parse(data) as Message | DataMessage
       if (message.type === 'update' && message.presence !== undefined) {
         onPersonUpdate(message.id, message.presence ?? [])
       } else if (message.type === 'remove') {
         onPersonLeave(message.id)
+      } else if (message.type === 'data') {
+        onPersonData(message.id, message.key, message.data)
       } else {
         console.warn('Unknown message type', message)
       }
@@ -140,6 +157,23 @@ export class PresenceClient implements Disposable {
     if (!this.closed && this.ws !== null && this.ws.readyState === WebSocket.OPEN) {
       const message: Message = { id: person, type: 'update', presence }
       this.ws.send(JSON.stringify(message))
+    }
+  }
+
+  private handleMyDataChanged (data: Map<string, MyDataItem>): void {
+    this.sendMyData(getCurrentEmployee(), data)
+  }
+
+  private sendMyData (person: Ref<Person>, data: Map<string, MyDataItem>): void {
+    if (!this.closed && this.ws !== null && this.ws.readyState === WebSocket.OPEN) {
+      for (const [key, value] of data) {
+        const lastSend = this.myDataTimestamps.get(key) ?? 0
+        if (value.lastUpdated >= lastSend + this.myDataThrottleInterval || value.forceSend) {
+          this.myDataTimestamps.set(key, value.lastUpdated)
+          const message: DataMessage = { id: person, type: 'data', key, data: value.data }
+          this.ws.send(JSON.stringify(message))
+        }
+      }
     }
   }
 
