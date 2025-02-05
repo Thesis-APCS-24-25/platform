@@ -49,6 +49,8 @@ import type { LiveQuery } from '@hcengineering/query'
 import type { ReqId, Request, Response } from '@hcengineering/rpc'
 import type { Token } from '@hcengineering/server-token'
 import { type Readable } from 'stream'
+import { type ServerApi as CommunicationApi } from '@hcengineering/communication-sdk-types'
+
 import type { DbAdapter, DomainHelper } from './adapter'
 import type { StatisticsElement } from './stats'
 import { type StorageAdapter } from './storage'
@@ -226,6 +228,8 @@ export type PipelineFactory = (
   broadcast: BroadcastFunc,
   branding: Branding | null
 ) => Promise<Pipeline>
+
+export type CommunicationApiFactory = (ctx: MeasureContext, ws: WorkspaceIds) => Promise<CommunicationApi | undefined>
 
 /**
  * @public
@@ -513,6 +517,8 @@ export interface ClientSessionCtx {
   ctx: MeasureContext
 
   pipeline: Pipeline
+  communicationApi: CommunicationApi | undefined
+
   socialStringsToUsers: Map<PersonId, PersonUuid>
   requestId: ReqId | undefined
   sendResponse: (id: ReqId | undefined, msg: any) => Promise<void>
@@ -622,6 +628,7 @@ export interface Workspace {
   id: string
   token: string // Account workspace update token.
   pipeline: Promise<Pipeline> | Pipeline
+  communicationApi: Promise<CommunicationApi | undefined> | CommunicationApi | undefined
   tickHash: number
 
   tickHandlers: Map<string, TickHandler>
@@ -667,6 +674,7 @@ export interface SessionManager {
     token: Token,
     rawToken: string,
     pipelineFactory: PipelineFactory,
+    communicationApiFactory: CommunicationApiFactory,
     sessionId: string | undefined
   ) => Promise<AddSessionResponse>
 
@@ -722,6 +730,7 @@ export type ServerFactory = (
   handleRequest: HandleRequestFunction,
   ctx: MeasureContext,
   pipelineFactory: PipelineFactory,
+  communicationApiFactory: CommunicationApiFactory,
   port: number,
   accountsUrl: string,
   externalStorage: StorageAdapter

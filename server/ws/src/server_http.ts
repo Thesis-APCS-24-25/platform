@@ -48,7 +48,8 @@ import {
   type HandleRequestFunction,
   type PipelineFactory,
   type SessionManager,
-  type StorageAdapter
+  type StorageAdapter,
+  type CommunicationApiFactory
 } from '@hcengineering/server-core'
 import { decodeToken, type Token } from '@hcengineering/server-token'
 import cors from 'cors'
@@ -87,6 +88,7 @@ export function startHttpServer (
   handleRequest: HandleRequestFunction,
   ctx: MeasureContext,
   pipelineFactory: PipelineFactory,
+  communicationApiFactory: CommunicationApiFactory,
   port: number,
   accountsUrl: string,
   externalStorage: StorageAdapter
@@ -426,7 +428,7 @@ export function startHttpServer (
       connectionSocket: cs,
       payload: token,
       token: rawToken,
-      session: sessions.addSession(ctx, cs, token, rawToken, pipelineFactory, sessionId),
+      session: sessions.addSession(ctx, cs, token, rawToken, pipelineFactory, communicationApiFactory, sessionId),
       url: ''
     }
 

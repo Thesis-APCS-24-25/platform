@@ -40,7 +40,8 @@ import core, {
   type WorkspaceDataId,
   type PersonUuid,
   Data,
-  Version
+  Version,
+  WorkspaceIds
 } from '@hcengineering/core'
 import { getClient as getAccountClient, isWorkspaceLoginInfo } from '@hcengineering/account-client'
 import { unknownError, type Status } from '@hcengineering/platform'
@@ -57,9 +58,11 @@ import {
   type ClientSessionCtx,
   type ConnectionSocket,
   type Session,
-  type Workspace
+  type Workspace,
+  CommunicationApiFactory
 } from '@hcengineering/server-core'
 import { generateToken, type Token } from '@hcengineering/server-token'
+import { type ServerApi as CommunicationApi } from '@hcengineering/communication-sdk-types'
 
 import { sendResponse } from './utils'
 
@@ -354,6 +357,7 @@ class TSessionManager implements SessionManager {
     token: Token,
     rawToken: string,
     pipelineFactory: PipelineFactory,
+    communicationApiFactory: CommunicationApiFactory,
     sessionId: string | undefined
   ): Promise<
     | { session: Session, context: MeasureContext, workspaceId: WorkspaceUuid }
@@ -464,6 +468,7 @@ class TSessionManager implements SessionManager {
         ctx.parent ?? ctx,
         ctx,
         pipelineFactory,
+        communicationApiFactory,
         token,
         workspaceInfo.url ?? workspaceInfo.uuid,
         workspaceName,
@@ -679,6 +684,7 @@ class TSessionManager implements SessionManager {
     ctx: MeasureContext,
     pipelineCtx: MeasureContext,
     pipelineFactory: PipelineFactory,
+    communicationApiFactory: CommunicationApiFactory,
     token: Token,
     workspaceUrl: string,
     workspaceName: string,
@@ -688,22 +694,24 @@ class TSessionManager implements SessionManager {
   ): Workspace {
     const upgrade = token.extra?.model === 'upgrade'
     const context = ctx.newChild('🧲 session', {})
+    const workspaceIds: WorkspaceIds = {
+      uuid: token.workspace,
+      dataId: workspaceDataId,
+      url: workspaceUrl
+    }
     const workspace: Workspace = {
       context,
       id: generateId(),
       pipeline: pipelineFactory(
         pipelineCtx,
-        {
-          uuid: token.workspace,
-          dataId: workspaceDataId,
-          url: workspaceUrl
-        },
+        workspaceIds,
         upgrade,
         (ctx, tx, targets, exclude) => {
           this.broadcastAll(workspace, tx, targets, exclude)
         },
         branding
       ),
+      communicationApi: communicationApiFactory(pipelineCtx, workspaceIds),
       sessions: new Map(),
       softShutdown: workspaceSoftShutdownTicks,
       upgrade,
@@ -753,6 +761,7 @@ class TSessionManager implements SessionManager {
       const clientCtx: ClientSessionCtx = {
         requestId: undefined,
         pipeline,
+        communicationApi: undefined,
         sendResponse: async () => {
           // No response
         },
@@ -973,6 +982,7 @@ class TSessionManager implements SessionManager {
   createOpContext (
     ctx: MeasureContext,
     pipeline: Pipeline,
+    communicationApi: CommunicationApi | undefined,
     request: Request<any>,
     service: Session,
     ws: ConnectionSocket,
@@ -982,6 +992,7 @@ class TSessionManager implements SessionManager {
     return {
       ctx,
       pipeline,
+      communicationApi,
       requestId: request.id,
       sendResponse: (reqId, msg) =>
         sendResponse(ctx, service, ws, {
@@ -1092,13 +1103,20 @@ class TSessionManager implements SessionManager {
 
         const pipeline =
           service.workspace.pipeline instanceof Promise ? await service.workspace.pipeline : service.workspace.pipeline
+        const communicationApi =
+          service.workspace.communicationApi instanceof Promise
+            ? await service.workspace.communicationApi
+            : service.workspace.communicationApi
 
         const f = (service as any)[request.method]
         try {
           const params = [...request.params]
 
           await ctx.with('🧨 process', {}, (callTx) =>
-            f.apply(service, [this.createOpContext(callTx, pipeline, request, service, ws, workspace), ...params])
+            f.apply(service, [
+              this.createOpContext(callTx, pipeline, communicationApi, request, service, ws, workspace),
+              ...params
+            ])
           )
         } catch (err: any) {
           Analytics.handleError(err)
@@ -1212,6 +1230,7 @@ export function startSessionManager (
   opt: {
     port: number
     pipelineFactory: PipelineFactory
+    communicationApiFactory: CommunicationApiFactory
     sessionFactory: SessionFactory
     brandingMap: BrandingMap
     serverFactory: ServerFactory
@@ -1244,6 +1263,7 @@ export function startSessionManager (
       },
       ctx,
       opt.pipelineFactory,
+      opt.communicationApiFactory,
       opt.port,
       opt.accountsUrl,
       opt.externalStorage
