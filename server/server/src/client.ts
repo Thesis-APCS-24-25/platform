@@ -312,9 +312,8 @@ export class ClientSession implements Session {
 
   async event (ctx: ClientSessionCtx, event: CommunicationEvent): Promise<void> {
     this.lastRequest = Date.now()
-
     const data: CommunicationCtx = {
-      socialId: this.account.primarySocialId as any, // TOODO: adjust type,
+      socialId: this.account.primarySocialId,
       sessionId: this.sessionId,
       personalWorkspace: '' // TODO: add personal workspace
     }
@@ -325,7 +324,7 @@ export class ClientSession implements Session {
   async findMessages (ctx: ClientSessionCtx, params: FindMessagesParams, queryId?: number): Promise<void> {
     this.lastRequest = Date.now()
     const data: CommunicationCtx = {
-      socialId: this.account.primarySocialId as any, // TOODO: adjust type,
+      socialId: this.account.primarySocialId,
       sessionId: this.sessionId,
       personalWorkspace: '' // TODO: add personal workspace
     }
