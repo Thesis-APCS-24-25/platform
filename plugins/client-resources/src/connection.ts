@@ -649,7 +649,7 @@ class Connection implements ClientConnection {
     }
   }
 
-  sendRequest (data: {
+  private sendRequest (data: {
     method: string
     params: any[]
     // If not defined, on reconnect with timeout, will retry automatically.
