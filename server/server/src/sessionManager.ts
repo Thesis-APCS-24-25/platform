@@ -766,6 +766,7 @@ class TSessionManager implements SessionManager {
   private async trySetStatus (
     ctx: MeasureContext,
     pipeline: Pipeline,
+    communicationApi: CommunicationApi,
     session: Session,
     online: boolean,
     workspaceId: WorkspaceUuid
@@ -774,7 +775,7 @@ class TSessionManager implements SessionManager {
     if (current !== undefined) {
       await current
     }
-    const promise = this.setStatus(ctx, pipeline, session, online, workspaceId)
+    const promise = this.setStatus(ctx, pipeline, communicationApi, session, online, workspaceId)
     this.statusPromises.set(session.getUser(), promise)
     await promise
     this.statusPromises.delete(session.getUser())
@@ -783,6 +784,7 @@ class TSessionManager implements SessionManager {
   private async setStatus (
     ctx: MeasureContext,
     pipeline: Pipeline,
+    communicationApi: CommunicationApi,
     session: Session,
     online: boolean,
     workspaceId: WorkspaceUuid
@@ -794,7 +796,7 @@ class TSessionManager implements SessionManager {
       const clientCtx: ClientSessionCtx = {
         requestId: undefined,
         pipeline,
-        communicationApi: undefined,
+        communicationApi,
         sendResponse: async () => {
           // No response
         },
@@ -844,6 +846,8 @@ class TSessionManager implements SessionManager {
       if (workspace !== undefined) {
         workspace.sessions.delete(sessionRef.session.sessionId)
         const pipeline = workspace.pipeline instanceof Promise ? await workspace.pipeline : workspace.pipeline
+        const communicationApi =
+          workspace.communicationApi instanceof Promise ? await workspace.communicationApi : workspace.communicationApi
 
         workspace.tickHandlers.set(sessionRef.session.sessionId, {
           ticks: this.timeouts.reconnectTimeout * ticksPerSecond,
@@ -857,6 +861,7 @@ class TSessionManager implements SessionManager {
                 void this.trySetStatus(
                   workspace.context,
                   pipeline,
+                  communicationApi,
                   sessionRef.session,
                   false,
                   workspace.workspaceUuid
@@ -1015,7 +1020,7 @@ class TSessionManager implements SessionManager {
   createOpContext (
     ctx: MeasureContext,
     pipeline: Pipeline,
-    communicationApi: CommunicationApi | undefined,
+    communicationApi: CommunicationApi,
     request: Request<any>,
     service: Session,
     ws: ConnectionSocket,
@@ -1204,6 +1209,10 @@ class TSessionManager implements SessionManager {
       }
       const pipeline =
         service.workspace.pipeline instanceof Promise ? await service.workspace.pipeline : service.workspace.pipeline
+      const communicationApi =
+        service.workspace.communicationApi instanceof Promise
+          ? await service.workspace.communicationApi
+          : service.workspace.communicationApi
       const helloResponse: HelloResponse = {
         id: -1,
         result: 'hello',
@@ -1220,7 +1229,9 @@ class TSessionManager implements SessionManager {
       // We do not need to wait for set-status, just return session to client
       const _workspace = service.workspace
       void ctx
-        .with('set-status', {}, (ctx) => this.trySetStatus(ctx, pipeline, service, true, _workspace.workspaceUuid))
+        .with('set-status', {}, (ctx) =>
+          this.trySetStatus(ctx, pipeline, communicationApi, service, true, _workspace.workspaceUuid)
+        )
         .catch(() => {})
     } catch (err: any) {
       ctx.error('error', { err })
