@@ -48,7 +48,8 @@ import core, {
   TxOperations,
   TxRemoveDoc,
   type WorkspaceUuid,
-  type WorkspaceDataId
+  type WorkspaceDataId,
+  WorkspaceIds
 } from '@hcengineering/core'
 import { Room } from '@hcengineering/love'
 import { countTokens } from '@hcengineering/openai'
@@ -111,8 +112,9 @@ export class WorkspaceClient {
     })
   }
 
-  get wsDataId (): WorkspaceDataId {
-    return this.workspaceDataId ?? (this.workspace as unknown as WorkspaceDataId)
+  get wsIds (): WorkspaceIds {
+    // TODO: FIXME even if it might work w/o url now better provide it
+    return { uuid: this.workspace, dataId: this.workspaceDataId, url: '' }
   }
 
   protected async initClient (): Promise<TxOperations> {
@@ -152,7 +154,7 @@ export class WorkspaceClient {
       if (!isAlreadyUploaded) {
         const data = fs.readFileSync(config.AvatarPath)
 
-        await this.storage.put(this.ctx, this.wsDataId, config.AvatarName, data, config.AvatarContentType, data.length)
+        await this.storage.put(this.ctx, this.wsIds, config.AvatarName, data, config.AvatarContentType, data.length)
         await this.controller.updateAvatarInfo(this.workspace, config.AvatarPath, lastModified)
         this.ctx.info('Avatar file uploaded successfully', { workspace: this.workspace, path: config.AvatarPath })
       }
@@ -202,7 +204,7 @@ export class WorkspaceClient {
       return
     }
 
-    const exist = await this.storage.stat(this.ctx, this.wsDataId, config.AvatarName)
+    const exist = await this.storage.stat(this.ctx, this.wsIds, config.AvatarName)
 
     if (exist === undefined) {
       this.ctx.error('Cannot find file', { file: config.AvatarName, workspace: this.workspace })

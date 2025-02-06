@@ -33,8 +33,7 @@ import core, {
   WorkspaceIds,
   type Client,
   type Ref,
-  type WithLookup,
-  type WorkspaceDataId
+  type WithLookup
 } from '@hcengineering/core'
 import { consoleModelLogger, MigrateOperation, ModelLogger, tryMigrate } from '@hcengineering/model'
 import { DomainIndexHelperImpl, Pipeline, StorageAdapter, type DbAdapter } from '@hcengineering/server-core'
@@ -130,8 +129,8 @@ export async function initModel (
     await progress(60)
 
     logger.log('create storage bucket', { workspaceId })
-
-    await storageAdapter.make(ctx, workspaceId as unknown as WorkspaceDataId)
+    const wsIds = { uuid: workspaceId, url: '' } // We don't need dataId for new workspaces
+    await storageAdapter.make(ctx, wsIds)
     await progress(100)
   } catch (err: any) {
     ctx.error('Failed to create workspace', { error: err })
