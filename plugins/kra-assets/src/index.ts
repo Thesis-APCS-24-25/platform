@@ -19,7 +19,6 @@ import tracker from '@hcengineering/kra'
 const icons = require('../assets/icons.svg') as string // eslint-disable-line
 loadMetadata(tracker.icon, {
   TrackerApplication: `${icons}#tracker`,
-  Component: `${icons}#component`,
   Issue: `${icons}#issue`,
   Subissue: `${icons}#sub-issue`,
   Project: `${icons}#project`,
@@ -28,7 +27,6 @@ loadMetadata(tracker.icon, {
   MyIssues: `${icons}#myissues`,
   Views: `${icons}#views`,
   Issues: `${icons}#issues`,
-  Components: `${icons}#components`,
   NewIssue: `${icons}#new-issue`,
   Magnifier: `${icons}#magnifier`,
   Home: `${icons}#home`,
@@ -37,7 +35,6 @@ loadMetadata(tracker.icon, {
   DueDate: `${icons}#dueDate`, // TODO: add icon
   Parent: `${icons}#parent-issue`, // TODO: add icon
   UnsetParent: `${icons}#unset-parent-issue`, // TODO: add icon
-  Milestone: `${icons}#milestone`,
   IssueTemplates: `${icons}#issuetemplates`,
   Start: `${icons}#start`,
   Stop: `${icons}#stop`,
@@ -52,14 +49,6 @@ loadMetadata(tracker.icon, {
   PriorityHigh: `${icons}#priority-high`,
   PriorityMedium: `${icons}#priority-medium`,
   PriorityLow: `${icons}#priority-low`,
-
-  ComponentsList: `${icons}#list`,
-
-  MilestoneStatusPlanned: `${icons}#component-status-planned`,
-  MilestoneStatusInProgress: `${icons}#component-status-in-progress`,
-  MilestoneStatusPaused: `${icons}#component-status-paused`,
-  MilestoneStatusCompleted: `${icons}#component-status-completed`,
-  MilestoneStatusCanceled: `${icons}#component-status-canceled`,
 
   CopyBranch: `${icons}#copyBranch`,
   Duplicate: `${icons}#duplicate`,

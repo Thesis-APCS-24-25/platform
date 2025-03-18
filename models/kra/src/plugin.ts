@@ -31,7 +31,6 @@ export default mergeIds(kraId, tracker, {
     GotoIssues: '' as IntlString,
     GotoActive: '' as IntlString,
     GotoBacklog: '' as IntlString,
-    GotoComponents: '' as IntlString,
     GotoTrackerApplication: '' as IntlString,
     GotoMyIssues: '' as IntlString,
     SearchIssue: '' as IntlString,

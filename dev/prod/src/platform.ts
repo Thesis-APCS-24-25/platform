@@ -287,6 +287,7 @@ function configureI18n(): void {
     async (lang: string) => await import(`@hcengineering/templates-assets/lang/${lang}.json`)
   )
   addStringsLoader(trackerId, async (lang: string) => await import(`@hcengineering/tracker-assets/lang/${lang}.json`))
+  addStringsLoader(kraId, async (lang: string) => await import(`@hcengineering/kra-assets/lang/${lang}.json`))
   addStringsLoader(viewId, async (lang: string) => await import(`@hcengineering/view-assets/lang/${lang}.json`))
   addStringsLoader(
     workbenchId,

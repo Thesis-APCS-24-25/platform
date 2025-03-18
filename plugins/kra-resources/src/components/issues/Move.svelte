@@ -26,8 +26,6 @@
   import IssuePresenter from './IssuePresenter.svelte'
   import PriorityEditor from './PriorityEditor.svelte'
   import TitlePresenter from './TitlePresenter.svelte'
-  import ComponentMovePresenter from './move/ComponentMovePresenter.svelte'
-  import SelectReplacement from './move/SelectReplacement.svelte'
 
   export let selected: Issue | Issue[]
   $: docs = Array.isArray(selected) ? selected : [selected]
@@ -56,6 +54,7 @@
     processing = true
     for (const issue of toMove) {
       const upd = issueToUpdate.get(issue._id) ?? {}
+
       issueToUpdate.set(issue._id, upd)
     }
 
@@ -105,6 +104,7 @@
     }
     for (const issue of toMove) {
       let upd = issueToUpdate.get(issue._id) ?? {}
+
       issueToUpdate.set(issue._id, upd)
     }
   }
@@ -198,27 +198,17 @@
   <svelte:fragment slot="blocks" let:block>
     {#if !showManageAttributes}
       {#if targetProject !== undefined && !keepOriginalAttribytes}
-        <SelectReplacement {components} {targetProject} issues={toMove} bind:componentToUpdate />
       {/if}
     {:else if toMove.length > 0 && targetProject}
       {@const issue = toMove[block]}
       {@const upd = issueToUpdate.get(issue._id) ?? {}}
-      {@const originalComponent = components.find((it) => it._id === issue.component)}
-      {@const targetComponent = components.find(
-        (it) => it.space === targetProject?._id && it.label === originalComponent?.label
-      )}
       {#key keepOriginalAttribytes}
-        {#if issue.space !== targetProject._id && upd.component !== undefined}
+        {#if issue.space !== targetProject._id}
           <div class="flex-row-center min-h-9 gap-1-5 content-color">
             <PriorityEditor value={issue} isEditable={false} kind={'list'} size={'small'} shouldShowLabel={false} />
             <IssuePresenter value={issue} disabled kind={'list'} />
             <TitlePresenter disabled value={issue} showParent={false} maxWidth={'7.5rem'} />
           </div>
-          {#if targetComponent === undefined}
-            {#key upd.component}
-              <ComponentMovePresenter {issue} bind:issueToUpdate {targetProject} {components} />
-            {/key}
-          {/if}
         {/if}
       {/key}
     {/if}
@@ -236,9 +226,6 @@
         disabled={!isManageAttributesAvailable}
         on:change={() => {
           keepOriginalAttribytes = !keepOriginalAttribytes
-          if (!keepOriginalAttribytes) {
-            componentToUpdate = {}
-          }
         }}
       />
       <span class="lines-limit-2">

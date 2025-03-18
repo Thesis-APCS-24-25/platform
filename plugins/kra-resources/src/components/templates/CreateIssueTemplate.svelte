@@ -20,10 +20,9 @@
   import { TaskType } from '@hcengineering/task'
   import { TaskKindSelector } from '@hcengineering/task-resources'
   import { StyledTextBox } from '@hcengineering/text-editor-resources'
-  import { Component as ComponentType, IssuePriority, IssueTemplate, Milestone, Project } from '@hcengineering/kra'
+  import { IssuePriority, IssueTemplate, Project } from '@hcengineering/kra'
   import { Component, EditBox, Label } from '@hcengineering/ui'
   import { createEventDispatcher } from 'svelte'
-  import { activeComponent, activeMilestone } from '../../issues'
   import tracker from '../../plugin'
   import ComponentSelector from '../components/ComponentSelector.svelte'
   import AssigneeEditor from '../issues/AssigneeEditor.svelte'
@@ -36,8 +35,6 @@
   export let space: Ref<Project>
   export let priority: IssuePriority = IssuePriority.NoPriority
   export let assignee: Ref<Person> | null = null
-  export let component: Ref<ComponentType> | null = $activeComponent ?? null
-  export let milestone: Ref<Milestone> | null = $activeMilestone ?? null
   export let relatedTo: Doc | undefined
 
   let labels: TagElement[] = []
@@ -48,8 +45,6 @@
     title: '',
     description: '',
     assignee,
-    component,
-    milestone,
     priority,
     estimation: 0,
     children: [],
@@ -88,8 +83,6 @@
       title: getTitle(object.title),
       description: object.description,
       assignee: object.assignee,
-      component: object.component,
-      milestone: object.milestone,
       priority: object.priority,
       estimation: object.estimation,
       children: object.children,
@@ -102,22 +95,6 @@
 
     await client.createDoc(tracker.class.IssueTemplate, _space, value, objectId)
     objectId = generateId()
-  }
-
-  const handleComponentIdChanged = (componentId: Ref<ComponentType> | null | undefined) => {
-    if (componentId === undefined) {
-      return
-    }
-
-    object = { ...object, component: componentId }
-  }
-
-  const handleMilestoneIdChanged = (milestoneId: Ref<Milestone> | null | undefined) => {
-    if (milestoneId === undefined) {
-      return
-    }
-
-    object = { ...object, milestone: milestoneId }
   }
 
   function addTagRef (tag: TagElement): void {
@@ -189,8 +166,6 @@
   />
   <SubIssueTemplates
     bind:children={object.children}
-    component={object.component}
-    milestone={object.milestone}
     project={_space}
     maxHeight="limited"
     on:create-issue={({ detail }) => (object.children = [...object.children, detail])}
@@ -229,20 +204,5 @@
       }}
     />
     <EstimationEditor kind={'regular'} size={'large'} value={object} />
-    <ComponentSelector
-      {space}
-      value={object.component}
-      onChange={handleComponentIdChanged}
-      isEditable={true}
-      kind={'regular'}
-      size={'large'}
-    />
-    <MilestoneSelector
-      {space}
-      value={object.milestone}
-      onChange={handleMilestoneIdChanged}
-      kind={'regular'}
-      size={'large'}
-    />
   </svelte:fragment>
 </Card>

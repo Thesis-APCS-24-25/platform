@@ -134,7 +134,7 @@ function defineNotifications (builder: Builder): void {
     tracker.class.Issue,
     tracker.ids.TrackerNotificationGroup,
     [],
-    ['comments', 'status', 'priority', 'assignee', 'subIssues', 'blockedBy', 'milestone', 'dueDate']
+    ['comments', 'status', 'priority', 'assignee', 'subIssues', 'blockedBy', 'dueDate']
   )
 }
 
@@ -381,10 +381,6 @@ export function createModel (builder: Builder): void {
     titleProvider: tracker.function.IssueTitleProvider
   })
 
-  builder.mixin(tracker.class.Issue, core.class.Class, view.mixin.ListHeaderExtra, {
-    presenters: [tracker.component.IssueStatistics]
-  })
-
   defineSortAndGrouping(builder)
 
   builder.mixin(tracker.class.Issue, core.class.Class, notification.mixin.ClassCollaborators, {
@@ -543,7 +539,6 @@ export function createModel (builder: Builder): void {
       { modifiedBy: 1 },
       { createdBy: 1 },
       { relations: 1 },
-      { milestone: 1 },
       { createdOn: -1 }
     ]
   })
