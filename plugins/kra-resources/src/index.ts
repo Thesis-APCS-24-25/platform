@@ -24,12 +24,12 @@ import {
   type Ref,
   type RelatedDocument,
   type Space,
-  toIdMap,
+  toIdMap
 } from '@hcengineering/core'
-import { type Resources, type Status, } from '@hcengineering/platform'
+import { type Resources, type Status } from '@hcengineering/platform'
 import { getClient, MessageBox, type ObjectSearchResult } from '@hcengineering/presentation'
 import { type Issue, type Project } from '@hcengineering/kra'
-import { closePanel, getCurrentLocation, navigate, showPopup, } from '@hcengineering/ui'
+import { closePanel, getCurrentLocation, navigate, showPopup } from '@hcengineering/ui'
 import CreateIssue from './components/CreateIssue.svelte'
 import EditRelatedTargets from './components/EditRelatedTargets.svelte'
 import EditRelatedTargetsPopup from './components/EditRelatedTargetsPopup.svelte'
@@ -127,13 +127,20 @@ export { default as SubIssueList } from './components/issues/edit/SubIssueList.s
 export { default as IssueStatusIcon } from './components/issues/IssueStatusIcon.svelte'
 export { default as StatusPresenter } from './components/issues/StatusPresenter.svelte'
 
-export { activeProjects, CreateProject, IssuePresenter, PriorityEditor, StatusEditor, TitlePresenter }
+export {
+  activeProjects,
+  CreateProject,
+  IssuePresenter,
+  PriorityEditor,
+  StatusEditor,
+  TitlePresenter
+}
 
 export async function queryIssue<D extends Issue>(
   _class: Ref<Class<D>>,
   client: Client,
   search: string,
-  filter?: { in?: RelatedDocument[], nin?: RelatedDocument[] }
+  filter?: { in?: RelatedDocument[]; nin?: RelatedDocument[] }
 ): Promise<ObjectSearchResult[]> {
   const q: DocumentQuery<Issue> = { identifier: { $like: `%${search}%` } }
   if (filter?.in !== undefined || filter?.nin !== undefined) {
@@ -241,7 +248,10 @@ async function deleteProject(project: Project | undefined): Promise<void> {
       showPopup(MessageBox, {
         label: tracker.string.ArchiveProjectName,
         labelProps: { name: project.name },
-        message: anyIssue !== undefined ? tracker.string.ProjectHasIssues : tracker.string.ArchiveProjectConfirm,
+        message:
+          anyIssue !== undefined
+            ? tracker.string.ProjectHasIssues
+            : tracker.string.ArchiveProjectConfirm,
         action: async () => {
           await client.update(project, { archived: true })
         }
@@ -315,8 +325,11 @@ export default async (): Promise<Resources> => ({
     LabelsView
   },
   completion: {
-    IssueQuery: async (client: Client, query: string, filter?: { in?: RelatedDocument[], nin?: RelatedDocument[] }) =>
-      await queryIssue(tracker.class.Issue, client, query, filter)
+    IssueQuery: async (
+      client: Client,
+      query: string,
+      filter?: { in?: RelatedDocument[]; nin?: RelatedDocument[] }
+    ) => await queryIssue(tracker.class.Issue, client, query, filter)
   },
   function: {
     IssueIdentifierProvider: issueIdentifierProvider,
@@ -339,7 +352,7 @@ export default async (): Promise<Resources> => ({
     GetVisibleFilters: getVisibleFilters,
     IssueChatTitleProvider: getIssueChatTitle,
     IsProjectJoined: async (project: Project) => project.members.includes(getCurrentAccount()._id),
-    GetIssueStatusCategories: getIssueStatusCategories,
+    GetIssueStatusCategories: getIssueStatusCategories
   },
   actionImpl: {
     Move: move,

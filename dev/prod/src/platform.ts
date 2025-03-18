@@ -60,6 +60,7 @@ import textEditor, { textEditorId } from '@hcengineering/text-editor'
 import { timeId } from '@hcengineering/time'
 import tracker, { trackerId } from '@hcengineering/tracker'
 import kra, { kraId } from '@hcengineering/kra'
+import kraTeam, { kraTeamId } from '@hcengineering/kra-team'
 import { trainingId } from '@hcengineering/training'
 import uiPlugin from '@hcengineering/ui'
 import { uploaderId } from '@hcengineering/uploader'
@@ -486,6 +487,7 @@ export async function configurePlatform() {
 
   addLocation(trackerId, () => import(/* webpackChunkName: "tracker" */ '@hcengineering/tracker-resources'))
   addLocation(kraId, () => import(/* webpackChunkName: "kra" */ '@hcengineering/kra-resources'))
+  addLocation(kraTeamId, () => import(/* webpackChunkName: "kraTeam" */ '@hcengineering/kra-team-resources'))
   addLocation(boardId, () => import(/* webpackChunkName: "board" */ '@hcengineering/board-resources'))
   addLocation(hrId, () => import(/* webpackChunkName: "hr" */ '@hcengineering/hr-resources'))
   addLocation(bitrixId, () => import(/* webpackChunkName: "bitrix" */ '@hcengineering/bitrix-resources'))

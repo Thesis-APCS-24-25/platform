@@ -1433,6 +1433,27 @@
     },
 
     {
+      "packageName": "@hcengineering/kra-team",
+      "projectFolder": "plugins/kra-team",
+      "shouldPublish": true
+    },
+    {
+      "packageName": "@hcengineering/kra-team-assets",
+      "projectFolder": "plugins/kra-team-assets",
+      "shouldPublish": false
+    },
+    {
+      "packageName": "@hcengineering/kra-team-resources",
+      "projectFolder": "plugins/kra-team-resources",
+      "shouldPublish": false
+    },
+    {
+      "packageName": "@hcengineering/model-kra-team",
+      "projectFolder": "models/kra-team",
+      "shouldPublish": false
+    },
+
+    {
       "packageName": "@hcengineering/board",
       "projectFolder": "plugins/board",
       "shouldPublish": true

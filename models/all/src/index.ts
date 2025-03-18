@@ -73,6 +73,7 @@ import { textEditorId, createModel as textEditorModel } from '@hcengineering/mod
 import { timeId, createModel as timeModel } from '@hcengineering/model-time'
 import tracker, { trackerId, createModel as trackerModel } from '@hcengineering/model-tracker'
 import kra, { kraId, createModel as kraModel } from '@hcengineering/model-kra'
+import kraTeam, { kraTeamId, createModel as kraTeamModel } from '@hcengineering/model-kra-team'
 import { uploaderId, createModel as uploaderModel } from '@hcengineering/model-uploader'
 import view, { viewId, createModel as viewModel } from '@hcengineering/model-view'
 import workbench, { workbenchId, createModel as workbenchModel } from '@hcengineering/model-workbench'
@@ -261,6 +262,7 @@ export default function buildModel (enabled: string[] = ['*'], disabled: string[
     [notificationModel, notificationId],
     [preferenceModel, preferenceId],
     [analyticsCollectorModel, analyticsCollectorId],
+    [kraTeamModel, kraTeamId],
     [
       hrModel,
       hrId,

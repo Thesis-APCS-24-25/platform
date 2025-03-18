@@ -68,19 +68,25 @@ export const classicIssueTaskStatuses: TaskStatusFactory[] = [
     category: task.statusCategory.UnStarted,
     statuses: [['Backlog', PaletteColorIndexes.Cloud, pluginState.status.Backlog]]
   },
-  { category: task.statusCategory.ToDo, statuses: [['Todo', PaletteColorIndexes.Porpoise, pluginState.status.Todo]] },
+  {
+    category: task.statusCategory.ToDo,
+    statuses: [['Todo', PaletteColorIndexes.Porpoise, pluginState.status.Todo]]
+  },
   {
     category: task.statusCategory.Active,
     statuses: [['In Progress', PaletteColorIndexes.Cerulean, pluginState.status.InProgress]]
   },
-  { category: task.statusCategory.Won, statuses: [['Done', PaletteColorIndexes.Grass, pluginState.status.Done]] },
+  {
+    category: task.statusCategory.Won,
+    statuses: [['Done', PaletteColorIndexes.Grass, pluginState.status.Done]]
+  },
   {
     category: task.statusCategory.Lost,
     statuses: [['Canceled', PaletteColorIndexes.Coin, pluginState.status.Canceled]]
   }
 ]
 
-function defineSortAndGrouping (builder: Builder): void {
+function defineSortAndGrouping(builder: Builder): void {
   builder.mixin(tracker.class.IssueStatus, core.class.Class, view.mixin.SortFuncs, {
     func: tracker.function.IssueStatusSort
   })
@@ -120,7 +126,7 @@ function defineSortAndGrouping (builder: Builder): void {
   })
 }
 
-function defineNotifications (builder: Builder): void {
+function defineNotifications(builder: Builder): void {
   builder.createDoc(
     notification.class.NotificationGroup,
     core.space.Model,
@@ -166,7 +172,7 @@ function defineNotifications (builder: Builder): void {
 /**
  * Define filters
  */
-function defineFilters (builder: Builder): void {
+function defineFilters(builder: Builder): void {
   //
   // Issue
   //
@@ -286,16 +292,21 @@ function defineFilters (builder: Builder): void {
   //
   // Type Issue Priority
   //
-  builder.mixin(tracker.class.TypeIssuePriority, core.class.Class, view.mixin.AttributeFilterPresenter, {
-    presenter: tracker.component.PriorityFilterValuePresenter
-  })
+  builder.mixin(
+    tracker.class.TypeIssuePriority,
+    core.class.Class,
+    view.mixin.AttributeFilterPresenter,
+    {
+      presenter: tracker.component.PriorityFilterValuePresenter
+    }
+  )
 
   builder.mixin(tracker.class.TypeIssuePriority, core.class.Class, view.mixin.AttributeFilter, {
     component: view.component.ValueFilter
   })
 }
 
-function defineApplication (
+function defineApplication(
   builder: Builder,
   opt: {
     myIssuesId: string
@@ -430,7 +441,7 @@ function defineApplication (
   )
 }
 
-export function createModel (builder: Builder): void {
+export function createModel(builder: Builder): void {
   builder.createModel(
     TProject,
     TComponent,
@@ -606,7 +617,15 @@ export function createModel (builder: Builder): void {
     tracker.ids.IssueTemplateUpdatedActivityViewlet
   )
 
-  defineApplication(builder, { myIssuesId, allIssuesId, issuesId, componentsId, milestonesId, templatesId, labelsId })
+  defineApplication(builder, {
+    myIssuesId,
+    allIssuesId,
+    issuesId,
+    componentsId,
+    milestonesId,
+    templatesId,
+    labelsId
+  })
 
   defineActions(builder, issuesId, componentsId, myIssuesId)
 
@@ -711,7 +730,7 @@ export function createModel (builder: Builder): void {
   defineSpaceType(builder)
 }
 
-function defineSpaceType (builder: Builder): void {
+function defineSpaceType(builder: Builder): void {
   builder.createModel(TClassicProjectTypeData)
   builder.createDoc(
     task.class.ProjectTypeDescriptor,
@@ -751,7 +770,9 @@ function defineSpaceType (builder: Builder): void {
   // Create statuses for the default task type
   for (const { category, statuses } of classicIssueTaskStatuses) {
     for (const status of statuses) {
-      const [name, color, statusId] = Array.isArray(status) ? status : [status, undefined, undefined]
+      const [name, color, statusId] = Array.isArray(status)
+        ? status
+        : [status, undefined, undefined]
 
       if (statusId === undefined) {
         throw new Error('Status id is required when creating in static model. Missing for: ' + name)

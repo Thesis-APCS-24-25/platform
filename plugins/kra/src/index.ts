@@ -52,7 +52,7 @@ export * from './analytics'
 /**
  * @public
  */
-export interface IssueStatus extends Status { }
+export interface IssueStatus extends Status {}
 
 /**
  * @public
@@ -73,7 +73,7 @@ export interface ProjectTargetPreference extends Preference {
 
   usedOn: Timestamp
 
-  props?: { key: string, value: any }[]
+  props?: { key: string; value: any }[]
 }
 
 export type RelatedIssueKind = 'classRule' | 'spaceRule'
@@ -470,7 +470,7 @@ export default pluginState
 /**
  * @public
  */
-export function createStatesData (data: TaskStatusFactory[]): Omit<Data<Status>, 'rank'>[] {
+export function createStatesData(data: TaskStatusFactory[]): Omit<Data<Status>, 'rank'>[] {
   const states: Omit<Data<Status>, 'rank'>[] = []
 
   for (const category of data) {
