@@ -1412,6 +1412,27 @@
     },
 
     {
+      "packageName": "@hcengineering/kra",
+      "projectFolder": "plugins/kra",
+      "shouldPublish": true
+    },
+    {
+      "packageName": "@hcengineering/kra-assets",
+      "projectFolder": "plugins/kra-assets",
+      "shouldPublish": false
+    },
+    {
+      "packageName": "@hcengineering/kra-resources",
+      "projectFolder": "plugins/kra-resources",
+      "shouldPublish": false
+    },
+    {
+      "packageName": "@hcengineering/model-kra",
+      "projectFolder": "models/kra",
+      "shouldPublish": false
+    },
+
+    {
       "packageName": "@hcengineering/board",
       "projectFolder": "plugins/board",
       "shouldPublish": true
