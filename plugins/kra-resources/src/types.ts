@@ -20,7 +20,6 @@ import {
   IssuesDateModificationPeriod,
   IssuesGrouping,
   IssuesOrdering,
-  MilestoneStatus,
   type Issue
 } from '@hcengineering/kra'
 import tracker from './plugin'
@@ -37,8 +36,6 @@ export const issuesGroupByOptions: Record<IssuesGrouping, IntlString> = {
   [IssuesGrouping.Status]: tracker.string.Status,
   [IssuesGrouping.Assignee]: tracker.string.Assignee,
   [IssuesGrouping.Priority]: tracker.string.Priority,
-  [IssuesGrouping.Component]: tracker.string.Component,
-  [IssuesGrouping.Milestone]: tracker.string.Milestone,
   [IssuesGrouping.NoGrouping]: tracker.string.NoGrouping
 }
 
@@ -56,20 +53,6 @@ export const issuesDateModificationPeriodOptions: Record<IssuesDateModificationP
   [IssuesDateModificationPeriod.PastMonth]: tracker.string.PastMonth
 }
 
-export const defaultMilestoneStatuses = [
-  MilestoneStatus.Planned,
-  MilestoneStatus.InProgress,
-  MilestoneStatus.Completed,
-  MilestoneStatus.Canceled
-]
-
-export const milestoneStatusAssets: Record<MilestoneStatus, { icon: Asset, label: IntlString }> = {
-  [MilestoneStatus.Planned]: { icon: tracker.icon.MilestoneStatusPlanned, label: tracker.string.Planned },
-  [MilestoneStatus.InProgress]: { icon: tracker.icon.MilestoneStatusInProgress, label: tracker.string.InProgress },
-  [MilestoneStatus.Completed]: { icon: tracker.icon.MilestoneStatusCompleted, label: tracker.string.Completed },
-  [MilestoneStatus.Canceled]: { icon: tracker.icon.MilestoneStatusCanceled, label: tracker.string.Canceled }
-}
-
 export const defaultPriorities = [
   IssuePriority.NoPriority,
   IssuePriority.Low,
@@ -82,7 +65,5 @@ export const issuesGroupBySorting: Record<IssuesGrouping, SortingQuery<Issue>> =
   [IssuesGrouping.Status]: { '$lookup.status.rank': SortingOrder.Ascending },
   [IssuesGrouping.Assignee]: { assignee: SortingOrder.Ascending },
   [IssuesGrouping.Priority]: { priority: SortingOrder.Ascending },
-  [IssuesGrouping.Component]: { '$lookup.component.label': SortingOrder.Ascending },
-  [IssuesGrouping.Milestone]: { '$lookup.milestone.label': SortingOrder.Ascending },
   [IssuesGrouping.NoGrouping]: { rank: SortingOrder.Ascending }
 }

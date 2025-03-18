@@ -16,13 +16,12 @@
 <script lang="ts">
   import { Ref } from '@hcengineering/core'
   import { Card, SpaceSelector, createQuery, getClient } from '@hcengineering/presentation'
-  import { Component, Issue, Milestone, Project } from '@hcengineering/kra'
+  import { Issue, Project } from '@hcengineering/kra'
   import ui, { Button, IconForward, Label, Spinner, Toggle, tooltip } from '@hcengineering/ui'
   import view from '@hcengineering/view'
   import { createEventDispatcher } from 'svelte'
-  import { componentStore } from '../../component'
   import tracker from '../../plugin'
-  import { ComponentToUpdate, IssueToUpdate, collectIssues, moveIssueToSpace } from '../../utils'
+  import { IssueToUpdate, collectIssues, moveIssueToSpace } from '../../utils'
   import ProjectPresenter from '../projects/ProjectPresenter.svelte'
   import IssuePresenter from './IssuePresenter.svelte'
   import PriorityEditor from './PriorityEditor.svelte'
@@ -50,25 +49,6 @@
 
   let processing = false
 
-  async function createMissingComponent (c: Ref<Component>): Promise<void> {
-    const cur = $componentStore.get(c)
-    const components = $componentStore.filter((it) => it.space === targetProject?._id)
-    if (
-      cur === undefined ||
-      targetProject === undefined ||
-      components.find((c) => c.label === cur.label) !== undefined
-    ) {
-      return
-    }
-    await client.createDoc(cur._class, targetProject._id, {
-      label: cur.label,
-      attachments: 0,
-      description: cur.description,
-      comments: 0,
-      lead: cur.lead
-    })
-  }
-
   const moveAll = async () => {
     if (targetProject === undefined) {
       return
@@ -76,21 +56,6 @@
     processing = true
     for (const issue of toMove) {
       const upd = issueToUpdate.get(issue._id) ?? {}
-
-      if (issue.component !== undefined && issue.component !== null) {
-        if (!upd.useComponent) {
-          const newComponent = componentToUpdate[issue.component]
-          if (newComponent !== undefined) {
-            if (newComponent.create) {
-              await createMissingComponent(newComponent.ref)
-            }
-            upd.component = newComponent.ref
-          }
-        } else if (upd.createComponent) {
-          await createMissingComponent(issue.component)
-        }
-      }
-
       issueToUpdate.set(issue._id, upd)
     }
 
@@ -103,7 +68,6 @@
   const originSpaceQuery = createQuery()
 
   let issueToUpdate = new Map<Ref<Issue>, IssueToUpdate>()
-  let componentToUpdate: Record<Ref<Component>, ComponentToUpdate | undefined> = {}
 
   $: targetSpaceQuery.query(tracker.class.Project, { _id: space }, (res) => {
     ;[targetProject] = res
@@ -128,18 +92,6 @@
     setReplacementAttributres(targetProject)
   }
 
-  const componentQuery = createQuery()
-  let components: Component[] = []
-  $: componentQuery.query(tracker.class.Component, {}, (res) => {
-    components = res
-  })
-
-  const milestoneQuery = createQuery()
-  let milestones: Milestone[] = []
-  $: milestoneQuery.query(tracker.class.Milestone, {}, (res) => {
-    milestones = res
-  })
-
   let keepOriginalAttribytes: boolean = false
   let showManageAttributes: boolean = false
   $: isManageAttributesAvailable = issueToUpdate.size > 0 && docs[0]?.space !== targetProject?._id
@@ -151,19 +103,8 @@
       upd.useComponent = false
       issueToUpdate.set(issue._id, upd)
     }
-    for (const component of Object.keys(componentToUpdate)) {
-      componentToUpdate[component as Ref<Component>] = { ref: component as Ref<Component>, create: true }
-    }
-
     for (const issue of toMove) {
       let upd = issueToUpdate.get(issue._id) ?? {}
-
-      if (issue.component !== undefined && issue.component !== null) {
-        upd = {
-          ...upd,
-          component: issue.component
-        }
-      }
       issueToUpdate.set(issue._id, upd)
     }
   }
@@ -171,33 +112,6 @@
   function setReplacementAttributres (currentSpace: Project) {
     for (const issue of toMove) {
       const upd = issueToUpdate.get(issue._id) ?? {}
-
-      if (issue.component !== undefined) {
-        const cur = components.find((it) => it._id === issue.component)
-
-        if (cur !== undefined) {
-          if (
-            upd.component !== undefined &&
-            components.find((it) => it._id === upd.component)?.space !== currentSpace._id
-          ) {
-            upd.component = undefined
-          }
-          if (upd.component === undefined) {
-            upd.component = components.find((it) => it.space === currentSpace?._id && it.label === cur.label)?._id
-          }
-        }
-      }
-
-      if (issue.milestone != null) {
-        const currentMilestone = milestones.find((it) => it._id === issue.milestone)
-        if (currentMilestone !== undefined) {
-          if (upd.milestone === undefined) {
-            upd.milestone = milestones.find(
-              (it) => it.space === currentSpace?._id && it.label === currentMilestone.label
-            )?._id
-          }
-        }
-      }
 
       if (issue.attachedTo !== tracker.ids.NoParent && toMove.find((it) => it._id === issue.attachedTo) === undefined) {
         upd.attachedTo = tracker.ids.NoParent

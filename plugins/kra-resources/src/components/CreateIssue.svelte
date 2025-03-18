@@ -52,14 +52,12 @@
   import { TaskKindSelector } from '@hcengineering/task-resources'
   import { EmptyMarkup, isEmptyMarkup } from '@hcengineering/text'
   import {
-    Component as ComponentType,
     Issue,
     IssueDraft,
     IssueParentInfo,
     IssuePriority,
     IssueStatus,
     IssueTemplate,
-    Milestone,
     Project,
     ProjectTargetPreference,
     TrackerEvents
@@ -81,7 +79,7 @@
   import { ObjectBox } from '@hcengineering/view-resources'
   import { createEventDispatcher, onDestroy } from 'svelte'
 
-  import { activeComponent, activeMilestone, generateIssueShortLink, updateIssueRelation } from '../issues'
+  import { generateIssueShortLink, updateIssueRelation } from '../issues'
   import tracker from '../plugin'
   import SetParentIssueActionPopup from './SetParentIssueActionPopup.svelte'
   import SubIssues from './SubIssues.svelte'
@@ -99,8 +97,6 @@
   export let status: Ref<IssueStatus> | undefined = undefined
   export let priority: IssuePriority | undefined = undefined
   export let assignee: Ref<Employee> | null = null
-  export let component: Ref<ComponentType> | null = null
-  export let milestone: Ref<Milestone> | null = null
   export let relatedTo: Doc | undefined
   export let shouldSaveDraft: boolean = true
   export let parentIssue: Issue | undefined
@@ -167,8 +163,6 @@
       ...(status != null ? { status } : {}),
       ...(priority != null ? { priority } : {}),
       ...(assignee != null ? { assignee } : {}),
-      ...(component != null ? { component } : {}),
-      ...(milestone != null ? { milestone } : {})
     }
   }
 
@@ -180,11 +174,9 @@
       kind: '' as Ref<TaskType>,
       priority: priority ?? IssuePriority.NoPriority,
       space: _space as Ref<Project>,
-      component: component ?? $activeComponent ?? null,
       dueDate: null,
       attachments: 0,
       estimation: 0,
-      milestone: milestone ?? $activeMilestone ?? null,
       status,
       assignee,
       labels: [],
@@ -196,7 +188,6 @@
         ...base,
         status: originalIssue.status,
         priority: originalIssue.priority,
-        component: originalIssue.component,
         dueDate: originalIssue.dueDate,
         assignee: originalIssue.assignee,
         estimation: originalIssue.estimation,
@@ -239,8 +230,6 @@
     status: status ?? currentProject?.defaultIssueStatus,
     parentIssue: parentIssue?._id,
     description: EmptyMarkup,
-    component: component ?? $activeComponent ?? null,
-    milestone: milestone ?? $activeMilestone ?? null,
     priority: priority ?? IssuePriority.NoPriority,
     space: _space
   }
@@ -479,8 +468,6 @@
         title: getTitle(object.title),
         description: null,
         assignee: object.assignee,
-        component: object.component,
-        milestone: object.milestone,
         number,
         status: object.status,
         priority: object.priority,
@@ -611,22 +598,6 @@
     )
   }
 
-  const handleComponentIdChanged = (componentId: Ref<ComponentType> | null | undefined): void => {
-    if (componentId === undefined) {
-      return
-    }
-
-    object.component = componentId
-  }
-
-  const handleMilestoneIdChanged = (milestoneId: Ref<Milestone> | null | undefined): void => {
-    if (milestoneId === undefined) {
-      return
-    }
-
-    object.milestone = milestoneId
-  }
-
   function addTagRef (tag: TagElement): void {
     object.labels = [...object.labels, tagAsRef(tag)]
   }
@@ -745,8 +716,6 @@
     status: object.status,
     priority: object.priority,
     assignee: object.assignee,
-    component: object.component,
-    milestone: object.milestone,
     relatedTo,
     parentIssue,
     originalIssue,
@@ -885,8 +854,6 @@
       bind:this={subIssuesComponent}
       projectId={_space}
       project={currentProject}
-      milestone={object.milestone}
-      component={object.component}
       bind:subIssues={object.subIssues}
     />
   {/if}
@@ -960,28 +927,8 @@
         object.labels = object.labels.filter((it) => it._id !== evt.detail)
       }}
     />
-    <ComponentSelector
-      focusIndex={7}
-      value={object.component}
-      space={_space}
-      onChange={handleComponentIdChanged}
-      isEditable={true}
-      kind={'regular'}
-      size={'large'}
-    />
     <div id="estimation-editor" class="new-line">
       <EstimationEditor focusIndex={8} kind={'regular'} size={'large'} value={object} />
-    </div>
-    <div id="milestone-editor" class="new-line">
-      <MilestoneSelector
-        focusIndex={9}
-        value={object.milestone}
-        space={_space}
-        onChange={handleMilestoneIdChanged}
-        kind={'regular'}
-        size={'large'}
-        short
-      />
     </div>
     <div id="duedate-editor" class="new-line">
       <DatePresenter

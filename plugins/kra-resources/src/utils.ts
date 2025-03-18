@@ -41,12 +41,9 @@ import task, { getStatusIndex, makeRank, type ProjectType } from '@hcengineering
 import { activeProjects as taskActiveProjects, taskTypeStore } from '@hcengineering/task-resources'
 import {
   IssuePriority,
-  MilestoneStatus,
   TimeReportDayType,
-  type Component,
   type Issue,
   type IssueStatus,
-  type Milestone,
   type Project
 } from '@hcengineering/kra'
 import { PaletteColorIndexes, areDatesEqual, isWeekend } from '@hcengineering/ui'
@@ -54,7 +51,7 @@ import { type KeyFilter, type ViewletDescriptor } from '@hcengineering/view'
 import { CategoryQuery, ListSelectionProvider, statusStore, type SelectDirection } from '@hcengineering/view-resources'
 import { derived, get, writable } from 'svelte/store'
 import tracker from './plugin'
-import { defaultMilestoneStatuses, defaultPriorities } from './types'
+import { defaultPriorities } from './types'
 
 export const activeProjects = derived(taskActiveProjects, (projects) => {
   const client = getClient()
@@ -67,26 +64,6 @@ export * from './types'
 export type ComponentsFilterMode = 'all' | 'backlog' | 'active' | 'closed'
 
 export type MilestoneViewMode = 'all' | 'planned' | 'active' | 'closed'
-
-export const getIncludedMilestoneStatuses = (mode: MilestoneViewMode): MilestoneStatus[] => {
-  switch (mode) {
-    case 'all': {
-      return defaultMilestoneStatuses
-    }
-    case 'active': {
-      return [MilestoneStatus.InProgress]
-    }
-    case 'planned': {
-      return [MilestoneStatus.Planned]
-    }
-    case 'closed': {
-      return [MilestoneStatus.Completed, MilestoneStatus.Canceled]
-    }
-    default: {
-      return []
-    }
-  }
-}
 
 export const componentsTitleMap: Record<ComponentsFilterMode, IntlString> = Object.freeze({
   all: tracker.string.AllComponents,
@@ -197,49 +174,6 @@ export async function issuePrioritySort (client: TxOperations, value: IssuePrior
   return value
 }
 
-export async function milestoneSort (
-  client: TxOperations,
-  value: Array<Ref<Milestone>>
-): Promise<Array<Ref<Milestone>>> {
-  return await new Promise((resolve) => {
-    const query = createQuery(true)
-    query.query(tracker.class.Milestone, { _id: { $in: value } }, (res) => {
-      const milestones = toIdMap(res)
-      value.sort((a, b) => (milestones.get(b)?.targetDate ?? 0) - (milestones.get(a)?.targetDate ?? 0))
-      resolve(value)
-      query.unsubscribe()
-    })
-  })
-}
-export async function moveIssuesToAnotherMilestone (
-  client: TxOperations,
-  oldMilestone: Milestone,
-  newMilestone: Milestone | undefined
-): Promise<boolean> {
-  try {
-    // Find all Issues by Milestone
-    const movedIssues = await client.findAll(tracker.class.Issue, { milestone: oldMilestone._id })
-
-    // Update Issues by new Milestone
-    const awaitedUpdates: Array<Promise<TxResult>> = []
-    for (const issue of movedIssues) {
-      awaitedUpdates.push(client.update(issue, { milestone: newMilestone?._id ?? null }))
-    }
-    await Promise.all(awaitedUpdates)
-
-    return true
-  } catch (error: any) {
-    console.error(
-      `Error happened while moving issues between milestones from ${oldMilestone.label} to ${
-        newMilestone?.label ?? 'No Milestone'
-      }: `,
-      error
-    )
-    Analytics.handleError(error)
-    return false
-  }
-}
-
 export function getTimeReportDate (type: TimeReportDayType): number {
   const date = new Date(Date.now())
 
@@ -300,22 +234,6 @@ export async function getAllPriority (
   queryId: Ref<Doc>
 ): Promise<any[] | undefined> {
   return defaultPriorities
-}
-
-export async function getAllComponents (
-  query: DocumentQuery<Doc> | undefined,
-  onUpdate: () => void,
-  queryId: Ref<Doc>
-): Promise<any[] | undefined> {
-  return await getAllSomething(tracker.class.Component, query, onUpdate, queryId)
-}
-
-export async function getAllMilestones (
-  query: DocumentQuery<Doc> | undefined,
-  onUpdate: () => void,
-  queryId: Ref<Doc>
-): Promise<any[] | undefined> {
-  return await getAllSomething(tracker.class.Milestone, query, onUpdate, queryId)
 }
 
 export function subIssueListProvider (subIssues: Issue[], target: Ref<Issue>): void {
@@ -552,23 +470,6 @@ interface ManualUpdates {
   createComponent: boolean
 }
 export type IssueToUpdate = DocumentUpdate<Issue> & Partial<ManualUpdates>
-
-export interface ComponentToUpdate {
-  ref: Ref<Component>
-  create?: boolean
-}
-
-export async function getComponentTitle (client: TxOperations, ref: Ref<Component>): Promise<string> {
-  const object = await client.findOne(tracker.class.Component, { _id: ref })
-
-  return object?.label ?? ''
-}
-
-export async function getMilestoneTitle (client: TxOperations, ref: Ref<Milestone>): Promise<string> {
-  const object = await client.findOne(tracker.class.Milestone, { _id: ref })
-
-  return object?.label ?? ''
-}
 
 export interface IssueRef {
   status: Ref<Status>

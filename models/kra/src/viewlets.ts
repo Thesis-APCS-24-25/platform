@@ -13,7 +13,6 @@
 // limitations under the License.
 //
 
-import contact from '@hcengineering/contact'
 import { SortingOrder } from '@hcengineering/core'
 import { type Builder } from '@hcengineering/model'
 import core from '@hcengineering/model-core'
@@ -78,7 +77,7 @@ export const issuesOptions = (kanban: boolean): ViewOptionsModel => ({
   ]
 })
 
-export function issueConfig (
+export function issueConfig(
   key: string = '',
   compact: boolean = false,
   milestone: boolean = true,
@@ -143,41 +142,41 @@ export function issueConfig (
     },
     ...(milestone
       ? [
-          {
-            key: '',
-            label: tracker.string.Milestone,
-            presenter: tracker.component.MilestoneEditor,
-            props: {
-              kind: 'list',
-              size: 'small',
-              shouldShowPlaceholder: false
-            },
-            displayProps: {
-              key: key + 'milestone',
-              excludeByKey: 'milestone',
-              compression: true
-            }
+        {
+          key: '',
+          label: tracker.string.Milestone,
+          presenter: tracker.component.MilestoneEditor,
+          props: {
+            kind: 'list',
+            size: 'small',
+            shouldShowPlaceholder: false
+          },
+          displayProps: {
+            key: key + 'milestone',
+            excludeByKey: 'milestone',
+            compression: true
           }
-        ]
+        }
+      ]
       : []),
     ...(component
       ? [
-          {
-            key: '',
-            label: tracker.string.Component,
-            presenter: tracker.component.ComponentEditor,
-            props: {
-              kind: 'list',
-              size: 'small',
-              shouldShowPlaceholder: false
-            },
-            displayProps: {
-              key: key + 'component',
-              excludeByKey: 'component',
-              compression: true
-            }
+        {
+          key: '',
+          label: tracker.string.Component,
+          presenter: tracker.component.ComponentEditor,
+          props: {
+            kind: 'list',
+            size: 'small',
+            shouldShowPlaceholder: false
+          },
+          displayProps: {
+            key: key + 'component',
+            excludeByKey: 'component',
+            compression: true
           }
-        ]
+        }
+      ]
       : []),
     {
       key: '',
@@ -207,7 +206,7 @@ export function issueConfig (
   ]
 }
 
-export function defineViewlets (builder: Builder): void {
+export function defineViewlets(builder: Builder): void {
   builder.createDoc(
     view.class.ViewletDescriptor,
     core.space.Model,
@@ -484,48 +483,6 @@ export function defineViewlets (builder: Builder): void {
     tracker.viewlet.IssueKanban
   )
 
-  const componentListViewOptions: ViewOptionsModel = {
-    groupBy: ['lead', 'createdBy', 'modifiedBy'],
-    orderBy: [
-      ['modifiedOn', SortingOrder.Descending],
-      ['createdOn', SortingOrder.Descending]
-    ],
-    other: [showColorsViewOption]
-  }
-
-  builder.createDoc(
-    view.class.Viewlet,
-    core.space.Model,
-    {
-      attachTo: tracker.class.Component,
-      descriptor: view.viewlet.List,
-      viewOptions: componentListViewOptions,
-      configOptions: {
-        strict: true,
-        hiddenKeys: ['label', 'description']
-      },
-      config: [
-        {
-          key: '',
-          presenter: tracker.component.ComponentPresenter,
-          props: { kind: 'list' },
-          displayProps: { key: 'component', fixed: 'left' }
-        },
-        { key: '', displayProps: { grow: true } },
-        {
-          key: '$lookup.lead',
-          presenter: tracker.component.LeadPresenter,
-          displayProps: {
-            dividerBefore: true,
-            key: 'lead'
-          },
-          props: { _class: tracker.class.Component, defaultClass: contact.mixin.Employee, shouldShowLabel: false }
-        }
-      ]
-    },
-    tracker.viewlet.ComponentList
-  )
-
   builder.createDoc(
     view.class.Viewlet,
     core.space.Model,
@@ -559,44 +516,5 @@ export function defineViewlets (builder: Builder): void {
       }
     },
     tracker.viewlet.ProjectList
-  )
-
-  const milestoneOptions: ViewOptionsModel = {
-    groupBy: ['status', 'createdBy', 'modifiedBy'],
-    orderBy: [
-      ['modifiedOn', SortingOrder.Descending],
-      ['targetDate', SortingOrder.Descending],
-      ['createdOn', SortingOrder.Descending]
-    ],
-    other: [showColorsViewOption]
-  }
-
-  builder.createDoc(
-    view.class.Viewlet,
-    core.space.Model,
-    {
-      attachTo: tracker.class.Milestone,
-      descriptor: view.viewlet.List,
-      viewOptions: milestoneOptions,
-      configOptions: {
-        strict: true,
-        hiddenKeys: ['targetDate', 'label', 'description']
-      },
-      config: [
-        {
-          key: 'status',
-          props: { width: '1rem', kind: 'list', size: 'small', justify: 'center' }
-        },
-        { key: '', presenter: tracker.component.MilestonePresenter, props: { shouldUseMargin: true } },
-        { key: '', displayProps: { grow: true } },
-        {
-          key: '',
-          label: tracker.string.TargetDate,
-          presenter: tracker.component.MilestoneDatePresenter,
-          props: { field: 'targetDate' }
-        }
-      ]
-    },
-    tracker.viewlet.MilestoneList
   )
 }

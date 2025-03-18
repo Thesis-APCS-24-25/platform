@@ -48,11 +48,9 @@ export default mergeIds(kraId, tracker, {
     PriorityIcon: '' as AnyComponent
   },
   component: {
-    MilestoneSelector: '' as AnyComponent,
     IssueStatistics: '' as AnyComponent,
     TimeSpendReportPopup: '' as AnyComponent,
     NotificationIssuePresenter: '' as AnyComponent,
-    MilestoneFilter: '' as AnyComponent,
     EditRelatedTargets: '' as AnyComponent,
     EditRelatedTargetsPopup: '' as AnyComponent,
     SettingsRelatedTargets: '' as AnyComponent,
@@ -67,7 +65,6 @@ export default mergeIds(kraId, tracker, {
     IssueList: '' as Ref<Viewlet>,
     IssueTemplateList: '' as Ref<Viewlet>,
     IssueKanban: '' as Ref<Viewlet>,
-    MilestoneList: '' as Ref<Viewlet>,
     ComponentList: '' as Ref<Viewlet>,
     ProjectList: '' as Ref<Viewlet>
   },
@@ -78,12 +75,10 @@ export default mergeIds(kraId, tracker, {
     IssueUpdatedActivityViewlet: '' as Ref<DocUpdateMessageViewlet>,
     IssueCreatedActivityViewlet: '' as Ref<DocUpdateMessageViewlet>,
     IssueRemovedActivityViewlet: '' as Ref<DocUpdateMessageViewlet>,
-    MilestionUpdatedActivityViewlet: '' as Ref<DocUpdateMessageViewlet>,
     IssueTemplateUpdatedActivityViewlet: '' as Ref<DocUpdateMessageViewlet>,
     IssueChatMessageViewlet: '' as Ref<ChatMessageViewlet>,
     IssueTemplateChatMessageViewlet: '' as Ref<ChatMessageViewlet>,
     ComponentChatMessageViewlet: '' as Ref<ChatMessageViewlet>,
-    MilestoneChatMessageViewlet: '' as Ref<ChatMessageViewlet>,
     DefaultProjectType: '' as Ref<ProjectType>
   },
   actionImpl: {
@@ -93,11 +88,9 @@ export default mergeIds(kraId, tracker, {
     EditProject: '' as ViewAction,
     DeleteProject: '' as ViewAction,
     DeleteIssue: '' as ViewAction,
-    DeleteMilestone: '' as ViewAction
   },
   action: {
     NewRelatedIssue: '' as Ref<Action<Doc, any>>,
-    DeleteMilestone: '' as Ref<Action<Doc, Record<string, any>>>,
     DeleteProject: '' as Ref<Action<Doc, Record<string, any>>>,
     DeleteProjectClean: '' as Ref<Action<Doc, Record<string, any>>>,
     DeleteIssue: '' as Ref<Action<Doc, Record<string, any>>>

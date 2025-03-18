@@ -125,8 +125,6 @@ export enum IssuesGrouping {
   Status = 'status',
   Assignee = 'assignee',
   Priority = 'priority',
-  Component = 'component',
-  Milestone = 'milestone',
   NoGrouping = '#no_category'
 }
 
@@ -153,41 +151,12 @@ export enum IssuesDateModificationPeriod {
 /**
  * @public
  */
-export enum MilestoneStatus {
-  Planned,
-  InProgress,
-  Completed,
-  Canceled
-}
-
-/**
- * @public
- */
-export interface Milestone extends Doc {
-  label: string
-  description?: Markup
-
-  status: MilestoneStatus
-
-  space: Ref<Project>
-
-  comments: number
-  attachments?: number
-
-  targetDate: Timestamp
-}
-
-/**
- * @public
- */
 export interface Issue extends Task {
   attachedTo: Ref<Issue>
   title: string
   description: MarkupBlobRef | null
   status: Ref<IssueStatus>
   priority: IssuePriority
-
-  component: Ref<Component> | null
 
   // For subtasks
   subIssues: CollectionSize<Issue>
@@ -196,8 +165,6 @@ export interface Issue extends Task {
   parents: IssueParentInfo[]
 
   space: Ref<Project>
-
-  milestone?: Ref<Milestone> | null
 
   // Estimation in man hours
   estimation: number
@@ -233,10 +200,8 @@ export interface IssueDraft {
   status?: Ref<IssueStatus>
   priority: IssuePriority
   assignee: Ref<Person> | null
-  component: Ref<Component> | null
   space: Ref<Project>
   dueDate: Timestamp | null
-  milestone?: Ref<Milestone> | null
 
   // Estimation in man days
   estimation: number
@@ -261,9 +226,6 @@ export interface IssueTemplateData {
   priority: IssuePriority
 
   assignee: Ref<Person> | null
-  component: Ref<Component> | null
-
-  milestone?: Ref<Milestone> | null
 
   // Estimation in man days
   estimation: number
@@ -346,18 +308,6 @@ export interface Document extends Doc {
 /**
  * @public
  */
-export interface Component extends Doc {
-  label: string
-  description?: Markup
-  lead: Ref<Employee> | null
-  space: Ref<Project>
-  comments: number
-  attachments?: number
-}
-
-/**
- * @public
- */
 export const kraId = 'kra' as Plugin
 export * from './analytics'
 
@@ -366,11 +316,8 @@ const pluginState = plugin(kraId, {
     Project: '' as Ref<Class<Project>>,
     Issue: '' as Ref<Class<Issue>>,
     IssueTemplate: '' as Ref<Class<IssueTemplate>>,
-    Component: '' as Ref<Class<Component>>,
     IssueStatus: '' as Ref<Class<IssueStatus>>,
     TypeIssuePriority: '' as Ref<Class<Type<IssuePriority>>>,
-    Milestone: '' as Ref<Class<Milestone>>,
-    TypeMilestoneStatus: '' as Ref<Class<Type<MilestoneStatus>>>,
     TimeSpendReport: '' as Ref<Class<TimeSpendReport>>,
     TypeReportedTime: '' as Ref<Class<Type<number>>>,
     TypeEstimation: '' as Ref<Class<Type<number>>>,
@@ -417,7 +364,6 @@ const pluginState = plugin(kraId, {
   },
   icon: {
     TrackerApplication: '' as Asset,
-    Component: '' as Asset,
     Issue: '' as Asset,
     Subissue: '' as Asset,
     Project: '' as Asset,
@@ -426,14 +372,12 @@ const pluginState = plugin(kraId, {
     MyIssues: '' as Asset,
     Views: '' as Asset,
     Issues: '' as Asset,
-    Components: '' as Asset,
     NewIssue: '' as Asset,
     Magnifier: '' as Asset,
     Labels: '' as Asset,
     DueDate: '' as Asset,
     Parent: '' as Asset,
     UnsetParent: '' as Asset,
-    Milestone: '' as Asset,
     IssueTemplates: '' as Asset,
     Start: '' as Asset,
     Stop: '' as Asset,
@@ -449,14 +393,6 @@ const pluginState = plugin(kraId, {
     PriorityHigh: '' as Asset,
     PriorityMedium: '' as Asset,
     PriorityLow: '' as Asset,
-
-    ComponentsList: '' as Asset,
-
-    MilestoneStatusPlanned: '' as Asset,
-    MilestoneStatusInProgress: '' as Asset,
-    MilestoneStatusPaused: '' as Asset,
-    MilestoneStatusCompleted: '' as Asset,
-    MilestoneStatusCanceled: '' as Asset,
 
     CopyBranch: '' as Asset,
     Duplicate: '' as Asset,
@@ -482,7 +418,6 @@ const pluginState = plugin(kraId, {
     SetStatus: '' as Ref<Action>,
     SetPriority: '' as Ref<Action<Doc, any>>,
     SetAssignee: '' as Ref<Action<Doc, any>>,
-    SetComponent: '' as Ref<Action<Doc, any>>,
     CopyIssueId: '' as Ref<Action<Doc, any>>,
     CopyIssueTitle: '' as Ref<Action<Doc, any>>,
     CopyIssueLink: '' as Ref<Action<Doc, any>>,
@@ -494,7 +429,6 @@ const pluginState = plugin(kraId, {
     NewSubIssue: '' as Ref<Action<Doc, any>>,
     EditWorkflowStatuses: '' as Ref<Action>,
     EditProject: '' as Ref<Action>,
-    SetMilestone: '' as Ref<Action<Doc, any>>,
     SetLabels: '' as Ref<Action<Doc, any>>,
     EditRelatedTargets: '' as Ref<Action<Doc, any>>,
     UnsetParent: '' as Ref<Action<Doc, any>>

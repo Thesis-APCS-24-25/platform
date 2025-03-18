@@ -64,17 +64,6 @@ export function definePresenters (builder: Builder): void {
   })
 
   //
-  // Type Milestone Status
-  //
-  builder.mixin(tracker.class.TypeMilestoneStatus, core.class.Class, view.mixin.AttributePresenter, {
-    presenter: tracker.component.MilestoneStatusPresenter
-  })
-
-  builder.mixin(tracker.class.TypeMilestoneStatus, core.class.Class, view.mixin.AttributeEditor, {
-    inlineEditor: tracker.component.MilestoneStatusEditor
-  })
-
-  //
   // Type Issue Priority
   //
   builder.mixin(tracker.class.TypeIssuePriority, core.class.Class, view.mixin.ObjectPresenter, {
@@ -98,49 +87,6 @@ export function definePresenters (builder: Builder): void {
 
   builder.mixin(tracker.class.Project, core.class.Class, view.mixin.SpacePresenter, {
     presenter: tracker.component.ProjectSpacePresenter
-  })
-
-  //
-  // Component
-  //
-  builder.mixin(tracker.class.Component, core.class.Class, view.mixin.ObjectEditor, {
-    editor: tracker.component.EditComponent
-  })
-
-  builder.mixin(tracker.class.Component, core.class.Class, view.mixin.ObjectPresenter, {
-    presenter: tracker.component.ComponentPresenter
-  })
-
-  classPresenter(
-    builder,
-    tracker.class.Component,
-    tracker.component.ComponentSelector,
-    tracker.component.ComponentSelector
-  )
-
-  builder.mixin(tracker.class.Component, core.class.Class, view.mixin.AttributeEditor, {
-    inlineEditor: tracker.component.ComponentSelector
-  })
-
-  builder.mixin(tracker.class.Component, core.class.Class, view.mixin.ArrayEditor, {
-    inlineEditor: view.component.ArrayEditor
-  })
-
-  builder.mixin(tracker.class.Component, core.class.Class, view.mixin.AttributePresenter, {
-    presenter: tracker.component.ComponentRefPresenter
-  })
-
-  ///  Milestones
-  builder.mixin(tracker.class.Milestone, core.class.Class, view.mixin.ObjectPresenter, {
-    presenter: tracker.component.MilestonePresenter
-  })
-
-  builder.mixin(tracker.class.Milestone, core.class.Class, view.mixin.AttributePresenter, {
-    presenter: tracker.component.MilestoneRefPresenter
-  })
-
-  builder.mixin(tracker.class.Milestone, core.class.Class, view.mixin.ObjectEditor, {
-    editor: tracker.component.EditMilestone
   })
 
   classPresenter(

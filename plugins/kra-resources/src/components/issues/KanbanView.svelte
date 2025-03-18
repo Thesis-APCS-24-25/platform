@@ -70,7 +70,6 @@
 
   import tracker from '../../plugin'
   import { activeProjects } from '../../utils'
-  import ComponentEditor from '../components/ComponentEditor.svelte'
   import CreateIssue from '../CreateIssue.svelte'
   import AssigneeEditor from './AssigneeEditor.svelte'
   import DueDatePresenter from './DueDatePresenter.svelte'
@@ -270,28 +269,6 @@
   const getAvailableCategories = async (doc: Doc): Promise<CategoryType[]> => {
     const issue = toIssue(doc)
 
-    if ([IssuesGrouping.Component, IssuesGrouping.Milestone].includes(groupByKey)) {
-      const availableCategories = []
-      const clazz = client.getHierarchy().getAttribute(tracker.class.Issue, groupByKey)
-
-      for (const category of categories) {
-        if (!category || (issue as any)[groupByKey] === category) {
-          availableCategories.push(category)
-        } else if (clazz !== undefined && 'to' in clazz.type) {
-          const categoryDoc = await client.findOne(clazz.type.to as Ref<Class<Doc>>, {
-            _id: category as Ref<Doc>,
-            space: issue.space
-          })
-
-          if (categoryDoc) {
-            availableCategories.push(category)
-          }
-        }
-      }
-
-      return availableCategories
-    }
-
     if (groupByKey === IssuesGrouping.Status) {
       const space = await client.findOne(tracker.class.Project, { _id: issue.space })
       return getStates(space, $typeStore, $statusStore.byId).map(({ _id }) => _id)
@@ -421,16 +398,6 @@
             {#if enabledConfig(config, 'priority')}
               <PriorityEditor
                 value={issue}
-                isEditable={true}
-                kind={'link-bordered'}
-                size={'small'}
-                justify={'center'}
-              />
-            {/if}
-            {#if enabledConfig(config, 'component')}
-              <ComponentEditor
-                value={issue}
-                {space}
                 isEditable={true}
                 kind={'link-bordered'}
                 size={'small'}

@@ -1,15 +1,11 @@
 import { type Doc, type DocumentUpdate, type Ref, type RelatedDocument, type TxOperations } from '@hcengineering/core'
 import { getMetadata } from '@hcengineering/platform'
 import presentation, { getClient } from '@hcengineering/presentation'
-import { kraId, type Component, type Issue, type Milestone } from '@hcengineering/kra'
+import { kraId, type Issue, } from '@hcengineering/kra'
 import { getCurrentResolvedLocation, getPanelURI, type Location, type ResolvedLocation } from '@hcengineering/ui'
 import { accessDeniedStore } from '@hcengineering/view-resources'
 import { workbenchId } from '@hcengineering/workbench'
-import { writable } from 'svelte/store'
 import tracker from './plugin'
-
-export const activeComponent = writable<Ref<Component> | undefined>(undefined)
-export const activeMilestone = writable<Ref<Milestone> | undefined>(undefined)
 
 export function isIssueId (shortLink: string): boolean {
   return /^\S+-\d+$/.test(shortLink)

@@ -17,9 +17,6 @@ export enum TrackerEvents {
   IssueTitleUpdated = 'tracker.issue.TitleUpdated',
   IssueDescriptionUpdated = 'tracker.issue.DescriptionUpdated',
 
-  IssueComponentAdded = 'tracker.issue.ComponentAdded',
-  IssueMilestoneAdded = 'tracker.issue.MilestoneAdded',
-
   ProjectCreated = 'tracker.project.Created',
   ProjectDeleted = 'tracker.project.Deleted',
   ProjectArchived = 'tracker.project.Archived',

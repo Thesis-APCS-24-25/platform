@@ -57,7 +57,6 @@ import tags, { type TagElement } from '@hcengineering/tags'
 import time, { type ToDo } from '@hcengineering/time'
 import {
   type ProjectTargetPreference,
-  type Component,
   type Issue,
   type IssueChildInfo,
   type IssueParentInfo,
@@ -65,8 +64,6 @@ import {
   type IssueStatus,
   type IssueTemplate,
   type IssueTemplateChild,
-  type Milestone,
-  type MilestoneStatus,
   type Project,
   type RelatedClassRule,
   type RelatedIssueTarget,
@@ -97,19 +94,6 @@ export function TypeIssuePriority (): Type<IssuePriority> {
 
 @Model(tracker.class.TypeIssuePriority, core.class.Type, DOMAIN_MODEL)
 export class TTypeIssuePriority extends TType {}
-/**
- * @public
- */
-
-export function TypeMilestoneStatus (): Type<MilestoneStatus> {
-  return { _class: tracker.class.TypeMilestoneStatus, label: 'TypeMilestoneStatus' as IntlString }
-}
-/**
- * @public
- */
-
-@Model(tracker.class.TypeMilestoneStatus, core.class.Type, DOMAIN_MODEL)
-export class TTypeMilestoneStatus extends TType {}
 /**
  * @public
  */
@@ -209,10 +193,6 @@ export class TIssue extends TTask implements Issue {
   @Index(IndexKind.Indexed)
   declare assignee: Ref<Person> | null
 
-  @Prop(TypeRef(tracker.class.Component), tracker.string.Component, { icon: tracker.icon.Component })
-  @Index(IndexKind.Indexed)
-    component!: Ref<Component> | null
-
   @Prop(Collection(tracker.class.Issue), tracker.string.SubIssues)
     subIssues!: number
 
@@ -235,10 +215,6 @@ export class TIssue extends TTask implements Issue {
 
   @Prop(TypeDate(DateRangeMode.DATETIME), tracker.string.DueDate)
   declare dueDate: Timestamp | null
-
-  @Prop(TypeRef(tracker.class.Milestone), tracker.string.Milestone, { icon: tracker.icon.Milestone })
-  @Index(IndexKind.Indexed)
-    milestone!: Ref<Milestone> | null
 
   @Prop(TypeEstimation(), tracker.string.Estimation)
     estimation!: number
@@ -286,9 +262,6 @@ export class TIssueTemplate extends TDoc implements IssueTemplate {
   @Prop(TypeRef(contact.class.Person), tracker.string.Assignee)
     assignee!: Ref<Person> | null
 
-  @Prop(TypeRef(tracker.class.Component), tracker.string.Component)
-    component!: Ref<Component> | null
-
   @Prop(ArrOf(TypeRef(tags.class.TagElement)), tracker.string.Labels)
     labels?: Ref<TagElement>[]
 
@@ -299,9 +272,6 @@ export class TIssueTemplate extends TDoc implements IssueTemplate {
 
   @Prop(TypeDate(DateRangeMode.DATETIME), tracker.string.DueDate)
     dueDate!: Timestamp | null
-
-  @Prop(TypeRef(tracker.class.Milestone), tracker.string.Milestone)
-    milestone!: Ref<Milestone> | null
 
   @Prop(TypeEstimation(), tracker.string.Estimation)
     estimation!: number
@@ -339,60 +309,6 @@ export class TTimeSpendReport extends TAttachedDoc implements TimeSpendReport {
 
   @Prop(TypeString(), tracker.string.TimeSpendReportDescription)
     description!: string
-}
-/**
- * @public
- */
-
-@Model(tracker.class.Component, core.class.Doc, DOMAIN_TRACKER)
-@UX(tracker.string.Component, tracker.icon.Component, 'COMPONENT', 'label', undefined, tracker.string.Components)
-export class TComponent extends TDoc implements Component {
-  @Prop(TypeString(), tracker.string.Title)
-  @Index(IndexKind.FullText)
-    label!: string
-
-  @Prop(TypeMarkup(), tracker.string.Description)
-    description?: Markup
-
-  @Prop(TypeRef(contact.mixin.Employee), tracker.string.ComponentLead)
-    lead!: Ref<Employee> | null
-
-  @Prop(Collection(chunter.class.ChatMessage), chunter.string.Comments)
-    comments!: number
-
-  @Prop(Collection(attachment.class.Attachment), attachment.string.Attachments, { shortLabel: attachment.string.Files })
-    attachments?: number
-
-  declare space: Ref<Project>
-}
-
-/**
- * @public
- */
-@Model(tracker.class.Milestone, core.class.Doc, DOMAIN_TRACKER)
-@UX(tracker.string.Milestone, tracker.icon.Milestone, '', 'label', undefined, tracker.string.Milestones)
-export class TMilestone extends TDoc implements Milestone {
-  @Prop(TypeString(), tracker.string.Title)
-  // @Index(IndexKind.FullText)
-    label!: string
-
-  @Prop(TypeMarkup(), tracker.string.Description)
-    description?: Markup
-
-  @Prop(TypeMilestoneStatus(), tracker.string.Status)
-  @Index(IndexKind.Indexed)
-    status!: MilestoneStatus
-
-  @Prop(Collection(chunter.class.ChatMessage), chunter.string.Comments)
-    comments!: number
-
-  @Prop(Collection(attachment.class.Attachment), attachment.string.Attachments, { shortLabel: attachment.string.Files })
-    attachments?: number
-
-  @Prop(TypeDate(), tracker.string.TargetDate)
-    targetDate!: Timestamp
-
-  declare space: Ref<Project>
 }
 
 @UX(core.string.Number)

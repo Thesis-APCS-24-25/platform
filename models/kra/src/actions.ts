@@ -27,7 +27,7 @@ import tracker from './plugin'
 import tags from '@hcengineering/tags'
 import { defaultPriorities, issuePriorities } from '@hcengineering/kra-resources/src/types'
 
-function createGotoSpecialAction (
+function createGotoSpecialAction(
   builder: Builder,
   id: string,
   key: KeyBinding,
@@ -42,11 +42,10 @@ function createGotoSpecialAction (
     query
   })
 }
-export function createActions (builder: Builder, issuesId: string, componentsId: string, myIssuesId: string): void {
+export function createActions(builder: Builder, issuesId: string, myIssuesId: string): void {
   createGotoSpecialAction(builder, issuesId, 'keyG->keyE', tracker.string.GotoIssues)
   createGotoSpecialAction(builder, issuesId, 'keyG->keyA', tracker.string.GotoActive, { mode: 'active' })
   createGotoSpecialAction(builder, issuesId, 'keyG->keyB', tracker.string.GotoBacklog, { mode: 'backlog' })
-  createGotoSpecialAction(builder, componentsId, 'keyG->keyC', tracker.string.GotoComponents)
   createNavigateAction(builder, 'keyG->keyM', tracker.string.GotoMyIssues, tracker.app.Tracker, {
     application: kraId,
     mode: 'special',
@@ -476,54 +475,6 @@ export function createActions (builder: Builder, issuesId: string, componentsId:
   createAction(
     builder,
     {
-      action: view.actionImpl.AttributeSelector,
-      actionPopup: tracker.component.ComponentEditor,
-      actionProps: {
-        attribute: 'component',
-        isAction: true
-      },
-      label: tracker.string.Component,
-      icon: tracker.icon.Component,
-      keyBinding: ['keyM->keyT'],
-      input: 'any',
-      category: tracker.category.Tracker,
-      target: tracker.class.Issue,
-      context: {
-        mode: ['context', 'browser'],
-        application: tracker.app.Tracker,
-        group: 'edit'
-      }
-    },
-    tracker.action.SetComponent
-  )
-
-  createAction(
-    builder,
-    {
-      action: view.actionImpl.AttributeSelector,
-      actionPopup: tracker.component.MilestoneEditor,
-      actionProps: {
-        attribute: 'milestone',
-        isAction: true
-      },
-      label: tracker.string.Milestone,
-      icon: tracker.icon.Milestone,
-      keyBinding: ['keyS->keyP'],
-      input: 'any',
-      category: tracker.category.Tracker,
-      target: tracker.class.Issue,
-      context: {
-        mode: ['context', 'browser'],
-        application: tracker.app.Tracker,
-        group: 'edit'
-      }
-    },
-    tracker.action.SetMilestone
-  )
-
-  createAction(
-    builder,
-    {
       action: view.actionImpl.ShowPopup,
       actionProps: {
         component: tags.component.ObjectsTagsEditorPopup,
@@ -701,25 +652,6 @@ export function createActions (builder: Builder, issuesId: string, componentsId:
     },
     tracker.action.Duplicate
   )
-
-  createAction(
-    builder,
-    {
-      action: tracker.actionImpl.DeleteMilestone,
-      label: view.string.Delete,
-      icon: view.icon.Delete,
-      keyBinding: ['Meta + Backspace'],
-      category: tracker.category.Tracker,
-      input: 'any',
-      target: tracker.class.Milestone,
-      context: { mode: ['context', 'browser'], group: 'remove' },
-      visibilityTester: view.function.CanDeleteObject
-    },
-    tracker.action.DeleteMilestone
-  )
-  builder.mixin(tracker.class.Milestone, core.class.Class, view.mixin.IgnoreActions, {
-    actions: [view.action.Delete]
-  })
 
   createAction(
     builder,

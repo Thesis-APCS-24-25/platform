@@ -35,19 +35,16 @@ import { definePresenters } from './presenters'
 import {
   DOMAIN_TRACKER,
   TClassicProjectTypeData,
-  TComponent,
   TIssue,
   TIssueStatus,
   TIssueTemplate,
   TIssueTypeData,
-  TMilestone,
   TProject,
   TProjectTargetPreference,
   TRelatedIssueTarget,
   TTimeSpendReport,
   TTypeEstimation,
   TTypeIssuePriority,
-  TTypeMilestoneStatus,
   TTypeRemainingTime,
   TTypeReportedTime
 } from './types'
@@ -89,30 +86,8 @@ function defineSortAndGrouping (builder: Builder): void {
     func: tracker.function.IssuePrioritySort
   })
 
-  builder.mixin(tracker.class.Milestone, core.class.Class, view.mixin.SortFuncs, {
-    func: tracker.function.MilestoneSort
-  })
-
-  builder.mixin(tracker.class.Component, core.class.Class, view.mixin.Aggregation, {
-    createAggregationManager: tracker.aggregation.CreateComponentAggregationManager,
-    setStoreFunc: tracker.function.SetComponentStore,
-    filterFunc: tracker.function.ComponentFilterFunction
-  })
-
-  builder.mixin(tracker.class.Component, core.class.Class, view.mixin.Groupping, {
-    grouppingManager: tracker.aggregation.GrouppingComponentManager
-  })
-
   builder.mixin(tracker.class.TypeIssuePriority, core.class.Class, view.mixin.AllValuesFunc, {
     func: tracker.function.GetAllPriority
-  })
-
-  builder.mixin(tracker.class.Component, core.class.Class, view.mixin.AllValuesFunc, {
-    func: tracker.function.GetAllComponents
-  })
-
-  builder.mixin(tracker.class.Milestone, core.class.Class, view.mixin.AllValuesFunc, {
-    func: tracker.function.GetAllMilestones
   })
 
   builder.mixin(tracker.class.IssueStatus, core.class.Class, view.mixin.AllValuesFunc, {
@@ -178,18 +153,6 @@ function defineFilters (builder: Builder): void {
       'space',
       'createdBy',
       'assignee',
-      {
-        _class: tracker.class.Issue,
-        key: 'component',
-        component: view.component.ObjectFilter,
-        showNested: false
-      },
-      {
-        _class: tracker.class.Issue,
-        key: 'milestone',
-        component: view.component.ObjectFilter,
-        showNested: false
-      }
     ],
     ignoreKeys: ['number', 'estimation', 'attachedTo'],
     getVisibleFilters: tracker.function.GetVisibleFilters
@@ -227,26 +190,6 @@ function defineFilters (builder: Builder): void {
   })
 
   //
-  // Milestone
-  //
-  builder.mixin(tracker.class.Milestone, core.class.Class, view.mixin.ClassFilters, {
-    filters: ['status'],
-    strict: true
-  })
-
-  builder.mixin(tracker.class.Milestone, core.class.Class, view.mixin.AttributeFilter, {
-    component: tracker.component.MilestoneFilter
-  })
-
-  builder.mixin(tracker.class.Milestone, core.class.Class, view.mixin.ObjectTitle, {
-    titleProvider: tracker.function.MilestoneTitleProvider
-  })
-
-  builder.mixin(tracker.class.Milestone, core.class.Class, view.mixin.ObjectIdentifier, {
-    provider: tracker.function.MilestoneTitleProvider
-  })
-
-  //
   // Project
   //
   builder.mixin(tracker.class.Project, core.class.Class, view.mixin.AttributeFilter, {
@@ -254,33 +197,6 @@ function defineFilters (builder: Builder): void {
   })
   builder.mixin(tracker.class.Project, core.class.Class, view.mixin.AttributeFilterPresenter, {
     presenter: tracker.component.ProjectFilterValuePresenter
-  })
-
-  //
-  // Component
-  //
-  builder.mixin(tracker.class.Component, core.class.Class, view.mixin.AttributeFilterPresenter, {
-    presenter: tracker.component.ComponentFilterValuePresenter
-  })
-
-  builder.mixin(tracker.class.Component, core.class.Class, view.mixin.ClassFilters, {
-    filters: []
-  })
-
-  builder.mixin(tracker.class.Component, core.class.Class, view.mixin.ObjectTitle, {
-    titleProvider: tracker.function.ComponentTitleProvider
-  })
-
-  builder.mixin(tracker.class.Component, core.class.Class, view.mixin.ObjectIdentifier, {
-    provider: tracker.function.ComponentTitleProvider
-  })
-
-  //
-  // Type Milestone Status
-  //
-
-  builder.mixin(tracker.class.TypeMilestoneStatus, core.class.Class, view.mixin.AttributeFilter, {
-    component: view.component.ValueFilter
   })
 
   //
@@ -301,8 +217,6 @@ function defineApplication (
     myIssuesId: string
     allIssuesId: string
     issuesId: string
-    componentsId: string
-    milestonesId: string
     templatesId: string
     labelsId: string
   }
@@ -403,18 +317,6 @@ function defineApplication (
                 }
               },
               {
-                id: opt.componentsId,
-                label: tracker.string.Components,
-                icon: tracker.icon.Components,
-                component: tracker.component.ProjectComponents
-              },
-              {
-                id: opt.milestonesId,
-                label: tracker.string.Milestones,
-                icon: tracker.icon.Milestone,
-                component: tracker.component.Milestones
-              },
-              {
                 id: opt.templatesId,
                 label: tracker.string.IssueTemplates,
                 icon: tracker.icon.IssueTemplates,
@@ -433,13 +335,10 @@ function defineApplication (
 export function createModel (builder: Builder): void {
   builder.createModel(
     TProject,
-    TComponent,
     TIssue,
     TIssueTemplate,
     TIssueStatus,
     TTypeIssuePriority,
-    TMilestone,
-    TTypeMilestoneStatus,
     TTimeSpendReport,
     TTypeReportedTime,
     TRelatedIssueTarget,
@@ -450,8 +349,6 @@ export function createModel (builder: Builder): void {
 
   builder.mixin(tracker.class.Project, core.class.Class, activity.mixin.ActivityDoc, {})
   builder.mixin(tracker.class.Issue, core.class.Class, activity.mixin.ActivityDoc, {})
-  builder.mixin(tracker.class.Milestone, core.class.Class, activity.mixin.ActivityDoc, {})
-  builder.mixin(tracker.class.Component, core.class.Class, activity.mixin.ActivityDoc, {})
   builder.mixin(tracker.class.IssueTemplate, core.class.Class, activity.mixin.ActivityDoc, {})
 
   builder.mixin(tracker.class.Issue, core.class.Class, view.mixin.LinkIdProvider, {
@@ -465,16 +362,6 @@ export function createModel (builder: Builder): void {
   })
 
   builder.createDoc(activity.class.ActivityExtension, core.space.Model, {
-    ofClass: tracker.class.Milestone,
-    components: { input: { component: chunter.component.ChatMessageInput } }
-  })
-
-  builder.createDoc(activity.class.ActivityExtension, core.space.Model, {
-    ofClass: tracker.class.Component,
-    components: { input: { component: chunter.component.ChatMessageInput } }
-  })
-
-  builder.createDoc(activity.class.ActivityExtension, core.space.Model, {
     ofClass: tracker.class.IssueTemplate,
     components: { input: { component: chunter.component.ChatMessageInput } }
   })
@@ -482,8 +369,6 @@ export function createModel (builder: Builder): void {
   defineViewlets(builder)
 
   const issuesId = 'issues'
-  const componentsId = 'components'
-  const milestonesId = 'milestones'
   const templatesId = 'templates'
   const myIssuesId = 'my-issues'
   const allIssuesId = 'all-issues'
@@ -507,14 +392,6 @@ export function createModel (builder: Builder): void {
   })
 
   builder.mixin(tracker.class.Issue, core.class.Class, setting.mixin.Editable, {
-    value: true
-  })
-
-  builder.mixin(tracker.class.Milestone, core.class.Class, setting.mixin.Editable, {
-    value: true
-  })
-
-  builder.mixin(tracker.class.Component, core.class.Class, setting.mixin.Editable, {
     value: true
   })
 
@@ -580,21 +457,6 @@ export function createModel (builder: Builder): void {
     activity.class.DocUpdateMessageViewlet,
     core.space.Model,
     {
-      objectClass: tracker.class.Milestone,
-      action: 'update',
-      config: {
-        status: {
-          iconPresenter: tracker.component.MilestoneStatusIcon
-        }
-      }
-    },
-    tracker.ids.MilestionUpdatedActivityViewlet
-  )
-
-  builder.createDoc(
-    activity.class.DocUpdateMessageViewlet,
-    core.space.Model,
-    {
       objectClass: tracker.class.IssueTemplate,
       action: 'update',
       config: {
@@ -606,9 +468,9 @@ export function createModel (builder: Builder): void {
     tracker.ids.IssueTemplateUpdatedActivityViewlet
   )
 
-  defineApplication(builder, { myIssuesId, allIssuesId, issuesId, componentsId, milestonesId, templatesId, labelsId })
+  defineApplication(builder, { myIssuesId, allIssuesId, issuesId, templatesId, labelsId })
 
-  defineActions(builder, issuesId, componentsId, myIssuesId)
+  defineActions(builder, issuesId, myIssuesId)
 
   defineFilters(builder)
 
@@ -659,28 +521,6 @@ export function createModel (builder: Builder): void {
       label: chunter.string.LeftComment
     },
     tracker.ids.IssueTemplateChatMessageViewlet
-  )
-
-  builder.createDoc(
-    chunter.class.ChatMessageViewlet,
-    core.space.Model,
-    {
-      messageClass: chunter.class.ChatMessage,
-      objectClass: tracker.class.Component,
-      label: chunter.string.LeftComment
-    },
-    tracker.ids.ComponentChatMessageViewlet
-  )
-
-  builder.createDoc(
-    chunter.class.ChatMessageViewlet,
-    core.space.Model,
-    {
-      messageClass: chunter.class.ChatMessage,
-      objectClass: tracker.class.Milestone,
-      label: chunter.string.LeftComment
-    },
-    tracker.ids.MilestoneChatMessageViewlet
   )
 
   builder.mixin(tracker.class.Issue, core.class.Class, view.mixin.ObjectIcon, {
