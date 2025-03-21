@@ -112,6 +112,7 @@ import '@hcengineering/training-assets'
 import '@hcengineering/uploader-assets'
 import '@hcengineering/view-assets'
 import '@hcengineering/workbench-assets'
+import '@hcengineering/kra-assets'
 
 import github, { githubId } from '@hcengineering/github'
 import '@hcengineering/github-assets'

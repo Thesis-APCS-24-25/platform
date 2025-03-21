@@ -183,16 +183,6 @@
     props={{ object: issue, label: tracker.string.AddLabel, readonly }}
   />
 
-  <div class="divider" />
-
-  <span class="labelOnPanel">
-    <Label label={tracker.string.Component} />
-  </span>
-
-  <span class="labelOnPanel">
-    <Label label={tracker.string.Milestone} />
-  </span>
-
   {#if issue.dueDate !== null}
     <div class="divider" />
 

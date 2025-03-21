@@ -14,10 +14,10 @@
 //
 
 import { loadMetadata } from '@hcengineering/platform'
-import tracker from '@hcengineering/kra'
+import kra from '@hcengineering/kra'
 
 const icons = require('../assets/icons.svg') as string // eslint-disable-line
-loadMetadata(tracker.icon, {
+loadMetadata(kra.icon, {
   TrackerApplication: `${icons}#tracker`,
   Issue: `${icons}#issue`,
   Subissue: `${icons}#sub-issue`,

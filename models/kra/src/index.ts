@@ -63,7 +63,7 @@ export { default } from './plugin'
 export const classicIssueTaskStatuses: TaskStatusFactory[] = [
   {
     category: task.statusCategory.UnStarted,
-    statuses: [['Backlog', PaletteColorIndexes.Cloud, pluginState.status.Backlog]]
+    statuses: [['Not Started', PaletteColorIndexes.Cloud, pluginState.status.Backlog]]
   },
   { category: task.statusCategory.ToDo, statuses: [['Todo', PaletteColorIndexes.Porpoise, pluginState.status.Todo]] },
   {
