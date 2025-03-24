@@ -1,11 +1,11 @@
 <script lang="ts">
   import { Button, IconAdd, Breadcrumbs, SearchInput, showPopup, Header } from '@hcengineering/ui'
   import kraTeam from '../plugins'
+  import NewKraTemplate from './NewKraTemplate.svelte';
   export let search = ''
 
-
   function showCreateDialog(e: MouseEvent): void {
-    alert('Create Dialog')
+    showPopup(NewKraTemplate, {})
   }
 </script>
 
@@ -22,6 +22,6 @@
     <!-- <FilterButton _class={tracker.class.Component} {space} /> -->
   </svelte:fragment>
   <svelte:fragment slot="actions">
-      <Button icon={IconAdd} label={kraTeam.string.KraTemplate} kind="primary" on:click={showCreateDialog} />
+    <Button icon={IconAdd} label={kraTeam.string.KraTemplate} kind="primary" on:click={showCreateDialog} />
   </svelte:fragment>
 </Header>

@@ -2,6 +2,7 @@ import { Builder } from '@hcengineering/model'
 import core from '@hcengineering/core'
 import view from '@hcengineering/view'
 import kraTeam from './plugin'
+import contact from '@hcengineering/model-contact'
 
 export function defineViewlets(builder: Builder) {
   builder.createDoc(view.class.Viewlet, core.space.Model, {
