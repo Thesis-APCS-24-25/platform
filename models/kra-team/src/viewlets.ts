@@ -35,8 +35,7 @@ export function defineViewlets(builder: Builder) {
     descriptor: view.viewlet.Table,
     config: [
       {
-        key: '',
-        presenter: kraTeam.component.MemberPresenter,
+        key: 'person',
       }
     ],
     viewOptions: {

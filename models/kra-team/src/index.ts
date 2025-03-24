@@ -32,7 +32,7 @@ function defineApplication(builder: Builder) {
     label: kraTeam.string.Team,
     icon: kraTeam.icon.Team,
     hidden: false,
-    alias: '',
+    alias: 'kra-team',
     navigatorModel: {
       specials: [
         {
