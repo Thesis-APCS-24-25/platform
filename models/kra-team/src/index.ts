@@ -14,6 +14,8 @@ import {
 import { defineViewlets } from './viewlets'
 import view from '@hcengineering/view'
 import { definePresenters } from './presenters'
+import { definePermissions } from './permissions'
+import { defineSpaceTypes } from './spacetypes'
 
 export { kraTeamId } from '@hcengineering/kra-team'
 
@@ -78,36 +80,9 @@ function defineApplication(builder: Builder) {
   })
 }
 
-function defineSpaceTypes(builder: Builder): void {
-  builder.createModel(TTeamTypeData)
-  builder.createDoc(
-    kraTeam.class.TeamTypeDescriptor,
-    core.space.Model,
-    {
-      name: kraTeam.string.Team,
-      description: kraTeam.string.Description,
-      icon: kraTeam.icon.Team,
-      baseClass: kraTeam.class.Team,
-      availablePermissions: []
-    },
-    kraTeam.descriptor.TeamType
-  )
-
-  builder.createDoc(
-    kraTeam.class.TeamType,
-    core.space.Model,
-    {
-      name: 'Default Team',
-      descriptor: kraTeam.descriptor.TeamType,
-      roles: 0,
-      targetClass: kraTeam.mixin.TeamTypeData
-    },
-    kraTeam.spaceType.TeamType
-  )
-}
-
 export function createModel(builder: Builder): void {
   builder.createModel(TTeam, TMetric, TKraTemplate, TTeamType, TTeamTypeDescriptor, TMember)
+  definePermissions(builder)
   defineSpaceTypes(builder)
   defineViewlets(builder)
   definePresenters(builder)

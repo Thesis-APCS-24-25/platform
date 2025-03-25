@@ -1,3 +1,4 @@
+import { Permission, Ref, Role } from '@hcengineering/core'
 import kraTeam, { kraTeamId } from '@hcengineering/kra-team'
 import { Asset, IntlString, mergeIds } from '@hcengineering/platform'
 import { AnyComponent } from '@hcengineering/ui'
@@ -15,7 +16,11 @@ export default mergeIds(kraTeamId, kraTeam, {
     Metrics: '' as IntlString,
     Name: '' as IntlString,
     KRATemplates: '' as IntlString,
-    Members: '' as IntlString
+    Members: '' as IntlString,
+    ApproveKra: '' as IntlString,
+    ApproveKraDescription: '' as IntlString,
+    CreateKra: '' as IntlString,
+    CreateKraDescription: '' as IntlString
   },
   component: {
     AllTeams: '' as AnyComponent,
@@ -24,5 +29,13 @@ export default mergeIds(kraTeamId, kraTeam, {
     Members: '' as AnyComponent,
     KraTemplates: '' as AnyComponent,
     TeamSpacePresenter: '' as AnyComponent
+  },
+  permission: {
+    ApproveKra: '' as Ref<Permission>,
+    CreateKra: '' as Ref<Permission>
+  },
+  role: {
+    TeamMember: '' as Ref<Role>,
+    TeamManager: '' as Ref<Role>
   }
 })

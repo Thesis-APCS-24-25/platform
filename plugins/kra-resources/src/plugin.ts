@@ -44,6 +44,9 @@ export default mergeIds(kraId, tracker, {
   },
   string: {
     More: '' as IntlString,
+    Unit: '' as IntlString,
+    Value: '' as IntlString,
+    Target: '' as IntlString,
     Delete: '' as IntlString,
     Open: '' as IntlString,
     Default: '' as IntlString,
