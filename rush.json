@@ -2260,6 +2260,76 @@
       "packageName": "@hcengineering/green",
       "projectFolder": "pods/green",
       "shouldPublish": false
+    },
+    {
+      "packageName": "@hcengineering/server-card",
+      "projectFolder": "server-plugins/card",
+      "shouldPublish": false
+    },
+    {
+      "packageName": "@hcengineering/server-card-resources",
+      "projectFolder": "server-plugins/card-resources",
+      "shouldPublish": false
+    },
+    {
+      "packageName": "@hcengineering/model-server-card",
+      "projectFolder": "models/server-card",
+      "shouldPublish": false
+    },
+    {
+      "packageName": "@hcengineering/mail",
+      "projectFolder": "plugins/mail",
+      "shouldPublish": true
+    },
+    {
+      "packageName": "@hcengineering/model-mail",
+      "projectFolder": "models/mail",
+      "shouldPublish": false
+    },
+    {
+      "packageName": "@hcengineering/mail-assets",
+      "projectFolder": "plugins/mail-assets",
+      "shouldPublish": false
+    },
+    {
+      "packageName": "@hcengineering/mail-resources",
+      "projectFolder": "plugins/mail-resources",
+      "shouldPublish": false
+    },
+    {
+      "packageName": "@hcengineering/my-space",
+      "projectFolder": "plugins/my-space",
+      "shouldPublish": false
+    },
+    {
+      "packageName": "@hcengineering/my-space-assets",
+      "projectFolder": "plugins/my-space-assets",
+      "shouldPublish": false
+    },
+    {
+      "packageName": "@hcengineering/my-space-resources",
+      "projectFolder": "plugins/my-space-resources",
+      "shouldPublish": false
+    },
+    {
+      "packageName": "@hcengineering/model-my-space",
+      "projectFolder": "models/my-space",
+      "shouldPublish": false
+    },
+    {
+      "packageName": "@hcengineering/performance",
+      "projectFolder": "plugins/performance",
+      "shouldPublish": false
+    },
+    {
+      "packageName": "@hcengineering/performance-resources",
+      "projectFolder": "plugins/performance-resources",
+      "shouldPublish": false
+    },
+    {
+      "packageName": "@hcengineering/model-performance",
+      "projectFolder": "models/performance",
+      "shouldPublish": false
     }
   ]
 }

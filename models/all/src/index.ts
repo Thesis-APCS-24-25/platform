@@ -108,6 +108,7 @@ import {
 import { serverFulltextId, createModel as serverFulltextModel } from '@hcengineering/model-server-fulltext'
 import { surveyId, createModel as surveyModel } from '@hcengineering/model-survey'
 import { presenceId, createModel as presenceModel } from '@hcengineering/model-presence'
+import { performanceId, createModel as performanceModel } from '@hcengineering/model-performance'
 
 import { type Plugin } from '@hcengineering/platform'
 
@@ -428,6 +429,7 @@ export default function buildModel (enabled: string[] = ['*'], disabled: string[
     ],
     [surveyModel, surveyId],
     [presenceModel, presenceId],
+    [performanceModel, performanceId],
 
     [serverCoreModel, serverCoreId],
     [serverAttachmentModel, serverAttachmentId],
