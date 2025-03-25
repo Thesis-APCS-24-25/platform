@@ -3,7 +3,7 @@ import { KRA, KRAStatus, performanceId, ReviewSession } from "@hcengineering/per
 import { TProject, TTask } from "@hcengineering/model-task";
 import performance from "./plugin";
 import task from "@hcengineering/task";
-import { Arr, IndexKind, PersonId, Ref, Role, RolesAssignment, Timestamp } from "@hcengineering/core";
+import { Account, Arr, IndexKind, Ref, Role, RolesAssignment, Timestamp } from "@hcengineering/core";
 import core, { TStatus } from "@hcengineering/model-core";
 import workbench from "@hcengineering/model-workbench";
 import view from "@hcengineering/view";
@@ -42,7 +42,7 @@ export class TKRA extends TTask implements KRA {
 
 @Mixin(performance.mixin.DefaultReviewSessionData, performance.class.ReviewSession)
 export class TDefaultReviewSessionData extends TReviewSession implements RolesAssignment {
-  [key: Ref<Role>]: PersonId[]
+  [key: Ref<Role>]: Ref<Account>[]
 }
 
 

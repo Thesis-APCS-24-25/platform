@@ -1,6 +1,5 @@
 import performance, { type ReviewSession } from '@hcengineering/performance'
 import core, { getCurrentAccount, Timestamp, type Ref, type TxOperations } from '@hcengineering/core'
-import { createQuery, getClient } from '@hcengineering/presentation'
 import type { ProjectType } from '@hcengineering/task'
 import {
   EastSideColor,
@@ -30,7 +29,7 @@ export async function createReviewSession (
     description,
     private: false,
     archived: false,
-    members: [getCurrentAccount().primarySocialId],
+    members: [getCurrentAccount()._id],
     type
   })
 
