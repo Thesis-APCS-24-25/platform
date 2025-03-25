@@ -1,0 +1,53 @@
+import performance, { type ReviewSession } from '@hcengineering/performance'
+import core, { getCurrentAccount, Timestamp, type Ref, type TxOperations } from '@hcengineering/core'
+import { createQuery, getClient } from '@hcengineering/presentation'
+import type { ProjectType } from '@hcengineering/task'
+import {
+  EastSideColor,
+  FeijoaColor,
+  FernColor,
+  FlamingoColor,
+  MalibuColor,
+  MediumTurquoiseColor,
+  MoodyBlueColor,
+  SalmonColor,
+  SeaBuckthornColor,
+  SeagullColor
+} from '@hcengineering/ui'
+
+export async function createReviewSession (
+  client: TxOperations,
+  name: string,
+  description: string,
+  reviewSessionStart: Timestamp,
+  reviewSessionEnd: Timestamp,
+  type: Ref<ProjectType>
+): Promise<Ref<ReviewSession>> {
+  const reviewSessionRef = await client.createDoc(performance.class.ReviewSession, core.space.Space, {
+    reviewSessionStart,
+    reviewSessionEnd,
+    name,
+    description,
+    private: false,
+    archived: false,
+    members: [getCurrentAccount().primarySocialId],
+    type
+  })
+
+  return reviewSessionRef
+}
+
+export function getReviewSessionAvailableColors (): string[] {
+  return [
+    FernColor,
+    SeaBuckthornColor,
+    FlamingoColor,
+    MalibuColor,
+    MoodyBlueColor,
+    FeijoaColor,
+    EastSideColor,
+    MediumTurquoiseColor,
+    SalmonColor,
+    SeagullColor
+  ]
+}

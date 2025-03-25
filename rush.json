@@ -2302,6 +2302,21 @@
       "packageName": "@hcengineering/green",
       "projectFolder": "pods/green",
       "shouldPublish": false
+    },
+    {
+      "packageName": "@hcengineering/performance",
+      "projectFolder": "plugins/performance",
+      "shouldPublish": false
+    },
+    {
+      "packageName": "@hcengineering/performance-resources",
+      "projectFolder": "plugins/performance-resources",
+      "shouldPublish": false
+    },
+    {
+      "packageName": "@hcengineering/model-performance",
+      "projectFolder": "models/performance",
+      "shouldPublish": false
     }
   ]
 }
