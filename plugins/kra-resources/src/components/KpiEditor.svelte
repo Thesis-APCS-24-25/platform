@@ -2,9 +2,10 @@
   import { Button, ButtonKind, ButtonSize, eventToHTMLElement, showPopup } from '@hcengineering/ui'
   import KpiPresenter from './KpiPresenter.svelte'
   import KpiEditPopup from './KpiEditPopup.svelte'
+  import { Kpi } from '@hcengineering/kra'
 
   // TODO: use issue value instead of hardcoding
-  export let value: number
+  export let value: Kpi
   export let unit: string
   export let target: number
   export let isValueEditable: boolean = true
@@ -28,6 +29,8 @@
     )
   }
 </script>
+
+KpiEditor
 
 <Button {kind} {size} {justify} {width} {focusIndex} on:click={handleKpiEditorOpen}>
   <KpiPresenter slot="content" {value} {target} {unit} />

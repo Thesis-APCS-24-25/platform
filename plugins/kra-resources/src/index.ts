@@ -121,6 +121,9 @@ import { settingId } from '@hcengineering/setting'
 import { getAllStates } from '@hcengineering/task-resources'
 import EstimationValueEditor from './components/issues/timereport/EstimationValueEditor.svelte'
 import TimePresenter from './components/issues/timereport/TimePresenter.svelte'
+import GoalPresenter from './components/GoalPresenter.svelte'
+import KpiPresenter from './components/KpiPresenter.svelte'
+import RatingScalePresenter from './components/RatingScalePresenter.svelte'
 
 export { default as AssigneeEditor } from './components/issues/AssigneeEditor.svelte'
 export { default as SubIssueList } from './components/issues/edit/SubIssueList.svelte'
@@ -322,7 +325,10 @@ export default async (): Promise<Resources> => ({
     MembersArrayEditor,
     IssueExtra,
     IssueStatusPresenter,
-    LabelsView
+    LabelsView,
+    GoalPresenter,
+    KpiPresenter,
+    RatingScalePresenter
   },
   completion: {
     IssueQuery: async (

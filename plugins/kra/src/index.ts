@@ -49,6 +49,29 @@ import { Action, ActionCategory, IconProps } from '@hcengineering/view'
 
 export * from './analytics'
 
+export interface Goal extends AttachedDoc {
+  name: string
+  description: string
+}
+
+export interface KpiReport extends AttachedDoc {
+  attachedTo: Ref<Kpi>
+  attachedToClass: Ref<Class<Kpi>>
+  date: Timestamp | null
+  value: number
+}
+
+export interface Kpi extends Goal {
+  target: number
+  value: number | null
+  unit: string
+  reports: CollectionSize<KpiReport>
+}
+
+export interface RatingScale extends Goal {
+  value: number | null
+}
+
 /**
  * @public
  */
@@ -187,6 +210,8 @@ export interface Issue extends Task {
   }
 
   todos?: CollectionSize<ToDo>
+
+  goal?: Ref<Goal>
 }
 
 /**
@@ -313,6 +338,10 @@ export * from './analytics'
 
 const pluginState = plugin(kraId, {
   class: {
+    Goal: '' as Ref<Class<Goal>>,
+    Kpi: '' as Ref<Class<Kpi>>,
+    KpiReport: '' as Ref<Class<KpiReport>>,
+    RatingScale: '' as Ref<Class<RatingScale>>,
     Project: '' as Ref<Class<Project>>,
     Issue: '' as Ref<Class<Issue>>,
     IssueTemplate: '' as Ref<Class<IssueTemplate>>,

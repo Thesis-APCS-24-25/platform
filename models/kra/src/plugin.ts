@@ -27,6 +27,8 @@ import { type Application } from '@hcengineering/workbench'
 
 export default mergeIds(kraId, tracker, {
   string: {
+    Kpi: '' as IntlString,
+    Date: '' as IntlString,
     Projects: '' as IntlString,
     GotoIssues: '' as IntlString,
     GotoActive: '' as IntlString,

@@ -48,6 +48,8 @@
   }
 </script>
 
+RatingScale
+
 {#if value}
   <Button disabled={!isEditable} {kind} {size} on:click={showRatingPopup} icon={IconLike} {focusIndex}>
     <svelte:fragment slot="content">
