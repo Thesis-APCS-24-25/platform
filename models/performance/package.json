@@ -46,6 +46,7 @@
     "@hcengineering/model-preference": "^0.6.0",
     "@hcengineering/tags": "^0.6.16",
     "@hcengineering/model-tags": "^0.6.0",
-    "@hcengineering/performance": "^0.1.0"
+    "@hcengineering/performance": "^0.1.0",
+    "@hcengineering/model-tracker": "^0.6.0"
   }
 }

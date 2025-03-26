@@ -25,8 +25,6 @@ export default mergeIds(performanceId, performance, {
     ReviewSessionNamePlaceholder: '' as IntlString,
     ReviewSessionDescriptionPlaceholder: '' as IntlString
   },
-  statusCategory: {
-  },
   category: {
     ReviewSessionType: '' as IntlString
   }

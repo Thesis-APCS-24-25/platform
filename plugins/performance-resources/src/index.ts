@@ -14,12 +14,14 @@
 // limitations under the License.
 //
 import { type Resources } from '@hcengineering/platform'
-import NewReviewSessionHeader from './components/NewReviewSessionHeader.svelte'
-import CreateReviewSession from './components/CreateReviewSession.svelte'
+import NewReviewSessionHeader from './components/review-session/NewReviewSessionHeader.svelte'
+import CreateReviewSession from './components/review-session/CreateReviewSession.svelte'
+import ReviewSessionSpacePresenter from './components/review-session/ReviewSessionSpacePresenter.svelte'
 
 export default async (): Promise<Resources> => ({
   component: {
     NewReviewSessionHeader,
-    CreateReviewSession
+    CreateReviewSession,
+    ReviewSessionSpacePresenter
   }
 })

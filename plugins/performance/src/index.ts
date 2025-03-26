@@ -14,16 +14,17 @@
 // limitations under the License.
 //
 
-import type { Arr, Class, Doc, Mixin, Ref, SpaceType, SpaceTypeDescriptor, Status, Timestamp } from '@hcengineering/core'
+import type { Arr, Attribute, Class, Doc, Mixin, Ref, SpaceType, SpaceTypeDescriptor, Status, Timestamp } from '@hcengineering/core'
 import { Asset, IntlString, plugin, Plugin } from '@hcengineering/platform'
 import type { Project, Task} from '@hcengineering/task'
+import { Viewlet } from '@hcengineering/view'
 
-// export interface ReviewSessionStatus extends Status {}
+export interface ReviewSessionStatus extends Status {}
 
 export interface KRAStatus extends Status {}
 
 export interface ReviewSession extends Project {
-  // reviewSessionStatus: Ref<ReviewSessionStatus>
+  reviewSessionStatus: Ref<ReviewSessionStatus>
   reviewSessionStart: Timestamp
   reviewSessionEnd: Timestamp
   kras?: Arr<Ref<KRA>>
@@ -33,7 +34,7 @@ export interface ReviewSession extends Project {
 export interface KRA extends Task {
   title: string
   description: string
-  kraStatus: KRAStatus
+  kraStatus: Ref<KRAStatus>
 }
 
 export const performanceId = 'performance' as Plugin
@@ -42,14 +43,18 @@ export default plugin(performanceId, {
   app: {
     Performance: '' as Ref<Doc>
   },
+  attribute: {
+    ReviewSessionAttribute: '' as Ref<Attribute<ReviewSessionStatus>>,
+    KRAStatusAttribute: '' as Ref<Attribute<KRAStatus>>,
+  },
   class: {
-    // ReviewSessionStatus: '' as Ref<Class<ReviewSessionStatus>>,
+    ReviewSessionStatus: '' as Ref<Class<ReviewSessionStatus>>,
     KRAStatus: '' as Ref<Class<KRAStatus>>,
     ReviewSession: '' as Ref<Class<ReviewSession>>,
     KRA: '' as Ref<Class<KRA>>
   },
   string: {
-    // ReviewSessionStatus: '' as IntlString,
+    ReviewSessionStatus: '' as IntlString,
     ReviewSessionStart: '' as IntlString,
     ReviewSessionEnd: '' as IntlString,
     ReviewSessionKRAs: '' as IntlString,
@@ -58,6 +63,21 @@ export default plugin(performanceId, {
     KRAStatus: '' as IntlString,
     IsArchived: '' as IntlString,
     Assignee: '' as IntlString,
+  },
+  reviewSessionStatus: {
+    Drafting: '' as Ref<ReviewSessionStatus>,
+    InProgress: '' as Ref<ReviewSessionStatus>,
+    Concluded: '' as Ref<ReviewSessionStatus>,
+  },
+  kraStatus: {
+    Drafting: '' as Ref<KRAStatus>,
+    NeedChanges: '' as Ref<KRAStatus>,
+    Approved: '' as Ref<KRAStatus>,
+    InProgress: '' as Ref<KRAStatus>,
+    Archived: '' as Ref<KRAStatus>,
+  },
+  viewlet: {
+    ReviewSessionTable: '' as Ref<Viewlet>,
   },
   mixin: {
     DefaultReviewSessionData: '' as Ref<Mixin<ReviewSession>>

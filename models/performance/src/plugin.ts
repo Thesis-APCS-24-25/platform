@@ -24,9 +24,12 @@ export default mergeIds(performanceId, performance, {
     MyReviewSessions: '' as IntlString,
     CreateReviewSessionLabel: '' as IntlString,
     MyKRAs: '' as IntlString,
-    CreateKraLabel: '' as IntlString
+    CreateKraLabel: '' as IntlString,
+    ReviewSessions: '' as IntlString,
   },
   component: {
-    NewReviewSessionHeader: '' as AnyComponent
+    NewReviewSessionHeader: '' as AnyComponent,
+    ReviewSessionSpacePresenter: '' as AnyComponent,
+    CreateReviewSession: '' as AnyComponent,
   },
 })

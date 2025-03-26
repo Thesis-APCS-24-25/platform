@@ -16,8 +16,8 @@
     import { IconPicker, ObjectBox } from '@hcengineering/view-resources'
     import { createEventDispatcher } from 'svelte'
   
-    import performance from '../plugin'
-    import { createReviewSession } from '../utils/ReviewSessionUtils'
+    import performance from '../../plugin'
+    import { createReviewSession } from '../../utils/ReviewSessionUtils'
   
     // export function canClose (): boolean {
     //   return object.title === ''

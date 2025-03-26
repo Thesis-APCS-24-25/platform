@@ -23,6 +23,7 @@ export async function createReviewSession (
   type: Ref<ProjectType>
 ): Promise<Ref<ReviewSession>> {
   const reviewSessionRef = await client.createDoc(performance.class.ReviewSession, core.space.Space, {
+    reviewSessionStatus: performance.reviewSessionStatus.Drafting,
     reviewSessionStart,
     reviewSessionEnd,
     name,
