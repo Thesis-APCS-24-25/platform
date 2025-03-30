@@ -124,6 +124,7 @@ import TimePresenter from './components/issues/timereport/TimePresenter.svelte'
 import GoalPresenter from './components/GoalPresenter.svelte'
 import KpiPresenter from './components/KpiPresenter.svelte'
 import RatingScalePresenter from './components/RatingScalePresenter.svelte'
+import './styles/_colors.scss'
 
 export { default as AssigneeEditor } from './components/issues/AssigneeEditor.svelte'
 export { default as SubIssueList } from './components/issues/edit/SubIssueList.svelte'

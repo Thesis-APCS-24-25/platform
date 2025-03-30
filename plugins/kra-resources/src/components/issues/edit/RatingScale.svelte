@@ -3,15 +3,15 @@
   import { EditBox } from '@hcengineering/ui'
 
   export let ratingScale: RatingScale
-  
+
   // Array of colors from negative (red) to positive (green)
   const ratingColors = [
-    '#FF4D4D', // dummy value for not-yet-set rating
-    '#FF4D4D', // Red - Very poor
-    '#FFA64D', // Orange - Poor
-    '#FFEB4D', // Yellow - Average
-    '#77DD77', // Light green - Good
-    '#4CAF50' // Green - Excellent
+    'var(--theme-rating-very-poor)',
+    'var(--theme-rating-very-poor)',
+    'var(--theme-rating-poor)',
+    'var(--theme-rating-average)',
+    'var(--theme-rating-good)',
+    'var(--theme-rating-excellent)'
   ]
 
   const colorI = ratingScale.value ?? 0
