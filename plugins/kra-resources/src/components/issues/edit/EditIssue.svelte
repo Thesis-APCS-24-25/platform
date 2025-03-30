@@ -52,6 +52,7 @@
   import CopyToClipboard from './CopyToClipboard.svelte'
   import SubIssueSelector from './SubIssueSelector.svelte'
   import SubIssues from './SubIssues.svelte'
+  import Goal from './Goal.svelte'
 
   export let _id: Ref<Issue> | string
   export let _class: Ref<Class<Issue>>
@@ -328,6 +329,10 @@
       {#key issue._id}
         <SubIssues focusIndex={50} {issue} shouldSaveDraft />
       {/key}
+    </div>
+    <div class="space-divider" />
+    <div class="mt-6">
+      <Goal {issue} {readonly} />
     </div>
 
     <RelationsEditor object={issue} {readonly} />

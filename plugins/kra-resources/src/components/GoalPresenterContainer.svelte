@@ -1,12 +1,12 @@
 <script lang="ts">
-  import KpiProgressCircle from './KpiProgressCircle.svelte'
   import { ButtonKind, ButtonSize } from '@hcengineering/ui'
 
   export let kind: ButtonKind = 'regular'
   export let size: ButtonSize = 'small'
+  export let onClick
 </script>
 
-<button class="goal-button {kind} {size}">
+<button class="goal-button {kind} {size}" on:click={onClick}>
   <slot />
 </button>
 

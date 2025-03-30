@@ -2,13 +2,13 @@
   import {
     ButtonKind,
     ButtonSize,
-    Component  } from '@hcengineering/ui'
+    Component
+  } from '@hcengineering/ui'
   import { Goal, Issue } from '@hcengineering/kra'
-  import { createQuery, getClient } from '@hcengineering/presentation'
+  import { getClient } from '@hcengineering/presentation'
   import view, { AttributePresenter } from '@hcengineering/view'
-  import kra from '../plugin'
   import { Doc, Space } from '@hcengineering/core'
-  
+  import { getGoal } from '../utils/goal'
   export let value: Issue
 
   export let kind: ButtonKind = 'regular'
@@ -19,26 +19,18 @@
 
   const client = getClient()
 
-  const goalQuery = createQuery()
-
   let presenter: AttributePresenter | undefined
 
   let _value: Goal | undefined
 
-  goalQuery.query(
-    kra.class.Goal,
-    {
-      _id: value.goal
-    },
-    (res) => {
-      _value = res.shift()
-    }
-  )
+  $: getGoal(value, (res) => {
+    _value = res
+  })
   $: presenter =
     _value !== undefined
       ? client
-          .getHierarchy()
-          .classHierarchyMixin<Doc<Space>, AttributePresenter>(_value._class, view.mixin.AttributePresenter)
+        .getHierarchy()
+        .classHierarchyMixin<Doc<Space>, AttributePresenter>(_value._class, view.mixin.AttributePresenter)
       : undefined
 </script>
 

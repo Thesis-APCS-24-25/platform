@@ -6,8 +6,6 @@
 
   // TODO: use issue value instead of hardcoding
   export let value: Kpi
-  export let unit: string
-  export let target: number
   export let isValueEditable: boolean = true
   export let isTargetEditable: boolean = true
 
@@ -17,13 +15,11 @@
   export let width: string | undefined = undefined
   export let focusIndex: number | undefined = undefined
 
-  function handleKpiEditorOpen(ev: MouseEvent) {
+  function handleKpiEditorOpen (ev: MouseEvent) {
     showPopup(
       KpiEditPopup,
       {
-        value,
-        target,
-        unit
+        value
       },
       'top'
     )
@@ -33,5 +29,5 @@
 KpiEditor
 
 <Button {kind} {size} {justify} {width} {focusIndex} on:click={handleKpiEditorOpen}>
-  <KpiPresenter slot="content" {value} {target} {unit} />
+  <KpiPresenter slot="content" {value} />
 </Button>
