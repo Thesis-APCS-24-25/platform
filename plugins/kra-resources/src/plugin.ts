@@ -49,6 +49,8 @@ export default mergeIds(kraId, tracker, {
     IssueCategory: '' as Ref<ObjectSearchCategory>
   },
   string: {
+    Comment: '' as IntlString,
+    RatingScale: '' as IntlString,
     NoGoalAttached: '' as IntlString,
     Goal: '' as IntlString,
     More: '' as IntlString,

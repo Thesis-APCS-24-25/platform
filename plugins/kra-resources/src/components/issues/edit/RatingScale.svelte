@@ -1,9 +1,19 @@
 <script lang="ts">
-  import { RatingScale } from '@hcengineering/kra'
-  import { EditBox } from '@hcengineering/ui'
+  import { Issue, RatingScale } from '@hcengineering/kra'
+  import { EditBox, showPopup } from '@hcengineering/ui'
   import RatingScaleBoxes from './RatingScaleBoxes.svelte'
+  import RatingScaleEditPopup from './RatingScaleEditPopup.svelte'
 
+  export let issue: Issue | undefined = undefined
   export let ratingScale: RatingScale
+
+  function handleBoxClick(value: number): void {
+    showPopup(RatingScaleEditPopup, {
+      issue,
+      ratingScale,
+      value
+    })
+  }
 </script>
 
 <div class="container">
@@ -13,7 +23,7 @@
     <EditBox kind="small-style" disabled={true} value={ratingScale.description} />
   </div>
 
-  <RatingScaleBoxes value={ratingScale.value} />
+  <RatingScaleBoxes value={ratingScale.value} onBoxClick={handleBoxClick}/>
 
 </div>
 

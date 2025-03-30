@@ -74,7 +74,7 @@
           {#if goal._class === tracker.class.Kpi}
             <Kpi kpi={goal} />
           {:else}
-            <RatingScale ratingScale={goal} />
+            <RatingScale ratingScale={goal} {issue}/>
           {/if}
         {:else}
           <div class="empty-state">
