@@ -148,8 +148,6 @@
       on:selected={({ detail }) => (data.date = getTimeReportDate(detail))}
     />
     <DatePresenter
-      label={tracker.string.ReportDate}
-      detail={tracker.string.DateOfReport}
       bind:value={data.date}
       editable
       kind={'regular'}

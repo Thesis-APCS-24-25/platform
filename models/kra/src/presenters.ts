@@ -64,6 +64,13 @@ export function definePresenters(builder: Builder): void {
   })
 
   //
+  // Kpi Reporot
+  //
+  builder.mixin(kra.class.KpiReport, core.class.Class, view.mixin.ObjectPresenter, {
+    presenter: kra.component.KpiReport,
+  })
+
+  //
   // Type Issue Priority
   //
   builder.mixin(kra.class.TypeIssuePriority, core.class.Class, view.mixin.ObjectPresenter, {

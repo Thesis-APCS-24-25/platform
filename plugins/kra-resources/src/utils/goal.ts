@@ -1,5 +1,5 @@
-import { type Goal, type Issue } from '@hcengineering/kra'
-import { createQuery } from '@hcengineering/presentation'
+import { type Kpi, type Goal, type Issue } from '@hcengineering/kra'
+import { createQuery, getClient } from '@hcengineering/presentation'
 import kra from '../plugin'
 
 export function getGoal (object: Issue, onResult: (goal: Goal) => void): void {
@@ -16,5 +16,35 @@ export function getGoal (object: Issue, onResult: (goal: Goal) => void): void {
       return
     }
     onResult(result[0])
+  })
+}
+
+export type KpiResultType = 'sum' | 'manual'
+export interface KpiResult {
+  type: KpiResultType
+  value: number
+}
+
+export function getKpiCount (kpi: Kpi, onResult: (results: KpiResult[]) => void): void {
+  const query = createQuery()
+  query.query(kra.class.KpiReport, {
+    attachedTo: kpi._id
+  }, (results) => {
+    const sum = results.reduce((acc, result) => acc + result.value, 0)
+    onResult([
+      {
+        type: 'sum',
+        value: sum
+      },
+      ...(kpi.value !== null
+        ? [
+            {
+              type: 'manual' as KpiResultType,
+              value: kpi.value
+            }
+          ]
+        : [])
+    ]
+    )
   })
 }

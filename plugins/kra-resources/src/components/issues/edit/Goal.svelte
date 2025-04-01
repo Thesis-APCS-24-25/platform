@@ -11,12 +11,8 @@
     Chevron,
     ExpandCollapse,
     ButtonIcon,
-
     IconInfo,
-
     IconDetails
-
-
   } from '@hcengineering/ui'
   import tracker from '../../../plugin'
   import { getGoal } from '../../../utils/goal'
@@ -40,7 +36,7 @@
 <div class="goal-section">
   <div class="header" class:collapsed={isCollapsed}>
     <Icon icon={IconDetails} size="medium" fill={'var(--caption-color)'} />
-    <Label label={tracker.string.Goal}/>
+    <Label label={tracker.string.Goal} />
     <button
       on:click={() => {
         isCollapsed = !isCollapsed
@@ -72,9 +68,9 @@
       <div class="content">
         {#if goal}
           {#if goal._class === tracker.class.Kpi}
-            <Kpi kpi={goal} />
+            <Kpi {issue} kpi={goal} />
           {:else}
-            <RatingScale ratingScale={goal} {issue}/>
+            <RatingScale ratingScale={goal} {issue} />
           {/if}
         {:else}
           <div class="empty-state">

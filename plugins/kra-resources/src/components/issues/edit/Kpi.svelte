@@ -10,17 +10,19 @@ distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRAN
 // See the License for the specific language governing permissions and limitations under the License.
 -->
 <script lang="ts">
-  import { Kpi } from '@hcengineering/kra'
+  import { Issue, Kpi } from '@hcengineering/kra'
   import { EditBox, eventToHTMLElement, showPopup } from '@hcengineering/ui'
   import KpiEditPopup from './KpiEditPopup.svelte'
+  import KpiReportsPopup from '../kpi/KpiReportsPopup.svelte'
 
+  export let issue: Issue
   export let kpi: Kpi
   export let focusIndex: number | undefined = undefined
 
   const progress = Math.min(((kpi.value ?? 0) / kpi.target) * 100, 100) || 0
 
-  function handleEdit (e: MouseEvent) {
-    showPopup(KpiEditPopup, { kpi }, eventToHTMLElement(e))
+  function handleEdit(e: MouseEvent) {
+    showPopup(KpiReportsPopup, { kpi, currentProject: issue.space, issue }, eventToHTMLElement(e))
   }
 </script>
 

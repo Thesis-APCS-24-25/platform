@@ -49,6 +49,7 @@ export default mergeIds(kraId, tracker, {
     IssueCategory: '' as Ref<ObjectSearchCategory>
   },
   string: {
+    KpiReports: '' as IntlString,
     DateOfReport: '' as IntlString,
     ReportDate: '' as IntlString,
     Comment: '' as IntlString,
@@ -324,6 +325,7 @@ export default mergeIds(kraId, tracker, {
     RoleLabel: '' as IntlString
   },
   component: {
+    KpiReport: '' as AnyComponent,
     NopeComponent: '' as AnyComponent,
     MyIssues: '' as AnyComponent,
     Views: '' as AnyComponent,

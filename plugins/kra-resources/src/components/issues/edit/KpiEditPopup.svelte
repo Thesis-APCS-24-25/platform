@@ -13,9 +13,9 @@
 // limitations under the License.
 -->
 <script lang="ts">
-  import { Card } from '@hcengineering/presentation'
+  import { Card, getClient } from '@hcengineering/presentation'
   import kra from '../../../plugin'
-  import { Issue, Kpi, TimeReportDayType } from '@hcengineering/kra'
+  import { Issue, Kpi, KpiReport, TimeReportDayType } from '@hcengineering/kra'
   import { DatePresenter, EditBox } from '@hcengineering/ui'
   import KpiProgressBar from './KpiProgressBar.svelte'
   import { getTimeReportDate, getTimeReportDayType } from '../../../utils'
@@ -23,43 +23,91 @@
   import { UserBox } from '@hcengineering/contact-resources'
   import contact, { Employee } from '@hcengineering/contact'
   import TimeReportDayDropdown from '../timereport/TimeReportDayDropdown.svelte'
+  import { AttachedData, Ref, Space } from '@hcengineering/core'
+  import { ObjectBox } from '@hcengineering/view-resources'
 
   export let issue: Issue | undefined = undefined
   export let kpi: Kpi
-  export let assignee: Ref<Employee> | null | undefined = issue?.assignee as Ref<Employee>
+
+  const space: Ref<Space> | undefined = issue?.space
+  const assignee: Ref<Employee> | null | undefined = issue?.assignee as Ref<Employee>
 
   let timeReportDateType: TimeReportDayType | undefined = TimeReportDayType.CurrentWorkDay
 
+  const issueId = issue?._id
+  const issueClass = issue?._class
   const dispatch = createEventDispatcher()
-  const data = {
+  const client = getClient()
+  const data: {
+    value: number | undefined
+    description: string
+    date: number
+    employee: Ref<Employee> | null
+  } = {
     value: undefined,
     description: '',
-    reportDate: getTimeReportDate(timeReportDateType),
-    employee: assignee
+    date: getTimeReportDate(timeReportDateType),
+    employee: assignee ?? null
   }
 
-  $: canSave = data.value !== undefined && data.value >= 0
+  $: canSave =
+    data.value !== undefined &&
+    Number.isFinite(data.value) &&
+    data.value >= 0 &&
+    space !== undefined &&
+    issueId !== undefined &&
+    issueClass !== undefined
 
-  function save(): void {
-    // Save the value
-
+  async function save(): Promise<void> {
+    if (canSave) {
+      await client.addCollection(
+        kra.class.KpiReport,
+        space,
+        issueId,
+        issueClass,
+        'kpi-reports',
+        data as AttachedData<KpiReport>
+      )
+    }
     dispatch('close')
   }
 </script>
 
 <Card width="medium" label={kra.string.Goal} okAction={save} {canSave}>
   <div class="kpi-value">
+    <div>
+      <span class="mr-1"> {kpi.value} + </span>
+    </div>
     <div class="clear-mins">
       <EditBox bind:value={data.value} format="number" placeholder={kra.string.Goal} />
     </div>
-    <span class="unit">{kpi.unit}</span>
+    <span class="unit">/ {kpi.target} {kpi.unit}</span>
   </div>
   <div class="mt-4">
-    <EditBox placeholder={kra.string.IssueDescriptionPlaceholder} value={data.description} on:change={(e) => {}} />
+    <EditBox placeholder={kra.string.IssueDescriptionPlaceholder} bind:value={data.description} />
   </div>
+  <!-- <svelte:fragment slot="header"> -->
+  <!--   <ObjectBox object={issue} -->
+  <!--     _class={kra.class.Issue} -->
+  <!--     value={templateId} -->
+  <!--     docQuery={{ -->
+  <!--       space: _space -->
+  <!--     }} -->
+  <!--     on:change={handleTemplateChange} -->
+  <!--     kind={'regular'} -->
+  <!--     size={'small'} -->
+  <!--     label={tracker.string.NoIssueTemplate} -->
+  <!--     icon={tracker.icon.IssueTemplates} -->
+  <!--     searchField={'title'} -->
+  <!--     allowDeselect={true} -->
+  <!--     showNavigate={false} -->
+  <!--     docProps={{ disabled: true, noUnderline: true }} -->
+  <!--     focusIndex={20000} -->
+  <!--   /> -->
+  <!-- </svelte:fragment> -->
   <svelte:fragment slot="pool">
     <DatePresenter
-      bind:value={data.reportDate}
+      bind:value={data.date}
       editable
       kind={'regular'}
       size={'large'}
@@ -71,7 +119,7 @@
       kind={'regular'}
       size={'large'}
       bind:selected={timeReportDateType}
-      on:selected={({ detail }) => (data.reportDate = getTimeReportDate(detail))}
+      on:selected={({ detail }) => (data.date = getTimeReportDate(detail))}
     />
     <UserBox
       _class={contact.mixin.Employee}
@@ -95,6 +143,9 @@
   }
 
   .unit {
+    border: 1px solid var(--theme-secondary-color, #e2e8f0);
+    padding: 0.5rem 0.75rem;
+    border-radius: 0.25rem;
     font-size: 0.8rem;
     font-style: italic;
     color: var(--gray-500);

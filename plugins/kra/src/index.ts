@@ -59,6 +59,7 @@ export interface KpiReport extends AttachedDoc {
   attachedToClass: Ref<Class<Kpi>>
   date: Timestamp | null
   value: number
+  employee: Ref<Employee> | null
 }
 
 export interface Kpi extends Goal {
