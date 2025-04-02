@@ -16,6 +16,7 @@
 import performance, { performanceId, ReviewSession } from '@hcengineering/performance'
 import { Mixin, SpaceType, SpaceTypeDescriptor, type Ref } from '@hcengineering/core'
 import { Asset, type IntlString, mergeIds } from '@hcengineering/platform'
+import { AnyComponent } from '@hcengineering/ui'
 
 export default mergeIds(performanceId, performance, {
   string: {
@@ -30,8 +31,12 @@ export default mergeIds(performanceId, performance, {
     KRADescription: '' as IntlString,
     KRANamePlaceholder: '' as IntlString,
     KRADescriptionPlaceholder: '' as IntlString,
+    KRA: '' as IntlString,
   },
   category: {
     ReviewSessionType: '' as IntlString
+  },
+  component: {
+    EditKRA: '' as AnyComponent,
   }
 })

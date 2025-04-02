@@ -18,6 +18,8 @@ import NewReviewSessionHeader from './components/NewReviewSessionHeader.svelte'
 import CreateReviewSession from './components/review-session/CreateReviewSession.svelte'
 import ReviewSessionSpacePresenter from './components/navigator/ReviewSessionSpacePresenter.svelte'
 import CreateKRA from './components/kra/CreateKRA.svelte'
+import EditKRA from './components/kra/EditKRA.svelte'
+import KRAPresenter from './components/kra/KRAPresenter.svelte'
 
 export default async (): Promise<Resources> => ({
   component: {
@@ -25,5 +27,7 @@ export default async (): Promise<Resources> => ({
     CreateReviewSession,
     ReviewSessionSpacePresenter,
     CreateKRA,
+    EditKRA,
+    KRAPresenter,
   }
 })

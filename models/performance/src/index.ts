@@ -131,7 +131,13 @@ function defineKRA(builder: Builder): void {
     {
       attachTo: performance.class.KRA,
       descriptor: view.viewlet.Table,
-      config: ['title', 'description', 'assignee', 'kraStatus']
+      config: [
+        {
+          key: '',
+          label: performance.string.Title,
+          presenter: performance.component.KRAPresenter,
+        }
+        , 'description', 'assignee', 'kraStatus']
     },
   )
 

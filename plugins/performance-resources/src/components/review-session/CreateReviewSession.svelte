@@ -1,19 +1,12 @@
 <script lang="ts">
-    import { Data, Ref, Space, Timestamp } from '@hcengineering/core'
-    import { Card, getClient, SpaceSelector } from '@hcengineering/presentation'
+    import { Timestamp } from '@hcengineering/core'
+    import { Card, getClient } from '@hcengineering/presentation'
     import {
-      Button,
       createFocusManager,
       DatePresenter,
       EditBox,
       FocusHandler,
-      getPlatformColorDef,
-      IconWithEmoji,
-      showPopup,
-      themeStore
     } from '@hcengineering/ui'
-    import view from '@hcengineering/view'
-    import { IconPicker, ObjectBox } from '@hcengineering/view-resources'
     import { createEventDispatcher } from 'svelte'
   
     import performance from '../../plugin'
@@ -47,7 +40,7 @@
     // }
   
     async function create (): Promise<void> {
-      await createReviewSession(client, name, description, startDate, endDate, performance.descriptor.ReviewSessionType)
+      await createReviewSession(client, name, description, startDate, endDate, performance.ids.ClassingProjectType)
       dispatch('close', name)
     }
   

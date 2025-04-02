@@ -15,7 +15,7 @@
   import performance from '../plugin'
   import CreateKra from './kra/CreateKRA.svelte';
   import CreateReviewSession from './review-session/CreateReviewSession.svelte'
-  import { getKRAIdFromFragment } from '../utils/KraUtils'
+  import { getKRAIdFromFragment } from '../navigation'
 
   export let currentSpace: Ref<Space> | undefined
   export let currentFragment: string | undefined

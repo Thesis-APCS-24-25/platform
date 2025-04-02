@@ -32,5 +32,7 @@ export default mergeIds(performanceId, performance, {
     ReviewSessionSpacePresenter: '' as AnyComponent,
     CreateReviewSession: '' as AnyComponent,
     CreateKRA: '' as AnyComponent,
+    KRAPresenter: '' as AnyComponent,
+    EditKRA: '' as AnyComponent,
   },
 })

@@ -90,7 +90,8 @@ export default plugin(performanceId, {
     ClassingProjectType: '' as Ref<ProjectType>
   },
   icon: {
-    ReviewSession: '' as Asset
+    ReviewSession: '' as Asset,
+    KRA: '' as Asset,
   },
   descriptor: {
     KRAType: '' as Ref<TaskTypeDescriptor>,

@@ -4,27 +4,6 @@ import { KRA } from "@hcengineering/performance";
 import performance from '../plugin'
 import { makeRank } from "@hcengineering/task";
 
-export function parseKRAId (shortLink?: string): Ref<KRA> | undefined {
-  if (shortLink === undefined) {
-    return undefined
-  }
-  const parts = shortLink.split('-')
-  if (parts.length > 1) {
-    return parts[parts.length - 1] as Ref<KRA>
-  }
-  return undefined
-}
-
-export function getKRAIdFromFragment (fragment: string): Ref<KRA> | undefined {
-  const [, id] = decodeURIComponent(fragment).split('|')
-
-  if (id == null) {
-    return undefined
-  }
-
-  return (parseKRAId(id) ?? id) as Ref<KRA>
-}
-
 export async function getFirstRank (
   client: TxOperations,
   space: Ref<Space>,
