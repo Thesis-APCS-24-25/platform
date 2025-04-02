@@ -69,66 +69,112 @@ import {
   type RelatedIssueTarget,
   type RelatedSpaceRule,
   type TimeReportDayType,
-  type TimeSpendReport
+  type TimeSpendReport,
+  type Goal,
+  type Kpi,
+  RatingScale,
+  KpiReport
 } from '@hcengineering/kra'
-import tracker from './plugin'
+import kra from './plugin'
 import { type TaskType } from '@hcengineering/task'
 
 import preference, { TPreference } from '@hcengineering/model-preference'
 
-export const DOMAIN_TRACKER = 'tracker' as Domain
+export const DOMAIN_KRA = 'kra' as Domain
 
-@Model(tracker.class.IssueStatus, core.class.Status)
-@UX(tracker.string.IssueStatus, undefined, undefined, 'rank', 'name')
+@Model(kra.class.Goal, core.class.AttachedDoc, DOMAIN_KRA)
+export class TGoal extends TAttachedDoc implements Goal {
+  @Prop(TypeString(), kra.string.Name)
+  name!: string
+
+  @Prop(TypeString(), kra.string.Description)
+  description!: string
+}
+
+@Model(kra.class.Kpi, kra.class.Goal)
+export class TKpi extends TGoal implements Kpi {
+  @Prop(TypeString(), kra.string.Target)
+  target!: number
+
+  @Prop(TypeString(), kra.string.Unit)
+  value!: number | null
+
+  @Prop(TypeString(), kra.string.Unit)
+  unit!: string
+
+  @Prop(TypeString(), kra.string.Value)
+  reports!: number
+}
+
+@Model(kra.class.KpiReport, core.class.AttachedDoc)
+export class TKpiReport extends TAttachedDoc implements KpiReport {
+  @Prop(TypeRef(kra.class.Kpi), kra.string.Kpi)
+  declare attachedTo: Ref<Kpi>
+
+  @Prop(TypeDate(), kra.string.Date)
+  date!: Timestamp
+
+  @Prop(TypeString(), kra.string.Value)
+  value!: number
+}
+
+@Model(kra.class.RatingScale, kra.class.Goal)
+export class TRatingScale extends TGoal implements RatingScale {
+  @Prop(TypeNumber(), kra.string.Name)
+  value!: number | null
+}
+
+@Model(kra.class.IssueStatus, core.class.Status)
+@UX(kra.string.IssueStatus, undefined, undefined, 'rank', 'name')
 export class TIssueStatus extends TStatus implements IssueStatus {}
 /**
  * @public
  */
 
-export function TypeIssuePriority (): Type<IssuePriority> {
-  return { _class: tracker.class.TypeIssuePriority, label: tracker.string.TypeIssuePriority }
+export function TypeIssuePriority(): Type<IssuePriority> {
+  return { _class: kra.class.TypeIssuePriority, label: kra.string.TypeIssuePriority }
 }
 /**
  * @public
  */
 
-@Model(tracker.class.TypeIssuePriority, core.class.Type, DOMAIN_MODEL)
+@Model(kra.class.TypeIssuePriority, core.class.Type, DOMAIN_MODEL)
 export class TTypeIssuePriority extends TType {}
 /**
  * @public
  */
 
-@Model(tracker.class.Project, task.class.Project)
-@UX(tracker.string.Project, tracker.icon.Issues, 'Project', 'name')
+@Model(kra.class.Project, task.class.Project)
+@UX(kra.string.Project, kra.icon.Issues, 'Project', 'name')
 export class TProject extends TTaskProject implements Project {
-  @Prop(TypeString(), tracker.string.ProjectIdentifier)
+  @Prop(TypeString(), kra.string.ProjectIdentifier)
   @Index(IndexKind.FullText)
-    identifier!: IntlString
+  identifier!: IntlString
 
-  @Prop(TypeNumber(), tracker.string.Number)
+  @Prop(TypeNumber(), kra.string.Number)
   @Hidden()
-    sequence!: number
+  sequence!: number
 
-  @Prop(TypeRef(tracker.class.IssueStatus), tracker.string.DefaultIssueStatus)
-    defaultIssueStatus!: Ref<IssueStatus>
+  @Prop(TypeRef(kra.class.IssueStatus), kra.string.DefaultIssueStatus)
+  defaultIssueStatus!: Ref<IssueStatus>
 
-  @Prop(TypeRef(contact.mixin.Employee), tracker.string.DefaultAssignee)
-    defaultAssignee!: Ref<Employee>
+  @Prop(TypeRef(contact.mixin.Employee), kra.string.DefaultAssignee)
+  defaultAssignee!: Ref<Employee>
 
   declare defaultTimeReportDay: TimeReportDayType
 
-  @Prop(Collection(tracker.class.RelatedIssueTarget), tracker.string.RelatedIssues)
-    relatedIssueTargets!: number
+  @Prop(Collection(kra.class.RelatedIssueTarget), kra.string.RelatedIssues)
+  relatedIssueTargets!: number
 }
 /**
  * @public
  */
 
-@Model(tracker.class.RelatedIssueTarget, core.class.Doc, DOMAIN_TRACKER)
-@UX(tracker.string.RelatedIssues)
+@Model(kra.class.RelatedIssueTarget, core.class.Doc, DOMAIN_KRA)
+@UX(kra.string.RelatedIssues)
 export class TRelatedIssueTarget extends TDoc implements RelatedIssueTarget {
-  @Prop(TypeRef(tracker.class.Project), tracker.string.Project)
-    target!: Ref<Project>
+  @Prop(TypeRef(kra.class.Project), kra.string.Project)
+  target!: Ref<Project>
 
   rule!: RelatedClassRule | RelatedSpaceRule
 }
@@ -136,211 +182,211 @@ export class TRelatedIssueTarget extends TDoc implements RelatedIssueTarget {
 /**
  * @public
  */
-export function TypeReportedTime (): Type<number> {
-  return { _class: tracker.class.TypeReportedTime, label: tracker.string.ReportedTime }
+export function TypeReportedTime(): Type<number> {
+  return { _class: kra.class.TypeReportedTime, label: kra.string.ReportedTime }
 }
 
 /**
  * @public
  */
-export function TypeRemainingTime (): Type<number> {
-  return { _class: tracker.class.TypeRemainingTime, label: tracker.string.RemainingTime }
+export function TypeRemainingTime(): Type<number> {
+  return { _class: kra.class.TypeRemainingTime, label: kra.string.RemainingTime }
 }
 
 /**
  * @public
  */
-export function TypeEstimation (): Type<number> {
-  return { _class: tracker.class.TypeEstimation, label: tracker.string.Estimation }
+export function TypeEstimation(): Type<number> {
+  return { _class: kra.class.TypeEstimation, label: kra.string.Estimation }
 }
 
 /**
  * @public
  */
-@Model(tracker.class.Issue, task.class.Task)
-@UX(tracker.string.Issue, tracker.icon.Issue, 'TSK', 'title', undefined, tracker.string.Issues)
+@Model(kra.class.Issue, task.class.Task)
+@UX(kra.string.Issue, kra.icon.Issue, 'TSK', 'title', undefined, kra.string.Issues)
 export class TIssue extends TTask implements Issue {
-  @Prop(TypeRef(tracker.class.Issue), tracker.string.Parent)
+  @Prop(TypeRef(kra.class.Issue), kra.string.Parent)
   declare attachedTo: Ref<Issue>
 
-  @Prop(TypeString(), tracker.string.Title)
+  @Prop(TypeString(), kra.string.Title)
   @Index(IndexKind.FullText)
-    title!: string
+  title!: string
 
-  @Prop(TypeCollaborativeDoc(), tracker.string.Description)
+  @Prop(TypeCollaborativeDoc(), kra.string.Description)
   @Index(IndexKind.FullText)
-    description!: MarkupBlobRef | null
+  description!: MarkupBlobRef | null
 
-  @Prop(TypeRef(tracker.class.IssueStatus), tracker.string.Status, {
-    _id: tracker.attribute.IssueStatus,
-    iconComponent: tracker.activity.StatusIcon
+  @Prop(TypeRef(kra.class.IssueStatus), kra.string.Status, {
+    _id: kra.attribute.IssueStatus,
+    iconComponent: kra.activity.StatusIcon
   })
   @Index(IndexKind.Indexed)
   declare status: Ref<IssueStatus>
 
-  @Prop(TypeIssuePriority(), tracker.string.Priority, {
-    iconComponent: tracker.activity.PriorityIcon
+  @Prop(TypeIssuePriority(), kra.string.Priority, {
+    iconComponent: kra.activity.PriorityIcon
   })
   @Index(IndexKind.Indexed)
-    priority!: IssuePriority
+  priority!: IssuePriority
 
-  @Prop(TypeNumber(), tracker.string.Number)
+  @Prop(TypeNumber(), kra.string.Number)
   @Index(IndexKind.FullText)
   @ReadOnly()
   declare number: number
 
-  @Prop(TypeRef(contact.class.Person), tracker.string.Assignee)
+  @Prop(TypeRef(contact.class.Person), kra.string.Assignee)
   @Index(IndexKind.Indexed)
   declare assignee: Ref<Person> | null
 
-  @Prop(Collection(tracker.class.Issue), tracker.string.SubIssues)
-    subIssues!: number
+  @Prop(Collection(kra.class.Issue), kra.string.SubIssues)
+  subIssues!: number
 
-  @Prop(ArrOf(TypeRef(core.class.TypeRelatedDocument)), tracker.string.BlockedBy)
-    blockedBy!: RelatedDocument[]
+  @Prop(ArrOf(TypeRef(core.class.TypeRelatedDocument)), kra.string.BlockedBy)
+  blockedBy!: RelatedDocument[]
 
-  @Prop(ArrOf(TypeRef(core.class.TypeRelatedDocument)), tracker.string.RelatedTo)
+  @Prop(ArrOf(TypeRef(core.class.TypeRelatedDocument)), kra.string.RelatedTo)
   @Index(IndexKind.Indexed)
-    relations!: RelatedDocument[]
+  relations!: RelatedDocument[]
 
   parents!: IssueParentInfo[]
 
-  @Prop(Collection(tags.class.TagReference), tracker.string.Labels)
+  @Prop(Collection(tags.class.TagReference), kra.string.Labels)
   declare labels: number
 
-  @Prop(TypeRef(tracker.class.Project), tracker.string.Project, { icon: tracker.icon.Issues })
+  @Prop(TypeRef(kra.class.Project), kra.string.Project, { icon: kra.icon.Issues })
   @Index(IndexKind.Indexed)
   @ReadOnly()
   declare space: Ref<Project>
 
-  @Prop(TypeDate(DateRangeMode.DATETIME), tracker.string.DueDate)
+  @Prop(TypeDate(DateRangeMode.DATETIME), kra.string.DueDate)
   declare dueDate: Timestamp | null
 
-  @Prop(TypeEstimation(), tracker.string.Estimation)
-    estimation!: number
+  @Prop(TypeEstimation(), kra.string.Estimation)
+  estimation!: number
 
-  @Prop(TypeReportedTime(), tracker.string.ReportedTime)
-    reportedTime!: number
+  @Prop(TypeReportedTime(), kra.string.ReportedTime)
+  reportedTime!: number
 
-  @Prop(TypeRemainingTime(), tracker.string.RemainingTime)
+  @Prop(TypeRemainingTime(), kra.string.RemainingTime)
   @ReadOnly()
-    remainingTime!: number
+  remainingTime!: number
 
-  @Prop(Collection(tracker.class.TimeSpendReport), tracker.string.TimeSpendReports)
-    reports!: number
+  @Prop(Collection(kra.class.TimeSpendReport), kra.string.TimeSpendReports)
+  reports!: number
 
   declare childInfo: IssueChildInfo[]
 
   @Prop(Collection(time.class.ToDo), getEmbeddedLabel('Action Items'))
-    todos?: CollectionSize<ToDo>
+  todos?: CollectionSize<ToDo>
 }
 /**
  * @public
  */
 
-@Model(tracker.class.IssueTemplate, core.class.Doc, DOMAIN_TRACKER)
+@Model(kra.class.IssueTemplate, core.class.Doc, DOMAIN_KRA)
 @UX(
-  tracker.string.IssueTemplate,
-  tracker.icon.IssueTemplates,
+  kra.string.IssueTemplate,
+  kra.icon.IssueTemplates,
   'PROCESS',
   undefined,
   undefined,
-  tracker.string.IssueTemplates
+  kra.string.IssueTemplates
 )
 export class TIssueTemplate extends TDoc implements IssueTemplate {
-  @Prop(TypeString(), tracker.string.Title)
+  @Prop(TypeString(), kra.string.Title)
   @Index(IndexKind.FullText)
-    title!: string
+  title!: string
 
-  @Prop(TypeMarkup(), tracker.string.Description)
+  @Prop(TypeMarkup(), kra.string.Description)
   @Index(IndexKind.FullText)
-    description!: Markup
+  description!: Markup
 
-  @Prop(TypeIssuePriority(), tracker.string.Priority)
-    priority!: IssuePriority
+  @Prop(TypeIssuePriority(), kra.string.Priority)
+  priority!: IssuePriority
 
-  @Prop(TypeRef(contact.class.Person), tracker.string.Assignee)
-    assignee!: Ref<Person> | null
+  @Prop(TypeRef(contact.class.Person), kra.string.Assignee)
+  assignee!: Ref<Person> | null
 
-  @Prop(ArrOf(TypeRef(tags.class.TagElement)), tracker.string.Labels)
-    labels?: Ref<TagElement>[]
+  @Prop(ArrOf(TypeRef(tags.class.TagElement)), kra.string.Labels)
+  labels?: Ref<TagElement>[]
 
   @Prop(TypeRef(task.class.TaskType), task.string.TaskType)
-    kind?: Ref<TaskType>
+  kind?: Ref<TaskType>
 
   declare space: Ref<Project>
 
-  @Prop(TypeDate(DateRangeMode.DATETIME), tracker.string.DueDate)
-    dueDate!: Timestamp | null
+  @Prop(TypeDate(DateRangeMode.DATETIME), kra.string.DueDate)
+  dueDate!: Timestamp | null
 
-  @Prop(TypeEstimation(), tracker.string.Estimation)
-    estimation!: number
+  @Prop(TypeEstimation(), kra.string.Estimation)
+  estimation!: number
 
-  @Prop(ArrOf(TypeRef(tracker.class.IssueTemplate)), tracker.string.IssueTemplate)
-    children!: IssueTemplateChild[]
+  @Prop(ArrOf(TypeRef(kra.class.IssueTemplate)), kra.string.IssueTemplate)
+  children!: IssueTemplateChild[]
 
-  @Prop(Collection(chunter.class.ChatMessage), tracker.string.Comments)
-    comments!: number
+  @Prop(Collection(chunter.class.ChatMessage), kra.string.Comments)
+  comments!: number
 
-  @Prop(Collection(attachment.class.Attachment), tracker.string.Attachments)
-    attachments!: number
+  @Prop(Collection(attachment.class.Attachment), kra.string.Attachments)
+  attachments!: number
 
-  @Prop(ArrOf(TypeRef(core.class.TypeRelatedDocument)), tracker.string.RelatedTo)
-    relations!: RelatedDocument[]
+  @Prop(ArrOf(TypeRef(core.class.TypeRelatedDocument)), kra.string.RelatedTo)
+  relations!: RelatedDocument[]
 }
 /**
  * @public
  */
 
-@Model(tracker.class.TimeSpendReport, core.class.AttachedDoc, DOMAIN_TRACKER)
-@UX(tracker.string.TimeSpendReport, tracker.icon.TimeReport)
+@Model(kra.class.TimeSpendReport, core.class.AttachedDoc, DOMAIN_KRA)
+@UX(kra.string.TimeSpendReport, kra.icon.TimeReport)
 export class TTimeSpendReport extends TAttachedDoc implements TimeSpendReport {
-  @Prop(TypeRef(tracker.class.Issue), tracker.string.Issue)
+  @Prop(TypeRef(kra.class.Issue), kra.string.Issue)
   declare attachedTo: Ref<Issue>
 
   @Prop(TypeRef(contact.mixin.Employee), contact.string.Employee)
-    employee!: Ref<Employee>
+  employee!: Ref<Employee>
 
-  @Prop(TypeDate(), tracker.string.TimeSpendReportDate)
-    date!: Timestamp | null
+  @Prop(TypeDate(), kra.string.TimeSpendReportDate)
+  date!: Timestamp | null
 
-  @Prop(TypeNumber(), tracker.string.TimeSpendReportValue)
-    value!: number
+  @Prop(TypeNumber(), kra.string.TimeSpendReportValue)
+  value!: number
 
-  @Prop(TypeString(), tracker.string.TimeSpendReportDescription)
-    description!: string
+  @Prop(TypeString(), kra.string.TimeSpendReportDescription)
+  description!: string
 }
 
 @UX(core.string.Number)
-@Model(tracker.class.TypeReportedTime, core.class.Type)
+@Model(kra.class.TypeReportedTime, core.class.Type)
 export class TTypeReportedTime extends TType {}
 
 @UX(core.string.Number)
-@Model(tracker.class.TypeEstimation, core.class.Type)
+@Model(kra.class.TypeEstimation, core.class.Type)
 export class TTypeEstimation extends TType {}
 
 @UX(core.string.Number)
-@Model(tracker.class.TypeRemainingTime, core.class.Type)
+@Model(kra.class.TypeRemainingTime, core.class.Type)
 export class TTypeRemainingTime extends TType {}
 
-@Model(tracker.class.ProjectTargetPreference, preference.class.Preference)
+@Model(kra.class.ProjectTargetPreference, preference.class.Preference)
 export class TProjectTargetPreference extends TPreference implements ProjectTargetPreference {
   @Prop(TypeRef(core.class.Space), core.string.Space)
   declare attachedTo: Ref<Project>
 
-  @Prop(TypeDate(), tracker.string.LastUpdated)
-    usedOn!: Timestamp
+  @Prop(TypeDate(), kra.string.LastUpdated)
+  usedOn!: Timestamp
 
   @Prop(TypeRecord(), getEmbeddedLabel('Properties'))
-    props?: { key: string, value: any }[]
+  props?: { key: string; value: any }[]
 }
 
-@Mixin(tracker.mixin.ClassicProjectTypeData, tracker.class.Project)
-@UX(getEmbeddedLabel('Classic project'), tracker.icon.Issues)
+@Mixin(kra.mixin.ClassicProjectTypeData, kra.class.Project)
+@UX(getEmbeddedLabel('Classic project'), kra.icon.Issues)
 export class TClassicProjectTypeData extends TProject implements RolesAssignment {
   [key: Ref<Role>]: Ref<Account>[]
 }
 
-@Mixin(tracker.mixin.IssueTypeData, tracker.class.Issue)
-@UX(getEmbeddedLabel('Issue'), tracker.icon.Issue)
+@Mixin(kra.mixin.IssueTypeData, kra.class.Issue)
+@UX(getEmbeddedLabel('Issue'), kra.icon.Issue)
 export class TIssueTypeData extends TIssue {}

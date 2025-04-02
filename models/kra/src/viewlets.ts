@@ -20,7 +20,7 @@ import task from '@hcengineering/model-task'
 import view, { showColorsViewOption } from '@hcengineering/model-view'
 import tags from '@hcengineering/tags'
 import { type BuildModelKey, type ViewOptionsModel } from '@hcengineering/view'
-import tracker from './plugin'
+import kra from './plugin'
 
 export const issuesOptions = (kanban: boolean): ViewOptionsModel => ({
   groupBy: [
@@ -52,8 +52,8 @@ export const issuesOptions = (kanban: boolean): ViewOptionsModel => ({
       type: 'toggle',
       defaultValue: true,
       actionTarget: 'query',
-      action: tracker.function.SubIssueQuery,
-      label: tracker.string.SubIssues
+      action: kra.function.SubIssueQuery,
+      label: kra.string.SubIssues
     },
     {
       key: 'shouldShowAll',
@@ -82,21 +82,21 @@ export function issueConfig(
   return [
     {
       key: '',
-      label: tracker.string.Priority,
-      presenter: tracker.component.PriorityEditor,
+      label: kra.string.Priority,
+      presenter: kra.component.PriorityEditor,
       props: { type: 'priority', kind: 'list', size: 'small' },
       displayProps: { key: 'priority' }
     },
     {
       key: '',
-      label: tracker.string.Identifier,
-      presenter: tracker.component.IssuePresenter,
+      label: kra.string.Identifier,
+      presenter: kra.component.IssuePresenter,
       displayProps: { key: key + 'issue', fixed: 'left' }
     },
     {
       key: '',
-      label: tracker.string.Status,
-      presenter: tracker.component.StatusEditor,
+      label: kra.string.Status,
+      presenter: kra.component.StatusEditor,
       props: { kind: 'list', size: 'small', justify: 'center' },
       displayProps: { key: key + 'status' }
     },
@@ -109,16 +109,22 @@ export function issueConfig(
     // },
     {
       key: '',
-      label: tracker.string.Title,
-      presenter: tracker.component.TitlePresenter,
+      label: kra.string.Title,
+      presenter: kra.component.TitlePresenter,
       props: compact ? { shouldUseMargin: true, showParent: false } : {},
       displayProps: { key: key + 'title' }
     },
     {
       key: '',
-      label: tracker.string.SubIssues,
-      presenter: tracker.component.SubIssuesSelector,
+      label: kra.string.SubIssues,
+      presenter: kra.component.SubIssuesSelector,
       props: {}
+    },
+    {
+      key: '',
+      label: kra.string.Goal,
+      presenter: kra.component.GoalPresenter,
+      props: {},
     },
     { key: 'comments', displayProps: { key: key + 'comments', suffix: true } },
     { key: 'attachments', displayProps: { key: key + 'attachments', suffix: true } },
@@ -131,33 +137,33 @@ export function issueConfig(
     },
     {
       key: '',
-      label: tracker.string.Extensions,
-      presenter: tracker.component.IssueExtra,
+      label: kra.string.Extensions,
+      presenter: kra.component.IssueExtra,
       displayProps: { compression: true },
       props: { kind: 'list', full: false }
     },
     {
       key: '',
-      label: tracker.string.DueDate,
-      presenter: tracker.component.DueDatePresenter,
+      label: kra.string.DueDate,
+      presenter: kra.component.DueDatePresenter,
       displayProps: { key: key + 'dueDate', compression: true },
       props: { kind: 'list' }
     },
     {
       key: '',
-      label: tracker.string.Estimation,
-      presenter: tracker.component.EstimationEditor,
+      label: kra.string.Estimation,
+      presenter: kra.component.EstimationEditor,
       props: { kind: 'list', size: 'small' },
       displayProps: { key: key + 'estimation', fixed: 'left', dividerBefore: true, optional: true }
     },
     {
       key: 'modifiedOn',
-      presenter: tracker.component.ModificationDatePresenter,
+      presenter: kra.component.ModificationDatePresenter,
       displayProps: { key: key + 'modified', fixed: 'left', dividerBefore: true }
     },
     {
       key: 'assignee',
-      presenter: tracker.component.AssigneeEditor,
+      presenter: kra.component.AssigneeEditor,
       displayProps: { key: 'assignee', fixed: 'right' },
       props: { kind: 'list', shouldShowName: false, avatarSize: 'x-small' }
     }
@@ -169,18 +175,18 @@ export function defineViewlets(builder: Builder): void {
     view.class.ViewletDescriptor,
     core.space.Model,
     {
-      label: tracker.string.Board,
+      label: kra.string.Board,
       icon: task.icon.Kanban,
-      component: tracker.component.KanbanView
+      component: kra.component.KanbanView
     },
-    tracker.viewlet.Kanban
+    kra.viewlet.Kanban
   )
 
   builder.createDoc(
     view.class.Viewlet,
     core.space.Model,
     {
-      attachTo: tracker.class.Issue,
+      attachTo: kra.class.Issue,
       descriptor: view.viewlet.List,
       viewOptions: issuesOptions(false),
       configOptions: {
@@ -205,7 +211,7 @@ export function defineViewlets(builder: Builder): void {
       },
       config: issueConfig()
     },
-    tracker.viewlet.IssueList
+    kra.viewlet.IssueList
   )
 
   const subIssuesOptions: ViewOptionsModel = {
@@ -227,7 +233,7 @@ export function defineViewlets(builder: Builder): void {
     view.class.Viewlet,
     core.space.Model,
     {
-      attachTo: tracker.class.Issue,
+      attachTo: kra.class.Issue,
       descriptor: view.viewlet.List,
       viewOptions: subIssuesOptions,
       variant: 'subissue',
@@ -247,14 +253,14 @@ export function defineViewlets(builder: Builder): void {
       },
       config: issueConfig('sub', true)
     },
-    tracker.viewlet.SubIssues
+    kra.viewlet.SubIssues
   )
 
   builder.createDoc(
     view.class.Viewlet,
     core.space.Model,
     {
-      attachTo: tracker.class.IssueTemplate,
+      attachTo: kra.class.IssueTemplate,
       descriptor: view.viewlet.List,
       viewOptions: {
         groupBy: ['assignee', 'priority', 'createdBy', 'modifiedBy'],
@@ -282,14 +288,14 @@ export function defineViewlets(builder: Builder): void {
         // { key: '', presenter: tracker.component.PriorityEditor, props: { kind: 'list', size: 'small' } },
         {
           key: '',
-          presenter: tracker.component.IssueTemplatePresenter,
+          presenter: kra.component.IssueTemplatePresenter,
           props: { type: 'issue', shouldUseMargin: true }
         },
         // { key: '', presenter: tracker.component.DueDatePresenter, props: { kind: 'list' } },
         {
           key: '',
-          label: tracker.string.Estimation,
-          presenter: tracker.component.TemplateEstimationEditor,
+          label: kra.string.Estimation,
+          presenter: kra.component.TemplateEstimationEditor,
           props: {
             kind: 'list',
             size: 'small'
@@ -299,25 +305,25 @@ export function defineViewlets(builder: Builder): void {
         { key: '', displayProps: { grow: true } },
         {
           key: 'modifiedOn',
-          presenter: tracker.component.ModificationDatePresenter,
+          presenter: kra.component.ModificationDatePresenter,
           displayProps: { fixed: 'right', dividerBefore: true }
         },
         {
           key: 'assignee',
-          presenter: tracker.component.AssigneeEditor,
+          presenter: kra.component.AssigneeEditor,
           props: { kind: 'list', shouldShowName: false, avatarSize: 'x-small' }
         }
       ]
     },
-    tracker.viewlet.IssueTemplateList
+    kra.viewlet.IssueTemplateList
   )
 
   builder.createDoc(
     view.class.Viewlet,
     core.space.Model,
     {
-      attachTo: tracker.class.Issue,
-      descriptor: tracker.viewlet.Kanban,
+      attachTo: kra.class.Issue,
+      descriptor: kra.viewlet.Kanban,
       viewOptions: {
         ...issuesOptions(true),
         groupDepth: 1
@@ -327,14 +333,14 @@ export function defineViewlets(builder: Builder): void {
       },
       config: ['subIssues', 'priority', 'dueDate', 'labels', 'estimation', 'attachments', 'comments']
     },
-    tracker.viewlet.IssueKanban
+    kra.viewlet.IssueKanban
   )
 
   builder.createDoc(
     view.class.Viewlet,
     core.space.Model,
     {
-      attachTo: tracker.class.Project,
+      attachTo: kra.class.Project,
       descriptor: view.viewlet.Table,
       configOptions: {
         hiddenKeys: ['identifier', 'name', 'description']
@@ -342,7 +348,7 @@ export function defineViewlets(builder: Builder): void {
       config: [
         {
           key: '',
-          presenter: tracker.component.ProjectPresenter,
+          presenter: kra.component.ProjectPresenter,
           props: {
             openIssues: true
           }
@@ -354,7 +360,7 @@ export function defineViewlets(builder: Builder): void {
         },
         {
           key: 'modifiedOn',
-          presenter: tracker.component.ModificationDatePresenter,
+          presenter: kra.component.ModificationDatePresenter,
           displayProps: { fixed: 'right', dividerBefore: true }
         }
       ],
@@ -362,6 +368,6 @@ export function defineViewlets(builder: Builder): void {
         showArchived: true
       }
     },
-    tracker.viewlet.ProjectList
+    kra.viewlet.ProjectList
   )
 }

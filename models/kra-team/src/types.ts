@@ -9,9 +9,7 @@ import {
   UX
 } from '@hcengineering/model'
 import {
-  Kra,
   KraTeamplate,
-  Metric,
   Team,
   Member,
   TeamType,
@@ -42,25 +40,9 @@ export class TTeam extends TTypedSpace implements Team {
 export class TKraTemplate extends TDoc implements KraTeamplate {
   @Prop(TypeString(), kraTeam.string.Name)
   name!: string
+
   @Prop(TypeCollaborativeDoc(), kraTeam.string.Description)
   description!: MarkupBlobRef | null
-  @Prop(ArrOf(TypeRef(kraTeam.class.Metric)), kraTeam.string.Metrics)
-  metrics!: Arr<Ref<Metric>>
-}
-
-@Model(kraTeam.class.Metric, core.class.AttachedDoc)
-export class TMetric extends TAttachedDoc implements Metric {
-  @Prop(TypeRef(kraTeam.class.Kra), core.string.AttachedTo)
-  declare attachedTo: Ref<Kra>
-
-  @Prop(TypeRef(core.class.Class), core.string.AttachedToClass)
-  declare attachedToClass: Ref<Class<Kra>>
-
-  @Prop(TypeString(), kraTeam.string.Name)
-  name!: string
-
-  @Prop(TypeString(), kraTeam.string.Description)
-  description!: string
 }
 
 @Mixin(kraTeam.mixin.TeamTypeData, kraTeam.class.Team)

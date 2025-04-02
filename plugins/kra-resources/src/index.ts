@@ -121,6 +121,10 @@ import { settingId } from '@hcengineering/setting'
 import { getAllStates } from '@hcengineering/task-resources'
 import EstimationValueEditor from './components/issues/timereport/EstimationValueEditor.svelte'
 import TimePresenter from './components/issues/timereport/TimePresenter.svelte'
+import GoalPresenter from './components/GoalPresenter.svelte'
+import KpiPresenter from './components/KpiPresenter.svelte'
+import RatingScalePresenter from './components/RatingScalePresenter.svelte'
+import './styles/_colors.scss'
 
 export { default as AssigneeEditor } from './components/issues/AssigneeEditor.svelte'
 export { default as SubIssueList } from './components/issues/edit/SubIssueList.svelte'
@@ -136,11 +140,11 @@ export {
   TitlePresenter
 }
 
-export async function queryIssue<D extends Issue>(
+export async function queryIssue<D extends Issue> (
   _class: Ref<Class<D>>,
   client: Client,
   search: string,
-  filter?: { in?: RelatedDocument[]; nin?: RelatedDocument[] }
+  filter?: { in?: RelatedDocument[], nin?: RelatedDocument[] }
 ): Promise<ObjectSearchResult[]> {
   const q: DocumentQuery<Issue> = { identifier: { $like: `%${search}%` } }
   if (filter?.in !== undefined || filter?.nin !== undefined) {
@@ -180,11 +184,11 @@ export async function queryIssue<D extends Issue>(
   }))
 }
 
-async function move(issues: Issue | Issue[]): Promise<void> {
+async function move (issues: Issue | Issue[]): Promise<void> {
   showPopup(MoveIssues, { selected: issues }, 'top')
 }
 
-async function editWorkflowStatuses(project: Project): Promise<void> {
+async function editWorkflowStatuses (project: Project): Promise<void> {
   const loc = getCurrentLocation()
   loc.path[2] = settingId
   loc.path[3] = 'spaceTypes'
@@ -192,13 +196,13 @@ async function editWorkflowStatuses(project: Project): Promise<void> {
   navigate(loc)
 }
 
-async function editProject(project: Project | undefined): Promise<void> {
+async function editProject (project: Project | undefined): Promise<void> {
   if (project !== undefined) {
     showPopup(CreateProject, { project })
   }
 }
 
-async function deleteIssue(issue: Issue | Issue[]): Promise<void> {
+async function deleteIssue (issue: Issue | Issue[]): Promise<void> {
   const issueCount = Array.isArray(issue) ? issue.length : 1
   let subissues: number = 0
   if (Array.isArray(issue)) {
@@ -228,7 +232,7 @@ async function deleteIssue(issue: Issue | Issue[]): Promise<void> {
   })
 }
 
-async function deleteProject(project: Project | undefined): Promise<void> {
+async function deleteProject (project: Project | undefined): Promise<void> {
   if (project !== undefined) {
     const client = getClient()
 
@@ -322,13 +326,16 @@ export default async (): Promise<Resources> => ({
     MembersArrayEditor,
     IssueExtra,
     IssueStatusPresenter,
-    LabelsView
+    LabelsView,
+    GoalPresenter,
+    KpiPresenter,
+    RatingScalePresenter
   },
   completion: {
     IssueQuery: async (
       client: Client,
       query: string,
-      filter?: { in?: RelatedDocument[]; nin?: RelatedDocument[] }
+      filter?: { in?: RelatedDocument[], nin?: RelatedDocument[] }
     ) => await queryIssue(tracker.class.Issue, client, query, filter)
   },
   function: {

@@ -1,7 +1,7 @@
 <script lang="ts">
   import { Card, getClient, SpaceSelector } from '@hcengineering/presentation'
   import { Data, Ref, generateId } from '@hcengineering/core'
-  import { Kra, Group } from '@hcengineering/kra'
+  import { Kpi, Project } from '@hcengineering/kra'
   import { createEventDispatcher } from 'svelte'
   import { EditBox } from '@hcengineering/ui'
   import { createEmptyKra } from '../utils'

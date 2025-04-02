@@ -29,42 +29,16 @@ export interface TeamType extends SpaceType {}
 
 export type Weight = number
 
-export interface Kra extends AttachedDoc, IconProps {
-  attachedTo: Ref<Member>
-  attachedToClass: Ref<Class<Member>>
-
-  name: string
-  description: MarkupBlobRef | null
-  kras: number
-}
-
-export interface Metric extends AttachedDoc, IconProps {
-  attachedTo: Ref<Kra>
-  attachedToClass: Ref<Class<Kra>>
-
-  name: string
-  description: string
-}
-
-export interface Kpi extends Metric {}
-
-export interface RatingScale extends Metric {}
-
 export interface KraTeamplate extends Doc, IconProps {
   name: string
   description: MarkupBlobRef | null
-  metrics: Arr<Ref<Metric>>
 }
 
 export default plugin(kraTeamId, {
   class: {
     Team: '' as Ref<Class<Team>>,
-    Metric: '' as Ref<Class<Metric>>,
-    Kra: '' as Ref<Class<Kra>>,
     KraTeamplate: '' as Ref<Class<KraTeamplate>>,
     Member: '' as Ref<Class<Member>>,
-    Kpi: '' as Ref<Class<Kpi>>,
-    RatingScale: '' as Ref<Class<RatingScale>>,
     TeamType: '' as Ref<Class<TeamType>>,
     TeamTypeDescriptor: '' as Ref<Class<TeamTypeDescriptor>>
   },

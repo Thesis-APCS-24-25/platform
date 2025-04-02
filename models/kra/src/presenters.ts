@@ -17,96 +17,105 @@ import { type Builder } from '@hcengineering/model'
 import core from '@hcengineering/model-core'
 import view, { classPresenter } from '@hcengineering/model-view'
 import notification from '@hcengineering/notification'
-import tracker from './plugin'
+import kra from './plugin'
 
 /**
  * Define presenters
  */
-export function definePresenters (builder: Builder): void {
+export function definePresenters(builder: Builder): void {
   //
   // Issue
   //
-  builder.mixin(tracker.class.Issue, core.class.Class, view.mixin.ObjectPresenter, {
-    presenter: tracker.component.IssuePresenter
+  builder.mixin(kra.class.Issue, core.class.Class, view.mixin.ObjectPresenter, {
+    presenter: kra.component.IssuePresenter
   })
 
-  builder.mixin(tracker.class.Issue, core.class.Class, notification.mixin.NotificationObjectPresenter, {
-    presenter: tracker.component.NotificationIssuePresenter
+  builder.mixin(kra.class.Issue, core.class.Class, notification.mixin.NotificationObjectPresenter, {
+    presenter: kra.component.NotificationIssuePresenter
   })
 
-  builder.mixin(tracker.class.Issue, core.class.Class, view.mixin.PreviewPresenter, {
-    presenter: tracker.component.IssuePreview
+  builder.mixin(kra.class.Issue, core.class.Class, view.mixin.PreviewPresenter, {
+    presenter: kra.component.IssuePreview
   })
 
   //
   // Issue Template
   //
-  builder.mixin(tracker.class.IssueTemplate, core.class.Class, view.mixin.ObjectPresenter, {
-    presenter: tracker.component.IssueTemplatePresenter
+  builder.mixin(kra.class.IssueTemplate, core.class.Class, view.mixin.ObjectPresenter, {
+    presenter: kra.component.IssueTemplatePresenter
   })
 
   //
   // Issue Status
   //
-  builder.mixin(tracker.class.IssueStatus, core.class.Class, view.mixin.ObjectPresenter, {
-    presenter: tracker.component.StatusPresenter
+  builder.mixin(kra.class.IssueStatus, core.class.Class, view.mixin.ObjectPresenter, {
+    presenter: kra.component.StatusPresenter
   })
 
-  builder.mixin(tracker.class.IssueStatus, core.class.Class, view.mixin.AttributePresenter, {
-    presenter: tracker.component.StatusRefPresenter
+  builder.mixin(kra.class.IssueStatus, core.class.Class, view.mixin.AttributePresenter, {
+    presenter: kra.component.StatusRefPresenter
   })
 
   //
   // Time Spend Report
   //
-  builder.mixin(tracker.class.TimeSpendReport, core.class.Class, view.mixin.ObjectPresenter, {
-    presenter: tracker.component.TimeSpendReport
+  builder.mixin(kra.class.TimeSpendReport, core.class.Class, view.mixin.ObjectPresenter, {
+    presenter: kra.component.TimeSpendReport
   })
 
   //
   // Type Issue Priority
   //
-  builder.mixin(tracker.class.TypeIssuePriority, core.class.Class, view.mixin.ObjectPresenter, {
-    presenter: tracker.component.PriorityPresenter
+  builder.mixin(kra.class.TypeIssuePriority, core.class.Class, view.mixin.ObjectPresenter, {
+    presenter: kra.component.PriorityPresenter
   })
 
-  builder.mixin(tracker.class.TypeIssuePriority, core.class.Class, view.mixin.AttributePresenter, {
-    presenter: tracker.component.PriorityRefPresenter
+  builder.mixin(kra.class.TypeIssuePriority, core.class.Class, view.mixin.AttributePresenter, {
+    presenter: kra.component.PriorityRefPresenter
   })
 
-  builder.mixin(tracker.class.TypeIssuePriority, core.class.Class, view.mixin.AttributeEditor, {
-    inlineEditor: tracker.component.PriorityInlineEditor
+  builder.mixin(kra.class.TypeIssuePriority, core.class.Class, view.mixin.AttributeEditor, {
+    inlineEditor: kra.component.PriorityInlineEditor
   })
 
   //
   // Project
   //
-  builder.mixin(tracker.class.Project, core.class.Class, view.mixin.ObjectPresenter, {
-    presenter: tracker.component.ProjectPresenter
+  builder.mixin(kra.class.Project, core.class.Class, view.mixin.ObjectPresenter, {
+    presenter: kra.component.ProjectPresenter
   })
 
-  builder.mixin(tracker.class.Project, core.class.Class, view.mixin.SpacePresenter, {
-    presenter: tracker.component.ProjectSpacePresenter
+  builder.mixin(kra.class.Project, core.class.Class, view.mixin.SpacePresenter, {
+    presenter: kra.component.ProjectSpacePresenter
   })
 
   classPresenter(
     builder,
-    tracker.class.TypeReportedTime,
-    tracker.component.TimePresenter,
-    tracker.component.ReportedTimeEditor
+    kra.class.TypeReportedTime,
+    kra.component.TimePresenter,
+    kra.component.ReportedTimeEditor
   )
 
   classPresenter(
     builder,
-    tracker.class.TypeEstimation,
-    tracker.component.TimePresenter,
-    tracker.component.EstimationValueEditor
+    kra.class.TypeEstimation,
+    kra.component.TimePresenter,
+    kra.component.EstimationValueEditor
   )
 
   classPresenter(
     builder,
-    tracker.class.TypeRemainingTime,
-    tracker.component.TimePresenter,
-    tracker.component.EstimationValueEditor
+    kra.class.TypeRemainingTime,
+    kra.component.TimePresenter,
+    kra.component.EstimationValueEditor
+  )
+
+  classPresenter(builder, kra.class.Kpi, kra.component.KpiPresenter, kra.component.KpiEditor)
+
+  classPresenter(
+    builder,
+    kra.class.RatingScale,
+    kra.component.RatingScalePresenter,
+    kra.component.RatingScaleEditor
   )
 }

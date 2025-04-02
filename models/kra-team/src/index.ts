@@ -5,7 +5,6 @@ import kraTeam from './plugin'
 import {
   TKraTemplate,
   TMember,
-  TMetric,
   TTeam,
   TTeamType,
   TTeamTypeData,
@@ -19,14 +18,7 @@ import { defineSpaceTypes } from './spacetypes'
 
 export { kraTeamId } from '@hcengineering/kra-team'
 
-export {
-  TKraTemplate,
-  TMetric,
-  TTeam,
-  TTeamTypeData,
-  TTeamType,
-  TTeamTypeDescriptor
-} from './types'
+export { TKraTemplate, TTeam, TTeamTypeData, TTeamType, TTeamTypeDescriptor } from './types'
 export default './plugin'
 
 function defineApplication(builder: Builder) {
@@ -81,7 +73,7 @@ function defineApplication(builder: Builder) {
 }
 
 export function createModel(builder: Builder): void {
-  builder.createModel(TTeam, TMetric, TKraTemplate, TTeamType, TTeamTypeDescriptor, TMember)
+  builder.createModel(TTeam, TKraTemplate, TTeamType, TTeamTypeDescriptor, TMember)
   definePermissions(builder)
   defineSpaceTypes(builder)
   defineViewlets(builder)
