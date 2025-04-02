@@ -1,6 +1,5 @@
 <script lang="ts">
   import { Goal, Issue } from '@hcengineering/kra'
-  import Kpi from './Kpi.svelte'
   import {
     Button,
     IconAdd,
@@ -18,6 +17,8 @@
   import { getGoal } from '../../../utils/goal'
   import Icon from '@hcengineering/ui/src/components/Icon.svelte'
   import RatingScale from './RatingScale.svelte'
+  import Kpi from './Kpi.svelte'
+  import AddGoalPopup from './AddGoalPopup.svelte'
 
   export let issue: Issue
 
@@ -28,8 +29,14 @@
     goal = v
   })
 
-  function handleCreateGoal(e: MouseEvent): void {
-    throw new Error('Function not implemented.')
+  function handleCreateGoal (e: MouseEvent): void {
+    e.stopPropagation()
+    showPopup(
+      AddGoalPopup,
+      {
+      },
+      'top'
+    )
   }
 </script>
 
