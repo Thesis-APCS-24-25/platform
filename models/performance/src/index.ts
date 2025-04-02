@@ -1,56 +1,21 @@
-import { ArrOf, Builder, Index, Mixin, Model, Prop, TypeDate, TypeRef, TypeString } from "@hcengineering/model";
-import { KRA, KRAStatus, performanceId, ReviewSession, ReviewSessionStatus } from "@hcengineering/performance";
-import { TProject, TTask } from "@hcengineering/model-task";
+import { Builder } from "@hcengineering/model";
+import { KRAStatus, performanceId } from "@hcengineering/performance";
 import tracker from '@hcengineering/model-tracker'
 import performance from "./plugin";
 import task from "@hcengineering/task";
-import { Account, Arr, Domain, IndexKind, Ref, Role, RolesAssignment, Timestamp } from "@hcengineering/core";
-import core, { TStatus } from "@hcengineering/model-core";
+import { Domain, Ref, StatusCategory } from "@hcengineering/core";
+import core from "@hcengineering/model-core";
 import workbench from "@hcengineering/model-workbench";
 import view from "@hcengineering/model-view";
+import { TDefaultKRAData, TDefaultReviewSessionData, TKRA, TKRAStatus, TReviewSession, TReviewSessionStatus } from "./types";
 
 export { performanceId } from '@hcengineering/performance'
 export { performance as default }
 
 export const DOMAIN_PERFORMANCE = 'performance' as Domain
 
-@Model(performance.class.ReviewSessionStatus, core.class.Status)
-export class TReviewSessionStatus extends TStatus implements ReviewSessionStatus {}
-
-@Model(performance.class.KRAStatus, core.class.Status)
-export class TKRAStatus extends TStatus implements KRAStatus {}
-
-@Model(performance.class.ReviewSession, task.class.Project)
-export class TReviewSession extends TProject implements ReviewSession {
-  @Prop(TypeRef(core.class.Status), performance.string.ReviewSessionStatus)
-  reviewSessionStatus!: Ref<ReviewSessionStatus>;
-  @Prop(TypeDate(), performance.string.ReviewSessionStart)
-  reviewSessionStart!: Timestamp;
-  @Prop(TypeDate(), performance.string.ReviewSessionEnd)
-  reviewSessionEnd!: Timestamp;
-  @Prop(ArrOf(TypeRef(performance.class.KRA)), performance.string.ReviewSessionKRAs)
-  kras?: Arr<Ref<KRA>>;
-}
-
-@Model(performance.class.KRA, task.class.Task)
-export class TKRA extends TTask implements KRA {
-  @Prop(TypeString(), performance.string.Title)
-  title!: string
-  @Prop(TypeString(), performance.string.Description)
-  @Index(IndexKind.FullText)
-    declare description: string
-  @Prop(TypeRef(core.class.Status), performance.string.KRAStatus)
-  kraStatus!: Ref<KRAStatus>
-}
-
-@Mixin(performance.mixin.DefaultReviewSessionData, performance.class.ReviewSession)
-export class TDefaultReviewSessionData extends TReviewSession implements RolesAssignment {
-  [key: Ref<Role>]: Ref<Account>[]
-}
-
-
-export function createModel (builder: Builder): void {
-  builder.createModel(TReviewSession, TKRA, TReviewSessionStatus, TKRAStatus, TDefaultReviewSessionData)
+function defineReviewSession(builder: Builder): void {
+  builder.createModel(TReviewSession, TReviewSessionStatus, TDefaultReviewSessionData)
 
   builder.createDoc(
     core.class.SpaceTypeDescriptor,
@@ -82,54 +47,6 @@ export function createModel (builder: Builder): void {
   )
 
   builder.createDoc(
-    workbench.class.Application,
-    core.space.Model,
-    {
-      label: performance.string.PerformanceApplication,
-      alias: performanceId,
-      hidden: false,
-      navHeaderComponent: performance.component.NewReviewSessionHeader,
-      navigatorModel: {
-        spaces: [
-          {
-            id: 'review-sessions',
-            label: performance.string.ReviewSessions,
-            spaceClass: performance.class.ReviewSession,
-            addSpaceLabel: performance.string.CreateReviewSessionLabel,
-            createComponent: performance.component.CreateReviewSession,
-            specials: []
-          }
-        ],
-        specials: [
-          {
-            id: 'review-session-browser',
-            component: workbench.component.SpecialView,
-            componentProps: {
-              _class: performance.class.ReviewSession,
-            },
-            label: performance.string.MyReviewSessions,
-            spaceClass: performance.class.ReviewSession,
-            addSpaceLabel: performance.string.CreateReviewSessionLabel,
-            position: 'top'
-          },
-          {
-            id: 'kras',
-            component: workbench.component.SpecialView,
-            componentProps: {
-              _class: performance.class.KRA
-            },
-            label: performance.string.MyKRAs,
-            spaceClass: performance.class.KRA,
-            addSpaceLabel: performance.string.CreateKraLabel,
-            position: 'top'
-          }
-        ]
-      }
-    },
-    performance.app.Performance
-  )
-
-  builder.createDoc(
     view.class.Viewlet, 
     core.space.Model, 
     {
@@ -153,16 +70,6 @@ export function createModel (builder: Builder): void {
     },
   )
 
-  builder.createDoc(
-    view.class.Viewlet, 
-    core.space.Model, 
-    {
-      attachTo: performance.class.KRA,
-      descriptor: view.viewlet.Table,
-      config: ['title', 'description', 'kraStatus']
-    },
-  )
-
   builder.mixin(performance.class.ReviewSession, core.class.Class, view.mixin.SpacePresenter, {
     presenter: performance.component.ReviewSessionSpacePresenter
   })
@@ -170,7 +77,6 @@ export function createModel (builder: Builder): void {
   builder.mixin(performance.class.ReviewSession, core.class.Class, view.mixin.IgnoreActions, {
     actions: [tracker.action.EditRelatedTargets, tracker.action.NewRelatedIssue]
   })
-
 
   builder.createDoc(
     performance.class.ReviewSessionStatus,
@@ -200,6 +106,33 @@ export function createModel (builder: Builder): void {
       ofAttribute: performance.attribute.ReviewSessionAttribute
     },
     performance.reviewSessionStatus.Concluded
+  )
+
+}
+
+function defineKRA(builder: Builder): void {
+  builder.createModel(TKRA, TKRAStatus, TDefaultKRAData)
+
+  builder.mixin(performance.class.KRA, core.class.Class, view.mixin.ObjectFactory, {
+    component: performance.component.CreateKRA
+  })
+
+  builder.mixin(performance.class.ReviewSession, core.class.Class, workbench.mixin.SpaceView, {
+    view: {
+      class: performance.class.KRA,
+      createItemDialog: performance.component.CreateKRA,
+      createItemLabel: performance.string.CreateKraLabel,
+    }
+  })
+
+  builder.createDoc(
+    view.class.Viewlet, 
+    core.space.Model, 
+    {
+      attachTo: performance.class.KRA,
+      descriptor: view.viewlet.Table,
+      config: ['title', 'description', 'assignee', 'kraStatus']
+    },
   )
 
   builder.createDoc(
@@ -251,7 +184,111 @@ export function createModel (builder: Builder): void {
     },
     performance.kraStatus.Archived
   )
+}
 
+function defineSpaceType(builder: Builder): void {
+  let statuses: Ref<KRAStatus>[] = []
+  for (const statusId of Object.values(performance.kraStatus)) {
+    statuses.push(statusId)
+  }
+  let categories: Ref<StatusCategory>[] = []
+  for (const category of Object.values(task.statusCategory)) {
+    categories.push(category)
+  }
+
+  builder.createDoc(
+    task.class.TaskType,
+    core.space.Model,
+    {
+      parent: performance.ids.ClassingProjectType,
+      statuses: statuses,
+      descriptor: performance.descriptor.KRAType,
+      name: 'KRA',
+      kind: 'task',
+      ofClass: performance.class.KRA,
+      targetClass: performance.mixin.DefaultKRAData,
+      statusClass: performance.class.KRAStatus,
+      statusCategories: categories,
+      allowedAsChildOf: [performance.taskTypes.KRA],
+      icon: tracker.icon.Issue
+    },
+    performance.taskTypes.KRA
+  )
+
+  builder.createDoc(
+    task.class.ProjectType,
+    core.space.Model,
+    {
+      name: 'Classic project',
+      descriptor: performance.descriptor.ReviewSessionType,
+      description: '',
+      tasks: [performance.taskTypes.KRA],
+      roles: 0,
+      classic: true,
+      statuses: statuses.map((s) => ({ _id: s, taskType: performance.taskTypes.KRA })),
+      targetClass: performance.mixin.DefaultReviewSessionData
+    },
+    performance.ids.ClassingProjectType
+  )
+}
+
+function defineApplication(builder: Builder): void {
+  builder.createDoc(
+    workbench.class.Application,
+    core.space.Model,
+    {
+      label: performance.string.PerformanceApplication,
+      alias: performanceId,
+      hidden: false,
+      navHeaderComponent: performance.component.NewReviewSessionHeader,
+      navigatorModel: {
+        spaces: [
+          {
+            id: 'review-sessions',
+            label: performance.string.ReviewSessions,
+            spaceClass: performance.class.ReviewSession,
+            addSpaceLabel: performance.string.CreateReviewSessionLabel,
+            createComponent: performance.component.CreateReviewSession,
+            specials: []
+          }
+        ],
+        specials: [
+          {
+            id: 'review-session-browser',
+            component: workbench.component.SpecialView,
+            componentProps: {
+              _class: performance.class.ReviewSession,
+            },
+            label: performance.string.MyReviewSessions,
+            spaceClass: performance.class.ReviewSession,
+            addSpaceLabel: performance.string.CreateReviewSessionLabel,
+            position: 'top'
+          },
+          {
+            id: 'kras',
+            component: workbench.component.SpecialView,
+            componentProps: {
+              _class: performance.class.KRA
+            },
+            label: performance.string.MyKRAs,
+            spaceClass: performance.class.KRA,
+            addSpaceLabel: performance.string.CreateKraLabel,
+            position: 'top'
+          }
+        ]
+      }
+    },
+    performance.app.Performance
+  )
+}
+
+export function createModel (builder: Builder): void {
+  defineReviewSession(builder)
+  defineKRA(builder)
+  defineSpaceType(builder)
+
+  defineApplication(builder)
+  
   builder.createDoc(core.class.DomainIndexConfiguration, core.space.Model, {
     domain: DOMAIN_PERFORMANCE,
     disabled: [

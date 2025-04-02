@@ -23,7 +23,13 @@ export default mergeIds(performanceId, performance, {
     ReviewSessionName: '' as IntlString,
     ReviewSession: '' as IntlString,
     ReviewSessionNamePlaceholder: '' as IntlString,
-    ReviewSessionDescriptionPlaceholder: '' as IntlString
+    ReviewSessionDescriptionPlaceholder: '' as IntlString,
+    Untitled: '' as IntlString,
+    CreateKRA: '' as IntlString,
+    KRAName: '' as IntlString,
+    KRADescription: '' as IntlString,
+    KRANamePlaceholder: '' as IntlString,
+    KRADescriptionPlaceholder: '' as IntlString,
   },
   category: {
     ReviewSessionType: '' as IntlString

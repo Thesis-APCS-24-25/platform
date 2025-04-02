@@ -16,7 +16,7 @@
 
 import type { Arr, Attribute, Class, Doc, Mixin, Ref, SpaceType, SpaceTypeDescriptor, Status, Timestamp } from '@hcengineering/core'
 import { Asset, IntlString, plugin, Plugin } from '@hcengineering/platform'
-import type { Project, Task} from '@hcengineering/task'
+import type { Project, ProjectType, Task, TaskType, TaskTypeDescriptor} from '@hcengineering/task'
 import { Viewlet } from '@hcengineering/view'
 
 export interface ReviewSessionStatus extends Status {}
@@ -80,12 +80,20 @@ export default plugin(performanceId, {
     ReviewSessionTable: '' as Ref<Viewlet>,
   },
   mixin: {
-    DefaultReviewSessionData: '' as Ref<Mixin<ReviewSession>>
+    DefaultReviewSessionData: '' as Ref<Mixin<ReviewSession>>,
+    DefaultKRAData: '' as Ref<Mixin<KRA>>,
+  },
+  taskTypes: {
+    KRA: '' as Ref<TaskType>
+  },
+  ids: {
+    ClassingProjectType: '' as Ref<ProjectType>
   },
   icon: {
     ReviewSession: '' as Asset
   },
   descriptor: {
+    KRAType: '' as Ref<TaskTypeDescriptor>,
     ReviewSessionType: '' as Ref<SpaceTypeDescriptor>
   },
   spaceType: {
