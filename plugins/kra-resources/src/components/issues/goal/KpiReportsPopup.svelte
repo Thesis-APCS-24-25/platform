@@ -80,12 +80,6 @@
           '$lookup.attachedTo',
           '',
           'employee',
-          {
-            key: '$lookup.attachedTo',
-            presenter: ParentNamesPresenter,
-            props: { maxWidth: '20rem' },
-            label: kra.string.Title
-          },
           'date',
           'comment'
         ]}

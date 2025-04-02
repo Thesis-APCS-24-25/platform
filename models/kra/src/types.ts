@@ -104,6 +104,7 @@ export class TKpi extends TGoal implements Kpi {
 }
 
 @Model(kra.class.KpiReport, core.class.AttachedDoc, DOMAIN_KRA)
+@UX(kra.string.KpiReport, kra.icon.Home)
 export class TKpiReport extends TAttachedDoc implements KpiReport {
   @Prop(TypeRef(kra.class.Kpi), kra.string.Kpi)
   declare attachedTo: Ref<Kpi>
@@ -111,11 +112,14 @@ export class TKpiReport extends TAttachedDoc implements KpiReport {
   @Prop(TypeDate(), kra.string.Date)
     date!: Timestamp
 
-  @Prop(TypeString(), kra.string.Value)
+  @Prop(TypeNumber(), kra.string.Value)
     value!: number
 
   @Prop(TypeRef(contact.mixin.Employee), contact.string.Employee)
     employee!: Ref<Employee>
+
+  @Prop(TypeString(), kra.string.Comment)
+    comment!: string
 }
 
 @Model(kra.class.RatingScale, kra.class.Goal)

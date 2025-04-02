@@ -64,10 +64,10 @@ export function definePresenters(builder: Builder): void {
   })
 
   //
-  // Kpi Reporot
+  // Kpi Report
   //
   builder.mixin(kra.class.KpiReport, core.class.Class, view.mixin.ObjectPresenter, {
-    presenter: kra.component.KpiReport,
+    presenter: kra.component.KpiReport
   })
 
   //
@@ -118,6 +118,10 @@ export function definePresenters(builder: Builder): void {
   )
 
   classPresenter(builder, kra.class.Kpi, kra.component.KpiPresenter, kra.component.KpiEditor)
+
+  builder.mixin(kra.class.Kpi, core.class.Class, view.mixin.ObjectPresenter, {
+    presenter: kra.component.KpiObjectPresenter
+  })
 
   classPresenter(
     builder,

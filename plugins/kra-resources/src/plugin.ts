@@ -325,6 +325,7 @@ export default mergeIds(kraId, tracker, {
     RoleLabel: '' as IntlString
   },
   component: {
+    KpiObjectPresenter: '' as AnyComponent,
     KpiReport: '' as AnyComponent,
     NopeComponent: '' as AnyComponent,
     MyIssues: '' as AnyComponent,

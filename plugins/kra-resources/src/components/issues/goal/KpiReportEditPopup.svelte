@@ -38,16 +38,11 @@
   const kpiClass = kpi._class
   const dispatch = createEventDispatcher()
   const client = getClient()
-  const data: {
-    value: number | undefined
-    description: string
-    date: number
-    employee: Ref<Employee> | null
-  } = {
-    value: undefined,
-    description: '',
+  const data = {
+    value: undefined as number | undefined,
     date: getTimeReportDate(timeReportDateType),
-    employee: assignee ?? null
+    employee: assignee ?? null,
+    comment: ''
   }
 
   $: canSave = data.value !== undefined && Number.isFinite(data.value) && data.value >= 0 && space !== undefined
@@ -78,7 +73,7 @@
     <span class="unit">/ {kpi.target} {kpi.unit}</span>
   </div>
   <div class="mt-4">
-    <EditBox placeholder={kra.string.IssueDescriptionPlaceholder} bind:value={data.description} />
+    <EditBox placeholder={kra.string.Comment} bind:value={data.comment} />
   </div>
   <!-- <svelte:fragment slot="header"> -->
   <!--   <ObjectBox object={issue} -->

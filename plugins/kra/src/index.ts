@@ -60,6 +60,7 @@ export interface KpiReport extends AttachedDoc {
   date: Timestamp | null
   value: number
   employee: Ref<Employee> | null
+  comment: string
 }
 
 export interface Kpi extends Goal {

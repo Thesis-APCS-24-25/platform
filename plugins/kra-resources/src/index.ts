@@ -124,6 +124,7 @@ import TimePresenter from './components/issues/timereport/TimePresenter.svelte'
 import GoalPresenter from './components/issues/goal/GoalPresenter.svelte'
 import KpiPresenter from './components/issues/goal/KpiPresenter.svelte'
 import RatingScalePresenter from './components/issues/goal/RatingScalePresenter.svelte'
+import KpiObjectPresenter from './components/issues/goal/KpiObjectPresenter.svelte'
 import KpiReport from './components/issues/goal/KpiReport.svelte'
 import './styles/_colors.scss'
 
@@ -331,7 +332,8 @@ export default async (): Promise<Resources> => ({
     GoalPresenter,
     KpiPresenter,
     RatingScalePresenter,
-    KpiReport
+    KpiReport,
+    KpiObjectPresenter
   },
   completion: {
     IssueQuery: async (
