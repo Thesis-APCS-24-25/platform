@@ -64,13 +64,13 @@ export interface KpiReport extends AttachedDoc {
 
 export interface Kpi extends Goal {
   target: number
-  value: number | null
   unit: string
   reports: CollectionSize<KpiReport>
 }
 
 export interface RatingScale extends Goal {
   value: number | null
+  comment: string
 }
 
 /**

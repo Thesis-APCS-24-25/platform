@@ -1,20 +1,42 @@
 <script lang="ts">
-  import { Card } from '@hcengineering/presentation'
+  import { Card, getClient } from '@hcengineering/presentation'
   import kra from '../../../plugin'
   import { Issue, RatingScale } from '@hcengineering/kra'
   import { EditBox, Label } from '@hcengineering/ui'
   import RatingScaleBoxes from './RatingScaleBoxes.svelte'
   import TitlePresenter from '../TitlePresenter.svelte'
+  import { createEventDispatcher } from 'svelte'
 
-  export let issue: Issue | undefined = undefined
-  export let ratingScale: RatingScale
-  export let value: number
+  export let issue: Issue
+  export let ratingScale: RatingScale | undefined = undefined
+  export let value: number | undefined = undefined
+
+  const client = getClient()
+  const dispatch = createEventDispatcher()
+  const space = issue.space
 
   let comment = ''
 
+  $: canSave = value !== undefined
+
+  async function save(): Promise<void> {
+    if (!canSave) {
+      return
+    }
+
+    if (ratingScale === undefined) {
+      throw new Error('Create RatingScale not implemented')
+    } else {
+      await client.updateDoc(kra.class.RatingScale, space, ratingScale._id, {
+        value,
+        comment
+      })
+    }
+    dispatch('close')
+  }
 </script>
 
-<Card label={kra.string.RatingScale} okAction={() => {}}>
+<Card label={kra.string.RatingScale} okAction={save} {canSave} okLabel={kra.string.Save}>
   <svelte:fragment slot="header">
     {#if issue}
       <TitlePresenter value={issue} showParent={false} />
@@ -40,9 +62,7 @@
   </div>
 
   <div class="m-3 clear-mins">
-    <EditBox
-      label={kra.string.Comment}
-      kind="editbox" value={comment} />
+    <EditBox bind:value={comment} label={kra.string.Comment} kind="editbox" />
   </div>
 </Card>
 

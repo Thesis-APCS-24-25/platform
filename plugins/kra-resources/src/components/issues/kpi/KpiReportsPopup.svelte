@@ -16,13 +16,14 @@
   import contact from '@hcengineering/contact'
   import { FindOptions } from '@hcengineering/core'
   import presentation, { Card } from '@hcengineering/presentation'
-  import { Issue, Kpi, Project, TimeSpendReport } from '@hcengineering/kra'
+  import { Issue, Kpi, KpiReport, Project, TimeSpendReport } from '@hcengineering/kra'
   import { Button, eventToHTMLElement, IconAdd, Scroller, showPopup, tableSP } from '@hcengineering/ui'
   import { TableBrowser } from '@hcengineering/view-resources'
   import kra from '../../../plugin'
   import IssuePresenter from '../IssuePresenter.svelte'
   import ParentNamesPresenter from '../ParentNamesPresenter.svelte'
   import KpiEditPopup from '../edit/KpiEditPopup.svelte'
+  import { getKpiReports } from '../../../utils/goal'
 
   export let issue: Issue
   export let kpi: Kpi
@@ -30,7 +31,7 @@
 
   $: defaultTimeReportDay = currentProject?.defaultTimeReportDay
 
-  export function canClose (): boolean {
+  export function canClose(): boolean {
     return true
   }
   const options: FindOptions<TimeSpendReport> = {
@@ -39,12 +40,12 @@
       employee: contact.mixin.Employee
     }
   }
-  function addReport (event: MouseEvent): void {
+  function addReport(event: MouseEvent): void {
     showPopup(
       KpiEditPopup,
       {
         issue,
-        kpi,
+        kpi
       },
       eventToHTMLElement(event)
     )
@@ -66,7 +67,7 @@
     <Scroller fade={tableSP}>
       <TableBrowser
         _class={kra.class.KpiReport}
-        query={{ attachedTo: { $in: [issue._id, ...(issue.childInfo?.map((it) => it.childId) ?? [])] } }}
+        query={{ attachedTo: issue.goal }}
         config={[
           '$lookup.attachedTo',
           '',

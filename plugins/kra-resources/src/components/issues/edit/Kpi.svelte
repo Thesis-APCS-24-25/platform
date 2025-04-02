@@ -14,12 +14,21 @@ distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRAN
   import { EditBox, eventToHTMLElement, showPopup } from '@hcengineering/ui'
   import KpiEditPopup from './KpiEditPopup.svelte'
   import KpiReportsPopup from '../kpi/KpiReportsPopup.svelte'
+  import { getKpiReports } from '../../../utils/goal'
 
   export let issue: Issue
   export let kpi: Kpi
   export let focusIndex: number | undefined = undefined
 
   const progress = Math.min(((kpi.value ?? 0) / kpi.target) * 100, 100) || 0
+
+  let kpiReports: KpiReport[] = []
+
+  $: sum = kpiReports.reduce((acc, it) => acc + it.value, 0)
+
+  $: getKpiReports(kpi, (res) => {
+    kpiReports = res
+  })
 
   function handleEdit(e: MouseEvent) {
     showPopup(KpiReportsPopup, { kpi, currentProject: issue.space, issue }, eventToHTMLElement(e))
@@ -34,7 +43,7 @@ distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRAN
 
   <button class="kpi-box" on:click={handleEdit} tabindex={focusIndex}>
     <div class="value">
-      <span class="value-value">{kpi.value}</span>
+      <span class="value-value">{sum}</span>
       <span class="value-target"> / {kpi.target}</span>
     </div>
     <span class="unit"> {kpi.unit}</span>

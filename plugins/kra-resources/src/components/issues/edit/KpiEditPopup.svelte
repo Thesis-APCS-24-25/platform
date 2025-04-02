@@ -24,7 +24,6 @@
   import contact, { Employee } from '@hcengineering/contact'
   import TimeReportDayDropdown from '../timereport/TimeReportDayDropdown.svelte'
   import { AttachedData, Ref, Space } from '@hcengineering/core'
-  import { ObjectBox } from '@hcengineering/view-resources'
 
   export let issue: Issue | undefined = undefined
   export let kpi: Kpi
@@ -34,8 +33,8 @@
 
   let timeReportDateType: TimeReportDayType | undefined = TimeReportDayType.CurrentWorkDay
 
-  const issueId = issue?._id
-  const issueClass = issue?._class
+  const kpiId = kpi._id
+  const kpiClass = kpi._class
   const dispatch = createEventDispatcher()
   const client = getClient()
   const data: {
@@ -54,17 +53,15 @@
     data.value !== undefined &&
     Number.isFinite(data.value) &&
     data.value >= 0 &&
-    space !== undefined &&
-    issueId !== undefined &&
-    issueClass !== undefined
+    space !== undefined
 
   async function save(): Promise<void> {
     if (canSave) {
       await client.addCollection(
         kra.class.KpiReport,
         space,
-        issueId,
-        issueClass,
+        kpiId,
+        kpiClass,
         'kpi-reports',
         data as AttachedData<KpiReport>
       )

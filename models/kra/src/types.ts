@@ -97,9 +97,6 @@ export class TKpi extends TGoal implements Kpi {
     target!: number
 
   @Prop(TypeString(), kra.string.Unit)
-    value!: number | null
-
-  @Prop(TypeString(), kra.string.Unit)
     unit!: string
 
   @Prop(TypeString(), kra.string.Value)
@@ -125,6 +122,9 @@ export class TKpiReport extends TAttachedDoc implements KpiReport {
 export class TRatingScale extends TGoal implements RatingScale {
   @Prop(TypeNumber(), kra.string.Name)
     value!: number | null
+
+  @Prop(TypeString(), kra.string.Comment)
+    comment!: string
 }
 
 @Model(kra.class.IssueStatus, core.class.Status)
