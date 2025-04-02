@@ -16,22 +16,29 @@
   import contact from '@hcengineering/contact'
   import { FindOptions } from '@hcengineering/core'
   import presentation, { Card } from '@hcengineering/presentation'
-  import { Issue, Kpi, KpiReport, Project, TimeSpendReport } from '@hcengineering/kra'
+  import { Issue, Kpi, Project, TimeSpendReport } from '@hcengineering/kra'
   import { Button, eventToHTMLElement, IconAdd, Scroller, showPopup, tableSP } from '@hcengineering/ui'
   import { TableBrowser } from '@hcengineering/view-resources'
   import kra from '../../../plugin'
   import IssuePresenter from '../IssuePresenter.svelte'
   import ParentNamesPresenter from '../ParentNamesPresenter.svelte'
-  import KpiEditPopup from '../edit/KpiEditPopup.svelte'
+  import KpiReportEditPopup from './KpiReportEditPopup.svelte'
   import { getKpiReports } from '../../../utils/goal'
 
   export let issue: Issue
+  export let sum: number | undefined = undefined
   export let kpi: Kpi
   export let currentProject: Project | undefined
 
   $: defaultTimeReportDay = currentProject?.defaultTimeReportDay
 
-  export function canClose(): boolean {
+  $: if (sum === undefined) {
+    getKpiReports(kpi, (res) => {
+      sum = res.reduce((acc, curr) => acc + curr.value, 0)
+    })
+  }
+
+  export function canClose (): boolean {
     return true
   }
   const options: FindOptions<TimeSpendReport> = {
@@ -40,10 +47,11 @@
       employee: contact.mixin.Employee
     }
   }
-  function addReport(event: MouseEvent): void {
+  function addReport (event: MouseEvent): void {
     showPopup(
-      KpiEditPopup,
+      KpiReportEditPopup,
       {
+        sum,
         issue,
         kpi
       },

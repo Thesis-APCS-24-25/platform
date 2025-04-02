@@ -13,8 +13,9 @@ distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRAN
   import { Issue, Kpi } from '@hcengineering/kra'
   import { EditBox, eventToHTMLElement, showPopup } from '@hcengineering/ui'
   import KpiEditPopup from './KpiEditPopup.svelte'
-  import KpiReportsPopup from '../kpi/KpiReportsPopup.svelte'
+  import KpiReportsPopup from '../goal/KpiReportsPopup.svelte'
   import { getKpiReports } from '../../../utils/goal'
+  import KpiProgressBar from './KpiProgressBar.svelte'
 
   export let issue: Issue
   export let kpi: Kpi
@@ -31,7 +32,7 @@ distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRAN
   })
 
   function handleEdit(e: MouseEvent) {
-    showPopup(KpiReportsPopup, { kpi, currentProject: issue.space, issue }, eventToHTMLElement(e))
+    showPopup(KpiReportsPopup, { sum, kpi, currentProject: issue.space, issue }, eventToHTMLElement(e))
   }
 </script>
 
@@ -47,9 +48,7 @@ distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRAN
       <span class="value-target"> / {kpi.target}</span>
     </div>
     <span class="unit"> {kpi.unit}</span>
-    <div class="progress-bar-container">
-      <div class="progress-bar" style="width: {progress}%"></div>
-    </div>
+    <KpiProgressBar value={sum} max={kpi.target} />
   </button>
 </div>
 

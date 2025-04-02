@@ -3,21 +3,19 @@
     FeijoaColor,
     MalibuColor,
     FernColor,
-    FlamingoColor,
     SeagullColor,
     SalmonColor,
-    PlatinumColor,
     IconSize
   } from '@hcengineering/ui'
 
   export let value: number = 0
   export let size: IconSize = 'small'
 
-  const dashClass =
+  $: dashClass =
     value > 0
       ? `segmented-progresscircle__circles__progress-dashes--${value}`
       : 'segmented-progresscircle__circles__progress-dashes'
-  const colors = [SalmonColor, SeagullColor, MalibuColor, FeijoaColor, FernColor]
+  $: colors = [SalmonColor, SeagullColor, MalibuColor, FeijoaColor, FernColor]
 </script>
 
 <div class="segmented-progresscircle">
