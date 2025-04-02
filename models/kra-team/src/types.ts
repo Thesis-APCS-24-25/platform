@@ -9,7 +9,7 @@ import {
   UX
 } from '@hcengineering/model'
 import {
-  KraTeamplate,
+  KraTemplate,
   Team,
   Member,
   TeamType,
@@ -36,8 +36,8 @@ export class TTeam extends TTypedSpace implements Team {
   declare members: Arr<Ref<Member>>
 }
 
-@Model(kraTeam.class.KraTeamplate, core.class.Doc)
-export class TKraTemplate extends TDoc implements KraTeamplate {
+@Model(kraTeam.class.KraTemplate, core.class.Doc)
+export class TKraTemplate extends TDoc implements KraTemplate {
   @Prop(TypeString(), kraTeam.string.Name)
   name!: string
 

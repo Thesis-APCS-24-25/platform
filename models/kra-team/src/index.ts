@@ -54,9 +54,9 @@ function defineApplication(builder: Builder) {
             {
               id: 'kra-template',
               label: kraTeam.string.KRATemplates,
-              spaceClass: kraTeam.class.KraTeamplate,
+              spaceClass: kraTeam.class.KraTemplate,
               component: kraTeam.component.KraTemplates,
-              icon: kraTeam.icon.KraTeamplate
+              icon: kraTeam.icon.KraTemplate
             },
             {
               id: 'members',

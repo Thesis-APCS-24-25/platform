@@ -6,7 +6,7 @@ import contact from '@hcengineering/model-contact'
 
 export function defineViewlets(builder: Builder) {
   builder.createDoc(view.class.Viewlet, core.space.Model, {
-    attachTo: kraTeam.class.KraTeamplate,
+    attachTo: kraTeam.class.KraTemplate,
     descriptor: view.viewlet.List,
     config: ['name'],
     viewOptions: {

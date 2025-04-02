@@ -29,7 +29,7 @@ export interface TeamType extends SpaceType {}
 
 export type Weight = number
 
-export interface KraTeamplate extends Doc, IconProps {
+export interface KraTemplate extends Doc, IconProps {
   name: string
   description: MarkupBlobRef | null
 }
@@ -37,14 +37,14 @@ export interface KraTeamplate extends Doc, IconProps {
 export default plugin(kraTeamId, {
   class: {
     Team: '' as Ref<Class<Team>>,
-    KraTeamplate: '' as Ref<Class<KraTeamplate>>,
+    KraTemplate: '' as Ref<Class<KraTemplate>>,
     Member: '' as Ref<Class<Member>>,
     TeamType: '' as Ref<Class<TeamType>>,
     TeamTypeDescriptor: '' as Ref<Class<TeamTypeDescriptor>>
   },
   icon: {
-    KraTeamplates: '' as Asset,
-    KraTeamplate: '' as Asset,
+    KraTemplates: '' as Asset,
+    KraTemplate: '' as Asset,
     Teams: '' as Asset,
     Metrics: '' as Asset,
     Kras: '' as Asset,
