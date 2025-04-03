@@ -1,6 +1,8 @@
 import { Builder } from "@hcengineering/model";
 import { KRAStatus, performanceId } from "@hcengineering/performance";
 import tracker from '@hcengineering/model-tracker'
+import activity from '@hcengineering/activity'
+import chunter from '@hcengineering/chunter'
 import performance from "./plugin";
 import task from "@hcengineering/task";
 import { Domain, Ref, StatusCategory } from "@hcengineering/core";
@@ -115,6 +117,10 @@ function defineKRA(builder: Builder): void {
 
   builder.mixin(performance.class.KRA, core.class.Class, view.mixin.ObjectFactory, {
     component: performance.component.CreateKRA
+  })
+
+  builder.mixin(performance.class.KRA, core.class.Class, view.mixin.ObjectPanel, {
+    component: performance.component.EditKRA
   })
 
   builder.mixin(performance.class.ReviewSession, core.class.Class, workbench.mixin.SpaceView, {
@@ -288,10 +294,43 @@ function defineApplication(builder: Builder): void {
   )
 }
 
+function defineActivity(builder: Builder): void {
+  builder.mixin(performance.class.ReviewSession, core.class.Class, activity.mixin.ActivityDoc, {})
+  builder.mixin(performance.class.KRA, core.class.Class, activity.mixin.ActivityDoc, {})
+
+
+  builder.createDoc(activity.class.ActivityExtension, core.space.Model, {
+    ofClass: performance.class.KRA,
+    components: { input: { component: chunter.component.ChatMessageInput } }
+  })
+
+  builder.createDoc(
+    activity.class.DocUpdateMessageViewlet,
+    core.space.Model,
+    {
+      objectClass: performance.class.KRA,
+      action: 'create',
+      icon: performance.icon.KRA,
+      valueAttr: 'title'
+    }
+  )
+
+  builder.createDoc(
+    activity.class.DocUpdateMessageViewlet,
+    core.space.Model,
+    {
+      objectClass: performance.class.KRA,
+      action: 'update',
+      icon: tracker.icon.Issue,
+    }
+  )
+}
+
 export function createModel (builder: Builder): void {
   defineReviewSession(builder)
   defineKRA(builder)
   defineSpaceType(builder)
+  defineActivity(builder)
 
   defineApplication(builder)
   
