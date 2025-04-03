@@ -19,7 +19,7 @@ import { defineSpaceTypes } from './spacetypes'
 export { kraTeamId } from '@hcengineering/kra-team'
 
 export { TKraTemplate, TTeam, TTeamTypeData, TTeamType, TTeamTypeDescriptor } from './types'
-export default './plugin'
+export { kraTeam as default }
 
 function defineApplication(builder: Builder) {
   builder.createDoc(workbench.class.Application, core.space.Model, {

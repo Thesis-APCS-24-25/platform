@@ -13,6 +13,13 @@ import {
   SeaBuckthornColor,
   SeagullColor
 } from '@hcengineering/ui'
+import { Team } from '@hcengineering/kra-team'
+
+export function getReviewSessionIdFromFragment (fragment: string): Ref<ReviewSession> | undefined {
+  const props = decodeURIComponent(fragment).split('|')
+
+  return props[1] != null ? (props[1] as Ref<ReviewSession>) : undefined
+}
 
 export async function createReviewSession (
   client: TxOperations,
@@ -20,6 +27,7 @@ export async function createReviewSession (
   description: string,
   reviewSessionStart: Timestamp,
   reviewSessionEnd: Timestamp,
+  team: Ref<Team>,
   type: Ref<ProjectType>
 ): Promise<Ref<ReviewSession>> {
   const reviewSessionRef = await client.createDoc(performance.class.ReviewSession, core.space.Space, {
@@ -31,6 +39,7 @@ export async function createReviewSession (
     private: false,
     archived: false,
     members: [getCurrentAccount()._id],
+    team,
     type
   })
 

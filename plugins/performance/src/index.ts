@@ -15,6 +15,7 @@
 //
 
 import type { Arr, Attribute, Class, Doc, Mixin, Ref, SpaceType, SpaceTypeDescriptor, Status, Timestamp } from '@hcengineering/core'
+import { Team } from '@hcengineering/kra-team'
 import { Asset, IntlString, plugin, Plugin } from '@hcengineering/platform'
 import type { Project, ProjectType, Task, TaskType, TaskTypeDescriptor} from '@hcengineering/task'
 import { Viewlet } from '@hcengineering/view'
@@ -28,7 +29,7 @@ export interface ReviewSession extends Project {
   reviewSessionStart: Timestamp
   reviewSessionEnd: Timestamp
   kras?: Arr<Ref<KRA>>
-  // team: Ref<Team>
+  team: Ref<Team>
 }
 
 export interface KRA extends Task {
@@ -63,6 +64,7 @@ export default plugin(performanceId, {
     KRAStatus: '' as IntlString,
     IsArchived: '' as IntlString,
     Assignee: '' as IntlString,
+    NoReviewSessions: '' as IntlString,
   },
   reviewSessionStatus: {
     Drafting: '' as Ref<ReviewSessionStatus>,

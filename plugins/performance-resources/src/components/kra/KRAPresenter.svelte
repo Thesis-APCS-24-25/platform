@@ -1,7 +1,6 @@
 <script lang="ts">
   import { WithLookup } from '@hcengineering/core'
   import { Asset, getEmbeddedLabel } from '@hcengineering/platform'
-  import TaskTypeIcon from '@hcengineering/task-resources'
   import type { KRA } from '@hcengineering/performance'
   import { AnySvelteComponent, Icon, tooltip } from '@hcengineering/ui'
   import { DocNavLink, ObjectMention } from '@hcengineering/view-resources'

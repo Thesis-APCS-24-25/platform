@@ -20,6 +20,7 @@ import ReviewSessionSpacePresenter from './components/navigator/ReviewSessionSpa
 import CreateKRA from './components/kra/CreateKRA.svelte'
 import EditKRA from './components/kra/EditKRA.svelte'
 import KRAPresenter from './components/kra/KRAPresenter.svelte'
+import TeamSpacePresenter from './components/navigator/TeamSpacePresenter.svelte'
 
 export default async (): Promise<Resources> => ({
   component: {
@@ -29,5 +30,6 @@ export default async (): Promise<Resources> => ({
     CreateKRA,
     EditKRA,
     KRAPresenter,
+    TeamSpacePresenter,
   }
 })

@@ -34,5 +34,6 @@ export default mergeIds(performanceId, performance, {
     CreateKRA: '' as AnyComponent,
     KRAPresenter: '' as AnyComponent,
     EditKRA: '' as AnyComponent,
+    TeamSpacePresenter: '' as AnyComponent,
   },
 })

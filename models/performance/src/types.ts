@@ -1,11 +1,13 @@
 import { ArrOf, Index, Mixin, Model, Prop, TypeDate, TypeRef, TypeString } from "@hcengineering/model";
 
 import performance from "./plugin";
+import kraTeam from "@hcengineering/model-kra-team"
 import core, { TStatus } from "@hcengineering/model-core";
 import { KRA, KRAStatus, ReviewSession, ReviewSessionStatus } from "@hcengineering/performance";
 import { TProject, TTask } from "@hcengineering/model-task";
 import task from "@hcengineering/task";
 import { Account, Arr, IndexKind, Ref, Role, RolesAssignment, Timestamp } from "@hcengineering/core";
+import { Team } from "@hcengineering/kra-team";
 
 @Model(performance.class.ReviewSessionStatus, core.class.Status)
 export class TReviewSessionStatus extends TStatus implements ReviewSessionStatus {}
@@ -23,6 +25,8 @@ export class TReviewSession extends TProject implements ReviewSession {
   reviewSessionEnd!: Timestamp;
   @Prop(ArrOf(TypeRef(performance.class.KRA)), performance.string.ReviewSessionKRAs)
   kras?: Arr<Ref<KRA>>;
+  @Prop(TypeRef(kraTeam.class.Team), kraTeam.string.Team)
+  team!: Ref<Team>;
 }
 
 @Model(performance.class.KRA, task.class.Task)

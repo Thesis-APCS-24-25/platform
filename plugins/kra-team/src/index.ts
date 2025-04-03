@@ -15,7 +15,7 @@ import {
 import { IconProps } from '@hcengineering/view'
 import { PersonAccount } from '@hcengineering/contact'
 
-export const kraTeamId = 'kraTeamId' as Plugin
+export const kraTeamId = 'kraTeam' as Plugin
 
 export interface Member extends PersonAccount {}
 

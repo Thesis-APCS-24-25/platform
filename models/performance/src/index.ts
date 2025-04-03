@@ -3,6 +3,7 @@ import { KRAStatus, performanceId } from "@hcengineering/performance";
 import tracker from '@hcengineering/model-tracker'
 import activity from '@hcengineering/activity'
 import chunter from '@hcengineering/chunter'
+import kraTeam from '@hcengineering/model-kra-team'
 import performance from "./plugin";
 import task from "@hcengineering/task";
 import { Domain, Ref, StatusCategory } from "@hcengineering/core";
@@ -15,6 +16,12 @@ export { performanceId } from '@hcengineering/performance'
 export { performance as default }
 
 export const DOMAIN_PERFORMANCE = 'performance' as Domain
+
+function defineTeam(builder: Builder): void {
+  builder.mixin(kraTeam.class.Team, core.class.Class, view.mixin.SpacePresenter, {
+    presenter: performance.component.TeamSpacePresenter
+  })
+}
 
 function defineReviewSession(builder: Builder): void {
   builder.createModel(TReviewSession, TReviewSessionStatus, TDefaultReviewSessionData)
@@ -71,10 +78,6 @@ function defineReviewSession(builder: Builder): void {
       }
     },
   )
-
-  builder.mixin(performance.class.ReviewSession, core.class.Class, view.mixin.SpacePresenter, {
-    presenter: performance.component.ReviewSessionSpacePresenter
-  })
 
   builder.mixin(performance.class.ReviewSession, core.class.Class, view.mixin.IgnoreActions, {
     actions: [tracker.action.EditRelatedTargets, tracker.action.NewRelatedIssue]
@@ -257,10 +260,10 @@ function defineApplication(builder: Builder): void {
         spaces: [
           {
             id: 'review-sessions',
-            label: performance.string.ReviewSessions,
-            spaceClass: performance.class.ReviewSession,
-            addSpaceLabel: performance.string.CreateReviewSessionLabel,
-            createComponent: performance.component.CreateReviewSession,
+            label: kraTeam.string.Teams,
+            spaceClass: kraTeam.class.Team,
+            addSpaceLabel: kraTeam.string.CreateTeam,
+            createComponent: kraTeam.component.CreateTeam,
             specials: []
           }
         ],
@@ -327,6 +330,7 @@ function defineActivity(builder: Builder): void {
 }
 
 export function createModel (builder: Builder): void {
+  defineTeam(builder)
   defineReviewSession(builder)
   defineKRA(builder)
   defineSpaceType(builder)
