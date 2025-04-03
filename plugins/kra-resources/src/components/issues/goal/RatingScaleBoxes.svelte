@@ -18,33 +18,31 @@
   let hoveringIndex = -1
 </script>
 
-{#if value}
-  <div class="rating-container {size}">
-    {#each Array(5) as _, i}
-      <button
-        on:pointerenter={() => {
-          if (editable) {
-            hoveringIndex = i
-          }
-        }}
-        on:pointerleave={() => {
-          if (editable) {
-            hoveringIndex = -1
-          }
-        }}
-        on:click={() => {
-          if (editable) {
-            onBoxClick?.(i + 1)
-          }
-        }}
-        class="rating-box {size}"
-        class:filled={i < (value ?? 0)}
-        class:highlight={i <= hoveringIndex}
-        style={i < (value ?? 0) ? `background-color: ${ratingColors[value]};` : ''}
-      ></button>
-    {/each}
-  </div>
-{/if}
+<div class="rating-container {size}">
+  {#each Array(5) as _, i}
+    <button
+      on:pointerenter={() => {
+        if (editable) {
+          hoveringIndex = i
+        }
+      }}
+      on:pointerleave={() => {
+        if (editable) {
+          hoveringIndex = -1
+        }
+      }}
+      on:click={() => {
+        if (editable) {
+          onBoxClick?.(i + 1)
+        }
+      }}
+      class="rating-box {size}"
+      class:filled={i < (value ?? 0)}
+      class:highlight={i <= hoveringIndex}
+      style={i < (value ?? 0) ? `background-color: ${ratingColors[value]};` : ''}
+    ></button>
+  {/each}
+</div>
 
 <style lang="scss">
   .rating-container {
