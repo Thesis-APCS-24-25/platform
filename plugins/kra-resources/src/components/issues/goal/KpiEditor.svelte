@@ -15,7 +15,7 @@
   export let width: string | undefined = undefined
   export let focusIndex: number | undefined = undefined
 
-  function handleKpiEditorOpen (ev: MouseEvent) {
+  function handleKpiEditorOpen(ev: MouseEvent) {
     showPopup(
       KpiEditPopup,
       {

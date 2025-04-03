@@ -1,11 +1,14 @@
 <script lang="ts">
-  import { Kpi, KpiReport } from '@hcengineering/kra'
+  import { Issue, Kpi, KpiReport } from '@hcengineering/kra'
   import KpiProgressCircle from './KpiProgressCircle.svelte'
   import GoalPresenterContainer from './GoalPresenterContainer.svelte'
-  import { ButtonKind, ButtonSize, Loading } from '@hcengineering/ui'
+  import { ButtonKind, ButtonSize, eventToHTMLElement, Loading, showPopup } from '@hcengineering/ui'
   import { getKpiReports } from '../../../utils/goal'
+  import KpiReportEditPopup from './KpiReportEditPopup.svelte'
+  import KpiReportsPopup from './KpiReportsPopup.svelte'
 
   export let value: Kpi
+  export let issue: Issue
   export let sum: number | undefined = undefined
   export let kind: ButtonKind = 'regular'
   export let size: ButtonSize = 'small'
@@ -15,12 +18,25 @@
       sum = res.reduce((acc, it) => acc + it.value, 0)
     })
   }
+
+  function handleOpenEditor (e: MouseEvent): void {
+    e.stopPropagation()
+    showPopup(
+      KpiReportsPopup,
+      {
+        issue,
+        kpi: value,
+        sum
+      },
+      eventToHTMLElement(e)
+    )
+  }
 </script>
 
 {#if sum === undefined}
   <Loading />
 {:else}
-  <GoalPresenterContainer {kind} {size}>
+  <GoalPresenterContainer {kind} {size} onClick={handleOpenEditor}>
     {#if value.target > 0}
       <KpiProgressCircle value={sum} max={value.target} />
     {/if}

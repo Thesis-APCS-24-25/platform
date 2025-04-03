@@ -1,14 +1,11 @@
 <script lang="ts">
-  import {
-    ButtonKind,
-    ButtonSize,
-    Component
-  } from '@hcengineering/ui'
+  import { ButtonKind, ButtonSize, Component } from '@hcengineering/ui'
   import { Goal, Issue } from '@hcengineering/kra'
   import { getClient } from '@hcengineering/presentation'
   import view, { AttributePresenter } from '@hcengineering/view'
   import { Doc, Space } from '@hcengineering/core'
   import { getGoal } from '../../../utils/goal'
+
   export let value: Issue
 
   export let kind: ButtonKind = 'regular'
@@ -39,6 +36,7 @@
     is={presenter.presenter}
     props={{
       value: _value,
+      issue: value,
       kind,
       size,
       justify,
