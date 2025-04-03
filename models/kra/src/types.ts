@@ -82,8 +82,8 @@ import preference, { TPreference } from '@hcengineering/model-preference'
 
 export const DOMAIN_KRA = 'kra' as Domain
 
-@Model(kra.class.Goal, core.class.AttachedDoc, DOMAIN_KRA)
-export class TGoal extends TAttachedDoc implements Goal {
+@Model(kra.class.Goal, core.class.Doc, DOMAIN_KRA)
+export class TGoal extends TDoc implements Goal {
   @Prop(TypeString(), kra.string.Name)
     name!: string
 

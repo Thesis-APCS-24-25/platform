@@ -49,7 +49,7 @@ import { Action, ActionCategory, IconProps } from '@hcengineering/view'
 
 export * from './analytics'
 
-export interface Goal extends AttachedDoc {
+export interface Goal extends Doc {
   name: string
   description: string
 }
@@ -77,7 +77,7 @@ export interface RatingScale extends Goal {
 /**
  * @public
  */
-export interface IssueStatus extends Status {}
+export interface IssueStatus extends Status { }
 
 /**
  * @public
@@ -98,7 +98,7 @@ export interface ProjectTargetPreference extends Preference {
 
   usedOn: Timestamp
 
-  props?: { key: string; value: any }[]
+  props?: { key: string, value: any }[]
 }
 
 export type RelatedIssueKind = 'classRule' | 'spaceRule'

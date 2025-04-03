@@ -25,7 +25,7 @@
   let goal: Goal | null = null
   let isCollapsed = false
 
-  getGoal(issue, (v) => {
+  $: getGoal(issue, (v) => {
     goal = v
   })
 
@@ -34,6 +34,7 @@
     showPopup(
       AddGoalPopup,
       {
+        issue
       },
       'top'
     )
