@@ -1,66 +1,68 @@
 <script lang="ts">
-  import { Ref, Space, WithLookup } from '@hcengineering/core'
+  import { Doc, Ref, Space, WithLookup } from '@hcengineering/core'
   import kraTeam, { Team } from '@hcengineering/kra-team'
   import performance, { ReviewSession } from '@hcengineering/performance'
   import { createQuery, getClient } from '@hcengineering/presentation'
-  import { getPlatformColorForTextDef,  Label,  navigate,  themeStore, type Action } from '@hcengineering/ui'
+  import { getCurrentResolvedLocation, getPlatformColorForTextDef,  Label,  navigate,  themeStore, type Action } from '@hcengineering/ui'
   import { TreeNode } from '@hcengineering/view-resources'
   import TreeElement from '@hcengineering/view-resources/src/components/navigator/TreeElement.svelte'
-  import { getReviewSessionIdFromFragment } from '../../utils/ReviewSessionUtils'
   import { getReviewSessionLink } from '../../navigation'
+  import { team } from '../../store'
+  import { onDestroy } from 'svelte';
 
+  
   export let space: Team
   export let currentSpace: Ref<Space> | undefined
   export let currentFragment: string | undefined
   export let deselect: boolean = false
   export let forciblyСollapsed: boolean = false
   export let getActions: (space: Space) => Promise<Action[]> = async () => []
-
+  
   const client = getClient()
   const query = createQuery()
   let reviewSessions: ReviewSession[] = []
   
-  $: query.query(
+  let currentTeam: Ref<Team>
+  $: client.findOne(
     performance.class.ReviewSession,
     {
-      space: space._id,
+      _id: currentSpace as Ref<ReviewSession>
+    },
+  ).then((result) => {
+    if (result !== undefined) {
+      currentTeam = result.space as Ref<Team>
+      team.set(currentTeam)
+    }
+  })
+  const unsubscribe = team.subscribe((value) => currentTeam = value)
+
+  onDestroy(unsubscribe);
+
+  query.query(
+    performance.class.ReviewSession,
+    {
+      space: space._id
     },
     (result) => {
-      reviewSessions = result
+      reviewSessions = []
+      if (result !== undefined) {
+        reviewSessions = result
+      }
+    },
+    {
+      limit: 50, // BUG: findAll returns all records even if they do not match
     }
   )
 
   function handleReviewSessionSelected (_id: Ref<ReviewSession>): void {
+    selected = _id
+    team.set(space._id)
     navigate(getReviewSessionLink(_id))
   }
-
-  $: selected = getReviewSessionIdFromFragment(currentFragment ?? '')
+  
+  let selected: Ref<ReviewSession> | undefined = currentSpace as Ref<ReviewSession>
 
   let pressed: boolean = false
-
-  let selectedReviewSession: ReviewSession | undefined = undefined
-
-  $: if (selected !== undefined) {
-    void client
-      .findOne(
-        performance.class.ReviewSession,
-        { _id: selected },
-      )
-      .then((result: WithLookup<ReviewSession> | undefined) => {
-        if (result !== undefined) {
-          selectedReviewSession = result as ReviewSession
-        } else {
-          // There's some issue with resolving which needs to be fixed later
-          void client
-            .findOne(performance.class.ReviewSession, { _id: selected as unknown as Ref<ReviewSession> })
-            .then((result) => {
-              selectedReviewSession = result
-            })
-        }
-      })
-  } else {
-    selectedReviewSession = undefined
-  }
 </script>
 
 {#if space}
@@ -71,8 +73,8 @@
       fill: getPlatformColorForTextDef(space.name, $themeStore.dark).icon
     }}
     title={space.name}
-    highlighted={space._id === currentSpace && currentFragment !== undefined && !deselect}
-    visible={(space._id === currentSpace && currentFragment !== undefined && !deselect) || forciblyСollapsed}
+    highlighted={space._id === currentTeam && !deselect}
+    visible={(space._id === currentTeam && !deselect) || forciblyСollapsed}
     showMenu={pressed}
     {forciblyСollapsed}
     actions={() => getActions(space)}
@@ -84,11 +86,9 @@
           <TreeElement
             _id={session._id}
             title={session.name}
-            selected={selectedReviewSession?._id === session._id}
+            selected={space._id === currentTeam && selected === session._id && !deselect}
             empty
-            on:click={() => {
-              handleReviewSessionSelected(session._id)
-            }}
+            on:click={() => handleReviewSessionSelected(session._id)}
           />
         {/if}
       {/each}
@@ -99,8 +99,8 @@
     {/if}
 
     <!-- <svelte:fragment slot="visible">
-      {#if (selected || forciblyСollapsed) && selectedReviewSession}
-        {@const doc = selectedReviewSession}
+      {#if (selected || forciblyСollapsed) && selected}
+        {@const doc = selected}
         <TreeItem
           _id={doc._id}
           icon={performance.icon.Document}

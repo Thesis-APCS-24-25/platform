@@ -6,6 +6,7 @@ import {
   FeijoaColor,
   FernColor,
   FlamingoColor,
+  getCurrentResolvedLocation,
   MalibuColor,
   MediumTurquoiseColor,
   MoodyBlueColor,
@@ -14,12 +15,6 @@ import {
   SeagullColor
 } from '@hcengineering/ui'
 import { Team } from '@hcengineering/kra-team'
-
-export function getReviewSessionIdFromFragment (fragment: string): Ref<ReviewSession> | undefined {
-  const props = decodeURIComponent(fragment).split('|')
-
-  return props[1] != null ? (props[1] as Ref<ReviewSession>) : undefined
-}
 
 export async function createReviewSession (
   client: TxOperations,
