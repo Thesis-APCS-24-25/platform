@@ -14,23 +14,19 @@
 -->
 <script lang="ts">
   import contact from '@hcengineering/contact'
-  import { FindOptions } from '@hcengineering/core'
+  import { FindOptions, WithLookup } from '@hcengineering/core'
   import presentation, { Card } from '@hcengineering/presentation'
   import { Issue, Kpi, Project, TimeSpendReport } from '@hcengineering/kra'
   import { Button, eventToHTMLElement, IconAdd, Scroller, showPopup, tableSP } from '@hcengineering/ui'
   import { TableBrowser } from '@hcengineering/view-resources'
   import kra from '../../../plugin'
   import IssuePresenter from '../IssuePresenter.svelte'
-  import ParentNamesPresenter from '../ParentNamesPresenter.svelte'
   import KpiReportEditPopup from './KpiReportEditPopup.svelte'
   import { getKpiReports } from '../../../utils/goal'
 
   export let issue: Issue
   export let sum: number | undefined = undefined
-  export let kpi: Kpi
-  export let currentProject: Project | undefined
-
-  $: defaultTimeReportDay = currentProject?.defaultTimeReportDay
+  export let kpi: WithLookup<Kpi>
 
   $: if (sum === undefined) {
     getKpiReports(kpi, (res) => {

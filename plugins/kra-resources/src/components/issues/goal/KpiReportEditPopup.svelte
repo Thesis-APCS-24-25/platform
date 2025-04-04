@@ -23,10 +23,10 @@
   import { UserBox } from '@hcengineering/contact-resources'
   import contact, { Employee } from '@hcengineering/contact'
   import TimeReportDayDropdown from '../timereport/TimeReportDayDropdown.svelte'
-  import { AttachedData, Ref, Space } from '@hcengineering/core'
+  import { AttachedData, Ref, Space, WithLookup } from '@hcengineering/core'
 
   export let issue: Issue | undefined = undefined
-  export let kpi: Kpi
+  export let kpi: WithLookup<Kpi>
   export let sum: number
 
   const space: Ref<Space> | undefined = issue?.space
@@ -70,7 +70,7 @@
     <div class="clear-mins">
       <EditBox bind:value={data.value} format="number" placeholder={kra.string.Goal} />
     </div>
-    <span class="unit">/ {kpi.target} {kpi.unit}</span>
+    <span class="unit">/ {kpi.target} ({kpi.$lookup?.unit?.name})</span>
   </div>
   <div class="mt-4">
     <EditBox placeholder={kra.string.Comment} bind:value={data.comment} />

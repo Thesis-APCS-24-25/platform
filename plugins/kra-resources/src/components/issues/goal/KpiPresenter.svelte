@@ -43,15 +43,16 @@
 
     <div class="separator"></div>
 
-    <span>
-      <strong>{sum}</strong>
-      {#if value.unit}
-        <span> {value.unit}</span>
-      {/if}
-      {#if value.target > 0}
-        <span> / {value.target}</span>
-      {/if}
-    </span>
+    {#if value.$lookup?.unit?.prefix === true}
+      <span> {value.$lookup.unit.symbol}</span>
+    {/if}
+    <strong>{sum}</strong>
+    {#if value.$lookup?.unit?.prefix === false}
+      <span> {value.$lookup.unit.symbol}</span>
+    {/if}
+    {#if value.target > 0}
+      <span> / {value.target}</span>
+    {/if}
   </GoalPresenterContainer>
 {/if}
 

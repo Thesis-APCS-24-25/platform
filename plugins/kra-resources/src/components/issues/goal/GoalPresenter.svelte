@@ -35,6 +35,11 @@
         } else {
           _value = undefined
         }
+      },
+      {
+        lookup: {
+          unit: kra.class.Unit
+        }
       }
     )
   }
