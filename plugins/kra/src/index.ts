@@ -65,8 +65,14 @@ export interface KpiReport extends AttachedDoc {
 
 export interface Kpi extends Goal {
   target: number
-  unit: string
+  unit: Ref<Unit>
   reports: CollectionSize<KpiReport>
+}
+
+export interface Unit extends Doc {
+  name: string
+  symbol: string
+  prefix: boolean
 }
 
 export interface RatingScale extends Goal {
@@ -340,6 +346,7 @@ export * from './analytics'
 
 const pluginState = plugin(kraId, {
   class: {
+    Unit: '' as Ref<Class<Unit>>,
     Goal: '' as Ref<Class<Goal>>,
     Kpi: '' as Ref<Class<Kpi>>,
     KpiReport: '' as Ref<Class<KpiReport>>,

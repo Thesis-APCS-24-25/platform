@@ -125,7 +125,9 @@ import GoalPresenter from './components/issues/goal/GoalPresenter.svelte'
 import KpiPresenter from './components/issues/goal/KpiPresenter.svelte'
 import RatingScalePresenter from './components/issues/goal/RatingScalePresenter.svelte'
 import KpiObjectPresenter from './components/issues/goal/KpiObjectPresenter.svelte'
+import AddUnitPopup from './components/issues/goal/unit/AddUnitPopup.svelte'
 import KpiReport from './components/issues/goal/KpiReport.svelte'
+import UnitPresenter from './components/issues/goal/unit/UnitPresenter.svelte'
 import './styles/_colors.scss'
 
 export { default as AssigneeEditor } from './components/issues/AssigneeEditor.svelte'
@@ -333,7 +335,9 @@ export default async (): Promise<Resources> => ({
     KpiPresenter,
     RatingScalePresenter,
     KpiReport,
-    KpiObjectPresenter
+    KpiObjectPresenter,
+    AddUnitPopup,
+    UnitPresenter,
   },
   completion: {
     IssueQuery: async (

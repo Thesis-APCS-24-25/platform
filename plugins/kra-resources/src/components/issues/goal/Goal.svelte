@@ -1,33 +1,51 @@
 <script lang="ts">
-  import { Goal, Issue } from '@hcengineering/kra'
-  import {
-    Button,
-    IconAdd,
-    IconScale,
-    Label,
-    closeTooltip,
-    showPopup,
-    Chevron,
-    ExpandCollapse,
-    ButtonIcon,
-    IconInfo,
-    IconDetails
-  } from '@hcengineering/ui'
-  import tracker from '../../../plugin'
+  import { Goal, Issue, Kpi, RatingScale } from '@hcengineering/kra'
+  import { IconAdd, Label, showPopup, Chevron, ExpandCollapse, ButtonIcon, IconDetails } from '@hcengineering/ui'
   import { getGoal } from '../../../utils/goal'
   import Icon from '@hcengineering/ui/src/components/Icon.svelte'
-  import RatingScale from './RatingScale.svelte'
-  import Kpi from './Kpi.svelte'
+  import RatingScaleEditor from './RatingScale.svelte'
+  import KpiEditor from './Kpi.svelte'
   import AddGoalPopup from './AddGoalPopup.svelte'
+  import { createQuery } from '@hcengineering/presentation'
+  import kra from '../../../plugin'
+  import { WithLookup } from '@hcengineering/core'
 
   export let issue: Issue
 
   let goal: Goal | null = null
   let isCollapsed = false
 
-  $: getGoal(issue, (v) => {
-    goal = v
-  })
+  const goalQuery = createQuery()
+
+  $: goalQuery.query(
+    kra.class.Goal,
+    {
+      _id: issue.goal
+    },
+    (res) => {
+      if (res.length > 0) {
+        goal = res[0]
+      } else {
+        goal = null
+      }
+    },
+    {
+      lookup: {
+        unit: kra.class.Unit
+      }
+    }
+  )
+
+  let kpi: Kpi | null = null
+  let ratingScale: RatingScale | null = null
+
+  $: if (goal !== null) {
+    if (goal._class === kra.class.Kpi) {
+      kpi = goal as WithLookup<Kpi>
+    } else if (goal._class === kra.class.RatingScale) {
+      ratingScale = goal as RatingScale
+    }
+  }
 
   function handleCreateGoal (e: MouseEvent): void {
     e.stopPropagation()
@@ -44,7 +62,7 @@
 <div class="goal-section">
   <div class="header" class:collapsed={isCollapsed}>
     <Icon icon={IconDetails} size="medium" fill={'var(--caption-color)'} />
-    <Label label={tracker.string.Goal} />
+    <Label label={kra.string.Goal} />
     <button
       on:click={() => {
         isCollapsed = !isCollapsed
@@ -52,37 +70,20 @@
     >
       <Chevron size={'small'} expanded={!isCollapsed} outline fill={'var(--caption-color)'} marginRight={'.375rem'} />
     </button>
-    <!-- <div class="buttons"> -->
-    <!--   <Button -->
-    <!--     icon={goal ? IconScale : IconAdd} -->
-    <!--     kind={'ghost'} -->
-    <!--     showTooltip={{ label: goal ? tracker.string.ChangeGoal : tracker.string.AttachGoal, direction: 'bottom' }} -->
-    <!--     on:click={() => { -->
-    <!--       showPopup( -->
-    <!--         tracker.component.SelectGoal, -->
-    <!--         { -->
-    <!--           currentGoal: goal, -->
-    <!--           onSelect: handleAttachGoal -->
-    <!--         }, -->
-    <!--         'top' -->
-    <!--       ) -->
-    <!--     }} -->
-    <!--   /> -->
-    <!-- </div> -->
   </div>
 
   {#if !isCollapsed}
     <ExpandCollapse isExpanded={!isCollapsed}>
       <div class="content">
         {#if goal}
-          {#if goal._class === tracker.class.Kpi}
-            <Kpi {issue} kpi={goal} />
-          {:else}
-            <RatingScale ratingScale={goal} {issue} />
+          {#if kpi}
+            <KpiEditor {issue} {kpi} />
+          {:else if ratingScale}
+            <RatingScaleEditor {issue} {ratingScale} />
           {/if}
         {:else}
           <div class="empty-state">
-            <span>{tracker.string.NoGoalAttached}</span>
+            <span>{kra.string.NoGoalAttached}</span>
             <ButtonIcon icon={IconAdd} kind="tertiary" size="small" on:click={handleCreateGoal} />
           </div>
         {/if}

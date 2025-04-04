@@ -49,6 +49,11 @@ export default mergeIds(kraId, tracker, {
     IssueCategory: '' as Ref<ObjectSearchCategory>
   },
   string: {
+    AddDescriptionPlaceholder: '' as IntlString,
+    AddSympolPlaceholder: '' as IntlString,
+    Prefix: '' as IntlString,
+    AddUnit: '' as IntlString,
+    SelectUnit: '' as IntlString,
     AddNamePlaceholder: '' as IntlString,
     Unselected: '' as IntlString,
     ChooseGoal: '' as IntlString,
@@ -62,7 +67,6 @@ export default mergeIds(kraId, tracker, {
     NoGoalAttached: '' as IntlString,
     Goal: '' as IntlString,
     More: '' as IntlString,
-    Unit: '' as IntlString,
     Value: '' as IntlString,
     Target: '' as IntlString,
     Delete: '' as IntlString,
@@ -330,6 +334,8 @@ export default mergeIds(kraId, tracker, {
     RoleLabel: '' as IntlString
   },
   component: {
+    UnitPresenter: '' as AnyComponent,
+    AddUnitPopup: '' as AnyComponent,
     KpiObjectPresenter: '' as AnyComponent,
     KpiReport: '' as AnyComponent,
     NopeComponent: '' as AnyComponent,

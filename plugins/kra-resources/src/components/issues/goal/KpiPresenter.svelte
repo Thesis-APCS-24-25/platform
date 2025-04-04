@@ -1,14 +1,14 @@
 <script lang="ts">
-  import { Issue, Kpi, KpiReport } from '@hcengineering/kra'
+  import { Issue, Kpi } from '@hcengineering/kra'
   import KpiProgressCircle from './KpiProgressCircle.svelte'
   import GoalPresenterContainer from './GoalPresenterContainer.svelte'
   import { ButtonKind, ButtonSize, eventToHTMLElement, Loading, showPopup } from '@hcengineering/ui'
   import { getKpiReports } from '../../../utils/goal'
-  import KpiReportEditPopup from './KpiReportEditPopup.svelte'
   import KpiReportsPopup from './KpiReportsPopup.svelte'
+  import { WithLookup } from '@hcengineering/core'
 
-  export let value: Kpi
-  export let issue: Issue
+  export let value: WithLookup<Kpi>
+  export let issue: WithLookup<Issue>
   export let sum: number | undefined = undefined
   export let kind: ButtonKind = 'regular'
   export let size: ButtonSize = 'small'

@@ -40,6 +40,7 @@ import {
   Model,
   Prop,
   ReadOnly,
+  TypeBoolean,
   TypeCollaborativeDoc,
   TypeDate,
   TypeMarkup,
@@ -52,7 +53,7 @@ import {
 import attachment from '@hcengineering/model-attachment'
 import core, { TAttachedDoc, TDoc, TStatus, TType } from '@hcengineering/model-core'
 import task, { TTask, TProject as TTaskProject } from '@hcengineering/model-task'
-import { getEmbeddedLabel, type IntlString } from '@hcengineering/platform'
+import { Asset, getEmbeddedLabel, type IntlString } from '@hcengineering/platform'
 import tags, { type TagElement } from '@hcengineering/tags'
 import time, { type ToDo } from '@hcengineering/time'
 import {
@@ -73,7 +74,8 @@ import {
   type Goal,
   type Kpi,
   type RatingScale,
-  type KpiReport
+  type KpiReport,
+  Unit
 } from '@hcengineering/kra'
 import kra from './plugin'
 import { type TaskType } from '@hcengineering/task'
@@ -91,13 +93,25 @@ export class TGoal extends TDoc implements Goal {
     description!: string
 }
 
+@Model(kra.class.Unit, core.class.Type, DOMAIN_KRA)
+export class TUnit extends TDoc implements Unit {
+  @Prop(TypeString(), kra.string.Name)
+    name!: string
+
+  @Prop(TypeString(), kra.string.Symbol)
+    symbol!: string
+
+  @Prop(TypeBoolean(), kra.string.Prefix)
+    prefix!: boolean
+}
+
 @Model(kra.class.Kpi, kra.class.Goal)
 export class TKpi extends TGoal implements Kpi {
   @Prop(TypeString(), kra.string.Target)
     target!: number
 
-  @Prop(TypeString(), kra.string.Unit)
-    unit!: string
+  @Prop(TypeRef(kra.class.Unit), kra.string.Unit)
+    unit!: Ref<Unit>
 
   @Prop(TypeString(), kra.string.Value)
     reports!: number

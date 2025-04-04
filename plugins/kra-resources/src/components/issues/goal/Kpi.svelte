@@ -10,18 +10,16 @@ distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRAN
 // See the License for the specific language governing permissions and limitations under the License.
 -->
 <script lang="ts">
-  import { Issue, Kpi } from '@hcengineering/kra'
+  import { Issue, Kpi, KpiReport, Unit } from '@hcengineering/kra'
   import { EditBox, eventToHTMLElement, showPopup } from '@hcengineering/ui'
-  import KpiEditPopup from './KpiEditPopup.svelte'
   import KpiReportsPopup from '../goal/KpiReportsPopup.svelte'
   import { getKpiReports } from '../../../utils/goal'
   import KpiProgressBar from './KpiProgressBar.svelte'
+  import { WithLookup } from '@hcengineering/core'
 
   export let issue: Issue
-  export let kpi: Kpi
+  export let kpi: WithLookup<Kpi>
   export let focusIndex: number | undefined = undefined
-
-  const progress = Math.min(((kpi.value ?? 0) / kpi.target) * 100, 100) || 0
 
   let kpiReports: KpiReport[] = []
 
@@ -31,7 +29,7 @@ distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRAN
     kpiReports = res
   })
 
-  function handleEdit(e: MouseEvent) {
+  function handleEdit (e: MouseEvent) {
     showPopup(KpiReportsPopup, { sum, kpi, currentProject: issue.space, issue }, eventToHTMLElement(e))
   }
 </script>
@@ -47,7 +45,7 @@ distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRAN
       <span class="value-value">{sum}</span>
       <span class="value-target"> / {kpi.target}</span>
     </div>
-    <span class="unit"> {kpi.unit}</span>
+    <span class="unit"> {kpi.$lookup?.unit?.name}</span>
     <KpiProgressBar value={sum} max={kpi.target} />
   </button>
 </div>

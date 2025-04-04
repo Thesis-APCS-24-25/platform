@@ -64,6 +64,10 @@
     <DropdownLabelsIntl {items} label={kra.string.ChooseGoal} bind:selected />
   </svelte:fragment>
 
+  <svelte:fragment slot="pool">
+    <slot name="pool" />
+  </svelte:fragment>
+
   {#if selected === 'kpi'}
     <AddKpi bind:canSave={canSaveKpi} bind:this={form} bind:issueId />
   {:else if selected === 'rating-scale'}
