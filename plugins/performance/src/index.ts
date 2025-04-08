@@ -29,7 +29,6 @@ export interface ReviewSession extends Project {
   reviewSessionStart: Timestamp
   reviewSessionEnd: Timestamp
   kras?: Arr<Ref<KRA>>
-  team: Ref<Team>
 }
 
 export interface KRA extends Task {

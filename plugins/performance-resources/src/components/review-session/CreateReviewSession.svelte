@@ -1,51 +1,57 @@
 <script lang="ts">
-    import { Timestamp } from '@hcengineering/core'
-    import { Card, getClient } from '@hcengineering/presentation'
-    import {
-      createFocusManager,
-      DatePresenter,
-      EditBox,
-      FocusHandler,
-    } from '@hcengineering/ui'
-    import { createEventDispatcher } from 'svelte'
+  import { getCurrentAccount, Ref, Space, Timestamp } from '@hcengineering/core'
+  import { Card, getClient } from '@hcengineering/presentation'
+  import {
+    createFocusManager,
+    DatePresenter,
+    EditBox,
+    FocusHandler,
+  } from '@hcengineering/ui'
+  import { createEventDispatcher } from 'svelte'
   
-    import performance from '../../plugin'
-    import { createReviewSession } from '../../utils/ReviewSessionUtils'
+  import performance from '../../plugin'
+  import { createReviewSession } from '../../utils/ReviewSessionUtils'
+  import { SpaceSelector } from '@hcengineering/presentation'
+  import kraTeam, { Team } from '@hcengineering/kra-team'
+  import TeamPresenter from '../team/TeamPresenter.svelte'
   
-    // export function canClose (): boolean {
-    //   return object.title === ''
-    // }
+  // export function canClose (): boolean {
+  //   return object.title === ''
+  // }
+  const me = getCurrentAccount()
+
+  export let team: Team | undefined
+
+  const dispatch = createEventDispatcher()
+  let client = getClient()
+  let name: string = ''
+  let description: string = ''
+  let startDate: Timestamp
+  let endDate: Timestamp
+  let currentTeam: Ref<Space> | undefined = undefined
+
+  $: if (team !== undefined) {
+    currentTeam = team!._id as Ref<Space>
+  }
+
+
+  $: canSave = true
+
+  async function create (): Promise<void> {
+    await createReviewSession(
+      client, 
+      name, 
+      description, 
+      startDate, 
+      endDate, 
+      currentTeam!,
+      performance.ids.ClassingProjectType
+    )
+    dispatch('close', name)
+  }
   
-    // export let space: Ref<Space>
-  
-    const dispatch = createEventDispatcher()
-    let client = getClient()
-    let name: string = ''
-    let description: string = ''
-    let startDate: Timestamp
-    let endDate: Timestamp
-  
-    // $: if (_space !== space) _parent = undefined
-    $: canSave = true
-  
-    // function chooseIcon (): void {
-    //   const { icon, color } = object
-    //   const icons = [performance.icon.Document, performance.icon.Teamspace]
-    //   showPopup(IconPicker, { icon, color, icons }, 'top', (result) => {
-    //     if (result !== undefined && result !== null) {
-    //       object.icon = result.icon
-    //       object.color = result.color
-    //     }
-    //   })
-    // }
-  
-    async function create (): Promise<void> {
-      await createReviewSession(client, name, description, startDate, endDate, performance.ids.ClassingProjectType)
-      dispatch('close', name)
-    }
-  
-    const manager = createFocusManager()
-  </script>
+  const manager = createFocusManager()
+</script>
   
   <FocusHandler {manager} />
   
@@ -58,6 +64,23 @@
     }}
     on:changeContent
   >
+    <svelte:fragment slot="header">
+      <SpaceSelector
+        _class={kraTeam.class.Team}
+        label={performance.string.SelectTeam}
+        bind:space={currentTeam}
+        kind={'regular'}
+        size={'small'}
+        component={TeamPresenter}
+        query={
+          {
+            members: me._id
+          }
+        }
+        defaultIcon={kraTeam.icon.Teams}
+      />
+    </svelte:fragment>
+
     <div class="flex-row-center clear-mins">
       <EditBox
         placeholder={performance.string.ReviewSessionNamePlaceholder}

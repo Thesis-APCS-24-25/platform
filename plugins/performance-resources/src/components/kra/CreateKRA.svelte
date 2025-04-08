@@ -82,8 +82,6 @@
   boardQuery.query(performance.class.ReviewSession, {}, (res) => {
     boards = res
   })
-
-  $: currentReviewSession = boards.find((it) => it._id === _space)
 </script>
   
   <Card

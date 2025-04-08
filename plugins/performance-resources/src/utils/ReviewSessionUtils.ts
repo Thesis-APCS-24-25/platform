@@ -1,12 +1,11 @@
 import performance, { type ReviewSession } from '@hcengineering/performance'
-import core, { getCurrentAccount, Timestamp, type Ref, type TxOperations } from '@hcengineering/core'
+import { getCurrentAccount, Timestamp, type Ref, type TxOperations, type Space } from '@hcengineering/core'
 import type { ProjectType } from '@hcengineering/task'
 import {
   EastSideColor,
   FeijoaColor,
   FernColor,
   FlamingoColor,
-  getCurrentResolvedLocation,
   MalibuColor,
   MediumTurquoiseColor,
   MoodyBlueColor,
@@ -14,7 +13,6 @@ import {
   SeaBuckthornColor,
   SeagullColor
 } from '@hcengineering/ui'
-import { Team } from '@hcengineering/kra-team'
 
 export async function createReviewSession (
   client: TxOperations,
@@ -22,10 +20,10 @@ export async function createReviewSession (
   description: string,
   reviewSessionStart: Timestamp,
   reviewSessionEnd: Timestamp,
-  team: Ref<Team>,
+  team: Ref<Space>,
   type: Ref<ProjectType>
 ): Promise<Ref<ReviewSession>> {
-  const reviewSessionRef = await client.createDoc(performance.class.ReviewSession, core.space.Space, {
+  const reviewSessionRef = await client.createDoc(performance.class.ReviewSession, team, {
     reviewSessionStatus: performance.reviewSessionStatus.Drafting,
     reviewSessionStart,
     reviewSessionEnd,
@@ -34,8 +32,7 @@ export async function createReviewSession (
     private: false,
     archived: false,
     members: [getCurrentAccount()._id],
-    team,
-    type
+    type,
   })
 
   return reviewSessionRef
