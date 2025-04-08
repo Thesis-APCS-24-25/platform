@@ -50,7 +50,8 @@ import {
   TTypeEstimation,
   TTypeIssuePriority,
   TTypeRemainingTime,
-  TTypeReportedTime
+  TTypeReportedTime,
+  TUnit
 } from './types'
 import { defineViewlets } from './viewlets'
 
@@ -87,7 +88,7 @@ export const classicIssueTaskStatuses: TaskStatusFactory[] = [
   }
 ]
 
-function defineSortAndGrouping(builder: Builder): void {
+function defineSortAndGrouping (builder: Builder): void {
   builder.mixin(tracker.class.IssueStatus, core.class.Class, view.mixin.SortFuncs, {
     func: tracker.function.IssueStatusSort
   })
@@ -105,7 +106,7 @@ function defineSortAndGrouping(builder: Builder): void {
   })
 }
 
-function defineNotifications(builder: Builder): void {
+function defineNotifications (builder: Builder): void {
   builder.createDoc(
     notification.class.NotificationGroup,
     core.space.Model,
@@ -151,7 +152,7 @@ function defineNotifications(builder: Builder): void {
 /**
  * Define filters
  */
-function defineFilters(builder: Builder): void {
+function defineFilters (builder: Builder): void {
   //
   // Issue
   //
@@ -219,7 +220,7 @@ function defineFilters(builder: Builder): void {
   })
 }
 
-function defineApplication(
+function defineApplication (
   builder: Builder,
   opt: {
     myIssuesId: string
@@ -340,8 +341,9 @@ function defineApplication(
   )
 }
 
-export function createModel(builder: Builder): void {
+export function createModel (builder: Builder): void {
   builder.createModel(
+    TUnit,
     TKpi,
     TKpiReport,
     TGoal,
@@ -558,7 +560,7 @@ export function createModel(builder: Builder): void {
   defineSpaceType(builder)
 }
 
-function defineSpaceType(builder: Builder): void {
+function defineSpaceType (builder: Builder): void {
   builder.createModel(TClassicProjectTypeData)
   builder.createDoc(
     task.class.ProjectTypeDescriptor,

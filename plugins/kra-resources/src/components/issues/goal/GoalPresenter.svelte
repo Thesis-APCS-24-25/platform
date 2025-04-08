@@ -1,31 +1,44 @@
 <script lang="ts">
-  import {
-    ButtonKind,
-    ButtonSize,
-    Component
-  } from '@hcengineering/ui'
+  import { ButtonKind, ButtonSize, Component } from '@hcengineering/ui'
   import { Goal, Issue } from '@hcengineering/kra'
-  import { getClient } from '@hcengineering/presentation'
+  import { createQuery, getClient } from '@hcengineering/presentation'
   import view, { AttributePresenter } from '@hcengineering/view'
-  import { Doc, Space } from '@hcengineering/core'
-  import { getGoal } from '../utils/goal'
-  export let value: Issue
+  import { Doc, Space, WithLookup } from '@hcengineering/core'
+  import { getGoal } from '../../../utils/goal'
+  import { ObjectPresenter } from '@hcengineering/view-resources'
+  import kra from '../../../plugin'
 
-  export let kind: ButtonKind = 'regular'
+  export let value: WithLookup<Issue>
+
+  export let kind: GoalPresenterKind
   export let size: ButtonSize = 'small'
   export let justify: 'left' | 'center' = 'left'
   export let width: string | undefined = undefined
   export let focusIndex: number | undefined = undefined
 
   const client = getClient()
+  const goalQuery = createQuery()
 
   let presenter: AttributePresenter | undefined
 
-  let _value: Goal | undefined
+  let _value: Goal | undefined = value.$lookup?.goal
 
-  $: getGoal(value, (res) => {
-    _value = res
-  })
+  $: if (_value === undefined) {
+    goalQuery.query(
+      kra.class.Goal,
+      {
+        _id: value.goal
+      },
+      (res) => {
+        if (res.length > 0) {
+          _value = res[0]
+        } else {
+          _value = undefined
+        }
+      }
+    )
+  }
+
   $: presenter =
     _value !== undefined
       ? client
@@ -39,6 +52,7 @@
     is={presenter.presenter}
     props={{
       value: _value,
+      issue: value,
       kind,
       size,
       justify,

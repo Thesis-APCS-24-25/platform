@@ -40,6 +40,7 @@ import {
   Model,
   Prop,
   ReadOnly,
+  TypeBoolean,
   TypeCollaborativeDoc,
   TypeDate,
   TypeMarkup,
@@ -52,7 +53,7 @@ import {
 import attachment from '@hcengineering/model-attachment'
 import core, { TAttachedDoc, TDoc, TStatus, TType } from '@hcengineering/model-core'
 import task, { TTask, TProject as TTaskProject } from '@hcengineering/model-task'
-import { getEmbeddedLabel, type IntlString } from '@hcengineering/platform'
+import { Asset, getEmbeddedLabel, type IntlString } from '@hcengineering/platform'
 import tags, { type TagElement } from '@hcengineering/tags'
 import time, { type ToDo } from '@hcengineering/time'
 import {
@@ -72,8 +73,9 @@ import {
   type TimeSpendReport,
   type Goal,
   type Kpi,
-  RatingScale,
-  KpiReport
+  type RatingScale,
+  type KpiReport,
+  Unit
 } from '@hcengineering/kra'
 import kra from './plugin'
 import { type TaskType } from '@hcengineering/task'
@@ -82,56 +84,75 @@ import preference, { TPreference } from '@hcengineering/model-preference'
 
 export const DOMAIN_KRA = 'kra' as Domain
 
-@Model(kra.class.Goal, core.class.AttachedDoc, DOMAIN_KRA)
-export class TGoal extends TAttachedDoc implements Goal {
+@Model(kra.class.Goal, core.class.Doc, DOMAIN_KRA)
+export class TGoal extends TDoc implements Goal {
   @Prop(TypeString(), kra.string.Name)
-  name!: string
+    name!: string
 
   @Prop(TypeString(), kra.string.Description)
-  description!: string
+    description!: string
+}
+
+@Model(kra.class.Unit, core.class.Type, DOMAIN_KRA)
+export class TUnit extends TDoc implements Unit {
+  @Prop(TypeString(), kra.string.Name)
+    name!: string
+
+  @Prop(TypeString(), kra.string.Symbol)
+    symbol!: string
+
+  @Prop(TypeBoolean(), kra.string.Prefix)
+    prefix!: boolean
 }
 
 @Model(kra.class.Kpi, kra.class.Goal)
 export class TKpi extends TGoal implements Kpi {
   @Prop(TypeString(), kra.string.Target)
-  target!: number
+    target!: number
 
-  @Prop(TypeString(), kra.string.Unit)
-  value!: number | null
-
-  @Prop(TypeString(), kra.string.Unit)
-  unit!: string
+  @Prop(TypeRef(kra.class.Unit), kra.string.Unit)
+    unit!: Ref<Unit>
 
   @Prop(TypeString(), kra.string.Value)
-  reports!: number
+    reports!: number
 }
 
-@Model(kra.class.KpiReport, core.class.AttachedDoc)
+@Model(kra.class.KpiReport, core.class.AttachedDoc, DOMAIN_KRA)
+@UX(kra.string.KpiReport, kra.icon.Home)
 export class TKpiReport extends TAttachedDoc implements KpiReport {
   @Prop(TypeRef(kra.class.Kpi), kra.string.Kpi)
   declare attachedTo: Ref<Kpi>
 
   @Prop(TypeDate(), kra.string.Date)
-  date!: Timestamp
+    date!: Timestamp
 
-  @Prop(TypeString(), kra.string.Value)
-  value!: number
+  @Prop(TypeNumber(), kra.string.Value)
+    value!: number
+
+  @Prop(TypeRef(contact.mixin.Employee), contact.string.Employee)
+    employee!: Ref<Employee>
+
+  @Prop(TypeString(), kra.string.Comment)
+    comment!: string
 }
 
 @Model(kra.class.RatingScale, kra.class.Goal)
 export class TRatingScale extends TGoal implements RatingScale {
   @Prop(TypeNumber(), kra.string.Name)
-  value!: number | null
+    value!: number | null
+
+  @Prop(TypeString(), kra.string.Comment)
+    comment!: string
 }
 
 @Model(kra.class.IssueStatus, core.class.Status)
 @UX(kra.string.IssueStatus, undefined, undefined, 'rank', 'name')
-export class TIssueStatus extends TStatus implements IssueStatus {}
+export class TIssueStatus extends TStatus implements IssueStatus { }
 /**
  * @public
  */
 
-export function TypeIssuePriority(): Type<IssuePriority> {
+export function TypeIssuePriority (): Type<IssuePriority> {
   return { _class: kra.class.TypeIssuePriority, label: kra.string.TypeIssuePriority }
 }
 /**
@@ -139,7 +160,7 @@ export function TypeIssuePriority(): Type<IssuePriority> {
  */
 
 @Model(kra.class.TypeIssuePriority, core.class.Type, DOMAIN_MODEL)
-export class TTypeIssuePriority extends TType {}
+export class TTypeIssuePriority extends TType { }
 /**
  * @public
  */
@@ -149,22 +170,22 @@ export class TTypeIssuePriority extends TType {}
 export class TProject extends TTaskProject implements Project {
   @Prop(TypeString(), kra.string.ProjectIdentifier)
   @Index(IndexKind.FullText)
-  identifier!: IntlString
+    identifier!: IntlString
 
   @Prop(TypeNumber(), kra.string.Number)
   @Hidden()
-  sequence!: number
+    sequence!: number
 
   @Prop(TypeRef(kra.class.IssueStatus), kra.string.DefaultIssueStatus)
-  defaultIssueStatus!: Ref<IssueStatus>
+    defaultIssueStatus!: Ref<IssueStatus>
 
   @Prop(TypeRef(contact.mixin.Employee), kra.string.DefaultAssignee)
-  defaultAssignee!: Ref<Employee>
+    defaultAssignee!: Ref<Employee>
 
   declare defaultTimeReportDay: TimeReportDayType
 
   @Prop(Collection(kra.class.RelatedIssueTarget), kra.string.RelatedIssues)
-  relatedIssueTargets!: number
+    relatedIssueTargets!: number
 }
 /**
  * @public
@@ -174,7 +195,7 @@ export class TProject extends TTaskProject implements Project {
 @UX(kra.string.RelatedIssues)
 export class TRelatedIssueTarget extends TDoc implements RelatedIssueTarget {
   @Prop(TypeRef(kra.class.Project), kra.string.Project)
-  target!: Ref<Project>
+    target!: Ref<Project>
 
   rule!: RelatedClassRule | RelatedSpaceRule
 }
@@ -182,21 +203,21 @@ export class TRelatedIssueTarget extends TDoc implements RelatedIssueTarget {
 /**
  * @public
  */
-export function TypeReportedTime(): Type<number> {
+export function TypeReportedTime (): Type<number> {
   return { _class: kra.class.TypeReportedTime, label: kra.string.ReportedTime }
 }
 
 /**
  * @public
  */
-export function TypeRemainingTime(): Type<number> {
+export function TypeRemainingTime (): Type<number> {
   return { _class: kra.class.TypeRemainingTime, label: kra.string.RemainingTime }
 }
 
 /**
  * @public
  */
-export function TypeEstimation(): Type<number> {
+export function TypeEstimation (): Type<number> {
   return { _class: kra.class.TypeEstimation, label: kra.string.Estimation }
 }
 
@@ -211,11 +232,11 @@ export class TIssue extends TTask implements Issue {
 
   @Prop(TypeString(), kra.string.Title)
   @Index(IndexKind.FullText)
-  title!: string
+    title!: string
 
   @Prop(TypeCollaborativeDoc(), kra.string.Description)
   @Index(IndexKind.FullText)
-  description!: MarkupBlobRef | null
+    description!: MarkupBlobRef | null
 
   @Prop(TypeRef(kra.class.IssueStatus), kra.string.Status, {
     _id: kra.attribute.IssueStatus,
@@ -228,7 +249,7 @@ export class TIssue extends TTask implements Issue {
     iconComponent: kra.activity.PriorityIcon
   })
   @Index(IndexKind.Indexed)
-  priority!: IssuePriority
+    priority!: IssuePriority
 
   @Prop(TypeNumber(), kra.string.Number)
   @Index(IndexKind.FullText)
@@ -240,14 +261,14 @@ export class TIssue extends TTask implements Issue {
   declare assignee: Ref<Person> | null
 
   @Prop(Collection(kra.class.Issue), kra.string.SubIssues)
-  subIssues!: number
+    subIssues!: number
 
   @Prop(ArrOf(TypeRef(core.class.TypeRelatedDocument)), kra.string.BlockedBy)
-  blockedBy!: RelatedDocument[]
+    blockedBy!: RelatedDocument[]
 
   @Prop(ArrOf(TypeRef(core.class.TypeRelatedDocument)), kra.string.RelatedTo)
   @Index(IndexKind.Indexed)
-  relations!: RelatedDocument[]
+    relations!: RelatedDocument[]
 
   parents!: IssueParentInfo[]
 
@@ -263,22 +284,22 @@ export class TIssue extends TTask implements Issue {
   declare dueDate: Timestamp | null
 
   @Prop(TypeEstimation(), kra.string.Estimation)
-  estimation!: number
+    estimation!: number
 
   @Prop(TypeReportedTime(), kra.string.ReportedTime)
-  reportedTime!: number
+    reportedTime!: number
 
   @Prop(TypeRemainingTime(), kra.string.RemainingTime)
   @ReadOnly()
-  remainingTime!: number
+    remainingTime!: number
 
   @Prop(Collection(kra.class.TimeSpendReport), kra.string.TimeSpendReports)
-  reports!: number
+    reports!: number
 
   declare childInfo: IssueChildInfo[]
 
   @Prop(Collection(time.class.ToDo), getEmbeddedLabel('Action Items'))
-  todos?: CollectionSize<ToDo>
+    todos?: CollectionSize<ToDo>
 }
 /**
  * @public
@@ -296,43 +317,43 @@ export class TIssue extends TTask implements Issue {
 export class TIssueTemplate extends TDoc implements IssueTemplate {
   @Prop(TypeString(), kra.string.Title)
   @Index(IndexKind.FullText)
-  title!: string
+    title!: string
 
   @Prop(TypeMarkup(), kra.string.Description)
   @Index(IndexKind.FullText)
-  description!: Markup
+    description!: Markup
 
   @Prop(TypeIssuePriority(), kra.string.Priority)
-  priority!: IssuePriority
+    priority!: IssuePriority
 
   @Prop(TypeRef(contact.class.Person), kra.string.Assignee)
-  assignee!: Ref<Person> | null
+    assignee!: Ref<Person> | null
 
   @Prop(ArrOf(TypeRef(tags.class.TagElement)), kra.string.Labels)
-  labels?: Ref<TagElement>[]
+    labels?: Ref<TagElement>[]
 
   @Prop(TypeRef(task.class.TaskType), task.string.TaskType)
-  kind?: Ref<TaskType>
+    kind?: Ref<TaskType>
 
   declare space: Ref<Project>
 
   @Prop(TypeDate(DateRangeMode.DATETIME), kra.string.DueDate)
-  dueDate!: Timestamp | null
+    dueDate!: Timestamp | null
 
   @Prop(TypeEstimation(), kra.string.Estimation)
-  estimation!: number
+    estimation!: number
 
   @Prop(ArrOf(TypeRef(kra.class.IssueTemplate)), kra.string.IssueTemplate)
-  children!: IssueTemplateChild[]
+    children!: IssueTemplateChild[]
 
   @Prop(Collection(chunter.class.ChatMessage), kra.string.Comments)
-  comments!: number
+    comments!: number
 
   @Prop(Collection(attachment.class.Attachment), kra.string.Attachments)
-  attachments!: number
+    attachments!: number
 
   @Prop(ArrOf(TypeRef(core.class.TypeRelatedDocument)), kra.string.RelatedTo)
-  relations!: RelatedDocument[]
+    relations!: RelatedDocument[]
 }
 /**
  * @public
@@ -345,29 +366,29 @@ export class TTimeSpendReport extends TAttachedDoc implements TimeSpendReport {
   declare attachedTo: Ref<Issue>
 
   @Prop(TypeRef(contact.mixin.Employee), contact.string.Employee)
-  employee!: Ref<Employee>
+    employee!: Ref<Employee>
 
   @Prop(TypeDate(), kra.string.TimeSpendReportDate)
-  date!: Timestamp | null
+    date!: Timestamp | null
 
   @Prop(TypeNumber(), kra.string.TimeSpendReportValue)
-  value!: number
+    value!: number
 
   @Prop(TypeString(), kra.string.TimeSpendReportDescription)
-  description!: string
+    description!: string
 }
 
 @UX(core.string.Number)
 @Model(kra.class.TypeReportedTime, core.class.Type)
-export class TTypeReportedTime extends TType {}
+export class TTypeReportedTime extends TType { }
 
 @UX(core.string.Number)
 @Model(kra.class.TypeEstimation, core.class.Type)
-export class TTypeEstimation extends TType {}
+export class TTypeEstimation extends TType { }
 
 @UX(core.string.Number)
 @Model(kra.class.TypeRemainingTime, core.class.Type)
-export class TTypeRemainingTime extends TType {}
+export class TTypeRemainingTime extends TType { }
 
 @Model(kra.class.ProjectTargetPreference, preference.class.Preference)
 export class TProjectTargetPreference extends TPreference implements ProjectTargetPreference {
@@ -375,10 +396,10 @@ export class TProjectTargetPreference extends TPreference implements ProjectTarg
   declare attachedTo: Ref<Project>
 
   @Prop(TypeDate(), kra.string.LastUpdated)
-  usedOn!: Timestamp
+    usedOn!: Timestamp
 
   @Prop(TypeRecord(), getEmbeddedLabel('Properties'))
-  props?: { key: string; value: any }[]
+    props?: { key: string, value: any }[]
 }
 
 @Mixin(kra.mixin.ClassicProjectTypeData, kra.class.Project)
@@ -389,4 +410,4 @@ export class TClassicProjectTypeData extends TProject implements RolesAssignment
 
 @Mixin(kra.mixin.IssueTypeData, kra.class.Issue)
 @UX(getEmbeddedLabel('Issue'), kra.icon.Issue)
-export class TIssueTypeData extends TIssue {}
+export class TIssueTypeData extends TIssue { }

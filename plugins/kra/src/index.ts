@@ -49,7 +49,7 @@ import { Action, ActionCategory, IconProps } from '@hcengineering/view'
 
 export * from './analytics'
 
-export interface Goal extends AttachedDoc {
+export interface Goal extends Doc {
   name: string
   description: string
 }
@@ -59,23 +59,31 @@ export interface KpiReport extends AttachedDoc {
   attachedToClass: Ref<Class<Kpi>>
   date: Timestamp | null
   value: number
+  employee: Ref<Employee> | null
+  comment: string
 }
 
 export interface Kpi extends Goal {
   target: number
-  value: number | null
-  unit: string
+  unit: Ref<Unit>
   reports: CollectionSize<KpiReport>
+}
+
+export interface Unit extends Doc {
+  name: string
+  symbol: string
+  prefix: boolean
 }
 
 export interface RatingScale extends Goal {
   value: number | null
+  comment: string
 }
 
 /**
  * @public
  */
-export interface IssueStatus extends Status {}
+export interface IssueStatus extends Status { }
 
 /**
  * @public
@@ -96,7 +104,7 @@ export interface ProjectTargetPreference extends Preference {
 
   usedOn: Timestamp
 
-  props?: { key: string; value: any }[]
+  props?: { key: string, value: any }[]
 }
 
 export type RelatedIssueKind = 'classRule' | 'spaceRule'
@@ -338,6 +346,7 @@ export * from './analytics'
 
 const pluginState = plugin(kraId, {
   class: {
+    Unit: '' as Ref<Class<Unit>>,
     Goal: '' as Ref<Class<Goal>>,
     Kpi: '' as Ref<Class<Kpi>>,
     KpiReport: '' as Ref<Class<KpiReport>>,

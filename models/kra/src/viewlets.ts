@@ -77,7 +77,7 @@ export const issuesOptions = (kanban: boolean): ViewOptionsModel => ({
 
 export function issueConfig(
   key: string = '',
-  compact: boolean = false,
+  compact: boolean = false
 ): (BuildModelKey | string)[] {
   return [
     {
@@ -120,12 +120,6 @@ export function issueConfig(
       presenter: kra.component.SubIssuesSelector,
       props: {}
     },
-    {
-      key: '',
-      label: kra.string.Goal,
-      presenter: kra.component.GoalPresenter,
-      props: {},
-    },
     { key: 'comments', displayProps: { key: key + 'comments', suffix: true } },
     { key: 'attachments', displayProps: { key: key + 'attachments', suffix: true } },
     { key: '', displayProps: { grow: true } },
@@ -148,6 +142,17 @@ export function issueConfig(
       presenter: kra.component.DueDatePresenter,
       displayProps: { key: key + 'dueDate', compression: true },
       props: { kind: 'list' }
+    },
+    {
+      key: '',
+      label: kra.string.Goal,
+      presenter: kra.component.GoalPresenter,
+      props: { kind: 'list', size: 'small' },
+      displayProps: {
+        fixed: 'right',
+        dividerBefore: true,
+        optional: true
+      }
     },
     {
       key: '',

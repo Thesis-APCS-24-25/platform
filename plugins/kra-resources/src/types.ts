@@ -67,3 +67,5 @@ export const issuesGroupBySorting: Record<IssuesGrouping, SortingQuery<Issue>> =
   [IssuesGrouping.Priority]: { priority: SortingOrder.Ascending },
   [IssuesGrouping.NoGrouping]: { rank: SortingOrder.Ascending }
 }
+
+export type GoalPresenterKind = 'list' | 'kanban' | 'panel'

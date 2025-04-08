@@ -22,7 +22,7 @@ import kra from './plugin'
 /**
  * Define presenters
  */
-export function definePresenters(builder: Builder): void {
+export function definePresenters (builder: Builder): void {
   //
   // Issue
   //
@@ -61,6 +61,20 @@ export function definePresenters(builder: Builder): void {
   //
   builder.mixin(kra.class.TimeSpendReport, core.class.Class, view.mixin.ObjectPresenter, {
     presenter: kra.component.TimeSpendReport
+  })
+
+  //
+  // Kpi Report
+  //
+  builder.mixin(kra.class.KpiReport, core.class.Class, view.mixin.ObjectPresenter, {
+    presenter: kra.component.KpiReport
+  })
+
+  //
+  // Unit
+  //
+  builder.mixin(kra.class.Unit, core.class.Class, view.mixin.ObjectPresenter, {
+    presenter: kra.component.UnitPresenter
   })
 
   //
@@ -111,7 +125,9 @@ export function definePresenters(builder: Builder): void {
   )
 
   classPresenter(builder, kra.class.Kpi, kra.component.KpiPresenter, kra.component.KpiEditor)
-
+  builder.mixin(kra.class.Kpi, core.class.Class, view.mixin.ObjectPresenter, {
+    presenter: kra.component.KpiObjectPresenter
+  })
   classPresenter(
     builder,
     kra.class.RatingScale,

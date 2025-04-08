@@ -1,15 +1,26 @@
 <script lang="ts">
-  import { ButtonKind, ButtonSize } from '@hcengineering/ui'
-  import { RatingScale } from '@hcengineering/kra'
+  import { ButtonKind, ButtonSize, eventToHTMLElement, showPopup } from '@hcengineering/ui'
+  import { Issue, RatingScale } from '@hcengineering/kra'
   import RatingScaleCircle from './RatingScaleCircle.svelte'
   import GoalPresenterContainer from './GoalPresenterContainer.svelte'
+  import RatingScaleEditPopup from './RatingScaleEditPopup.svelte'
 
   export let value: RatingScale
+  export let issue: Issue
   export let size: ButtonSize = 'small'
   export let kind: ButtonKind = 'regular'
 
-  function handleOpen(e: CustomEvent<any>): void {
-    alert('RatingScalePresenter.handleOpen')
+  function handleOpen (e: MouseEvent): void {
+    e.stopPropagation()
+    showPopup(
+      RatingScaleEditPopup,
+      {
+        issue,
+        ratingScale: value,
+        value: value.value
+      },
+      eventToHTMLElement(e)
+    )
   }
 </script>
 
