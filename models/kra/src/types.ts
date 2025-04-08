@@ -300,6 +300,9 @@ export class TIssue extends TTask implements Issue {
 
   @Prop(Collection(time.class.ToDo), getEmbeddedLabel('Action Items'))
     todos?: CollectionSize<ToDo>
+
+  @Prop(TypeRef(kra.class.Goal), kra.string.Goal)
+    goal?: Ref<Goal>
 }
 /**
  * @public
