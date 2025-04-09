@@ -53,7 +53,7 @@ import {
 import attachment from '@hcengineering/model-attachment'
 import core, { TAttachedDoc, TDoc, TStatus, TType } from '@hcengineering/model-core'
 import task, { TTask, TProject as TTaskProject } from '@hcengineering/model-task'
-import { Asset, getEmbeddedLabel, type IntlString } from '@hcengineering/platform'
+import { getEmbeddedLabel, type IntlString } from '@hcengineering/platform'
 import tags, { type TagElement } from '@hcengineering/tags'
 import time, { type ToDo } from '@hcengineering/time'
 import {
@@ -75,7 +75,8 @@ import {
   type Kpi,
   type RatingScale,
   type KpiReport,
-  Unit
+  type Report,
+  type Unit
 } from '@hcengineering/kra'
 import kra from './plugin'
 import { type TaskType } from '@hcengineering/task'
@@ -91,6 +92,12 @@ export class TGoal extends TDoc implements Goal {
 
   @Prop(TypeString(), kra.string.Description)
     description!: string
+
+  @Prop(TypeNumber(), kra.string.Value)
+    reports!: number
+
+  @Prop(TypeRef(kra.class.Unit), kra.string.Unit)
+    unit!: Ref<Unit>
 }
 
 @Model(kra.class.Unit, core.class.Type, DOMAIN_KRA)
@@ -109,12 +116,25 @@ export class TUnit extends TDoc implements Unit {
 export class TKpi extends TGoal implements Kpi {
   @Prop(TypeString(), kra.string.Target)
     target!: number
+}
 
-  @Prop(TypeRef(kra.class.Unit), kra.string.Unit)
-    unit!: Ref<Unit>
+@Model(kra.class.Report, core.class.AttachedDoc, DOMAIN_KRA)
+@UX(kra.string.Report, kra.icon.Home)
+export class TReport extends TAttachedDoc implements Report {
+  @Prop(TypeRef(kra.class.Goal), kra.string.Goal)
+  declare attachedTo: Ref<Goal>
 
-  @Prop(TypeString(), kra.string.Value)
-    reports!: number
+  @Prop(TypeDate(), kra.string.Date)
+    date!: Timestamp
+
+  @Prop(TypeNumber(), kra.string.Value)
+    value!: number
+
+  @Prop(TypeRef(contact.mixin.Employee), contact.string.Employee)
+    employee!: Ref<Employee>
+
+  @Prop(TypeString(), kra.string.Comment)
+    note!: string
 }
 
 @Model(kra.class.KpiReport, core.class.AttachedDoc, DOMAIN_KRA)
@@ -143,6 +163,9 @@ export class TRatingScale extends TGoal implements RatingScale {
 
   @Prop(TypeString(), kra.string.Comment)
     comment!: string
+
+  @Prop(TypeRef(kra.class.Unit), kra.string.Unit)
+    unit: Ref<Unit> = kra.ids.RatingScaleUnit
 }
 
 @Model(kra.class.IssueStatus, core.class.Status)

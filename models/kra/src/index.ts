@@ -46,6 +46,7 @@ import {
   TProjectTargetPreference,
   TRatingScale,
   TRelatedIssueTarget,
+  TReport,
   TTimeSpendReport,
   TTypeEstimation,
   TTypeIssuePriority,
@@ -343,6 +344,7 @@ function defineApplication (
 
 export function createModel (builder: Builder): void {
   builder.createModel(
+    TReport,
     TUnit,
     TKpi,
     TKpiReport,

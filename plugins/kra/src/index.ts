@@ -52,6 +52,7 @@ export * from './analytics'
 export interface Goal extends Doc {
   name: string
   description: string
+  reports: CollectionSize<Report>
 }
 
 export interface KpiReport extends AttachedDoc {
@@ -63,10 +64,18 @@ export interface KpiReport extends AttachedDoc {
   comment: string
 }
 
+export interface Report extends AttachedDoc {
+  attachedTo: Ref<Goal>
+  attachedToClass: Ref<Class<Goal>>
+  date: Timestamp | null
+  employee: Ref<Employee> | null
+  value: number
+  note: string
+}
+
 export interface Kpi extends Goal {
   target: number
-  unit: Ref<Unit>
-  reports: CollectionSize<KpiReport>
+  reports: CollectionSize<Report>
 }
 
 export interface Unit extends Doc {
@@ -78,6 +87,26 @@ export interface Unit extends Doc {
 export interface RatingScale extends Goal {
   value: number | null
   comment: string
+}
+
+/**
+ * @public
+ *
+ * Extensions to create a Goal reporter for Goal subclass.
+ */
+export interface GoalReporter extends Class<Goal> {
+  reporter: AnyComponent
+}
+
+export type GoalCalculator = (reports: Report[]) => number
+
+/**
+ * @public
+ *
+ * Tell how to calculate the goal value.
+ */
+export interface ReportSumarizer extends Class<Goal> {
+  sumarizer: (reports: Report[]) => number
 }
 
 /**
@@ -346,6 +375,7 @@ export * from './analytics'
 
 const pluginState = plugin(kraId, {
   class: {
+    Report: '' as Ref<Class<Report>>,
     Unit: '' as Ref<Class<Unit>>,
     Goal: '' as Ref<Class<Goal>>,
     Kpi: '' as Ref<Class<Kpi>>,
@@ -371,7 +401,8 @@ const pluginState = plugin(kraId, {
     NoParent: '' as Ref<Issue>,
     IssueDraft: '',
     IssueDraftChild: '',
-    ClassingProjectType: '' as Ref<ProjectType>
+    ClassingProjectType: '' as Ref<ProjectType>,
+    RatingScaleUnit: '' as Ref<Unit>
   },
   status: {
     Backlog: '' as Ref<Status>,
@@ -478,6 +509,7 @@ const pluginState = plugin(kraId, {
     Location: '' as Resource<(loc: Location) => Promise<ResolvedLocation | undefined>>
   },
   string: {
+    Report: '' as IntlString,
     TrackerApplication: '' as IntlString,
     ConfigLabel: '' as IntlString,
     NewRelatedIssue: '' as IntlString,
@@ -501,7 +533,7 @@ const pluginState = plugin(kraId, {
   taskTypes: {
     Issue: '' as Ref<TaskType>,
     SubIssue: '' as Ref<TaskType>
-  }
+  },
 })
 export default pluginState
 
