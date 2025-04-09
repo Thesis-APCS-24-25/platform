@@ -10,9 +10,9 @@ distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRAN
 // See the License for the specific language governing permissions and limitations under the License.
 -->
 <script lang="ts">
-  import { Issue, Kpi, KpiReport } from '@hcengineering/kra'
+  import { Issue, Kpi, Report } from '@hcengineering/kra'
   import { EditBox, eventToHTMLElement, showPopup } from '@hcengineering/ui'
-  import { getKpiReports } from '../../../utils/goal'
+  import { calculateKpiResult, getReports } from '../../../utils/goal'
   import KpiProgressBar from './KpiProgressBar.svelte'
   import { WithLookup } from '@hcengineering/core'
   import KpiReportsPopup from './KpiReportsPopup.svelte'
@@ -21,16 +21,15 @@ distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRAN
   export let kpi: WithLookup<Kpi>
   export let focusIndex: number | undefined = undefined
 
-  let kpiReports: KpiReport[] = []
+  let kpiReports: Report[] = []
 
-  $: sum = kpiReports.reduce((acc, it) => acc + it.value, 0)
-
-  $: getKpiReports(kpi, (res) => {
+  $: getReports(kpi, (res) => {
     kpiReports = res
   })
+  $: sum = calculateKpiResult(kpiReports)
 
-  function handleEdit (e: MouseEvent): void {
-    showPopup(KpiReportsPopup, { kpi, issue }, eventToHTMLElement(e))
+  function handleEdit(e: MouseEvent): void {
+    showPopup(KpiReportsPopup, { sum, kpi, issue }, eventToHTMLElement(e))
   }
 </script>
 

@@ -74,7 +74,6 @@ import {
   type Goal,
   type Kpi,
   type RatingScale,
-  type KpiReport,
   type Report,
   type Unit
 } from '@hcengineering/kra'
@@ -135,25 +134,6 @@ export class TReport extends TAttachedDoc implements Report {
 
   @Prop(TypeString(), kra.string.Comment)
     note!: string
-}
-
-@Model(kra.class.KpiReport, core.class.AttachedDoc, DOMAIN_KRA)
-@UX(kra.string.KpiReport, kra.icon.Home)
-export class TKpiReport extends TAttachedDoc implements KpiReport {
-  @Prop(TypeRef(kra.class.Kpi), kra.string.Kpi)
-  declare attachedTo: Ref<Kpi>
-
-  @Prop(TypeDate(), kra.string.Date)
-    date!: Timestamp
-
-  @Prop(TypeNumber(), kra.string.Value)
-    value!: number
-
-  @Prop(TypeRef(contact.mixin.Employee), contact.string.Employee)
-    employee!: Ref<Employee>
-
-  @Prop(TypeString(), kra.string.Comment)
-    comment!: string
 }
 
 @Model(kra.class.RatingScale, kra.class.Goal)

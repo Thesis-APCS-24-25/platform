@@ -53,15 +53,7 @@ export interface Goal extends Doc {
   name: string
   description: string
   reports: CollectionSize<Report>
-}
-
-export interface KpiReport extends AttachedDoc {
-  attachedTo: Ref<Kpi>
-  attachedToClass: Ref<Class<Kpi>>
-  date: Timestamp | null
-  value: number
-  employee: Ref<Employee> | null
-  comment: string
+  unit: Ref<Unit>
 }
 
 export interface Report extends AttachedDoc {
@@ -98,15 +90,15 @@ export interface GoalReporter extends Class<Goal> {
   reporter: AnyComponent
 }
 
-export type GoalCalculator = (reports: Report[]) => number
+export type GoalAggregateFunction = (reports: Report[]) => number
 
 /**
  * @public
  *
  * Tell how to calculate the goal value.
  */
-export interface ReportSumarizer extends Class<Goal> {
-  sumarizer: (reports: Report[]) => number
+export interface ReportAggregator extends Class<Goal> {
+  aggregator: GoalAggregateFunction
 }
 
 /**
@@ -379,7 +371,6 @@ const pluginState = plugin(kraId, {
     Unit: '' as Ref<Class<Unit>>,
     Goal: '' as Ref<Class<Goal>>,
     Kpi: '' as Ref<Class<Kpi>>,
-    KpiReport: '' as Ref<Class<KpiReport>>,
     RatingScale: '' as Ref<Class<RatingScale>>,
     Project: '' as Ref<Class<Project>>,
     Issue: '' as Ref<Class<Issue>>,
@@ -395,7 +386,8 @@ const pluginState = plugin(kraId, {
   },
   mixin: {
     ClassicProjectTypeData: '' as Ref<Mixin<Project>>,
-    IssueTypeData: '' as Ref<Mixin<Issue>>
+    IssueTypeData: '' as Ref<Mixin<Issue>>,
+    ReportAggregator: '' as Ref<Mixin<ReportAggregator>>
   },
   ids: {
     NoParent: '' as Ref<Issue>,

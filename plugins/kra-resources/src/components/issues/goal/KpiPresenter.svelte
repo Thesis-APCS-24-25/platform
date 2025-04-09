@@ -1,11 +1,11 @@
 <script lang="ts">
-  import { Issue, Kpi } from '@hcengineering/kra'
+  import { Issue, Kpi, Report } from '@hcengineering/kra'
   import KpiProgressCircle from './KpiProgressCircle.svelte'
   import GoalPresenterContainer from './GoalPresenterContainer.svelte'
   import { ButtonKind, ButtonSize, eventToHTMLElement, Loading, showPopup } from '@hcengineering/ui'
-  import { getKpiReports } from '../../../utils/goal'
   import KpiReportsPopup from './KpiReportsPopup.svelte'
   import { WithLookup } from '@hcengineering/core'
+  import { calculateKpiResult, getReports } from '../../../utils/goal'
 
   export let value: WithLookup<Kpi>
   export let issue: WithLookup<Issue>
@@ -13,11 +13,11 @@
   export let kind: ButtonKind = 'regular'
   export let size: ButtonSize = 'small'
 
-  $: if (sum === undefined) {
-    getKpiReports(value, (res) => {
-      sum = res.reduce((acc, it) => acc + it.value, 0)
-    })
-  }
+  let kpiReports: Report[] = []
+  $: getReports (value, (res) => {
+    kpiReports = res
+  })
+  $: sum = calculateKpiResult(kpiReports)
 
   function handleOpenEditor (e: MouseEvent): void {
     e.stopPropagation()

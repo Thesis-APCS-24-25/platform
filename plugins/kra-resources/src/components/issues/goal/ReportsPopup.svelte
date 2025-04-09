@@ -2,11 +2,12 @@
   import contact from '@hcengineering/contact'
   import { FindOptions } from '@hcengineering/core'
   import presentation, { Card } from '@hcengineering/presentation'
-  import { Goal, Issue, TimeSpendReport } from '@hcengineering/kra'
+  import { Goal, Issue, Report, TimeSpendReport } from '@hcengineering/kra'
   import { Button, IconAdd, Scroller, tableSP } from '@hcengineering/ui'
   import { TableBrowser } from '@hcengineering/view-resources'
   import kra from '../../../plugin'
   import IssuePresenter from '../IssuePresenter.svelte'
+  import { createEventDispatcher } from 'svelte'
 
   export let issue: Issue
   export let addReport: (event: MouseEvent) => void = () => {}
@@ -15,7 +16,9 @@
     return true
   }
 
-  const options: FindOptions<TimeSpendReport> = {
+  const dispatch = createEventDispatcher()
+
+  const options: FindOptions<Report> = {
     lookup: {
       attachedTo: kra.class.Issue,
       employee: contact.mixin.Employee
@@ -24,11 +27,16 @@
 </script>
 
 <Card
-  label={kra.string.Report}
+  label={kra.string.Goal}
   canSave={true}
-  on:close
-  okAction={() => {}}
+  okAction={() => {
+    dispatch('close')
+  }}
   okLabel={presentation.string.Ok}
+  gap={'gapV-4'}
+  on:close={() => {
+    dispatch('close', null)
+  }}
   on:changeContent
 >
   <svelte:fragment slot="header">
@@ -39,13 +47,7 @@
       <TableBrowser
         _class={kra.class.Report}
         query={{ attachedTo: issue.goal }}
-        config={[
-          '$lookup.attachedTo',
-          '',
-          'employee',
-          'date',
-          'note'
-        ]}
+        config={['$lookup.attachedTo', '', 'employee', 'date', 'note']}
         {options}
       />
     </Scroller>
