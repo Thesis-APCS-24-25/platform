@@ -1,11 +1,11 @@
 <script lang="ts">
   import { Issue, Kpi } from '@hcengineering/kra'
   import KpiProgressCircle from './KpiProgressCircle.svelte'
-  import GoalPresenterContainer from './GoalPresenterContainer.svelte'
+  import GoalPresenterContainer from '../GoalPresenterContainer.svelte'
   import { ButtonKind, ButtonSize, eventToHTMLElement, showPopup } from '@hcengineering/ui'
   import KpiReportsPopup from './KpiReportsPopup.svelte'
   import { WithLookup } from '@hcengineering/core'
-  import { calculateGoal } from '../../../utils/goal'
+  import { calculateGoal } from '../../../../utils/goal'
 
   export let value: WithLookup<Kpi>
   export let issue: WithLookup<Issue>

@@ -122,9 +122,9 @@ import { getAllStates } from '@hcengineering/task-resources'
 import EstimationValueEditor from './components/issues/timereport/EstimationValueEditor.svelte'
 import TimePresenter from './components/issues/timereport/TimePresenter.svelte'
 import GoalPresenter from './components/issues/goal/GoalPresenter.svelte'
-import KpiPresenter from './components/issues/goal/KpiPresenter.svelte'
-import RatingScalePresenter from './components/issues/goal/RatingScalePresenter.svelte'
-import KpiObjectPresenter from './components/issues/goal/KpiObjectPresenter.svelte'
+import KpiPresenter from './components/issues/goal/kpi/KpiPresenter.svelte'
+import RatingScalePresenter from './components/issues/goal/ratingscale/RatingScalePresenter.svelte'
+import KpiObjectPresenter from './components/issues/goal/kpi/KpiObjectPresenter.svelte'
 import AddUnitPopup from './components/issues/goal/unit/AddUnitPopup.svelte'
 import Report from './components/issues/goal/Report.svelte'
 import UnitPresenter from './components/issues/goal/unit/UnitPresenter.svelte'
@@ -146,7 +146,7 @@ export {
   TitlePresenter
 }
 
-export async function queryIssue<D extends Issue>(
+export async function queryIssue<D extends Issue> (
   _class: Ref<Class<D>>,
   client: Client,
   search: string,
@@ -190,11 +190,11 @@ export async function queryIssue<D extends Issue>(
   }))
 }
 
-async function move(issues: Issue | Issue[]): Promise<void> {
+async function move (issues: Issue | Issue[]): Promise<void> {
   showPopup(MoveIssues, { selected: issues }, 'top')
 }
 
-async function editWorkflowStatuses(project: Project): Promise<void> {
+async function editWorkflowStatuses (project: Project): Promise<void> {
   const loc = getCurrentLocation()
   loc.path[2] = settingId
   loc.path[3] = 'spaceTypes'
@@ -202,13 +202,13 @@ async function editWorkflowStatuses(project: Project): Promise<void> {
   navigate(loc)
 }
 
-async function editProject(project: Project | undefined): Promise<void> {
+async function editProject (project: Project | undefined): Promise<void> {
   if (project !== undefined) {
     showPopup(CreateProject, { project })
   }
 }
 
-async function deleteIssue(issue: Issue | Issue[]): Promise<void> {
+async function deleteIssue (issue: Issue | Issue[]): Promise<void> {
   const issueCount = Array.isArray(issue) ? issue.length : 1
   let subissues: number = 0
   if (Array.isArray(issue)) {
@@ -238,7 +238,7 @@ async function deleteIssue(issue: Issue | Issue[]): Promise<void> {
   })
 }
 
-async function deleteProject(project: Project | undefined): Promise<void> {
+async function deleteProject (project: Project | undefined): Promise<void> {
   if (project !== undefined) {
     const client = getClient()
 

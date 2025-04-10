@@ -2,9 +2,9 @@
   import { ButtonKind, ButtonSize, eventToHTMLElement, showPopup } from '@hcengineering/ui'
   import { Issue, RatingScale } from '@hcengineering/kra'
   import RatingScaleCircle from './RatingScaleCircle.svelte'
-  import GoalPresenterContainer from './GoalPresenterContainer.svelte'
-  import RatingScaleEditPopup from './ratingscale/RatingScaleEditPopup.svelte'
-  import { calculateGoal } from '../../../utils/goal'
+  import GoalPresenterContainer from '../GoalPresenterContainer.svelte'
+  import RatingScaleEditPopup from './RatingScaleEditPopup.svelte'
+  import { calculateGoal } from '../../../../utils/goal'
 
   export let value: RatingScale
   export let issue: Issue

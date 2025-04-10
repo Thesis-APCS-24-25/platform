@@ -14,13 +14,13 @@
 -->
 <script lang="ts">
   import { getClient } from '@hcengineering/presentation'
-  import kra from '../../../plugin'
+  import kra from '../../../../plugin'
   import { Issue, Kpi, Report } from '@hcengineering/kra'
   import KpiProgressBar from './KpiProgressBar.svelte'
   import { createEventDispatcher } from 'svelte'
   import { Employee } from '@hcengineering/contact'
   import { AttachedData, Ref, Space, WithLookup } from '@hcengineering/core'
-  import ReportEditPopup from './ReportEditPopup.svelte'
+  import ReportEditPopup from './../ReportEditPopup.svelte'
   import { EditBox } from '@hcengineering/ui'
 
   export let issue: Issue | undefined = undefined

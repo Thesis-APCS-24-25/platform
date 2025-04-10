@@ -4,8 +4,8 @@
   import { ObjectBox } from '@hcengineering/view-resources'
   import { Issue } from '@hcengineering/kra'
   import { DropdownIntlItem, DropdownLabelsIntl } from '@hcengineering/ui'
-  import AddKpi from './AddKpi.svelte'
-  import AddRatingScale from './AddRatingScale.svelte'
+  import AddKpi from './kpi/AddKpi.svelte'
+  import AddRatingScale from './ratingscale/AddRatingScale.svelte'
   import { Ref } from '@hcengineering/core'
   import { createEventDispatcher } from 'svelte'
 

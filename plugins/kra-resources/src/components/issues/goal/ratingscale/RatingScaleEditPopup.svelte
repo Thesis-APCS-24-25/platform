@@ -4,7 +4,7 @@
   import { AttachedData, Ref } from '@hcengineering/core'
   import kra from '../../../../plugin'
   import { Employee } from '@hcengineering/contact'
-  import RatingScaleBoxes from '../RatingScaleBoxes.svelte'
+  import RatingScaleBoxes from './RatingScaleBoxes.svelte'
   import { getClient } from '@hcengineering/presentation'
   import { Issue, RatingScale, Report } from '@hcengineering/kra'
 

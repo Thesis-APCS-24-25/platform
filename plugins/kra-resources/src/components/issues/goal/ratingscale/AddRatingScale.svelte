@@ -1,7 +1,7 @@
 <script lang="ts">
-  import { Issue, RatingScale } from '@hcengineering/kra'
+  import { Issue } from '@hcengineering/kra'
   import { EditBox } from '@hcengineering/ui'
-  import kra from '../../../plugin'
+  import kra from '../../../../plugin'
   import { getClient } from '@hcengineering/presentation'
   import { Ref } from '@hcengineering/core'
 
@@ -26,9 +26,7 @@
       const apply = client.apply()
       const kpiId = await apply.createDoc(kra.class.RatingScale, issue.space, {
         name: data.name,
-        description: data.description,
-        value: 0,
-        comment: ''
+        description: data.description
       })
 
       await apply.updateDoc(kra.class.Issue, issue.space, issueId, {

@@ -1,10 +1,9 @@
 <script lang="ts">
   import { Goal, Issue, Kpi, RatingScale } from '@hcengineering/kra'
   import { IconAdd, Label, showPopup, Chevron, ExpandCollapse, ButtonIcon, IconDetails } from '@hcengineering/ui'
-  import { getGoal } from '../../../utils/goal'
   import Icon from '@hcengineering/ui/src/components/Icon.svelte'
-  import RatingScaleEditor from './RatingScale.svelte'
-  import KpiEditor from './Kpi.svelte'
+  import RatingScaleEditor from './ratingscale/RatingScale.svelte'
+  import KpiEditor from './kpi/Kpi.svelte'
   import AddGoalPopup from './AddGoalPopup.svelte'
   import { createQuery } from '@hcengineering/presentation'
   import kra from '../../../plugin'

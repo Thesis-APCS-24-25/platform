@@ -3,14 +3,13 @@
   import { Issue, Kpi } from '@hcengineering/kra'
   import { eventToHTMLElement, showPopup } from '@hcengineering/ui'
   import KpiReportEditPopup from './KpiReportEditPopup.svelte'
-  import ReportsPopup from './ReportsPopup.svelte'
-  import KpiProgressBar from './KpiProgressBar.svelte'
+  import ReportsPopup from '../ReportsPopup.svelte'
 
   export let issue: Issue
   export let sum: number
   export let kpi: WithLookup<Kpi>
 
-  function addReport(event: MouseEvent): void {
+  function addReport (event: MouseEvent): void {
     showPopup(
       KpiReportEditPopup,
       {

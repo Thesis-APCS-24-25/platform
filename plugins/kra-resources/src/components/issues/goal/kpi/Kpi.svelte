@@ -10,9 +10,9 @@ distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRAN
 // See the License for the specific language governing permissions and limitations under the License.
 -->
 <script lang="ts">
-  import { Issue, Kpi, Report } from '@hcengineering/kra'
+  import { Issue, Kpi } from '@hcengineering/kra'
   import { EditBox, eventToHTMLElement, showPopup } from '@hcengineering/ui'
-  import { calculateGoal, calculateGoalCallback, calculateKpiResult, getReports } from '../../../utils/goal'
+  import { calculateGoal } from '../../../../utils/goal'
   import KpiProgressBar from './KpiProgressBar.svelte'
   import { WithLookup } from '@hcengineering/core'
   import KpiReportsPopup from './KpiReportsPopup.svelte'
@@ -23,28 +23,28 @@ distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRAN
 
   $: sum = calculateGoal(kpi, undefined)
 
-  function handleEdit (e: MouseEvent): void {
+  function handleEdit (sum: number, e: MouseEvent): void {
     showPopup(KpiReportsPopup, { sum, kpi, issue }, eventToHTMLElement(e))
   }
 </script>
 
-<div class="container">
-  <div class="header">
-    <EditBox kind="large-style" disabled={true} value={kpi.name} />
-    <EditBox kind="small-style" disabled={true} value={kpi.description} />
-  </div>
-
-  <button class="kpi-box" on:click={handleEdit} tabindex={focusIndex}>
-    <div class="value">
-      <span class="value-value">{sum}</span>
-      <span class="value-target"> / {kpi.target}</span>
+{#await sum then sum}
+  <div class="container">
+    <div class="header">
+      <EditBox kind="large-style" disabled={true} value={kpi.name} />
+      <EditBox kind="small-style" disabled={true} value={kpi.description} />
     </div>
-    <span class="unit"> {kpi.$lookup?.unit?.name}</span>
-    {#await sum then sum}
-      <KpiProgressBar value={sum ?? 0} max={kpi.target} />
-    {/await}
-  </button>
-</div>
+
+    <button class="kpi-box" on:click={handleEdit.bind(null, sum ?? 0)} tabindex={focusIndex}>
+      <div class="value">
+        <span class="value-value">{sum}</span>
+        <span class="value-target"> / {kpi.target}</span>
+      </div>
+      <span class="unit"> {kpi.$lookup?.unit?.name}</span>
+        <KpiProgressBar value={sum ?? 0} max={kpi.target} />
+    </button>
+  </div>
+{/await}
 
 <style>
   .container {
