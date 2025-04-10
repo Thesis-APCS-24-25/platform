@@ -5,6 +5,7 @@
   import KpiReportEditPopup from './KpiReportEditPopup.svelte'
   import ReportsPopup from './ReportsPopup.svelte'
   import { calculateKpiResult, getReports } from '../../../utils/goal'
+  import { createEventDispatcher } from 'svelte'
 
   export let issue: Issue
   export let sum: number | undefined = undefined
@@ -34,4 +35,5 @@
 <ReportsPopup
   {issue}
   {addReport}
+  on:close
 />

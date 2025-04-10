@@ -22,7 +22,9 @@
     {unit.symbol}
   </span>
 {/if}
-{value.value}
+<span class="value">
+  {value.value}
+</span>
 {#if unit?.prefix === false}
   <span class="unit">
     {unit.symbol}

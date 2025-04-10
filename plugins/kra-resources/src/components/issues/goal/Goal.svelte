@@ -9,6 +9,7 @@
   import { createQuery } from '@hcengineering/presentation'
   import kra from '../../../plugin'
   import { WithLookup } from '@hcengineering/core'
+  import { createEventDispatcher } from 'svelte'
 
   export let issue: Issue
 
@@ -47,7 +48,7 @@
     }
   }
 
-  function handleCreateGoal (e: MouseEvent): void {
+  function handleCreateGoal(e: MouseEvent): void {
     e.stopPropagation()
     showPopup(
       AddGoalPopup,
@@ -57,6 +58,8 @@
       'top'
     )
   }
+
+  const dispatch = createEventDispatcher()
 </script>
 
 <div class="goal-section">

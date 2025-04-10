@@ -39,7 +39,7 @@
   $: canSave = value !== undefined && Number.isFinite(value) && value >= 0
 </script>
 
-<ReportEditPopup okAction={save} {canSave} bind:assignee bind:reportDate>
+<ReportEditPopup okAction={save} {canSave} bind:assignee bind:reportDate on:close>
   <svelte:fragment slot="header"></svelte:fragment>
   <svelte:fragment slot="content">
     <div class="kpi-value">
