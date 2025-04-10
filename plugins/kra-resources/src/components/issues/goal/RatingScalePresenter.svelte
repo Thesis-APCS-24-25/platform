@@ -13,7 +13,7 @@
 
   $: rating = calculateGoal(value, undefined)
 
-  function handleOpen (e: MouseEvent): void {
+  const handleOpen = (rating: number, e: MouseEvent): void => {
     e.stopPropagation()
     showPopup(
       RatingScaleEditPopup,
@@ -28,7 +28,7 @@
 </script>
 
 {#await rating then rating}
-  <GoalPresenterContainer {size} {kind} onClick={handleOpen}>
+  <GoalPresenterContainer {size} {kind} onClick={handleOpen.bind(null, rating ?? 0)}>
     <RatingScaleCircle value={rating ?? 0} />
     <div class="separator"></div>
 

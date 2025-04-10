@@ -10,10 +10,11 @@
 
   export let issue: Issue
   export let ratingScale: RatingScale
-  export let assignee: Ref<Employee> | null | undefined = undefined
-  export let reportDate: number
   export let value: number | undefined = undefined
   export let note: string = ''
+
+  let assignee: Ref<Employee> | null | undefined = issue.assignee as Ref<Employee>
+  let reportDate: number
 
   const client = getClient()
   function getReport (): AttachedData<Report> | undefined {

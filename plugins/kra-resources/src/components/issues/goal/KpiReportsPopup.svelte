@@ -1,25 +1,16 @@
 <script lang="ts">
   import { WithLookup } from '@hcengineering/core'
-  import { Issue, Kpi, Report } from '@hcengineering/kra'
+  import { Issue, Kpi } from '@hcengineering/kra'
   import { eventToHTMLElement, showPopup } from '@hcengineering/ui'
   import KpiReportEditPopup from './KpiReportEditPopup.svelte'
   import ReportsPopup from './ReportsPopup.svelte'
-  import { calculateKpiResult, getReports } from '../../../utils/goal'
-  import { createEventDispatcher } from 'svelte'
+  import KpiProgressBar from './KpiProgressBar.svelte'
 
   export let issue: Issue
-  export let sum: number | undefined = undefined
+  export let sum: number
   export let kpi: WithLookup<Kpi>
 
-  let reports: Report[] = []
-  $: getReports(kpi, (res) => {
-    reports = res
-  })
-  $: if (sum === undefined) {
-    sum = calculateKpiResult(reports)
-  }
-
-  function addReport (event: MouseEvent): void {
+  function addReport(event: MouseEvent): void {
     showPopup(
       KpiReportEditPopup,
       {
@@ -32,8 +23,4 @@
   }
 </script>
 
-<ReportsPopup
-  {issue}
-  {addReport}
-  on:close
-/>
+<ReportsPopup {issue} {addReport} on:close></ReportsPopup>

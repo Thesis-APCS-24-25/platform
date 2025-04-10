@@ -14,7 +14,7 @@
 
   $: sum = calculateGoal(value, undefined)
 
-  function handleOpenEditor (e: MouseEvent): void {
+  function handleOpenEditor (sum: number, e: MouseEvent): void {
     e.stopPropagation()
     showPopup(
       KpiReportsPopup,
@@ -29,7 +29,7 @@
 </script>
 
 {#await sum then sum}
-  <GoalPresenterContainer {kind} {size} onClick={handleOpenEditor}>
+  <GoalPresenterContainer {kind} {size} onClick={handleOpenEditor.bind(null, sum ?? 0)}>
     {#if value.target > 0}
       <KpiProgressCircle value={sum ?? 0} max={value.target} />
     {/if}
