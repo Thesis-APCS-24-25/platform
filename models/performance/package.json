@@ -47,6 +47,7 @@
     "@hcengineering/tags": "^0.6.16",
     "@hcengineering/model-tags": "^0.6.0",
     "@hcengineering/performance": "^0.1.0",
+    "@hcengineering/performance-resources": "^0.1.0",
     "@hcengineering/model-tracker": "^0.6.0",
     "@hcengineering/activity": "^0.6.0",
     "@hcengineering/chunter": "^0.6.20",

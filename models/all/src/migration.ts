@@ -56,6 +56,7 @@ import { testManagementOperation } from '@hcengineering/model-test-management'
 import { surveyOperation } from '@hcengineering/model-survey'
 import { aiBotId, aiBotOperation } from '@hcengineering/model-ai-bot'
 import { kraOperation } from '@hcengineering/model-kra'
+import { performanceOperation } from '@hcengineering/model-performance'
 
 export const migrateOperations: [string, MigrateOperation][] = [
   ['core', coreOperation],
@@ -100,5 +101,6 @@ export const migrateOperations: [string, MigrateOperation][] = [
   ['testManagement', testManagementOperation],
   ['survey', surveyOperation],
   ['kra', kraOperation],
-  [aiBotId, aiBotOperation]
+  [aiBotId, aiBotOperation],
+  ['performance', performanceOperation]
 ]

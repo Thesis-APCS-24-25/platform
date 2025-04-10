@@ -14,18 +14,19 @@ import {
 } from '@hcengineering/core'
 import { IconProps } from '@hcengineering/view'
 import { PersonAccount } from '@hcengineering/contact'
+import { Project, ProjectType, ProjectTypeDescriptor, TaskType, TaskTypeDescriptor } from '@hcengineering/task'
 
 export const kraTeamId = 'kraTeam' as Plugin
 
 export interface Member extends PersonAccount {}
 
-export interface Team extends TypedSpace, IconProps {
+export interface Team extends Project {
   members: Arr<Ref<Member>>
 }
 
-export interface TeamTypeDescriptor extends SpaceTypeDescriptor {}
+export interface TeamTypeDescriptor extends ProjectTypeDescriptor {}
 
-export interface TeamType extends SpaceType {}
+export interface TeamType extends ProjectType {}
 
 export type Weight = number
 
@@ -51,12 +52,20 @@ export default plugin(kraTeamId, {
     Member: '' as Asset
   },
   mixin: {
-    TeamTypeData: '' as Ref<Mixin<Team>>
+    TeamTypeData: '' as Ref<Mixin<Team>>,
+    ClassicProjectTypeData: '' as Ref<Mixin<Project>>,
   },
   descriptor: {
-    TeamType: '' as Ref<SpaceTypeDescriptor>
+    TeamType: '' as Ref<SpaceTypeDescriptor>,
+    ReviewSessionType: '' as Ref<TaskTypeDescriptor>
+  },
+  taskTypes: {
+    ReviewSession: '' as Ref<TaskType>
   },
   spaceType: {
     TeamType: '' as Ref<SpaceType>
+  },
+  ids: {
+    ClassingProjectType: '' as Ref<ProjectType>
   }
 })

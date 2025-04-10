@@ -29,10 +29,12 @@ import core, { Arr, Class, MarkupBlobRef, Ref, Role, RolesAssignment } from '@hc
 import { getEmbeddedLabel } from '@hcengineering/platform'
 import contact from '@hcengineering/contact'
 import { TPersonAccount } from '@hcengineering/model-contact'
+import task from '@hcengineering/task'
+import { TProject, TProjectType } from '@hcengineering/model-task'
 
-@Model(kraTeam.class.Team, core.class.TypedSpace)
+@Model(kraTeam.class.Team, task.class.Project)
 @UX(kraTeam.string.Team, kraTeam.icon.Team, 'Team', 'name')
-export class TTeam extends TTypedSpace implements Team {
+export class TTeam extends TProject implements Team {
   declare members: Arr<Ref<Member>>
 }
 
@@ -52,7 +54,7 @@ export class TTeamTypeData extends TTeam implements RolesAssignment {
 }
 
 @Model(kraTeam.class.TeamType, core.class.SpaceType)
-export class TTeamType extends TSpaceType implements TeamType {}
+export class TTeamType extends TProjectType implements TeamType {}
 
 @Model(kraTeam.class.Member, contact.class.PersonAccount)
 export class TMember extends TPersonAccount implements Member {}

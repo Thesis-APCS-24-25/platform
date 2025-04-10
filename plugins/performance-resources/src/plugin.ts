@@ -13,10 +13,11 @@
 // limitations under the License.
 //
 
-import performance, { performanceId, ReviewSession } from '@hcengineering/performance'
-import { Mixin, SpaceType, SpaceTypeDescriptor, type Ref } from '@hcengineering/core'
-import { Asset, type IntlString, mergeIds } from '@hcengineering/platform'
-import { AnyComponent } from '@hcengineering/ui'
+import performance, { performanceId, type ReviewSession } from '@hcengineering/performance'
+import { type Mixin, type SpaceType, type SpaceTypeDescriptor, type Ref } from '@hcengineering/core'
+import { type Asset, type IntlString, mergeIds } from '@hcengineering/platform'
+import { type AnyComponent } from '@hcengineering/ui'
+import { type GetAllValuesFunc, type SortFunc } from '@hcengineering/view'
 
 export default mergeIds(performanceId, performance, {
   string: {
@@ -40,5 +41,11 @@ export default mergeIds(performanceId, performance, {
   },
   component: {
     EditKRA: '' as AnyComponent,
+  },
+  function: {
+    GetAllKRAStates: '' as GetAllValuesFunc,
+    GetAllReviewSessionStates: '' as GetAllValuesFunc,
+    KRAStatusSort: '' as SortFunc,
+    ReviewSessionStatusSort: '' as SortFunc,
   }
 })

@@ -15,7 +15,6 @@
 //
 
 import type { Arr, Attribute, Class, Doc, Mixin, Ref, SpaceType, SpaceTypeDescriptor, Status, Timestamp } from '@hcengineering/core'
-import { Team } from '@hcengineering/kra-team'
 import { Asset, IntlString, plugin, Plugin } from '@hcengineering/platform'
 import type { Project, ProjectType, Task, TaskType, TaskTypeDescriptor} from '@hcengineering/task'
 import { Viewlet } from '@hcengineering/view'

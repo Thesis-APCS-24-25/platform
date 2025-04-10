@@ -13,7 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-import { type Resources } from '@hcengineering/platform'
+import { Status, type Resources } from '@hcengineering/platform'
 import NewReviewSessionHeader from './components/NewReviewSessionHeader.svelte'
 import CreateReviewSession from './components/review-session/CreateReviewSession.svelte'
 import ReviewSessionSpacePresenter from './components/navigator/ReviewSessionSpacePresenter.svelte'
@@ -21,6 +21,10 @@ import CreateKRA from './components/kra/CreateKRA.svelte'
 import EditKRA from './components/kra/EditKRA.svelte'
 import KRAPresenter from './components/kra/KRAPresenter.svelte'
 import TeamSpacePresenter from './components/navigator/TeamSpacePresenter.svelte'
+import { kraStatusSort } from './utils/KraUtils'
+import { type Attribute, type Doc, type DocumentQuery, type Ref, type Space } from '@hcengineering/core'
+import { getAllStates } from '@hcengineering/task-resources'
+import { reviewSessionStatusSort } from './utils/ReviewSessionUtils'
 
 export default async (): Promise<Resources> => ({
   component: {
@@ -31,5 +35,21 @@ export default async (): Promise<Resources> => ({
     EditKRA,
     KRAPresenter,
     TeamSpacePresenter,
+  },
+  function: {
+    KRAStatusSort: kraStatusSort,
+    ReviewSessionStatusSort: reviewSessionStatusSort,
+    GetAllKRAStates: async (
+      query: DocumentQuery<Doc<Space>> | undefined,
+      onUpdate: () => void,
+      queryId: Ref<Doc<Space>>,
+      attr: Attribute<Status>
+    ) => await getAllStates(query, onUpdate, queryId, attr, false),
+    GetAllReviewSessionStates: async (
+      query: DocumentQuery<Doc<Space>> | undefined,
+      onUpdate: () => void,
+      queryId: Ref<Doc<Space>>,
+      attr: Attribute<Status>
+    ) => await getAllStates(query, onUpdate, queryId, attr, false),
   }
 })

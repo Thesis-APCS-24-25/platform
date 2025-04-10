@@ -1,5 +1,5 @@
 import { Builder } from "@hcengineering/model";
-import { KRAStatus, performanceId } from "@hcengineering/performance";
+import { KRAStatus, performanceId, ReviewSessionStatus } from "@hcengineering/performance";
 import tracker from '@hcengineering/model-tracker'
 import activity from '@hcengineering/activity'
 import chunter from '@hcengineering/chunter'
@@ -14,6 +14,7 @@ import { TDefaultKRAData, TDefaultReviewSessionData, TKRA, TKRAStatus, TReviewSe
 
 export { performanceId } from '@hcengineering/performance'
 export { performance as default }
+export { performanceOperation } from './migration'
 
 export const DOMAIN_PERFORMANCE = 'performance' as Domain
 
@@ -202,13 +203,13 @@ function defineKRA(builder: Builder): void {
 }
 
 function defineSpaceType(builder: Builder): void {
-  let statuses: Ref<KRAStatus>[] = []
+  let kraStatuses: Ref<KRAStatus>[] = []
   for (const statusId of Object.values(performance.kraStatus)) {
-    statuses.push(statusId)
+    kraStatuses.push(statusId)
   }
-  let categories: Ref<StatusCategory>[] = []
-  for (const category of Object.values(task.statusCategory)) {
-    categories.push(category)
+  let kraCategories: Ref<StatusCategory>[] = []
+  for (const category of Object.values(performance.kraStatusCategory)) {
+    kraCategories.push(category)
   }
 
   builder.createDoc(
@@ -216,14 +217,14 @@ function defineSpaceType(builder: Builder): void {
     core.space.Model,
     {
       parent: performance.ids.ClassingProjectType,
-      statuses: statuses,
+      statuses: kraStatuses,
       descriptor: performance.descriptor.KRAType,
       name: 'KRA',
       kind: 'task',
       ofClass: performance.class.KRA,
       targetClass: performance.mixin.DefaultKRAData,
       statusClass: performance.class.KRAStatus,
-      statusCategories: categories,
+      statusCategories: kraCategories,
       allowedAsChildOf: [performance.taskTypes.KRA],
       icon: tracker.icon.Issue
     },
@@ -240,10 +241,54 @@ function defineSpaceType(builder: Builder): void {
       tasks: [performance.taskTypes.KRA],
       roles: 0,
       classic: true,
-      statuses: statuses.map((s) => ({ _id: s, taskType: performance.taskTypes.KRA })),
+      statuses: kraStatuses.map((s) => ({ _id: s, taskType: performance.taskTypes.KRA })),
       targetClass: performance.mixin.DefaultReviewSessionData
     },
     performance.ids.ClassingProjectType
+  )
+
+  // Review Session
+  let reviewSessionStatuses: Ref<ReviewSessionStatus>[] = []
+  for (const statusId of Object.values(performance.reviewSessionStatus)) {
+    reviewSessionStatuses.push(statusId)
+  }
+  let reviewSessionCategories: Ref<StatusCategory>[] = []
+  for (const category of Object.values(performance.reviewStatusCategory)) {
+    reviewSessionCategories.push(category)
+  }
+  builder.createDoc(
+    task.class.TaskType,
+    core.space.Model,
+    {
+      parent: performance.ids.ClassingProjectType,
+      statuses: kraStatuses,
+      descriptor: kraTeam.descriptor.ReviewSessionType,
+      name: 'ReviewSession',
+      kind: 'task',
+      ofClass: performance.class.ReviewSession,
+      targetClass: performance.mixin.DefaultReviewSessionData,
+      statusClass: performance.class.ReviewSessionStatus,
+      statusCategories: reviewSessionCategories,
+      allowedAsChildOf: [kraTeam.taskTypes.ReviewSession],
+      icon: tracker.icon.Issue
+    },
+    kraTeam.taskTypes.ReviewSession
+  )
+
+  builder.createDoc(
+    task.class.ProjectType,
+    core.space.Model,
+    {
+      name: 'Classic project',
+      descriptor: kraTeam.descriptor.TeamType,
+      description: '',
+      tasks: [kraTeam.taskTypes.ReviewSession],
+      roles: 0,
+      classic: true,
+      statuses: reviewSessionStatuses.map((s) => ({ _id: s, taskType: kraTeam.taskTypes.ReviewSession })),
+      targetClass: kraTeam.mixin.TeamTypeData
+    },
+    kraTeam.ids.ClassingProjectType
   )
 }
 
@@ -329,12 +374,31 @@ function defineActivity(builder: Builder): void {
   )
 }
 
+function defineSortAndGrouping(builder: Builder): void {
+  builder.mixin(performance.class.KRAStatus, core.class.Class, view.mixin.SortFuncs, {
+    func: performance.function.KRAStatusSort
+  })
+
+  builder.mixin(performance.class.ReviewSessionStatus, core.class.Class, view.mixin.SortFuncs, {
+    func: performance.function.ReviewSessionStatusSort
+  })
+
+  builder.mixin(performance.class.KRAStatus, core.class.Class, view.mixin.AllValuesFunc, {
+    func: performance.function.GetAllKRAStates
+  })
+
+  builder.mixin(performance.class.ReviewSessionStatus, core.class.Class, view.mixin.AllValuesFunc, {
+    func: performance.function.GetAllReviewSessionStates
+  })
+}
+
 export function createModel (builder: Builder): void {
   defineTeam(builder)
   defineReviewSession(builder)
   defineKRA(builder)
   defineSpaceType(builder)
   defineActivity(builder)
+  defineSortAndGrouping(builder)
 
   defineApplication(builder)
   

@@ -19,10 +19,8 @@ export async function createNewTeam(
   description: string,
   isPrivate: boolean,
   members: Arr<Ref<Member>>,
-  icon: Asset,
   owners: Ref<Account>[],
   rolesAssignment: RolesAssignment,
-  color: number,
 ) {
   const client = getClient()
   const teamId = generateId<Team>()
@@ -35,9 +33,7 @@ export async function createNewTeam(
     owners,
     autoJoin: false,
     archived: false,
-    type: kraTeam.spaceType.TeamType,
-    icon,
-    color
+    type: kraTeam.ids.ClassingProjectType,
   })
 
   const spaceType = await client
