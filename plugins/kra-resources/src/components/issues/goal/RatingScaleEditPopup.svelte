@@ -1,11 +1,13 @@
 <script lang="ts">
   import { Card, getClient } from '@hcengineering/presentation'
   import kra from '../../../plugin'
-  import { Issue, RatingScale } from '@hcengineering/kra'
-  import { EditBox, Label } from '@hcengineering/ui'
+  import { Issue, RatingScale, Report } from '@hcengineering/kra'
+  import { EditBox, } from '@hcengineering/ui'
   import RatingScaleBoxes from './RatingScaleBoxes.svelte'
   import TitlePresenter from '../TitlePresenter.svelte'
   import { createEventDispatcher } from 'svelte'
+  import { AttachedData } from '@hcengineering/core'
+  import ReportsPopup from './ReportsPopup.svelte'
 
   export let issue: Issue
   export let ratingScale: RatingScale | undefined = undefined
@@ -19,24 +21,26 @@
 
   $: canSave = value !== undefined
 
-  async function save(): Promise<void> {
+  async function save (): Promise<void> {
     if (!canSave) {
       return
     }
 
-    if (ratingScale === undefined) {
+    if (ratingScale === undefined || value === undefined) {
       throw new Error('Create RatingScale not implemented')
     } else {
-      await client.updateDoc(kra.class.RatingScale, space, ratingScale._id, {
-        value,
-        comment
-      })
+      const report: AttachedData<Report> = {
+        note: comment,
+        value: value,
+        date: null,
+        employee: null
+      }
     }
     dispatch('close')
   }
 </script>
 
-<Card label={kra.string.RatingScale} okAction={save} {canSave} okLabel={kra.string.Save}>
+<ReportsPopup>
   <svelte:fragment slot="header">
     {#if issue}
       <TitlePresenter value={issue} showParent={false} />
@@ -64,7 +68,7 @@
   <div class="m-3 clear-mins">
     <EditBox bind:value={comment} label={kra.string.Comment} kind="editbox" />
   </div>
-</Card>
+</ReportsPopup>
 
 <style>
   .boxes {

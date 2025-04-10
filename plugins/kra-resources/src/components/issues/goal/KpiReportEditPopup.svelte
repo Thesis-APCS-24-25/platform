@@ -61,7 +61,7 @@
         space,
         kpiId,
         kpiClass,
-        'reports',
+        'goal-reports',
         data
       )
     }

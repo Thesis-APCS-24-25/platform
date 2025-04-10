@@ -51,9 +51,9 @@ import {
   UX
 } from '@hcengineering/model'
 import attachment from '@hcengineering/model-attachment'
-import core, { TAttachedDoc, TDoc, TStatus, TType } from '@hcengineering/model-core'
+import core, { TAttachedDoc, TClass, TDoc, TStatus, TType } from '@hcengineering/model-core'
 import task, { TTask, TProject as TTaskProject } from '@hcengineering/model-task'
-import { getEmbeddedLabel, type IntlString } from '@hcengineering/platform'
+import { getEmbeddedLabel, type Resource, type IntlString } from '@hcengineering/platform'
 import tags, { type TagElement } from '@hcengineering/tags'
 import time, { type ToDo } from '@hcengineering/time'
 import {
@@ -75,7 +75,9 @@ import {
   type Kpi,
   type RatingScale,
   type Report,
-  type Unit
+  type Unit,
+  type ReportAggregator,
+  type GoalAggregateFunction
 } from '@hcengineering/kra'
 import kra from './plugin'
 import { type TaskType } from '@hcengineering/task'
@@ -138,12 +140,6 @@ export class TReport extends TAttachedDoc implements Report {
 
 @Model(kra.class.RatingScale, kra.class.Goal)
 export class TRatingScale extends TGoal implements RatingScale {
-  @Prop(TypeNumber(), kra.string.Name)
-    value!: number | null
-
-  @Prop(TypeString(), kra.string.Comment)
-    comment!: string
-
   @Prop(TypeRef(kra.class.Unit), kra.string.Unit)
     unit: Ref<Unit> = kra.ids.RatingScaleUnit
 }
@@ -417,3 +413,8 @@ export class TClassicProjectTypeData extends TProject implements RolesAssignment
 @Mixin(kra.mixin.IssueTypeData, kra.class.Issue)
 @UX(getEmbeddedLabel('Issue'), kra.icon.Issue)
 export class TIssueTypeData extends TIssue { }
+
+@Mixin(kra.mixin.ReportAggregator, core.class.Class)
+export class TReportAggregator extends TClass implements ReportAggregator {
+  aggregator!: Resource<GoalAggregateFunction>
+}

@@ -2,7 +2,7 @@
   import contact from '@hcengineering/contact'
   import { FindOptions } from '@hcengineering/core'
   import presentation, { Card } from '@hcengineering/presentation'
-  import { Goal, Issue, Report, TimeSpendReport } from '@hcengineering/kra'
+  import { Issue, Report } from '@hcengineering/kra'
   import { Button, IconAdd, Scroller, tableSP } from '@hcengineering/ui'
   import { TableBrowser } from '@hcengineering/view-resources'
   import kra from '../../../plugin'
@@ -42,6 +42,9 @@
   <svelte:fragment slot="header">
     <IssuePresenter value={issue} disabled />
   </svelte:fragment>
+
+  <slot name="summary" />
+
   <div class="h-50">
     <Scroller fade={tableSP}>
       <TableBrowser

@@ -2,12 +2,26 @@
   import { Issue, RatingScale } from '@hcengineering/kra'
   import { EditBox, showPopup } from '@hcengineering/ui'
   import RatingScaleBoxes from './RatingScaleBoxes.svelte'
-  import RatingScaleEditPopup from './RatingScaleEditPopup.svelte'
+  import RatingScaleEditPopup from './ratingscale/RatingScaleEditPopup.svelte'
+  import { calculateGoalCallback } from '../../../utils/goal'
 
-  export let issue: Issue | undefined = undefined
+  export let issue: Issue
   export let ratingScale: RatingScale
 
-  function handleBoxClick(value: number): void {
+  let rating: number | undefined = undefined
+
+  $: calculateGoalCallback(
+    ratingScale,
+    undefined,
+    (error: Error | null, result?: number | undefined) => {
+      if (error !== null) {
+        alert(error)
+      }
+      rating = result
+    }
+  )
+
+  function handleBoxClick (value: number): void {
     showPopup(RatingScaleEditPopup, {
       issue,
       ratingScale,
@@ -23,7 +37,7 @@
     <EditBox kind="small-style" disabled={true} value={ratingScale.description} />
   </div>
 
-  <RatingScaleBoxes value={ratingScale.value} onBoxClick={handleBoxClick}/>
+  <RatingScaleBoxes value={rating} onBoxClick={handleBoxClick}/>
 
 </div>
 

@@ -1,23 +1,18 @@
 <script lang="ts">
-  import { Issue, Kpi, Report } from '@hcengineering/kra'
+  import { Issue, Kpi } from '@hcengineering/kra'
   import KpiProgressCircle from './KpiProgressCircle.svelte'
   import GoalPresenterContainer from './GoalPresenterContainer.svelte'
-  import { ButtonKind, ButtonSize, eventToHTMLElement, Loading, showPopup } from '@hcengineering/ui'
+  import { ButtonKind, ButtonSize, eventToHTMLElement, showPopup } from '@hcengineering/ui'
   import KpiReportsPopup from './KpiReportsPopup.svelte'
   import { WithLookup } from '@hcengineering/core'
-  import { calculateKpiResult, getReports } from '../../../utils/goal'
+  import { calculateGoal } from '../../../utils/goal'
 
   export let value: WithLookup<Kpi>
   export let issue: WithLookup<Issue>
-  export let sum: number | undefined = undefined
   export let kind: ButtonKind = 'regular'
   export let size: ButtonSize = 'small'
 
-  let kpiReports: Report[] = []
-  $: getReports (value, (res) => {
-    kpiReports = res
-  })
-  $: sum = calculateKpiResult(kpiReports)
+  $: sum = calculateGoal(value, undefined)
 
   function handleOpenEditor (e: MouseEvent): void {
     e.stopPropagation()
@@ -33,12 +28,10 @@
   }
 </script>
 
-{#if sum === undefined}
-  <Loading />
-{:else}
+{#await sum then sum}
   <GoalPresenterContainer {kind} {size} onClick={handleOpenEditor}>
     {#if value.target > 0}
-      <KpiProgressCircle value={sum} max={value.target} />
+      <KpiProgressCircle value={sum ?? 0} max={value.target} />
     {/if}
 
     <div class="separator"></div>
@@ -54,8 +47,7 @@
       <span> / {value.target}</span>
     {/if}
   </GoalPresenterContainer>
-{/if}
-
+{/await}
 <style lang="scss">
   .separator {
     width: 1px;

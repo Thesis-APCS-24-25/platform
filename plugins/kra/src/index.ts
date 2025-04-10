@@ -67,7 +67,6 @@ export interface Report extends AttachedDoc {
 
 export interface Kpi extends Goal {
   target: number
-  reports: CollectionSize<Report>
 }
 
 export interface Unit extends Doc {
@@ -77,8 +76,7 @@ export interface Unit extends Doc {
 }
 
 export interface RatingScale extends Goal {
-  value: number | null
-  comment: string
+  unit: Ref<Unit>
 }
 
 /**
@@ -98,7 +96,7 @@ export type GoalAggregateFunction = (reports: Report[]) => number
  * Tell how to calculate the goal value.
  */
 export interface ReportAggregator extends Class<Goal> {
-  aggregator: GoalAggregateFunction
+  aggregator: Resource<GoalAggregateFunction>
 }
 
 /**
@@ -525,14 +523,14 @@ const pluginState = plugin(kraId, {
   taskTypes: {
     Issue: '' as Ref<TaskType>,
     SubIssue: '' as Ref<TaskType>
-  },
+  }
 })
 export default pluginState
 
 /**
  * @public
  */
-export function createStatesData(data: TaskStatusFactory[]): Omit<Data<Status>, 'rank'>[] {
+export function createStatesData (data: TaskStatusFactory[]): Omit<Data<Status>, 'rank'>[] {
   const states: Omit<Data<Status>, 'rank'>[] = []
 
   for (const category of data) {

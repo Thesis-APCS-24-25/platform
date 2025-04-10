@@ -1,10 +1,11 @@
 <script lang="ts">
   import { WithLookup } from '@hcengineering/core'
-  import { KpiReport, Unit } from '@hcengineering/kra'
-  import { createQuery, getClient } from '@hcengineering/presentation'
+  import { Unit } from '@hcengineering/kra'
+  import { createQuery } from '@hcengineering/presentation'
   import kra from '../../../plugin'
+  import Report from '../../../../../setting-resources/src/components/icons/Report.svelte'
 
-  export let value: WithLookup<KpiReport>
+  export let value: WithLookup<Report>
 
   const attachedTo = value.$lookup?.attachedTo
 

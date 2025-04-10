@@ -372,7 +372,7 @@ export default async (): Promise<Resources> => ({
     IsProjectJoined: async (project: Project) => project.members.includes(getCurrentAccount()._id),
     GetIssueStatusCategories: getIssueStatusCategories,
     KpiAggregator: calculateKpiResult,
-    ratingScaleAggregator: calculateRatingScaleResult
+    RatingScaleAggregator: calculateRatingScaleResult
   },
   actionImpl: {
     Move: move,

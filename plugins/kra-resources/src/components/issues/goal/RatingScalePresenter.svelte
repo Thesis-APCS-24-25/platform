@@ -3,12 +3,15 @@
   import { Issue, RatingScale } from '@hcengineering/kra'
   import RatingScaleCircle from './RatingScaleCircle.svelte'
   import GoalPresenterContainer from './GoalPresenterContainer.svelte'
-  import RatingScaleEditPopup from './RatingScaleEditPopup.svelte'
+  import RatingScaleEditPopup from './ratingscale/RatingScaleEditPopup.svelte'
+  import { calculateGoal } from '../../../utils/goal'
 
   export let value: RatingScale
   export let issue: Issue
   export let size: ButtonSize = 'small'
   export let kind: ButtonKind = 'regular'
+
+  $: rating = calculateGoal(value, undefined)
 
   function handleOpen (e: MouseEvent): void {
     e.stopPropagation()
@@ -17,21 +20,23 @@
       {
         issue,
         ratingScale: value,
-        value: value.value
+        value: rating
       },
       eventToHTMLElement(e)
     )
   }
 </script>
 
-<GoalPresenterContainer {size} {kind} onClick={handleOpen}>
-  <RatingScaleCircle value={value.value ?? 0} />
-  <div class="separator"></div>
+{#await rating then rating}
+  <GoalPresenterContainer {size} {kind} onClick={handleOpen}>
+    <RatingScaleCircle value={rating ?? 0} />
+    <div class="separator"></div>
 
-  <div class="label">
-    <span class="current-value">{value.value}</span> <span class="divider">/</span> <span class="target-value">5</span>
-  </div>
-</GoalPresenterContainer>
+    <div class="label">
+      <span class="current-value">{rating}</span> <span class="divider">/</span> <span class="target-value">5</span>
+    </div>
+  </GoalPresenterContainer>
+{/await}
 
 <style>
   .separator {

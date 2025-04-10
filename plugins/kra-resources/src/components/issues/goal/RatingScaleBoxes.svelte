@@ -8,7 +8,7 @@
     'var(--theme-rating-excellent)'
   ]
 
-  export let value: number | null = null
+  export let value: number | undefined = undefined
   export let editable = true
   export let size: 'small' | 'large' = 'small'
   export let onBoxClick: ((value: number) => void) | null = null

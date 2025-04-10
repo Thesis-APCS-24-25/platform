@@ -34,7 +34,7 @@
         space,
         goal._id,
         goal._class,
-        'reports',
+        'goal-reports',
         data as AttachedData<KpiReport>
       )
     }
