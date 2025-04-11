@@ -22,7 +22,6 @@
   import tracker from '../../../plugin'
   import IssuePresenter from '../IssuePresenter.svelte'
   import ParentNamesPresenter from '../ParentNamesPresenter.svelte'
-  import TimeSpendReportPopup from './TimeSpendReportPopup.svelte'
   export let issue: Issue
   export let currentProject: Project | undefined
 

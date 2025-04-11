@@ -41,11 +41,12 @@ import {
   TIssueTemplate,
   TIssueTypeData,
   TKpi,
-  TKpiReport,
   TProject,
   TProjectTargetPreference,
   TRatingScale,
   TRelatedIssueTarget,
+  TReport,
+  TReportAggregator,
   TTimeSpendReport,
   TTypeEstimation,
   TTypeIssuePriority,
@@ -220,6 +221,18 @@ function defineFilters (builder: Builder): void {
   })
 }
 
+function defineGoalMixin (builder: Builder): void {
+  builder.createModel(TReportAggregator)
+
+  builder.mixin(tracker.class.Kpi, core.class.Class, tracker.mixin.ReportAggregator, {
+    aggregator: tracker.function.KpiAggregator
+  })
+
+  builder.mixin(tracker.class.RatingScale, core.class.Class, tracker.mixin.ReportAggregator, {
+    aggregator: tracker.function.RatingScaleAggregator
+  })
+}
+
 function defineApplication (
   builder: Builder,
   opt: {
@@ -343,9 +356,9 @@ function defineApplication (
 
 export function createModel (builder: Builder): void {
   builder.createModel(
+    TReport,
     TUnit,
     TKpi,
-    TKpiReport,
     TGoal,
     TRatingScale,
     TProject,
@@ -479,6 +492,8 @@ export function createModel (builder: Builder): void {
   )
 
   defineApplication(builder, { myIssuesId, allIssuesId, issuesId, templatesId, labelsId })
+
+  defineGoalMixin(builder)
 
   defineActions(builder, issuesId, myIssuesId)
 

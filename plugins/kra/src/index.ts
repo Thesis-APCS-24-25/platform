@@ -52,21 +52,21 @@ export * from './analytics'
 export interface Goal extends Doc {
   name: string
   description: string
+  reports: CollectionSize<Report>
+  unit: Ref<Unit>
 }
 
-export interface KpiReport extends AttachedDoc {
-  attachedTo: Ref<Kpi>
-  attachedToClass: Ref<Class<Kpi>>
+export interface Report extends AttachedDoc {
+  attachedTo: Ref<Goal>
+  attachedToClass: Ref<Class<Goal>>
   date: Timestamp | null
-  value: number
   employee: Ref<Employee> | null
-  comment: string
+  value: number
+  note: string
 }
 
 export interface Kpi extends Goal {
   target: number
-  unit: Ref<Unit>
-  reports: CollectionSize<KpiReport>
 }
 
 export interface Unit extends Doc {
@@ -76,8 +76,27 @@ export interface Unit extends Doc {
 }
 
 export interface RatingScale extends Goal {
-  value: number | null
-  comment: string
+  unit: Ref<Unit>
+}
+
+/**
+ * @public
+ *
+ * Extensions to create a Goal reporter for Goal subclass.
+ */
+export interface GoalReporter extends Class<Goal> {
+  reporter: AnyComponent
+}
+
+export type GoalAggregateFunction = (reports: Report[]) => number
+
+/**
+ * @public
+ *
+ * Tell how to calculate the goal value.
+ */
+export interface ReportAggregator extends Class<Goal> {
+  aggregator: Resource<GoalAggregateFunction>
 }
 
 /**
@@ -346,10 +365,10 @@ export * from './analytics'
 
 const pluginState = plugin(kraId, {
   class: {
+    Report: '' as Ref<Class<Report>>,
     Unit: '' as Ref<Class<Unit>>,
     Goal: '' as Ref<Class<Goal>>,
     Kpi: '' as Ref<Class<Kpi>>,
-    KpiReport: '' as Ref<Class<KpiReport>>,
     RatingScale: '' as Ref<Class<RatingScale>>,
     Project: '' as Ref<Class<Project>>,
     Issue: '' as Ref<Class<Issue>>,
@@ -365,13 +384,15 @@ const pluginState = plugin(kraId, {
   },
   mixin: {
     ClassicProjectTypeData: '' as Ref<Mixin<Project>>,
-    IssueTypeData: '' as Ref<Mixin<Issue>>
+    IssueTypeData: '' as Ref<Mixin<Issue>>,
+    ReportAggregator: '' as Ref<Mixin<ReportAggregator>>
   },
   ids: {
     NoParent: '' as Ref<Issue>,
     IssueDraft: '',
     IssueDraftChild: '',
-    ClassingProjectType: '' as Ref<ProjectType>
+    ClassingProjectType: '' as Ref<ProjectType>,
+    RatingScaleUnit: '' as Ref<Unit>
   },
   status: {
     Backlog: '' as Ref<Status>,
@@ -478,6 +499,7 @@ const pluginState = plugin(kraId, {
     Location: '' as Resource<(loc: Location) => Promise<ResolvedLocation | undefined>>
   },
   string: {
+    Report: '' as IntlString,
     TrackerApplication: '' as IntlString,
     ConfigLabel: '' as IntlString,
     NewRelatedIssue: '' as IntlString,
@@ -508,7 +530,7 @@ export default pluginState
 /**
  * @public
  */
-export function createStatesData(data: TaskStatusFactory[]): Omit<Data<Status>, 'rank'>[] {
+export function createStatesData (data: TaskStatusFactory[]): Omit<Data<Status>, 'rank'>[] {
   const states: Omit<Data<Status>, 'rank'>[] = []
 
   for (const category of data) {

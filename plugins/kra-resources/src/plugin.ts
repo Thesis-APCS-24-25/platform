@@ -12,18 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-import {
-  type StatusCategory,
-  type Client,
-  type Doc,
-  type Ref,
-  type Space
-} from '@hcengineering/core'
+import { type StatusCategory, type Client, type Doc, type Ref, type Space } from '@hcengineering/core'
 import type { Asset, IntlString, Metadata, Resource } from '@hcengineering/platform'
 import { mergeIds } from '@hcengineering/platform'
 import type { ObjectSearchCategory, ObjectSearchFactory } from '@hcengineering/presentation'
 import { type ProjectType } from '@hcengineering/task'
-import tracker, { kraId, type IssueDraft, type Issue } from '@hcengineering/kra'
+import tracker, { kraId, type IssueDraft, type Issue, type GoalAggregateFunction } from '@hcengineering/kra'
 import { type AnyComponent, type Location } from '@hcengineering/ui'
 import {
   type CreateAggregationManagerFunc,
@@ -334,10 +328,11 @@ export default mergeIds(kraId, tracker, {
     RoleLabel: '' as IntlString
   },
   component: {
+    GoalObjectPresenter: '' as AnyComponent,
     UnitPresenter: '' as AnyComponent,
     AddUnitPopup: '' as AnyComponent,
     KpiObjectPresenter: '' as AnyComponent,
-    KpiReport: '' as AnyComponent,
+    Report: '' as AnyComponent,
     NopeComponent: '' as AnyComponent,
     MyIssues: '' as AnyComponent,
     Views: '' as AnyComponent,
@@ -411,23 +406,15 @@ export default mergeIds(kraId, tracker, {
     CreateIssueDraft: '' as Metadata<IssueDraft>
   },
   function: {
-    IssueTitleProvider: '' as Resource<
-      (client: Client, ref: Ref<Doc>, doc?: Doc) => Promise<string>
-    >,
-    IssueIdentifierProvider: '' as Resource<
-      (client: Client, ref: Ref<Doc>, doc?: Doc) => Promise<string>
-    >,
-    ComponentTitleProvider: '' as Resource<
-      (client: Client, ref: Ref<Doc>, doc?: Doc) => Promise<string>
-    >,
-    MilestoneTitleProvider: '' as Resource<
-      (client: Client, ref: Ref<Doc>, doc?: Doc) => Promise<string>
-    >,
+    KpiAggregator: '' as Resource<GoalAggregateFunction>,
+    RatingScaleAggregator: '' as Resource<GoalAggregateFunction>,
+    IssueTitleProvider: '' as Resource<(client: Client, ref: Ref<Doc>, doc?: Doc) => Promise<string>>,
+    IssueIdentifierProvider: '' as Resource<(client: Client, ref: Ref<Doc>, doc?: Doc) => Promise<string>>,
+    ComponentTitleProvider: '' as Resource<(client: Client, ref: Ref<Doc>, doc?: Doc) => Promise<string>>,
+    MilestoneTitleProvider: '' as Resource<(client: Client, ref: Ref<Doc>, doc?: Doc) => Promise<string>>,
     GetIssueId: '' as Resource<(doc: Doc) => Promise<string>>,
     GetIssueLink: '' as Resource<(doc: Doc, props: Record<string, any>) => Promise<string>>,
-    GetIssueLinkFragment: '' as Resource<
-      (doc: Doc, props: Record<string, any>) => Promise<Location>
-    >,
+    GetIssueLinkFragment: '' as Resource<(doc: Doc, props: Record<string, any>) => Promise<Location>>,
     GetIssueTitle: '' as Resource<(doc: Doc, props: Record<string, any>) => Promise<string>>,
     IssueStatusSort: '' as SortFunc,
     IssuePrioritySort: '' as SortFunc,
@@ -437,9 +424,7 @@ export default mergeIds(kraId, tracker, {
     GetAllComponents: '' as GetAllValuesFunc,
     GetAllMilestones: '' as GetAllValuesFunc,
     GetAllStates: '' as GetAllValuesFunc,
-    GetVisibleFilters: '' as Resource<
-      (filters: KeyFilter[], space?: Ref<Space>) => Promise<KeyFilter[]>
-    >,
+    GetVisibleFilters: '' as Resource<(filters: KeyFilter[], space?: Ref<Space>) => Promise<KeyFilter[]>>,
     IsProjectJoined: '' as Resource<(space: Space) => Promise<boolean>>,
     IssueChatTitleProvider: '' as Resource<(object: Doc) => string>,
     GetIssueStatusCategories: '' as Resource<(project: ProjectType) => Array<Ref<StatusCategory>>>,

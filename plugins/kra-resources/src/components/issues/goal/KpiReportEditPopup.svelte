@@ -13,116 +13,83 @@
 // limitations under the License.
 -->
 <script lang="ts">
-  import { Card, getClient } from '@hcengineering/presentation'
+  import { getClient } from '@hcengineering/presentation'
   import kra from '../../../plugin'
-  import { Issue, Kpi, KpiReport, TimeReportDayType } from '@hcengineering/kra'
-  import { DatePresenter, EditBox } from '@hcengineering/ui'
+  import { Issue, Kpi, Report } from '@hcengineering/kra'
   import KpiProgressBar from './KpiProgressBar.svelte'
-  import { getTimeReportDate, getTimeReportDayType } from '../../../utils'
   import { createEventDispatcher } from 'svelte'
-  import { UserBox } from '@hcengineering/contact-resources'
-  import contact, { Employee } from '@hcengineering/contact'
-  import TimeReportDayDropdown from '../timereport/TimeReportDayDropdown.svelte'
-  import { AttachedData, Ref, Space } from '@hcengineering/core'
+  import { Employee } from '@hcengineering/contact'
+  import { AttachedData, Ref, Space, WithLookup } from '@hcengineering/core'
+  import ReportEditPopup from './ReportEditPopup.svelte'
+  import { EditBox } from '@hcengineering/ui'
 
   export let issue: Issue | undefined = undefined
-  export let kpi: Kpi
+  export let kpi: WithLookup<Kpi>
   export let sum: number
 
   const space: Ref<Space> | undefined = issue?.space
-  const assignee: Ref<Employee> | null | undefined = issue?.assignee as Ref<Employee>
-
-  let timeReportDateType: TimeReportDayType | undefined = TimeReportDayType.CurrentWorkDay
 
   const kpiId = kpi._id
   const kpiClass = kpi._class
   const dispatch = createEventDispatcher()
   const client = getClient()
-  const data = {
-    value: undefined as number | undefined,
-    date: getTimeReportDate(timeReportDateType),
-    employee: assignee ?? null,
-    comment: ''
+
+  let assignee: Ref<Employee> | null | undefined = issue?.assignee as Ref<Employee>
+  let value = undefined as number | undefined
+  let reportDate: number | undefined = undefined
+  let note = ''
+
+  function getData (): AttachedData<Report> | undefined {
+    if (value !== undefined && reportDate !== undefined && assignee !== undefined) {
+      return {
+        value,
+        date: reportDate,
+        employee: assignee,
+        note
+      }
+    }
+    return undefined
   }
 
-  $: canSave = data.value !== undefined && Number.isFinite(data.value) && data.value >= 0 && space !== undefined
+  $: canSave = value !== undefined && Number.isFinite(value) && value >= 0 && space !== undefined
 
   async function save (): Promise<void> {
-    if (canSave) {
+    const data = getData()
+    if (canSave && data !== undefined && space !== undefined) {
       await client.addCollection(
-        kra.class.KpiReport,
+        kra.class.Report,
         space,
         kpiId,
         kpiClass,
-        'kpi-reports',
-        data as AttachedData<KpiReport>
+        'goal-reports',
+        data
       )
     }
     dispatch('close')
   }
 </script>
 
-<Card width="medium" label={kra.string.Goal} okAction={save} {canSave}>
-  <div class="kpi-value">
-    <div>
-      <span class="mr-1"> {sum} + </span>
-    </div>
-    <div class="clear-mins">
-      <EditBox bind:value={data.value} format="number" placeholder={kra.string.Goal} />
-    </div>
-    <span class="unit">/ {kpi.target} {kpi.unit}</span>
-  </div>
-  <div class="mt-4">
-    <EditBox placeholder={kra.string.Comment} bind:value={data.comment} />
-  </div>
-  <!-- <svelte:fragment slot="header"> -->
-  <!--   <ObjectBox object={issue} -->
-  <!--     _class={kra.class.Issue} -->
-  <!--     value={templateId} -->
-  <!--     docQuery={{ -->
-  <!--       space: _space -->
-  <!--     }} -->
-  <!--     on:change={handleTemplateChange} -->
-  <!--     kind={'regular'} -->
-  <!--     size={'small'} -->
-  <!--     label={tracker.string.NoIssueTemplate} -->
-  <!--     icon={tracker.icon.IssueTemplates} -->
-  <!--     searchField={'title'} -->
-  <!--     allowDeselect={true} -->
-  <!--     showNavigate={false} -->
-  <!--     docProps={{ disabled: true, noUnderline: true }} -->
-  <!--     focusIndex={20000} -->
-  <!--   /> -->
-  <!-- </svelte:fragment> -->
-  <svelte:fragment slot="pool">
-    <DatePresenter
-      bind:value={data.date}
-      editable
-      kind={'regular'}
-      size={'large'}
-      on:change={({ detail }) => {
-        timeReportDateType = getTimeReportDayType(detail)
-      }}
-    />
-    <TimeReportDayDropdown
-      kind={'regular'}
-      size={'large'}
-      bind:selected={timeReportDateType}
-      on:selected={({ detail }) => (data.date = getTimeReportDate(detail))}
-    />
-    <UserBox
-      _class={contact.mixin.Employee}
-      label={contact.string.Employee}
-      kind={'regular'}
-      size={'large'}
-      bind:value={data.employee}
-      showNavigate={false}
-    />
+<ReportEditPopup okAction={save} {canSave} bind:assignee bind:reportDate>
+  <svelte:fragment slot="header">
   </svelte:fragment>
-  <div class="mt-4 mb-4">
-    <KpiProgressBar value={sum} max={kpi.target} additionalValue={data.value} />
-  </div>
-</Card>
+  <svelte:fragment slot="content">
+    <div class="kpi-value">
+      <div>
+        <span class="mr-1"> {sum} + </span>
+      </div>
+      <div class="clear-mins">
+        <EditBox bind:value={value} format="number" placeholder={kra.string.Goal} />
+      </div>
+      <span class="unit">/ {kpi.target} ({kpi.$lookup?.unit?.name})</span>
+    </div>
+    <div class="mt-4">
+      <EditBox placeholder={kra.string.Comment} bind:value={note} />
+    </div>
+    <div class="mt-4 mb-4">
+      <KpiProgressBar value={sum} max={kpi.target} additionalValue={value} />
+    </div>
+  </svelte:fragment>
+</ReportEditPopup>
 
 <style>
   .kpi-value {

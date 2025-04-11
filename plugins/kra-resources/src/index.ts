@@ -126,9 +126,11 @@ import KpiPresenter from './components/issues/goal/KpiPresenter.svelte'
 import RatingScalePresenter from './components/issues/goal/RatingScalePresenter.svelte'
 import KpiObjectPresenter from './components/issues/goal/KpiObjectPresenter.svelte'
 import AddUnitPopup from './components/issues/goal/unit/AddUnitPopup.svelte'
-import KpiReport from './components/issues/goal/KpiReport.svelte'
+import Report from './components/issues/goal/Report.svelte'
 import UnitPresenter from './components/issues/goal/unit/UnitPresenter.svelte'
+import GoalObjectPresenter from './components/issues/goal/GoalObjectPresenter.svelte'
 import './styles/_colors.scss'
+import { calculateKpiResult, calculateRatingScaleResult } from './utils/goal'
 
 export { default as AssigneeEditor } from './components/issues/AssigneeEditor.svelte'
 export { default as SubIssueList } from './components/issues/edit/SubIssueList.svelte'
@@ -334,10 +336,11 @@ export default async (): Promise<Resources> => ({
     GoalPresenter,
     KpiPresenter,
     RatingScalePresenter,
-    KpiReport,
+    Report,
     KpiObjectPresenter,
     AddUnitPopup,
     UnitPresenter,
+    GoalObjectPresenter
   },
   completion: {
     IssueQuery: async (
@@ -367,7 +370,9 @@ export default async (): Promise<Resources> => ({
     GetVisibleFilters: getVisibleFilters,
     IssueChatTitleProvider: getIssueChatTitle,
     IsProjectJoined: async (project: Project) => project.members.includes(getCurrentAccount()._id),
-    GetIssueStatusCategories: getIssueStatusCategories
+    GetIssueStatusCategories: getIssueStatusCategories,
+    KpiAggregator: calculateKpiResult,
+    RatingScaleAggregator: calculateRatingScaleResult
   },
   actionImpl: {
     Move: move,

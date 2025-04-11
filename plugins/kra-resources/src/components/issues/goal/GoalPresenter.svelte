@@ -4,8 +4,6 @@
   import { createQuery, getClient } from '@hcengineering/presentation'
   import view, { AttributePresenter } from '@hcengineering/view'
   import { Doc, Space, WithLookup } from '@hcengineering/core'
-  import { getGoal } from '../../../utils/goal'
-  import { ObjectPresenter } from '@hcengineering/view-resources'
   import kra from '../../../plugin'
 
   export let value: WithLookup<Issue>
@@ -34,6 +32,11 @@
           _value = res[0]
         } else {
           _value = undefined
+        }
+      },
+      {
+        lookup: {
+          unit: kra.class.Unit
         }
       }
     )
