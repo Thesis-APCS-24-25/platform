@@ -2,8 +2,8 @@
   import { Issue, RatingScale } from '@hcengineering/kra'
   import { EditBox, showPopup } from '@hcengineering/ui'
   import RatingScaleBoxes from './RatingScaleBoxes.svelte'
-  import RatingScaleEditPopup from './ratingscale/RatingScaleEditPopup.svelte'
-  import { calculateGoalCallback } from '../../../utils/goal'
+  import RatingScaleEditPopup from '../ratingscale/RatingScaleEditPopup.svelte'
+  import { calculateGoalCallback } from '../../../../utils/goal'
 
   export let issue: Issue
   export let ratingScale: RatingScale

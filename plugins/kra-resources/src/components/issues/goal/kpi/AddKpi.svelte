@@ -1,11 +1,10 @@
 <script lang="ts">
-  import { EditBox, FocusHandler, getFocusManager } from '@hcengineering/ui'
-  import kra from '../../../plugin'
+  import { EditBox } from '@hcengineering/ui'
+  import kra from '../../../../plugin'
   import { getClient } from '@hcengineering/presentation'
   import { Issue, Unit } from '@hcengineering/kra'
   import { Ref } from '@hcengineering/core'
-  import ObjectBox from '@hcengineering/view-resources/src/components/ObjectBox.svelte'
-  import UnitBox from './unit/UnitBox.svelte'
+  import UnitBox from '../unit/UnitBox.svelte'
 
   export let canSave = false
   export let issueId: Ref<Issue> | undefined = undefined

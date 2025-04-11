@@ -4,16 +4,17 @@
   import { AttachedData, Ref } from '@hcengineering/core'
   import kra from '../../../../plugin'
   import { Employee } from '@hcengineering/contact'
-  import RatingScaleBoxes from '../RatingScaleBoxes.svelte'
+  import RatingScaleBoxes from './RatingScaleBoxes.svelte'
   import { getClient } from '@hcengineering/presentation'
   import { Issue, RatingScale, Report } from '@hcengineering/kra'
 
   export let issue: Issue
   export let ratingScale: RatingScale
-  export let assignee: Ref<Employee> | null | undefined = undefined
-  export let reportDate: number
   export let value: number | undefined = undefined
   export let note: string = ''
+
+  let assignee: Ref<Employee> | null | undefined = issue.assignee as Ref<Employee>
+  let reportDate: number
 
   const client = getClient()
   function getReport (): AttachedData<Report> | undefined {
@@ -39,7 +40,7 @@
   $: canSave = value !== undefined && Number.isFinite(value) && value >= 0
 </script>
 
-<ReportEditPopup okAction={save} {canSave} bind:assignee bind:reportDate>
+<ReportEditPopup okAction={save} {canSave} bind:assignee bind:reportDate on:close>
   <svelte:fragment slot="header"></svelte:fragment>
   <svelte:fragment slot="content">
     <div class="kpi-value">

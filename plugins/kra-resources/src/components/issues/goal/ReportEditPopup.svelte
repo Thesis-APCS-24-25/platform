@@ -9,6 +9,7 @@
   import TimeReportDayDropdown from '../timereport/TimeReportDayDropdown.svelte'
   import { Ref } from '@hcengineering/core'
   import { IntlString } from '@hcengineering/platform'
+  import { createEventDispatcher } from 'svelte'
 
   export let issue: Issue | undefined = undefined
   export let label: IntlString | undefined = undefined
@@ -18,16 +19,26 @@
   export let reportDate: number = getTimeReportDate(TimeReportDayType.CurrentWorkDay)
 
   let timeReportDateType: TimeReportDayType | undefined = TimeReportDayType.CurrentWorkDay
+
+  const dispatch = createEventDispatcher()
 </script>
 
-<Card width="medium" label={label ?? kra.string.Goal} {okAction} {canSave}>
+<Card
+  width="medium"
+  label={label ?? kra.string.Goal}
+  {okAction}
+  {canSave}
+  on:close={() => {
+    dispatch('close')
+  }}
+>
   <svelte:fragment slot="header">
     <slot name="header" />
   </svelte:fragment>
   <svelte:fragment slot="subheader">
     <slot name="subheader" />
   </svelte:fragment>
-  <slot name="content"/>
+  <slot name="content" />
 
   <svelte:fragment slot="pool">
     <DatePresenter

@@ -1,15 +1,11 @@
 import {
-  type ReportAggregator,
   type Goal,
   type Issue,
   type Report,
-  Kpi,
   type GoalAggregateFunction
 } from '@hcengineering/kra'
 import { createQuery, getClient } from '@hcengineering/presentation'
 import kra from '../plugin'
-import { getResource, getResourceC } from '@hcengineering/platform'
-import { type Doc, type Space } from '@hcengineering/core'
 
 export function getGoal (object: Issue, onResult: (goal: Goal) => void): void {
   const ref = object.goal
