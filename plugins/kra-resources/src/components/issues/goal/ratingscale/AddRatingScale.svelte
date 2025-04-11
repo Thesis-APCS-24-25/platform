@@ -26,7 +26,9 @@
       const apply = client.apply()
       const kpiId = await apply.createDoc(kra.class.RatingScale, issue.space, {
         name: data.name,
-        description: data.description
+        description: data.description,
+        reports: 0,
+        unit: kra.ids.RatingScaleUnit
       })
 
       await apply.updateDoc(kra.class.Issue, issue.space, issueId, {
