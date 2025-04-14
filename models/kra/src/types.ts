@@ -81,6 +81,7 @@ import {
 } from '@hcengineering/kra'
 import kra from './plugin'
 import { type TaskType } from '@hcengineering/task'
+import performance, { type KRA } from '@hcengineering/performance'
 
 import preference, { TPreference } from '@hcengineering/model-preference'
 
@@ -302,6 +303,10 @@ export class TIssue extends TTask implements Issue {
 
   @Prop(TypeRef(kra.class.Goal), kra.string.Goal)
     goal?: Ref<Goal>
+
+  // TODO: add intl string for this attribute
+  @Prop(TypeRef(performance.class.KRA), performance.string.KRAStatus)
+    kra?: Ref<KRA>
 }
 /**
  * @public

@@ -241,7 +241,7 @@ export interface Issue extends Task {
 
   goal?: Ref<Goal>
 
-  kra: Ref<KRA>
+  kra?: Ref<KRA>
 }
 
 /**
