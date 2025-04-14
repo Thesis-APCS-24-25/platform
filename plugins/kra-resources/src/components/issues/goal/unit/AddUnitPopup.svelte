@@ -3,10 +3,11 @@
   import { createFocusManager, EditBox, FocusHandler, getFocusManager } from '@hcengineering/ui'
   import kra from '../../../../plugin'
   import ToggleWithLabel from '@hcengineering/ui/src/components/ToggleWithLabel.svelte'
-  import { Issue } from '@hcengineering/kra'
+  import { Issue, Project } from '@hcengineering/kra'
   import { createEventDispatcher } from 'svelte'
+  import { Ref } from '@hcengineering/core'
 
-  export let issue: Issue
+  export let space: Ref<Project>
 
   const data = {
     name: '',
@@ -26,7 +27,7 @@
       return
     }
 
-    await client.createDoc(kra.class.Unit, issue.space, {
+    await client.createDoc(kra.class.Unit, space, {
       name: data.name,
       symbol: data.symbol,
       prefix: data.prefix
