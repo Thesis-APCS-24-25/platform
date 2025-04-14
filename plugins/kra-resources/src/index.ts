@@ -130,21 +130,16 @@ import Report from './components/issues/goal/Report.svelte'
 import UnitPresenter from './components/issues/goal/unit/UnitPresenter.svelte'
 import GoalObjectPresenter from './components/issues/goal/GoalObjectPresenter.svelte'
 import './styles/_colors.scss'
-import { calculateKpiResult, calculateRatingScaleResult } from './utils/goal'
+import { calculateGoal, calculateKpiResult, calculateRatingScaleResult } from './utils/goal'
+import task, { type Task } from '@hcengineering/task'
+import kra from './plugin'
 
 export { default as AssigneeEditor } from './components/issues/AssigneeEditor.svelte'
 export { default as SubIssueList } from './components/issues/edit/SubIssueList.svelte'
 export { default as IssueStatusIcon } from './components/issues/IssueStatusIcon.svelte'
 export { default as StatusPresenter } from './components/issues/StatusPresenter.svelte'
 
-export {
-  activeProjects,
-  CreateProject,
-  IssuePresenter,
-  PriorityEditor,
-  StatusEditor,
-  TitlePresenter
-}
+export { activeProjects, CreateProject, IssuePresenter, PriorityEditor, StatusEditor, TitlePresenter }
 
 export async function queryIssue<D extends Issue> (
   _class: Ref<Class<D>>,
@@ -258,10 +253,7 @@ async function deleteProject (project: Project | undefined): Promise<void> {
       showPopup(MessageBox, {
         label: tracker.string.ArchiveProjectName,
         labelProps: { name: project.name },
-        message:
-          anyIssue !== undefined
-            ? tracker.string.ProjectHasIssues
-            : tracker.string.ArchiveProjectConfirm,
+        message: anyIssue !== undefined ? tracker.string.ProjectHasIssues : tracker.string.ArchiveProjectConfirm,
         action: async () => {
           await client.update(project, { archived: true })
         }
@@ -343,11 +335,8 @@ export default async (): Promise<Resources> => ({
     GoalObjectPresenter
   },
   completion: {
-    IssueQuery: async (
-      client: Client,
-      query: string,
-      filter?: { in?: RelatedDocument[], nin?: RelatedDocument[] }
-    ) => await queryIssue(tracker.class.Issue, client, query, filter)
+    IssueQuery: async (client: Client, query: string, filter?: { in?: RelatedDocument[], nin?: RelatedDocument[] }) =>
+      await queryIssue(tracker.class.Issue, client, query, filter)
   },
   function: {
     IssueIdentifierProvider: issueIdentifierProvider,
@@ -372,7 +361,20 @@ export default async (): Promise<Resources> => ({
     IsProjectJoined: async (project: Project) => project.members.includes(getCurrentAccount()._id),
     GetIssueStatusCategories: getIssueStatusCategories,
     KpiAggregator: calculateKpiResult,
-    RatingScaleAggregator: calculateRatingScaleResult
+    RatingScaleAggregator: calculateRatingScaleResult,
+    CalculateGoal: async (taskId: Ref<Task>) => {
+      const client = getClient()
+      const res = await client.findOne(task.class.Task, { _id: taskId })
+      if (res === undefined || res._class !== kra.class.Goal) {
+        return res
+      }
+      const issue = res as Issue
+      const goal = await client.findOne(kra.class.Goal, { _id: issue.goal })
+      if (goal === undefined) {
+        return goal
+      }
+      return await calculateGoal(goal)
+    }
   },
   actionImpl: {
     Move: move,
