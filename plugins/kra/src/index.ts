@@ -271,6 +271,7 @@ export interface IssueDraft {
     childId?: string
   }
   goal?: Ref<Goal>
+  kra?: Ref<KRA>
 }
 
 /**
