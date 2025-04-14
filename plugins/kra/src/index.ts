@@ -267,6 +267,7 @@ export interface IssueDraft {
     // Child id in template
     childId?: string
   }
+  goal?: Ref<Goal>
 }
 
 /**

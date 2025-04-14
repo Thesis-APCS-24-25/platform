@@ -52,6 +52,7 @@
   import { TaskKindSelector } from '@hcengineering/task-resources'
   import { EmptyMarkup, isEmptyMarkup } from '@hcengineering/text'
   import {
+    Goal,
     Issue,
     IssueDraft,
     IssueParentInfo,
@@ -83,16 +84,15 @@
   import tracker from '../plugin'
   import SetParentIssueActionPopup from './SetParentIssueActionPopup.svelte'
   import SubIssues from './SubIssues.svelte'
-  import ComponentSelector from './components/ComponentSelector.svelte'
   import AssigneeEditor from './issues/AssigneeEditor.svelte'
   import IssueNotification from './issues/IssueNotification.svelte'
   import ParentIssue from './issues/ParentIssue.svelte'
   import PriorityEditor from './issues/PriorityEditor.svelte'
   import StatusEditor from './issues/StatusEditor.svelte'
   import EstimationEditor from './issues/timereport/EstimationEditor.svelte'
-  import MilestoneSelector from './milestones/MilestoneSelector.svelte'
   import ProjectPresenter from './projects/ProjectPresenter.svelte'
-  import RatingScaleEditor from './RatingScaleEditor.svelte'
+  import AddGoalPopup from './issues/goal/AddGoalPopup.svelte'
+  import CreateIssueGoalDisplay from './issues/goal/CreateIssueGoalDisplay.svelte'
 
   export let space: Ref<Project> | undefined
   export let status: Ref<IssueStatus> | undefined = undefined
@@ -134,7 +134,7 @@
   let template: IssueTemplate | undefined = undefined
   const templateQuery = createQuery()
 
-  function objectChange (object: IssueDraft, empty: any): void {
+  function objectChange(object: IssueDraft, empty: any): void {
     if (shouldSaveDraft) {
       draftController.save(object, empty)
     }
@@ -155,7 +155,7 @@
     parentIssue = undefined
   }
 
-  function getDefaultObjectFromDraft (): IssueDraft | undefined {
+  function getDefaultObjectFromDraft(): IssueDraft | undefined {
     if (draft == null) {
       return
     }
@@ -168,7 +168,7 @@
     }
   }
 
-  function getDefaultObject (id: Ref<Issue> | undefined = undefined, ignoreOriginal = false): IssueDraft {
+  function getDefaultObject(id: Ref<Issue> | undefined = undefined, ignoreOriginal = false): IssueDraft {
     const base: IssueDraft = {
       _id: id ?? generateId(),
       title: '',
@@ -242,9 +242,12 @@
     object.space = _space
   }
 
-  function resetObject (): void {
+  function resetObject(): void {
     templateId = undefined
     template = undefined
+    void clearGoal().then(() => {
+      object.goal = undefined
+    })
     object = getDefaultObject(undefined, true)
     fillDefaults(hierarchy, object, tracker.class.Issue)
   }
@@ -258,7 +261,7 @@
     templateQuery.unsubscribe()
   }
 
-  function tagAsRef (tag: TagElement): TagReference {
+  function tagAsRef(tag: TagElement): TagReference {
     return {
       _class: tags.class.TagReference,
       _id: generateId(),
@@ -274,7 +277,7 @@
     }
   }
 
-  async function updateTemplate (template: IssueTemplate): Promise<void> {
+  async function updateTemplate(template: IssueTemplate): Promise<void> {
     if (object.template?.template === template._id) {
       return
     }
@@ -360,19 +363,19 @@
 
   const docCreateManager = DocCreateExtensionManager.create(tracker.class.Issue)
 
-  function updateIssueStatusId (object: IssueDraft, currentProject: Project | undefined): void {
+  function updateIssueStatusId(object: IssueDraft, currentProject: Project | undefined): void {
     if (currentProject?.defaultIssueStatus !== undefined && object.status === undefined) {
       object.status = currentProject.defaultIssueStatus
     }
   }
 
-  function resetDefaultAssigneeId (): void {
+  function resetDefaultAssigneeId(): void {
     if (!isAssigneeTouched && !(object.assignee == null) && object.assignee === currentProject?.defaultAssignee) {
       object = { ...object, assignee: assignee ?? null }
     }
   }
 
-  function updateAssigneeId (object: IssueDraft, currentProject: Project | undefined): void {
+  function updateAssigneeId(object: IssueDraft, currentProject: Project | undefined): void {
     if (!isAssigneeTouched && object.assignee == null && currentProject !== undefined) {
       if (currentProject.defaultAssignee !== undefined) {
         object.assignee = currentProject.defaultAssignee
@@ -381,23 +384,23 @@
       }
     }
   }
-  function clearParentIssue (): void {
+  function clearParentIssue(): void {
     object.parentIssue = undefined
     parentQuery.unsubscribe()
     parentIssue = undefined
   }
 
-  function getTitle (value: string): string {
+  function getTitle(value: string): string {
     return value.trim()
   }
 
   let subIssuesComponent: SubIssues
 
-  export function canClose (): boolean {
+  export function canClose(): boolean {
     return true
   }
 
-  export function onOutsideClick (): void {
+  export function onOutsideClick(): void {
     if (shouldSaveDraft) {
       draftController.save(object, empty)
     }
@@ -409,7 +412,7 @@
     preferences = res
   })
 
-  async function updateCurrentProjectPref (currentProject: Ref<Project>): Promise<void> {
+  async function updateCurrentProjectPref(currentProject: Ref<Project>): Promise<void> {
     const spacePreferences = await client.findOne(tracker.class.ProjectTargetPreference, { attachedTo: currentProject })
     if (spacePreferences === undefined) {
       await client.createDoc(tracker.class.ProjectTargetPreference, currentProject, {
@@ -430,7 +433,7 @@
     void updateCurrentProjectPref(_space)
   }
 
-  async function createIssue (): Promise<void> {
+  async function createIssue(): Promise<void> {
     const _id: Ref<Issue> = generateId()
     if (
       !canSave ||
@@ -496,7 +499,8 @@
         relations: relatedTo !== undefined ? [{ _id: relatedTo._id, _class: relatedTo._class }] : [],
         childInfo: [],
         kind,
-        identifier
+        identifier,
+        goal: object.goal
       }
 
       if (!isEmptyMarkup(object.description)) {
@@ -586,7 +590,7 @@
     }
   }
 
-  async function setParentIssue (): Promise<void> {
+  async function setParentIssue(): Promise<void> {
     showPopup(
       SetParentIssueActionPopup,
       { value: { ...object, space: _space, attachedTo: parentIssue?._id } },
@@ -600,10 +604,10 @@
     )
   }
 
-  function addTagRef (tag: TagElement): void {
+  function addTagRef(tag: TagElement): void {
     object.labels = [...object.labels, tagAsRef(tag)]
   }
-  function handleTemplateChange (evt: CustomEvent<Ref<IssueTemplate>>): void {
+  function handleTemplateChange(evt: CustomEvent<Ref<IssueTemplate>>): void {
     if (templateId == null) {
       templateId = evt.detail
       return
@@ -630,7 +634,7 @@
     )
   }
 
-  async function showConfirmationDialog (): Promise<void> {
+  async function showConfirmationDialog(): Promise<void> {
     draftController.save(object, empty)
     const isFormEmpty = draft === undefined
 
@@ -661,7 +665,7 @@
 
   let attachments: Map<Ref<Attachment>, Attachment> = new Map<Ref<Attachment>, Attachment>()
 
-  async function findDefaultSpace (): Promise<Project | undefined> {
+  async function findDefaultSpace(): Promise<Project | undefined> {
     let targetRef: Ref<Project> | undefined
     if (relatedTo !== undefined) {
       const targets = await client.findAll(tracker.class.RelatedIssueTarget, {})
@@ -722,6 +726,30 @@
     parentIssue,
     originalIssue,
     preferences
+  }
+
+  function setGoal(): void {
+    showPopup(
+      AddGoalPopup,
+      {
+        issue: object,
+        canEditIssue: false
+      },
+      'top',
+      (goal) => {
+        if (goal !== undefined) {
+          object.goal = goal
+        }
+      }
+    )
+  }
+
+  async function clearGoal(): Promise<void> {
+    if (object.goal === undefined) {
+      return
+    }
+    await client.removeDoc(tracker.class.Goal, object.space, object.goal)
+    object.goal = undefined
   }
 </script>
 
@@ -859,6 +887,11 @@
       bind:subIssues={object.subIssues}
     />
   {/if}
+  {#if object.goal !== undefined}
+    <div id="goal-editor">
+      <CreateIssueGoalDisplay goal={object.goal} onRemove={clearGoal} />
+    </div>
+  {/if}
   <DocCreateExtComponent manager={docCreateManager} kind={'body'} space={currentProject} props={extraProps} />
   <svelte:fragment slot="pool">
     <div id="status-editor">
@@ -953,8 +986,19 @@
         on:click={object.parentIssue != null ? clearParentIssue : setParentIssue}
       />
     </div>
-    <DocCreateExtComponent manager={docCreateManager} kind={'pool'} space={currentProject} props={extraProps} />
-  </svelte:fragment>
+    <div id="goal-editor" class="new-line">
+      <Button
+        focusIndex={12}
+        icon={tracker.icon.Estimation}
+        label={object.goal != null ? tracker.string.RemoveGoal : tracker.string.SetGoal}
+        kind={'regular'}
+        size={'large'}
+        notSelected={object.goal === undefined}
+        on:click={object.goal != null ? clearGoal : setGoal}
+      />
+      <DocCreateExtComponent manager={docCreateManager} kind={'pool'} space={currentProject} props={extraProps} />
+    </div></svelte:fragment
+  >
   <svelte:fragment slot="attachments">
     {#if attachments.size > 0}
       {#each Array.from(attachments.values()) as attachment}

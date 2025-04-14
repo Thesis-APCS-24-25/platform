@@ -1,12 +1,12 @@
 <script lang="ts">
-  import { Issue } from '@hcengineering/kra'
+  import { Goal, Issue } from '@hcengineering/kra'
   import { EditBox } from '@hcengineering/ui'
   import kra from '../../../../plugin'
   import { getClient } from '@hcengineering/presentation'
   import { Ref } from '@hcengineering/core'
 
   export let canSave = false
-  export let issueId: Ref<Issue> | undefined = undefined
+  export let issue: Ref<Issue> | Issue | undefined = undefined
 
   const data = {
     name: '',
@@ -15,27 +15,33 @@
 
   const client = getClient()
 
-  export async function save () {
-    if (canSave && issueId !== undefined) {
-      const issue: Issue | undefined = await client.findOne(kra.class.Issue, {
-        _id: issueId
-      })
-      if (issue === undefined) {
-        return
+  export async function save (): Promise<Ref<Goal> | undefined> {
+    if (canSave && issue !== undefined) {
+      if (typeof issue === 'string') {
+        issue = (await client.findOne(kra.class.Issue, {
+          _id: issue
+        }))
       }
+
+      if (issue === undefined) {
+        return undefined
+      }
+
       const apply = client.apply()
-      const kpiId = await apply.createDoc(kra.class.RatingScale, issue.space, {
+      const id = await apply.createDoc(kra.class.RatingScale, issue.space, {
         name: data.name,
         description: data.description,
         reports: 0,
         unit: kra.ids.RatingScaleUnit
       })
 
-      await apply.updateDoc(kra.class.Issue, issue.space, issueId, {
-        goal: kpiId
+      await apply.updateDoc(kra.class.Issue, issue.space, issue._id, {
+        goal: id
       })
 
       await apply.commit()
+
+      return id
     }
   }
 

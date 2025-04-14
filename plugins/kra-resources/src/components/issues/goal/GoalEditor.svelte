@@ -42,10 +42,8 @@
   $: if (goal !== null) {
     if (goal._class === kra.class.Kpi) {
       kpi = goal as WithLookup<Kpi>
-      ratingScale = null
     } else if (goal._class === kra.class.RatingScale) {
       ratingScale = goal as RatingScale
-      kpi = null
     }
   }
 

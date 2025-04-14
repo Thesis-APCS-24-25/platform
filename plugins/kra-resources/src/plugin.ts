@@ -43,6 +43,8 @@ export default mergeIds(kraId, tracker, {
     IssueCategory: '' as Ref<ObjectSearchCategory>
   },
   string: {
+    SetGoal: '' as IntlString,
+    RemoveGoal: '' as IntlString,
     AddDescriptionPlaceholder: '' as IntlString,
     AddSympolPlaceholder: '' as IntlString,
     Prefix: '' as IntlString,

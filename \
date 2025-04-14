@@ -2,9 +2,10 @@
   import { EditBox } from '@hcengineering/ui'
   import kra from '../../../../plugin'
   import { getClient } from '@hcengineering/presentation'
-  import { Goal, Issue, Unit } from '@hcengineering/kra'
+  import { Issue, Unit } from '@hcengineering/kra'
   import { Ref } from '@hcengineering/core'
   import UnitBox from '../unit/UnitBox.svelte'
+  import { Project } from '@hcengineering/task'
 
   export let canSave = false
   export let issue: Ref<Issue> | Issue | undefined = undefined
@@ -20,7 +21,7 @@
 
   $: canSave = data.name.length > 0 && Number.isFinite(data.target) && data.unit !== undefined
 
-  export async function save (): Promise<Ref<Goal> | undefined> {
+  export async function save(): Promise<void> {
     if (canSave && issue !== undefined) {
       if (typeof issue === 'string') {
         issue = (await client.findOne(kra.class.Issue, {
@@ -44,7 +45,6 @@
         })
 
         await apply.commit()
-        return kpiId
       }
     }
   }
