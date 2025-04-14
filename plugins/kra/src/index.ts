@@ -46,6 +46,7 @@ import {
 } from '@hcengineering/task'
 import { AnyComponent, ComponentExtensionId, Location, ResolvedLocation } from '@hcengineering/ui'
 import { Action, ActionCategory, IconProps } from '@hcengineering/view'
+import { KRA } from '@hcengineering/performance'
 
 export * from './analytics'
 
@@ -239,6 +240,8 @@ export interface Issue extends Task {
   todos?: CollectionSize<ToDo>
 
   goal?: Ref<Goal>
+
+  kra: Ref<KRA>
 }
 
 /**

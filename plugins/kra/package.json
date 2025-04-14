@@ -48,7 +48,8 @@
     "@hcengineering/time": "^0.6.0",
     "@hcengineering/tags": "^0.6.16",
     "@hcengineering/preference": "^0.6.13",
-    "lexorank": "~1.0.4"
+    "lexorank": "~1.0.4",
+    "@hcengineering/performance": "~0.1.0"
   },
   "repository": "https://github.com/hcengineering/platform",
   "publishConfig": {
