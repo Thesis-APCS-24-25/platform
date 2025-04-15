@@ -31,6 +31,8 @@ export default mergeIds(performanceId, performance, {
     AssignedTo: '' as IntlString
   },
   component: {
+    KRAEditor: '' as AnyComponent,
+    KRARefPresenter: '' as AnyComponent,
     NewReviewSessionHeader: '' as AnyComponent,
     ReviewSessionSpacePresenter: '' as AnyComponent,
     CreateReviewSession: '' as AnyComponent,
@@ -38,8 +40,7 @@ export default mergeIds(performanceId, performance, {
     KRAPresenter: '' as AnyComponent,
     EditKRA: '' as AnyComponent,
     TeamSpacePresenter: '' as AnyComponent,
-    PerformanceDashboard: '' as AnyComponent,
-    KRARefPresenter: '' as AnyComponent
+    PerformanceDashboard: '' as AnyComponent
   },
   function: {
     GetAllKRAStates: '' as GetAllValuesFunc,

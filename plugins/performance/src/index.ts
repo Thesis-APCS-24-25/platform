@@ -49,7 +49,7 @@ export interface MeasureProgress extends Class<Task> {
 }
 
 export interface WithKRA extends Task {
-  kra: Ref<KRA>
+  kra?: Ref<KRA>
 }
 
 export const performanceId = 'performance' as Plugin
@@ -70,6 +70,7 @@ export default plugin(performanceId, {
     EmployeeKRA: '' as Ref<Class<EmployeeKRA>>
   },
   string: {
+    KRA: '' as IntlString,
     ReviewSessionStatus: '' as IntlString,
     ReviewSessionStart: '' as IntlString,
     ReviewSessionEnd: '' as IntlString,
@@ -102,7 +103,8 @@ export default plugin(performanceId, {
   mixin: {
     DefaultReviewSessionData: '' as Ref<Mixin<ReviewSession>>,
     DefaultKRAData: '' as Ref<Mixin<KRA>>,
-    WithKRA: '' as Ref<Mixin<WithKRA>>
+    WithKRA: '' as Ref<Mixin<WithKRA>>,
+    MeasureProgress: '' as Ref<Mixin<MeasureProgress>>
   },
   taskTypes: {
     KRA: '' as Ref<TaskType>

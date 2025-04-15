@@ -240,8 +240,6 @@ export interface Issue extends Task {
   todos?: CollectionSize<ToDo>
 
   goal?: Ref<Goal>
-
-  kra?: Ref<KRA>
 }
 
 /**
