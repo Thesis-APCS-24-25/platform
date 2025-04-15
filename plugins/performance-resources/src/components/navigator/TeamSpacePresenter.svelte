@@ -1,42 +1,41 @@
 <script lang="ts">
-  import { Doc, Ref, Space, WithLookup } from '@hcengineering/core'
-  import kraTeam, { Team } from '@hcengineering/kra-team'
+  import { Ref, Space } from '@hcengineering/core'
+  import { Team } from '@hcengineering/kra-team'
   import performance, { ReviewSession } from '@hcengineering/performance'
   import { createQuery, getClient } from '@hcengineering/presentation'
-  import { getCurrentResolvedLocation, getPlatformColorForTextDef,  Label,  navigate,  themeStore, type Action } from '@hcengineering/ui'
+  import { getPlatformColorForTextDef, Label, navigate, themeStore, type Action } from '@hcengineering/ui'
   import { TreeNode } from '@hcengineering/view-resources'
   import TreeElement from '@hcengineering/view-resources/src/components/navigator/TreeElement.svelte'
   import { getReviewSessionLink } from '../../navigation'
   import { team } from '../../store'
-  import { onDestroy } from 'svelte';
+  import { onDestroy } from 'svelte'
 
-  
   export let space: Team
   export let currentSpace: Ref<Space> | undefined
-  export let currentFragment: string | undefined
+  // export let currentFragment: string | undefined
   export let deselect: boolean = false
   export let forciblyСollapsed: boolean = false
   export let getActions: (space: Space) => Promise<Action[]> = async () => []
-  
+
   const client = getClient()
   const query = createQuery()
   let reviewSessions: ReviewSession[] = []
-  
+
   let currentTeam: Ref<Team>
-  $: client.findOne(
+  $: void client.findOne(
     performance.class.ReviewSession,
     {
       _id: currentSpace as Ref<ReviewSession>
-    },
+    }
   ).then((result) => {
     if (result !== undefined) {
       currentTeam = result.space as Ref<Team>
       team.set(currentTeam)
     }
   })
-  const unsubscribe = team.subscribe((value) => currentTeam = value)
+  const unsubscribe = team.subscribe((value) => { currentTeam = value })
 
-  onDestroy(unsubscribe);
+  onDestroy(unsubscribe)
 
   query.query(
     performance.class.ReviewSession,
@@ -50,7 +49,7 @@
       }
     },
     {
-      limit: 50, // BUG: findAll returns all records even if they do not match
+      limit: 50 // BUG: findAll returns all records even if they do not match
     }
   )
 
@@ -59,10 +58,10 @@
     team.set(space._id)
     navigate(getReviewSessionLink(_id))
   }
-  
+
   let selected: Ref<ReviewSession> | undefined = currentSpace as Ref<ReviewSession>
 
-  let pressed: boolean = false
+  const pressed: boolean = false
 </script>
 
 {#if space}
@@ -88,7 +87,7 @@
             title={session.name}
             selected={space._id === currentTeam && selected === session._id && !deselect}
             empty
-            on:click={() => handleReviewSessionSelected(session._id)}
+            on:click={() => { handleReviewSessionSelected(session._id) }}
           />
         {/if}
       {/each}

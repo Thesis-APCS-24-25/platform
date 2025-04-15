@@ -1,7 +1,5 @@
-
 <script lang="ts">
-  import { AttachmentStyleBoxCollabEditor } from '@hcengineering/attachment-resources'
-  import { Class, Doc, Ref, WithLookup } from '@hcengineering/core'
+  import { Class, Ref, WithLookup } from '@hcengineering/core'
   import { Panel } from '@hcengineering/panel'
   import presentation, {
     ActionContext,
@@ -11,17 +9,16 @@
   } from '@hcengineering/presentation'
   import { taskTypeStore, typeStore } from '@hcengineering/task-resources'
   import {
-    AnyComponent,
     Button,
     EditBox,
     FocusHandler,
     IconMixin,
     IconMoreH,
     Label,
-    createFocusManager,
+    createFocusManager
   } from '@hcengineering/ui'
   import view from '@hcengineering/view'
-  import { DocNavLink,  showMenu, RelationsEditor } from '@hcengineering/view-resources'
+  import { DocNavLink, showMenu, RelationsEditor } from '@hcengineering/view-resources'
   import { InboxNotificationsClientImpl } from '@hcengineering/notification-resources'
 
   import { createEventDispatcher, onDestroy } from 'svelte'
@@ -39,7 +36,7 @@
   const queryClient = createQuery()
   const dispatch = createEventDispatcher()
   const client = getClient()
-  const hierarchy = client.getHierarchy()
+  // const hierarchy = client.getHierarchy()
 
   let kra: WithLookup<KRA> | undefined
   let title = ''
@@ -62,7 +59,7 @@
   $: read(kraId)
 
   function read (_id?: Ref<KRA>): void {
-    if (_id && lastId && lastId !== _id) {
+    if ((_id != null) && (lastId != null) && lastId !== _id) {
       const prev = lastId
       lastId = _id
       void inboxClient.readDoc(prev)
@@ -96,7 +93,7 @@
 
   $: canSave = title.trim().length > 0
 
-  let saved = false
+  const saved = false
   async function save (): Promise<void> {
     if (kra === undefined || !canSave) {
       return
@@ -108,7 +105,7 @@
       await client.update(kra, { title: trimmedTitle })
     }
 
-    await client.update(kra, { description: description })
+    await client.update(kra, { description })
   }
 
   function showContextMenu (ev: MouseEvent): void {
@@ -123,21 +120,21 @@
   $: lastCtx = $contextStore.getLastContext()
   $: isContextEnabled = lastCtx?.mode === 'editor' || lastCtx?.mode === 'browser'
 
-  function getEditorFooter (
-    _class?: Ref<Class<Doc>>
-  ): { footer: AnyComponent, props?: Record<string, any> } | undefined {
-    if (_class === undefined) {
-      return
-    }
-    const clazz = hierarchy.getClass(_class)
-    const editorMixin = hierarchy.as(clazz, view.mixin.ObjectEditorFooter)
-    if (editorMixin?.editor == null && clazz.extends != null) return getEditorFooter(clazz.extends)
-    if (editorMixin.editor !== undefined) {
-      return { footer: editorMixin.editor, props: editorMixin?.props }
-    }
-    return undefined
-  }
-  $: editorFooter = getEditorFooter(kra?._class)
+  // function getEditorFooter (
+  //   _class?: Ref<Class<Doc>>
+  // ): { footer: AnyComponent, props?: Record<string, any> } | undefined {
+  //   if (_class === undefined) {
+  //     return
+  //   }
+  //   const clazz = hierarchy.getClass(_class)
+  //   const editorMixin = hierarchy.as(clazz, view.mixin.ObjectEditorFooter)
+  //   if (editorMixin?.editor == null && clazz.extends != null) return getEditorFooter(clazz.extends)
+  //   if (editorMixin.editor !== undefined) {
+  //     return { footer: editorMixin.editor, props: editorMixin?.props }
+  //   }
+  //   return undefined
+  // }
+  // $: editorFooter = getEditorFooter(kra?._class)
 
   let content: HTMLElement
 

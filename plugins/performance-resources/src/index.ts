@@ -13,7 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-import { Status, type Resources } from '@hcengineering/platform'
+import { type Status, type Resources } from '@hcengineering/platform'
 import NewReviewSessionHeader from './components/NewReviewSessionHeader.svelte'
 import CreateReviewSession from './components/review-session/CreateReviewSession.svelte'
 import ReviewSessionSpacePresenter from './components/navigator/ReviewSessionSpacePresenter.svelte'
@@ -54,6 +54,6 @@ export default async (): Promise<Resources> => ({
       onUpdate: () => void,
       queryId: Ref<Doc<Space>>,
       attr: Attribute<Status>
-    ) => await getAllStates(query, onUpdate, queryId, attr, false),
+    ) => await getAllStates(query, onUpdate, queryId, attr, false)
   }
 })

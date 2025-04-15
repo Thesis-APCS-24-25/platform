@@ -13,7 +13,7 @@
   import { openDoc } from '@hcengineering/view-resources'
 
   import performance from '../plugin'
-  import CreateKra from './kra/CreateKRA.svelte';
+  import CreateKra from './kra/CreateKRA.svelte'
   import CreateReviewSession from './review-session/CreateReviewSession.svelte'
   import kraTeam, { Member, Team } from '@hcengineering/kra-team'
   import { ReviewSession } from '@hcengineering/performance'
@@ -31,7 +31,7 @@
   let currentTeam: Team | undefined
   let currentReviewSession: ReviewSession | undefined
 
-  $: client.findOne(
+  $: void client.findOne(
     performance.class.ReviewSession,
     {
       _id: currentSpace as Ref<ReviewSession>
@@ -44,15 +44,15 @@
     }
   )
 
-  $: client.findAll(
+  $: void client.findAll(
     kraTeam.class.Team,
-    { archived: false, members: me._id as Ref<Member> },
+    { archived: false, members: me._id as Ref<Member> }
   ).then(
     (res) => {
       if (res.length > 0) {
         hasTeam = true
         if (currentReviewSession !== undefined) {
-          currentTeam = res.find((team) => team._id === currentReviewSession!.space)
+          currentTeam = res.find((team) => team._id === currentReviewSession?.space)
         }
       }
     }
@@ -81,8 +81,8 @@
 
   async function newReviewSession (): Promise<void> {
     showPopup(
-      CreateReviewSession, 
-      { team: currentTeam }, 
+      CreateReviewSession,
+      { team: currentTeam },
       'top'
     )
   }

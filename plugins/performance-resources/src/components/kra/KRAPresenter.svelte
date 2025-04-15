@@ -20,7 +20,6 @@
   export let type: ObjectPresenterType = 'link'
   export let icon: Asset | AnySvelteComponent | undefined = undefined
 
-  let taskType = performance.taskTypes.KRA
 </script>
 
 {#if inline && value}
@@ -51,7 +50,7 @@
         </span>
       </DocNavLink>
     </div>
-  {:else if value && type === 'text'}
+  {:else if type === 'text'}
     <span class="overflow-label" class:select-text={!noSelect} use:tooltip={{ label: getEmbeddedLabel(value.title) }}>
       {value.title}
     </span>

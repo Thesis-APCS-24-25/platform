@@ -1,15 +1,13 @@
 <script lang="ts">
-  import kraTeam, { Team } from '@hcengineering/kra-team'
-  import { Icon, IconWithEmoji, getPlatformColorDef, getPlatformColorForTextDef, themeStore } from '@hcengineering/ui'
-  import view from '@hcengineering/view'
+  import { Team } from '@hcengineering/kra-team'
 
   export let value: Team | undefined
-  export let inline: boolean = false
+  // export let inline: boolean = false
   export let accent: boolean = false
 </script>
 
 {#if value}
-  <div class="flex-presenter cursor-default" class:inline-presenter={inline}>
+  <!-- <div class="flex-presenter cursor-default" class:inline-presenter={inline}>
     <div class="icon" class:emoji={value.icon === view.ids.IconWithEmoji}>
       <Icon
         icon={value.icon === view.ids.IconWithEmoji ? IconWithEmoji : value.icon ?? kraTeam.icon.Teams}
@@ -23,9 +21,9 @@
             }}
         size="small"
       />
-    </div>
+    </div> -->
     <span class="label no-underline nowrap" class:fs-bold={accent}>
       {value.name}
     </span>
-  </div>
+  <!-- </div> -->
 {/if}

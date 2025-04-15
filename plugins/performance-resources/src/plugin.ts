@@ -13,9 +13,8 @@
 // limitations under the License.
 //
 
-import performance, { performanceId, type ReviewSession } from '@hcengineering/performance'
-import { type Mixin, type SpaceType, type SpaceTypeDescriptor, type Ref } from '@hcengineering/core'
-import { type Asset, type IntlString, mergeIds } from '@hcengineering/platform'
+import performance, { performanceId } from '@hcengineering/performance'
+import { type IntlString, mergeIds } from '@hcengineering/platform'
 import { type AnyComponent } from '@hcengineering/ui'
 import { type GetAllValuesFunc, type SortFunc } from '@hcengineering/view'
 
@@ -35,7 +34,7 @@ export default mergeIds(performanceId, performance, {
     KRADescriptionPlaceholder: '' as IntlString,
     KRA: '' as IntlString,
     SelectTeam: '' as IntlString,
-    NoTeam: '' as IntlString,
+    NoTeam: '' as IntlString
   },
   category: {
     ReviewSessionType: '' as IntlString
@@ -49,6 +48,6 @@ export default mergeIds(performanceId, performance, {
     GetAllKRAStates: '' as GetAllValuesFunc,
     GetAllReviewSessionStates: '' as GetAllValuesFunc,
     KRAStatusSort: '' as SortFunc,
-    ReviewSessionStatusSort: '' as SortFunc,
+    ReviewSessionStatusSort: '' as SortFunc
   }
 })

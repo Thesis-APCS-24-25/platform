@@ -30,37 +30,37 @@ export async function reviewSessionStatusSort (
   viewletDescriptorId?: Ref<ViewletDescriptor>
 ): Promise<Array<Ref<ReviewSessionStatus>>> {
   const statuses = get(statusStore).byId
-//   if (viewletDescriptorId === tracker.viewlet.Kanban) {
-//     value.sort((a, b) => {
-//       const aVal = statuses.get(a)
-//       const bVal = statuses.get(b)
-//       const res =
-//         listIssueKanbanStatusOrder.indexOf(aVal?.category as Ref<StatusCategory>) -
-//         listIssueKanbanStatusOrder.indexOf(bVal?.category as Ref<StatusCategory>)
-//       if (res === 0) {
-//         if (type != null) {
-//           const aIndex = getStatusIndex(type, taskTypes, a)
-//           const bIndex = getStatusIndex(type, taskTypes, b)
-//           return aIndex - bIndex
-//         } else {
-//           return (aVal?.name ?? '').localeCompare(bVal?.name ?? '')
-//         }
-//       }
-//       return res
-//     })
-//   } else {
-    value.sort((a, b) => {
-      const aVal = statuses.get(a) as ReviewSessionStatus
-      const bVal = statuses.get(b) as ReviewSessionStatus
-      const res =
+  //   if (viewletDescriptorId === tracker.viewlet.Kanban) {
+  //     value.sort((a, b) => {
+  //       const aVal = statuses.get(a)
+  //       const bVal = statuses.get(b)
+  //       const res =
+  //         listIssueKanbanStatusOrder.indexOf(aVal?.category as Ref<StatusCategory>) -
+  //         listIssueKanbanStatusOrder.indexOf(bVal?.category as Ref<StatusCategory>)
+  //       if (res === 0) {
+  //         if (type != null) {
+  //           const aIndex = getStatusIndex(type, taskTypes, a)
+  //           const bIndex = getStatusIndex(type, taskTypes, b)
+  //           return aIndex - bIndex
+  //         } else {
+  //           return (aVal?.name ?? '').localeCompare(bVal?.name ?? '')
+  //         }
+  //       }
+  //       return res
+  //     })
+  //   } else {
+  value.sort((a, b) => {
+    const aVal = statuses.get(a) as ReviewSessionStatus
+    const bVal = statuses.get(b) as ReviewSessionStatus
+    const res =
         listReviewSessionStatusOrder.indexOf(aVal._id) -
         listReviewSessionStatusOrder.indexOf(bVal._id)
-      if (res === 0) {
-        return aVal.name.localeCompare(bVal.name)
-      }
-      return res
-    })
-//   }
+    if (res === 0) {
+      return aVal.name.localeCompare(bVal.name)
+    }
+    return res
+  })
+  //   }
   alert(value)
   return value
 }
@@ -83,7 +83,7 @@ export async function createReviewSession (
     private: false,
     archived: false,
     members: [getCurrentAccount()._id],
-    type,
+    type
   })
 
   return reviewSessionRef
