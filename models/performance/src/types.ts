@@ -1,11 +1,12 @@
-import { ArrOf, Index, Mixin, Model, Prop, TypeDate, TypeRef, TypeString } from "@hcengineering/model";
+import { ArrOf, Index, Mixin, Model, Prop, TypeDate, TypeNumber, TypeRef, TypeString } from '@hcengineering/model'
 
-import performance from "./plugin";
-import core, { TStatus } from "@hcengineering/model-core";
-import { KRA, KRAStatus, ReviewSession, ReviewSessionStatus } from "@hcengineering/performance";
-import { TProject, TTask } from "@hcengineering/model-task";
-import task from "@hcengineering/task";
-import { Account, Arr, IndexKind, Ref, Role, RolesAssignment, Timestamp } from "@hcengineering/core";
+import performance from './plugin'
+import core, { TDoc, TStatus } from '@hcengineering/model-core'
+import type { EmployeeKRA, KRA, KRAStatus, ReviewSession, ReviewSessionStatus } from '@hcengineering/performance'
+import { TProject, TTask } from '@hcengineering/model-task'
+import task from '@hcengineering/task'
+import { Account, type Arr, IndexKind, Ref, type Role, type RolesAssignment, type Timestamp } from '@hcengineering/core'
+import contact, { type Contact } from '@hcengineering/contact'
 
 @Model(performance.class.ReviewSessionStatus, core.class.Status)
 export class TReviewSessionStatus extends TStatus implements ReviewSessionStatus {}
@@ -16,24 +17,44 @@ export class TKRAStatus extends TStatus implements KRAStatus {}
 @Model(performance.class.ReviewSession, task.class.Project)
 export class TReviewSession extends TProject implements ReviewSession {
   @Prop(TypeRef(core.class.Status), performance.string.ReviewSessionStatus)
-  reviewSessionStatus!: Ref<ReviewSessionStatus>;
+    reviewSessionStatus!: Ref<ReviewSessionStatus>
+
   @Prop(TypeDate(), performance.string.ReviewSessionStart)
-  reviewSessionStart!: Timestamp;
+    reviewSessionStart!: Timestamp
+
   @Prop(TypeDate(), performance.string.ReviewSessionEnd)
-  reviewSessionEnd!: Timestamp;
+    reviewSessionEnd!: Timestamp
+
   @Prop(ArrOf(TypeRef(performance.class.KRA)), performance.string.ReviewSessionKRAs)
-  kras?: Arr<Ref<KRA>>;
+    kras?: Arr<Ref<KRA>>
 }
 
 @Model(performance.class.KRA, task.class.Task)
 export class TKRA extends TTask implements KRA {
   @Prop(TypeString(), performance.string.Title)
   @Index(IndexKind.FullText)
-  title!: string
+    title!: string
+
   @Prop(TypeString(), performance.string.Description)
-    declare description: string
+  declare description: string
+
   @Prop(TypeRef(core.class.Status), performance.string.KRAStatus)
-  kraStatus!: Ref<KRAStatus>
+    kraStatus!: Ref<KRAStatus>
+
+  @Prop(ArrOf(TypeRef(contact.class.Contact)), performance.string.AssignedTo)
+    assignedTo?: Arr<Ref<Contact>>
+}
+
+@Model(performance.class.EmployeeKRA, core.class.Doc)
+export class TEmployeeKRA extends TDoc implements EmployeeKRA {
+  @Prop(TypeRef(performance.class.KRA), performance.string.AttachedKRA)
+    kra!: Ref<KRA>
+
+  @Prop(TypeRef(contact.class.Contact), performance.string.AttachedEmployee)
+    employee!: Ref<Contact>
+
+  @Prop(TypeNumber(), performance.string.KRAWeight)
+    weight!: number
 }
 
 @Mixin(performance.mixin.DefaultReviewSessionData, performance.class.ReviewSession)

@@ -5,7 +5,7 @@
   import { navigate, type Action } from '@hcengineering/ui'
   import { TreeNode } from '@hcengineering/view-resources'
   import { getReviewSessionLink } from '../../navigation'
-  
+
   export let space: ReviewSession
   export let currentSpace: Ref<Space> | undefined
   export let deselect: boolean = false
@@ -16,16 +16,17 @@
   }
 
 </script>
-  {#if space}
-    <TreeNode 
-      _id={space._id}
-      title={space.name}
-      empty
-      actions={() => getActions(space)}
-      selected={deselect ? false : currentSpace === space._id}
-      type="nested-selectable"
-      on:click={() => {
-        handleReviewSessionSelected(space._id)
-      }}
-    />
-  {/if}
+
+{#if space}
+  <TreeNode
+    _id={space._id}
+    title={space.name}
+    empty
+    actions={() => getActions(space)}
+    selected={deselect ? false : currentSpace === space._id}
+    type="nested-selectable"
+    on:click={() => {
+      handleReviewSessionSelected(space._id)
+    }}
+  />
+{/if}

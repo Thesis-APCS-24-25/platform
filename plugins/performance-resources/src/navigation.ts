@@ -1,8 +1,8 @@
-import { Ref } from "@hcengineering/core"
-import { KRA, performanceId, ReviewSession } from "@hcengineering/performance"
-import { getCurrentResolvedLocation, type Location } from "@hcengineering/ui"
-import performance from "./plugin"
-import { getClient } from "@hcengineering/presentation"
+import { type Ref } from '@hcengineering/core'
+import { type KRA, performanceId, type ReviewSession } from '@hcengineering/performance'
+import { getCurrentResolvedLocation, type Location } from '@hcengineering/ui'
+import performance from './plugin'
+import { getClient } from '@hcengineering/presentation'
 
 export function getReviewSessionLink (_id: Ref<ReviewSession>): Location {
   const loc = getCurrentResolvedLocation()

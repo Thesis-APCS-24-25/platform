@@ -1,16 +1,16 @@
-import { Builder } from "@hcengineering/model";
-import { KRAStatus, performanceId, ReviewSessionStatus } from "@hcengineering/performance";
+import { type Builder } from '@hcengineering/model'
+import { type KRAStatus, performanceId, type ReviewSessionStatus } from '@hcengineering/performance'
 import tracker from '@hcengineering/model-tracker'
 import activity from '@hcengineering/activity'
 import chunter from '@hcengineering/chunter'
 import kraTeam from '@hcengineering/model-kra-team'
-import performance from "./plugin";
-import task from "@hcengineering/task";
-import { Domain, Ref, StatusCategory } from "@hcengineering/core";
-import core from "@hcengineering/model-core";
-import workbench from "@hcengineering/model-workbench";
-import view from "@hcengineering/model-view";
-import { TDefaultKRAData, TDefaultReviewSessionData, TKRA, TKRAStatus, TReviewSession, TReviewSessionStatus } from "./types";
+import performance from './plugin'
+import task from '@hcengineering/task'
+import { type Domain, type Ref, type StatusCategory } from '@hcengineering/core'
+import core from '@hcengineering/model-core'
+import workbench from '@hcengineering/model-workbench'
+import view from '@hcengineering/model-view'
+import { TDefaultKRAData, TDefaultReviewSessionData, TEmployeeKRA, TKRA, TKRAStatus, TReviewSession, TReviewSessionStatus } from './types'
 
 export { performanceId } from '@hcengineering/performance'
 export { performance as default }
@@ -18,13 +18,13 @@ export { performanceOperation } from './migration'
 
 export const DOMAIN_PERFORMANCE = 'performance' as Domain
 
-function defineTeam(builder: Builder): void {
+function defineTeam (builder: Builder): void {
   builder.mixin(kraTeam.class.Team, core.class.Class, view.mixin.SpacePresenter, {
     presenter: performance.component.TeamSpacePresenter
   })
 }
 
-function defineReviewSession(builder: Builder): void {
+function defineReviewSession (builder: Builder): void {
   builder.createModel(TReviewSession, TReviewSessionStatus, TDefaultReviewSessionData)
 
   builder.createDoc(
@@ -57,12 +57,12 @@ function defineReviewSession(builder: Builder): void {
   )
 
   builder.createDoc(
-    view.class.Viewlet, 
-    core.space.Model, 
+    view.class.Viewlet,
+    core.space.Model,
     {
       attachTo: performance.class.ReviewSession,
       descriptor: view.viewlet.Table,
-      config: ['name', 'description', 'reviewSessionStatus','reviewSessionStart', 'reviewSessionEnd'],
+      config: ['name', 'description', 'reviewSessionStatus', 'reviewSessionStart', 'reviewSessionEnd', 'members'],
       viewOptions: {
         groupBy: [],
         orderBy: [],
@@ -77,7 +77,7 @@ function defineReviewSession(builder: Builder): void {
           }
         ]
       }
-    },
+    }
   )
 
   builder.mixin(performance.class.ReviewSession, core.class.Class, view.mixin.IgnoreActions, {
@@ -88,7 +88,7 @@ function defineReviewSession(builder: Builder): void {
     performance.class.ReviewSessionStatus,
     core.space.Model,
     {
-      name: "Drafting",
+      name: 'Drafting',
       ofAttribute: performance.attribute.ReviewSessionAttribute
     },
     performance.reviewSessionStatus.Drafting
@@ -98,7 +98,7 @@ function defineReviewSession(builder: Builder): void {
     performance.class.ReviewSessionStatus,
     core.space.Model,
     {
-      name: "InProgress",
+      name: 'InProgress',
       ofAttribute: performance.attribute.ReviewSessionAttribute
     },
     performance.reviewSessionStatus.InProgress
@@ -108,16 +108,23 @@ function defineReviewSession(builder: Builder): void {
     performance.class.ReviewSessionStatus,
     core.space.Model,
     {
-      name: "Concluded",
+      name: 'Concluded',
       ofAttribute: performance.attribute.ReviewSessionAttribute
     },
     performance.reviewSessionStatus.Concluded
   )
-
 }
 
-function defineKRA(builder: Builder): void {
-  builder.createModel(TKRA, TKRAStatus, TDefaultKRAData)
+function defineKRA (builder: Builder): void {
+  builder.createModel(TKRA, TEmployeeKRA, TKRAStatus, TDefaultKRAData)
+
+  builder.mixin(performance.class.KRA, core.class.Class, view.mixin.AttributePresenter, {
+    presenter: performance.component.KRARefPresenter
+  })
+
+  builder.mixin(performance.class.KRA, core.class.Class, view.mixin.AttributeEditor, {
+    inlineEditor: performance.component.KRARefPresenter
+  })
 
   builder.mixin(performance.class.KRA, core.class.Class, view.mixin.ObjectFactory, {
     component: performance.component.CreateKRA
@@ -131,13 +138,13 @@ function defineKRA(builder: Builder): void {
     view: {
       class: performance.class.KRA,
       createItemDialog: performance.component.CreateKRA,
-      createItemLabel: performance.string.CreateKraLabel,
+      createItemLabel: performance.string.CreateKraLabel
     }
   })
 
   builder.createDoc(
-    view.class.Viewlet, 
-    core.space.Model, 
+    view.class.Viewlet,
+    core.space.Model,
     {
       attachTo: performance.class.KRA,
       descriptor: view.viewlet.Table,
@@ -145,17 +152,17 @@ function defineKRA(builder: Builder): void {
         {
           key: '',
           label: performance.string.Title,
-          presenter: performance.component.KRAPresenter,
-        }
-        , 'description', 'assignee', 'kraStatus']
-    },
+          presenter: performance.component.KRAPresenter
+        },
+        'description', 'assignedTo', 'kraStatus']
+    }
   )
 
   builder.createDoc(
     performance.class.KRAStatus,
     core.space.Model,
     {
-      name: "Drafting",
+      name: 'Drafting',
       ofAttribute: performance.attribute.KRAStatusAttribute
     },
     performance.kraStatus.Drafting
@@ -165,7 +172,7 @@ function defineKRA(builder: Builder): void {
     performance.class.KRAStatus,
     core.space.Model,
     {
-      name: "NeedChanges",
+      name: 'NeedChanges',
       ofAttribute: performance.attribute.KRAStatusAttribute
     },
     performance.kraStatus.NeedChanges
@@ -175,7 +182,7 @@ function defineKRA(builder: Builder): void {
     performance.class.KRAStatus,
     core.space.Model,
     {
-      name: "Approved",
+      name: 'Approved',
       ofAttribute: performance.attribute.KRAStatusAttribute
     },
     performance.kraStatus.Approved
@@ -185,7 +192,7 @@ function defineKRA(builder: Builder): void {
     performance.class.KRAStatus,
     core.space.Model,
     {
-      name: "InProgress",
+      name: 'InProgress',
       ofAttribute: performance.attribute.KRAStatusAttribute
     },
     performance.kraStatus.InProgress
@@ -195,19 +202,19 @@ function defineKRA(builder: Builder): void {
     performance.class.KRAStatus,
     core.space.Model,
     {
-      name: "Archived",
+      name: 'Archived',
       ofAttribute: performance.attribute.KRAStatusAttribute
     },
     performance.kraStatus.Archived
   )
 }
 
-function defineSpaceType(builder: Builder): void {
-  let kraStatuses: Ref<KRAStatus>[] = []
+function defineSpaceType (builder: Builder): void {
+  const kraStatuses: Ref<KRAStatus>[] = []
   for (const statusId of Object.values(performance.kraStatus)) {
     kraStatuses.push(statusId)
   }
-  let kraCategories: Ref<StatusCategory>[] = []
+  const kraCategories: Ref<StatusCategory>[] = []
   for (const category of Object.values(performance.kraStatusCategory)) {
     kraCategories.push(category)
   }
@@ -248,11 +255,11 @@ function defineSpaceType(builder: Builder): void {
   )
 
   // Review Session
-  let reviewSessionStatuses: Ref<ReviewSessionStatus>[] = []
+  const reviewSessionStatuses: Ref<ReviewSessionStatus>[] = []
   for (const statusId of Object.values(performance.reviewSessionStatus)) {
     reviewSessionStatuses.push(statusId)
   }
-  let reviewSessionCategories: Ref<StatusCategory>[] = []
+  const reviewSessionCategories: Ref<StatusCategory>[] = []
   for (const category of Object.values(performance.reviewStatusCategory)) {
     reviewSessionCategories.push(category)
   }
@@ -292,7 +299,7 @@ function defineSpaceType(builder: Builder): void {
   )
 }
 
-function defineApplication(builder: Builder): void {
+function defineApplication (builder: Builder): void {
   builder.createDoc(
     workbench.class.Application,
     core.space.Model,
@@ -317,7 +324,7 @@ function defineApplication(builder: Builder): void {
             id: 'review-session-browser',
             component: workbench.component.SpecialView,
             componentProps: {
-              _class: performance.class.ReviewSession,
+              _class: performance.class.ReviewSession
             },
             label: performance.string.MyReviewSessions,
             spaceClass: performance.class.ReviewSession,
@@ -334,6 +341,12 @@ function defineApplication(builder: Builder): void {
             spaceClass: performance.class.KRA,
             addSpaceLabel: performance.string.CreateKraLabel,
             position: 'top'
+          },
+          {
+            id: 'performance',
+            component: performance.component.PerformanceDashboard,
+            label: performance.string.PerformanceDashboard,
+            position: 'top'
           }
         ]
       }
@@ -342,10 +355,9 @@ function defineApplication(builder: Builder): void {
   )
 }
 
-function defineActivity(builder: Builder): void {
+function defineActivity (builder: Builder): void {
   builder.mixin(performance.class.ReviewSession, core.class.Class, activity.mixin.ActivityDoc, {})
   builder.mixin(performance.class.KRA, core.class.Class, activity.mixin.ActivityDoc, {})
-
 
   builder.createDoc(activity.class.ActivityExtension, core.space.Model, {
     ofClass: performance.class.KRA,
@@ -369,12 +381,12 @@ function defineActivity(builder: Builder): void {
     {
       objectClass: performance.class.KRA,
       action: 'update',
-      icon: tracker.icon.Issue,
+      icon: tracker.icon.Issue
     }
   )
 }
 
-function defineSortAndGrouping(builder: Builder): void {
+function defineSortAndGrouping (builder: Builder): void {
   builder.mixin(performance.class.KRAStatus, core.class.Class, view.mixin.SortFuncs, {
     func: performance.function.KRAStatusSort
   })
@@ -401,7 +413,7 @@ export function createModel (builder: Builder): void {
   defineSortAndGrouping(builder)
 
   defineApplication(builder)
-  
+
   builder.createDoc(core.class.DomainIndexConfiguration, core.space.Model, {
     domain: DOMAIN_PERFORMANCE,
     disabled: [

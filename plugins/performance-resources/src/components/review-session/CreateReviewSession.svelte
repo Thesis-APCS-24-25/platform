@@ -1,20 +1,19 @@
 <script lang="ts">
   import { getCurrentAccount, Ref, Space, Timestamp } from '@hcengineering/core'
-  import { Card, getClient } from '@hcengineering/presentation'
+  import { Card, getClient, SpaceSelector } from '@hcengineering/presentation'
   import {
     createFocusManager,
     DatePresenter,
     EditBox,
-    FocusHandler,
+    FocusHandler
   } from '@hcengineering/ui'
   import { createEventDispatcher } from 'svelte'
-  
+
   import performance from '../../plugin'
   import { createReviewSession } from '../../utils/ReviewSessionUtils'
-  import { SpaceSelector } from '@hcengineering/presentation'
-  import kraTeam, { Team } from '@hcengineering/kra-team'
+    import kraTeam, { Team } from '@hcengineering/kra-team'
   import TeamPresenter from '../team/TeamPresenter.svelte'
-  
+
   // export function canClose (): boolean {
   //   return object.title === ''
   // }
@@ -23,7 +22,7 @@
   export let team: Team | undefined
 
   const dispatch = createEventDispatcher()
-  let client = getClient()
+  const client = getClient()
   let name: string = ''
   let description: string = ''
   let startDate: Timestamp
@@ -31,30 +30,31 @@
   let currentTeam: Ref<Space> | undefined = undefined
 
   $: if (team !== undefined) {
-    currentTeam = team!._id as Ref<Space>
+    currentTeam = team._id as Ref<Space>
   }
-
 
   $: canSave = true
 
   async function create (): Promise<void> {
-    await createReviewSession(
-      client, 
-      name, 
-      description, 
-      startDate, 
-      endDate, 
-      currentTeam!,
-      performance.ids.ClassingProjectType
-    )
+    if (currentTeam !== undefined) {
+      await createReviewSession(
+        client,
+        name,
+        description,
+        startDate,
+        endDate,
+        currentTeam,
+        performance.ids.ClassingProjectType
+      )
+    }
     dispatch('close', name)
   }
-  
+
   const manager = createFocusManager()
 </script>
-  
+
   <FocusHandler {manager} />
-  
+
   <Card
     label={performance.string.CreateReviewSession}
     okAction={create}
@@ -116,4 +116,3 @@
       />
     </div>
   </Card>
-  

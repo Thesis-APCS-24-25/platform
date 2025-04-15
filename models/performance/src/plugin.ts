@@ -13,11 +13,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
-import performance, {performanceId, ReviewSession} from '@hcengineering/performance'
+import performance, { performanceId } from '@hcengineering/performance'
 import type { Ref, StatusCategory } from '@hcengineering/core'
 import { type IntlString, mergeIds } from '@hcengineering/platform'
 import type { AnyComponent } from '@hcengineering/ui/src/types'
-import { GetAllValuesFunc, SortFunc } from '@hcengineering/view'
+import { type GetAllValuesFunc, type SortFunc } from '@hcengineering/view'
 
 export default mergeIds(performanceId, performance, {
   string: {
@@ -27,6 +27,8 @@ export default mergeIds(performanceId, performance, {
     MyKRAs: '' as IntlString,
     CreateKraLabel: '' as IntlString,
     ReviewSessions: '' as IntlString,
+    PerformanceDashboard: '' as IntlString,
+    AssignedTo: '' as IntlString
   },
   component: {
     NewReviewSessionHeader: '' as AnyComponent,
@@ -36,23 +38,25 @@ export default mergeIds(performanceId, performance, {
     KRAPresenter: '' as AnyComponent,
     EditKRA: '' as AnyComponent,
     TeamSpacePresenter: '' as AnyComponent,
+    PerformanceDashboard: '' as AnyComponent,
+    KRARefPresenter: '' as AnyComponent
   },
   function: {
     GetAllKRAStates: '' as GetAllValuesFunc,
     GetAllReviewSessionStates: '' as GetAllValuesFunc,
     KRAStatusSort: '' as SortFunc,
-    ReviewSessionStatusSort: '' as SortFunc,
+    ReviewSessionStatusSort: '' as SortFunc
   },
   reviewStatusCategory: {
     Drafting: '' as Ref<StatusCategory>,
     InProgress: '' as Ref<StatusCategory>,
-    Concluded: '' as Ref<StatusCategory>,
+    Concluded: '' as Ref<StatusCategory>
   },
   kraStatusCategory: {
     Drafting: '' as Ref<StatusCategory>,
     NeedChanges: '' as Ref<StatusCategory>,
     Approved: '' as Ref<StatusCategory>,
     InProgress: '' as Ref<StatusCategory>,
-    Archived: '' as Ref<StatusCategory>,
+    Archived: '' as Ref<StatusCategory>
   }
 })
