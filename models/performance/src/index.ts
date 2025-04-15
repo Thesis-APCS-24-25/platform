@@ -123,6 +123,14 @@ function defineKRA(builder: Builder): void {
     component: performance.component.CreateKRA
   })
 
+  builder.mixin(performance.class.KRA, core.class.Class, view.mixin.AttributePresenter, {
+    presenter: performance.component.KRARefPresenter
+  })
+
+  builder.mixin(performance.class.KRA, core.class.Class, view.mixin.AttributeEditor, {
+    inlineEditor: performance.component.KRAEditor
+  })
+
   builder.mixin(performance.class.KRA, core.class.Class, view.mixin.ObjectPanel, {
     component: performance.component.EditKRA
   })
@@ -133,6 +141,10 @@ function defineKRA(builder: Builder): void {
       createItemDialog: performance.component.CreateKRA,
       createItemLabel: performance.string.CreateKraLabel,
     }
+  })
+
+  builder.mixin(performance.class.KRA, core.class.Class, view.mixin.ObjectPresenter, {
+    presenter: performance.component.KRAPresenter
   })
 
   builder.createDoc(
