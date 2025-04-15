@@ -3,7 +3,7 @@
   import { Card, getClient } from '@hcengineering/presentation'
   import { ObjectBox } from '@hcengineering/view-resources'
   import { Goal, Issue } from '@hcengineering/kra'
-  import { DropdownIntlItem, DropdownLabelsIntl } from '@hcengineering/ui'
+  import { DropdownIntlItem, DropdownLabelsIntl, FocusHandler } from '@hcengineering/ui'
   import AddKpi from './kpi/AddKpi.svelte'
   import AddRatingScale from './ratingscale/AddRatingScale.svelte'
   import { Ref } from '@hcengineering/core'
