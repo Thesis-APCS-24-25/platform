@@ -303,10 +303,6 @@ export class TIssue extends TTask implements Issue {
 
   @Prop(TypeRef(kra.class.Goal), kra.string.Goal)
     goal?: Ref<Goal>
-
-  // TODO: add intl string for this attribute
-  @Prop(TypeRef(performance.class.KRA), performance.string.KRAStatus)
-    kra?: Ref<KRA>
 }
 /**
  * @public
@@ -422,4 +418,10 @@ export class TIssueTypeData extends TIssue { }
 @Mixin(kra.mixin.ReportAggregator, core.class.Class)
 export class TReportAggregator extends TClass implements ReportAggregator {
   aggregator!: Resource<GoalAggregateFunction>
+}
+
+@Mixin(performance.mixin.WithKRA, kra.class.Issue)
+export class TWithKRA extends TIssue {
+  @Prop(TypeRef(performance.class.KRA), performance.string.KRA)
+    kra!: Ref<KRA>
 }

@@ -53,7 +53,8 @@ import {
   TTypeIssuePriority,
   TTypeRemainingTime,
   TTypeReportedTime,
-  TUnit
+  TUnit,
+  TWithKRA
 } from './types'
 import { defineViewlets } from './viewlets'
 
@@ -357,6 +358,7 @@ function defineApplication (
 
 export function createModel (builder: Builder): void {
   builder.createModel(
+    TWithKRA,
     TReport,
     TUnit,
     TKpi,
