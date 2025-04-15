@@ -25,12 +25,13 @@ import view from '@hcengineering/model-view'
 import workbench from '@hcengineering/model-workbench'
 import notification from '@hcengineering/notification'
 import setting from '@hcengineering/setting'
-import pluginState, { kraId } from '@hcengineering/kra'
+import pluginState, { Issue, kraId } from '@hcengineering/kra'
 
-import type { TaskStatusFactory } from '@hcengineering/task'
+import type { Task, TaskStatusFactory } from '@hcengineering/task'
 import { PaletteColorIndexes } from '@hcengineering/ui/src/colors'
 import { createActions as defineActions } from './actions'
 import tracker from './plugin'
+import performance from '@hcengineering/performance'
 import { definePresenters } from './presenters'
 import {
   DOMAIN_KRA,
@@ -52,7 +53,8 @@ import {
   TTypeIssuePriority,
   TTypeRemainingTime,
   TTypeReportedTime,
-  TUnit
+  TUnit,
+  TWithKRA
 } from './types'
 import { defineViewlets } from './viewlets'
 
@@ -356,6 +358,7 @@ function defineApplication (
 
 export function createModel (builder: Builder): void {
   builder.createModel(
+    TWithKRA,
     TReport,
     TUnit,
     TKpi,
@@ -374,6 +377,9 @@ export function createModel (builder: Builder): void {
     TProjectTargetPreference
   )
 
+  builder.mixin(tracker.class.Issue, core.class.Class, performance.mixin.MeasureProgress, {
+    calculate: tracker.function.CalculateGoal
+  })
   builder.mixin(tracker.class.Project, core.class.Class, activity.mixin.ActivityDoc, {})
   builder.mixin(tracker.class.Issue, core.class.Class, activity.mixin.ActivityDoc, {})
   builder.mixin(tracker.class.IssueTemplate, core.class.Class, activity.mixin.ActivityDoc, {})

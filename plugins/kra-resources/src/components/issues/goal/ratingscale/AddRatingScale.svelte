@@ -1,9 +1,10 @@
 <script lang="ts">
   import { Goal, Issue } from '@hcengineering/kra'
-  import { EditBox } from '@hcengineering/ui'
+  import { createFocusManager, EditBox, FocusHandler } from '@hcengineering/ui'
   import kra from '../../../../plugin'
   import { getClient } from '@hcengineering/presentation'
   import { Ref } from '@hcengineering/core'
+  import { onMount } from 'svelte'
 
   export let canSave = false
   export let issue: Ref<Issue> | Issue | undefined = undefined
@@ -46,7 +47,14 @@
   }
 
   $: canSave = data.name.length > 0
+
+  const focusManager = createFocusManager()
+  onMount(() => {
+    focusManager.setFocusPos(1)
+  })
 </script>
+
+<FocusHandler manager={focusManager} />
 
 <div class="m-4">
   <EditBox

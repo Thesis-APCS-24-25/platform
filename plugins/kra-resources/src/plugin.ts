@@ -16,7 +16,7 @@ import { type StatusCategory, type Client, type Doc, type Ref, type Space } from
 import type { Asset, IntlString, Metadata, Resource } from '@hcengineering/platform'
 import { mergeIds } from '@hcengineering/platform'
 import type { ObjectSearchCategory, ObjectSearchFactory } from '@hcengineering/presentation'
-import { type ProjectType } from '@hcengineering/task'
+import { Task, type ProjectType } from '@hcengineering/task'
 import tracker, { kraId, type IssueDraft, type Issue, type GoalAggregateFunction } from '@hcengineering/kra'
 import { type AnyComponent, type Location } from '@hcengineering/ui'
 import {
@@ -408,6 +408,7 @@ export default mergeIds(kraId, tracker, {
     CreateIssueDraft: '' as Metadata<IssueDraft>
   },
   function: {
+    CalculateGoal: '' as Resource<(task: Ref<Task>) => Promise<number | undefined>>,
     KpiAggregator: '' as Resource<GoalAggregateFunction>,
     RatingScaleAggregator: '' as Resource<GoalAggregateFunction>,
     IssueTitleProvider: '' as Resource<(client: Client, ref: Ref<Doc>, doc?: Doc) => Promise<string>>,

@@ -1,10 +1,11 @@
 <script lang="ts">
-  import { EditBox } from '@hcengineering/ui'
+  import { createFocusManager, EditBox, FocusHandler, getFocusManager } from '@hcengineering/ui'
   import kra from '../../../../plugin'
   import { getClient } from '@hcengineering/presentation'
   import { Goal, Issue, Unit } from '@hcengineering/kra'
   import { Ref } from '@hcengineering/core'
   import UnitBox from '../unit/UnitBox.svelte'
+  import { onMount } from 'svelte'
 
   export let canSave = false
   export let issue: Ref<Issue> | Issue | undefined = undefined
@@ -48,7 +49,14 @@
       }
     }
   }
+
+  const focusManager = createFocusManager()
+  onMount(() => {
+    focusManager.setFocusPos(1)
+  })
 </script>
+
+<FocusHandler manager={focusManager} />
 
 <div class="m-4">
   <EditBox

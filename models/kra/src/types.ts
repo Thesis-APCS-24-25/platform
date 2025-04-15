@@ -81,6 +81,7 @@ import {
 } from '@hcengineering/kra'
 import kra from './plugin'
 import { type TaskType } from '@hcengineering/task'
+import performance, { type KRA } from '@hcengineering/performance'
 
 import preference, { TPreference } from '@hcengineering/model-preference'
 
@@ -417,4 +418,10 @@ export class TIssueTypeData extends TIssue { }
 @Mixin(kra.mixin.ReportAggregator, core.class.Class)
 export class TReportAggregator extends TClass implements ReportAggregator {
   aggregator!: Resource<GoalAggregateFunction>
+}
+
+@Mixin(performance.mixin.WithKRA, kra.class.Issue)
+export class TWithKRA extends TIssue {
+  @Prop(TypeRef(performance.class.KRA), performance.string.KRA)
+    kra!: Ref<KRA>
 }

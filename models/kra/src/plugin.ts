@@ -90,7 +90,7 @@ export default mergeIds(kraId, tracker, {
     EditWorkflowStatuses: '' as ViewAction,
     EditProject: '' as ViewAction,
     DeleteProject: '' as ViewAction,
-    DeleteIssue: '' as ViewAction,
+    DeleteIssue: '' as ViewAction
   },
   action: {
     NewRelatedIssue: '' as Ref<Action<Doc, any>>,
