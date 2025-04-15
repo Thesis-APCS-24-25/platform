@@ -1,10 +1,9 @@
-import { Builder } from '@hcengineering/model'
+import { type Builder } from '@hcengineering/model'
 import core from '@hcengineering/core'
 import view from '@hcengineering/view'
 import kraTeam from './plugin'
-import contact from '@hcengineering/model-contact'
 
-export function defineViewlets(builder: Builder) {
+export function defineViewlets (builder: Builder): void {
   builder.createDoc(view.class.Viewlet, core.space.Model, {
     attachTo: kraTeam.class.KraTemplate,
     descriptor: view.viewlet.List,
@@ -35,7 +34,7 @@ export function defineViewlets(builder: Builder) {
     descriptor: view.viewlet.Table,
     config: [
       {
-        key: 'person',
+        key: 'person'
       }
     ],
     viewOptions: {

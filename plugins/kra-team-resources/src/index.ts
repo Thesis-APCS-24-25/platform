@@ -4,6 +4,7 @@ import CreateTeam from './components/CreateTeam.svelte'
 import TeamSpacePresenter from './components/teams/TeamSpacePresenter.svelte'
 import Members from './components/Members.svelte'
 import MemberPresenter from './components/MemberPresenter.svelte'
+import Team from './components/Team.svelte'
 
 export default async (): Promise<Resources> => ({
   component: {
@@ -12,5 +13,6 @@ export default async (): Promise<Resources> => ({
     TeamSpacePresenter,
     Members,
     MemberPresenter,
+    Team
   }
 })

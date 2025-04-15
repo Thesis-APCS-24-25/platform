@@ -1,5 +1,6 @@
 import kraTeam, { kraTeamId } from '@hcengineering/kra-team'
-import { Asset, IntlString, mergeIds } from '@hcengineering/platform'
+import { type Asset, type IntlString, mergeIds } from '@hcengineering/platform'
+import { type AnyComponent } from '@hcengineering/ui'
 
 export default mergeIds(kraTeamId, kraTeam, {
   string: {
@@ -15,11 +16,11 @@ export default mergeIds(kraTeamId, kraTeam, {
     Team: '' as IntlString,
     TeamNamePlaceholder: '' as IntlString,
     TeamDescriptionPlaceholder: '' as IntlString,
-    TeamMembers: '' as IntlString,
+    TeamMembers: '' as IntlString
   },
   icon: {
     AddMetric: '' as Asset,
     Add: '' as Asset,
-    Home: '' as Asset,
+    Home: '' as Asset
   }
 })

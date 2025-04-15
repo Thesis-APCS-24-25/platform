@@ -1,24 +1,22 @@
 <script lang="ts">
-  import { Account, DocumentQuery, Ref, Space, WithLookup } from '@hcengineering/core'
+  import { Account, Ref, WithLookup } from '@hcengineering/core'
   import { SpaceHeader, ViewletContentView, ViewletSettingButton } from '@hcengineering/view-resources'
   import kraTeam from '../plugins'
-  import core from '@hcengineering/core'
-  import { Viewlet, ViewOptions } from '@hcengineering/view'
-  import { getClient } from '@hcengineering/presentation'
-  import contact from '@hcengineering/contact'
+    import { Viewlet, ViewOptions } from '@hcengineering/view'
   import { createQuery } from '@hcengineering/presentation'
-  import { Team } from '@hcengineering/kra-team'
+  import contact from '@hcengineering/contact'
+    import { Team } from '@hcengineering/kra-team'
 
   export let currentSpace: Ref<Team> | undefined = undefined
 
   let members: Ref<Account>[] = []
 
-  let liveQuery = createQuery()
+  const liveQuery = createQuery()
 
-  liveQuery.query(
+  $: liveQuery.query(
     kraTeam.class.Team,
     {
-      _id: currentSpace,
+      _id: currentSpace
     },
     (rs) => {
       members = rs[0]?.members ?? []
@@ -47,6 +45,6 @@
   </svelte:fragment>
 </SpaceHeader>
 
-{#if viewlet && viewOptions}
+{#if viewlet !== undefined && viewOptions}
   <ViewletContentView _class={contact.class.PersonAccount} space={contact.space.Contacts} {viewOptions} {viewlet} {query} />
 {/if}
