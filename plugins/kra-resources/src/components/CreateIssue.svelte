@@ -48,7 +48,7 @@
     getMarkup
   } from '@hcengineering/presentation'
   import tags, { TagElement, TagReference } from '@hcengineering/tags'
-  import task, { TaskType, makeRank } from '@hcengineering/task'
+  import task, { Task, TaskType, makeRank } from '@hcengineering/task'
   import { TaskKindSelector } from '@hcengineering/task-resources'
   import { EmptyMarkup, isEmptyMarkup } from '@hcengineering/text'
   import {
@@ -82,7 +82,7 @@
 
   import { generateIssueShortLink, updateIssueRelation } from '../issues'
   import tracker from '../plugin'
-  import performance from '@hcengineering/performance'
+  import performance, { WithKRA } from '@hcengineering/performance'
   import SetParentIssueActionPopup from './SetParentIssueActionPopup.svelte'
   import SubIssues from './SubIssues.svelte'
   import AssigneeEditor from './issues/AssigneeEditor.svelte'
@@ -501,8 +501,7 @@
         childInfo: [],
         kind,
         identifier,
-        goal: object.goal,
-        kra: object.kra
+        goal: object.goal
       }
 
       if (!isEmptyMarkup(object.description)) {
@@ -540,6 +539,11 @@
             await update(doc, 'relations', [relatedTo], tracker.string.AddedReference)
           }
         }
+      }
+      if (object.kra !== undefined) {
+        await operations.createMixin<Task, WithKRA>(_id, tracker.class.Issue, object.space, performance.mixin.WithKRA, {
+          kra: object.kra
+        })
       }
 
       await descriptionBox?.createAttachments(_id, operations)
