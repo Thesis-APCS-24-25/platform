@@ -4,6 +4,8 @@ import { type AnyComponent } from '@hcengineering/ui'
 
 export default mergeIds(kraTeamId, kraTeam, {
   string: {
+    AllTeams: '' as IntlString,
+    MyTeams: '' as IntlString,
     KraTemplate: '' as IntlString,
     Members: '' as IntlString,
     RoleLabel: '' as IntlString,
@@ -22,5 +24,9 @@ export default mergeIds(kraTeamId, kraTeam, {
     AddMetric: '' as Asset,
     Add: '' as Asset,
     Home: '' as Asset
+  },
+  component: {
+    AllTeams: '' as AnyComponent,
+    MyTeams: '' as AnyComponent
   }
 })

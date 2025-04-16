@@ -3,16 +3,13 @@
   import { Label, Scroller } from '@hcengineering/ui'
   import TeamSpacesNavigator from './TeamSpacesNavigator.svelte'
   import { NavFooter } from '@hcengineering/workbench-resources'
+  import { Ref } from '@hcengineering/core'
+  import { Team } from '@hcengineering/kra-team'
 
+  export let currentTeam: Ref<Team> | undefined
 </script>
 
-<div class="hulyNavPanel-header">
-  <span class="overflow-label">
-    <Label label={kraTeam.string.Team} />
-  </span>
-</div>
-
 <Scroller shrink>
-    <TeamSpacesNavigator />
+  <TeamSpacesNavigator {currentTeam} />
 </Scroller>
 <NavFooter />

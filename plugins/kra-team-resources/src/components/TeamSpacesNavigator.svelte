@@ -1,18 +1,21 @@
 <script lang="ts">
   import { Team } from '@hcengineering/kra-team'
-  import { createQuery } from '@hcengineering/presentation'
+  import { TreeNode } from '@hcengineering/view-resources'
   import kraTeam from '../plugins'
-  import core from '@hcengineering/core'
+  import { Ref } from '@hcengineering/core'
   import TeamNavItem from './TeamNavItem.svelte'
+  import { myTeams } from '../utils'
 
   let teams: Team[] = []
+  export let currentTeam: Ref<Team> | undefined
 
-  const teamQuery = createQuery()
-  teamQuery.query(kraTeam.class.Team, {}, (res) => {
+  myTeams.subscribe((res) => {
     teams = res
   })
 </script>
 
-{#each teams as team}
-  <TeamNavItem {team} />
-{/each}
+<TreeNode title={kraTeam.string.MyTeams}>
+  {#each teams as team}
+    <TeamNavItem {team} {currentTeam} />
+  {/each}
+</TreeNode>

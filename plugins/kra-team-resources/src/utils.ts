@@ -1,27 +1,22 @@
-import {
-  Account,
-  Arr,
+import core, {
+  type Account,
+  type Arr,
   generateId,
-  reduceCalls,
-  Ref,
-  Role,
-  RolesAssignment
+  type Ref,
+  type RolesAssignment
 } from '@hcengineering/core'
-import kraTeam, { Member, Team } from '@hcengineering/kra-team'
-import core from '@hcengineering/core'
-import { Asset } from '@hcengineering/platform'
+import kraTeam, { type Member, type Team } from '@hcengineering/kra-team'
 import { getClient } from '@hcengineering/presentation'
+import { writable } from 'svelte/store'
 
-function createNewKra() {}
-
-export async function createNewTeam(
+export async function createNewTeam (
   name: string,
   description: string,
   isPrivate: boolean,
   members: Arr<Ref<Member>>,
-  owners: Ref<Account>[],
-  rolesAssignment: RolesAssignment,
-) {
+  owners: Array<Ref<Account>>,
+  rolesAssignment: RolesAssignment
+): Promise<void> {
   const client = getClient()
   const teamId = generateId<Team>()
 
@@ -33,20 +28,14 @@ export async function createNewTeam(
     owners,
     autoJoin: false,
     archived: false,
-    type: kraTeam.ids.ClassingProjectType,
+    type: kraTeam.ids.ClassingProjectType
   })
 
-  const spaceType = await client
-    .getModel()
-    .findOne(core.class.SpaceType, { _id: kraTeam.spaceType.TeamType })
-  if (!spaceType) {
+  const spaceType = await client.getModel().findOne(core.class.SpaceType, { _id: kraTeam.spaceType.TeamType })
+  if (spaceType == null) {
     throw new Error('Default space type not found')
   }
-  await client.createMixin(
-    teamId,
-    kraTeam.class.Team,
-    core.space.Space,
-    spaceType.targetClass,
-    rolesAssignment
-  )
+  await client.createMixin(teamId, kraTeam.class.Team, core.space.Space, spaceType.targetClass, rolesAssignment)
 }
+
+export const myTeams = writable<Team[]>([])
