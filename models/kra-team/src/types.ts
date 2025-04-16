@@ -1,31 +1,9 @@
-import {
-  ArrOf,
-  Mixin,
-  Model,
-  Prop,
-  TypeCollaborativeDoc,
-  TypeRef,
-  TypeString,
-  UX
-} from '@hcengineering/model'
-import {
-  KraTemplate,
-  Team,
-  Member,
-  TeamType,
-  TeamTypeDescriptor
-} from '@hcengineering/kra-team'
-import {
-  TAccount,
-  TAttachedDoc,
-  TDoc,
-  TSpaceType,
-  TSpaceTypeDescriptor,
-  TTypedSpace
-} from '@hcengineering/model-core'
+import { Mixin, Model, Prop, TypeCollaborativeDoc, TypeString, UX } from '@hcengineering/model'
+import { type KraTemplate, type Team, Member, type TeamType, type TeamTypeDescriptor } from '@hcengineering/kra-team'
+import { TDoc, TSpaceTypeDescriptor } from '@hcengineering/model-core'
 
 import kraTeam from './plugin'
-import core, { Arr, Class, MarkupBlobRef, Ref, Role, RolesAssignment } from '@hcengineering/core'
+import core, { type Arr, type MarkupBlobRef, Ref, type Role, type RolesAssignment } from '@hcengineering/core'
 import { getEmbeddedLabel } from '@hcengineering/platform'
 import contact from '@hcengineering/contact'
 import { TPersonAccount } from '@hcengineering/model-contact'
@@ -41,10 +19,10 @@ export class TTeam extends TProject implements Team {
 @Model(kraTeam.class.KraTemplate, core.class.Doc)
 export class TKraTemplate extends TDoc implements KraTemplate {
   @Prop(TypeString(), kraTeam.string.Name)
-  name!: string
+    name!: string
 
   @Prop(TypeCollaborativeDoc(), kraTeam.string.Description)
-  description!: MarkupBlobRef | null
+    description!: MarkupBlobRef | null
 }
 
 @Mixin(kraTeam.mixin.TeamTypeData, kraTeam.class.Team)
@@ -54,10 +32,10 @@ export class TTeamTypeData extends TTeam implements RolesAssignment {
 }
 
 @Model(kraTeam.class.TeamType, core.class.SpaceType)
-export class TTeamType extends TProjectType implements TeamType {}
+export class TTeamType extends TProjectType implements TeamType { }
 
 @Model(kraTeam.class.Member, contact.class.PersonAccount)
-export class TMember extends TPersonAccount implements Member {}
+export class TMember extends TPersonAccount implements Member { }
 
 @Model(kraTeam.class.TeamTypeDescriptor, core.class.SpaceTypeDescriptor)
-export class TTeamTypeDescriptor extends TSpaceTypeDescriptor implements TeamTypeDescriptor {}
+export class TTeamTypeDescriptor extends TSpaceTypeDescriptor implements TeamTypeDescriptor { }

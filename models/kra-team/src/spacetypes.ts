@@ -1,4 +1,4 @@
-import { Builder, Prop } from '@hcengineering/model'
+import { type Builder, Prop } from '@hcengineering/model'
 import { TTeamTypeData } from './types'
 import kraTeam from './plugin'
 import core from '@hcengineering/core'
@@ -7,7 +7,7 @@ import { getRoleAttributeProps } from '@hcengineering/setting'
 
 const permissions = [kraTeam.permission.CreateKra, kraTeam.permission.ApproveKra]
 
-export function defineSpaceTypes(builder: Builder): void {
+export function defineSpaceTypes (builder: Builder): void {
   for (const role of roles) {
     const { label, roleType } = getRoleAttributeProps(role.name)
 
