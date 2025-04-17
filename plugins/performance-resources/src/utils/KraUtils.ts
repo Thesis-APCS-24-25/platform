@@ -1,7 +1,7 @@
 import core, { type AttachedData, type DocumentQuery, type Rank, SortingOrder, type Space, type Status, type Ref, type TxOperations } from '@hcengineering/core'
 import { type KRA, type KRAStatus, type ReviewSession } from '@hcengineering/performance'
 import performance from '../plugin'
-import task, { getStatusIndex, makeRank, type ProjectType } from '@hcengineering/task'
+import task, { getStatusIndex, makeRank, type Task, type ProjectType } from '@hcengineering/task'
 import { type ViewletDescriptor } from '@hcengineering/view'
 import { taskTypeStore } from '@hcengineering/task-resources'
 import { get } from 'svelte/store'
@@ -125,4 +125,9 @@ export async function createKRA (
   }
 
   return await client.addCollection(performance.class.KRA, space, space, performance.class.ReviewSession, 'kras', object)
+}
+
+export async function calculateCompletionLevel (task: Ref<Task>): Promise<number | undefined> {
+  // TODO: implement completion level
+  return undefined
 }

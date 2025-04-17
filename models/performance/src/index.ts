@@ -142,6 +142,10 @@ function defineKRA (builder: Builder): void {
     component: performance.component.EditKRA
   })
 
+  builder.mixin(performance.class.EmployeeKRA, core.class.Class, view.mixin.ObjectFactory, {
+    component: performance.component.AssignKRA
+  })
+
   builder.mixin(performance.class.ReviewSession, core.class.Class, workbench.mixin.SpaceView, {
     view: {
       class: performance.class.KRA,
@@ -166,7 +170,7 @@ function defineKRA (builder: Builder): void {
           label: performance.string.Title,
           presenter: performance.component.KRAPresenter
         },
-        'description', 'assignedTo', 'kraStatus']
+        'description', 'kraStatus']
     }
   )
 
@@ -420,7 +424,6 @@ export function createModel (builder: Builder): void {
   defineTeam(builder)
   defineReviewSession(builder)
   defineKRA(builder)
-  defineSpaceType(builder)
   defineActivity(builder)
   defineSortAndGrouping(builder)
 
@@ -437,4 +440,6 @@ export function createModel (builder: Builder): void {
       { attachedTo: 1 }
     ]
   })
+
+  defineSpaceType(builder)
 }

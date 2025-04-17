@@ -27,6 +27,8 @@ import { kraStatusSort } from './utils/KraUtils'
 import { type Attribute, type Doc, type DocumentQuery, type Ref, type Space } from '@hcengineering/core'
 import { getAllStates } from '@hcengineering/task-resources'
 import { reviewSessionStatusSort } from './utils/ReviewSessionUtils'
+import PerformanceDashboard from './components/dashboard/Dashboard.svelte'
+import AssignKRA from './components/kra/AssignKRA.svelte'
 
 export default async (): Promise<Resources> => ({
   component: {
@@ -38,7 +40,9 @@ export default async (): Promise<Resources> => ({
     KRAPresenter,
     TeamSpacePresenter,
     KRARefPresenter,
-    KRAEditor
+    KRAEditor,
+    PerformanceDashboard,
+    AssignKRA
   },
   function: {
     KRAStatusSort: kraStatusSort,

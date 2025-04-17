@@ -73,7 +73,7 @@
       dueDate: null
     }
 
-    await client.addCollection(performance.class.KRA, _space, _space, performance.class.ReviewSession, 'cards', value, cardId)
+    await client.addCollection(performance.class.KRA, _space, _space, performance.class.ReviewSession, 'kras', value, cardId)
     dispatch('close')
   }
 

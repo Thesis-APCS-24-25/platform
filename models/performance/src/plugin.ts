@@ -40,7 +40,8 @@ export default mergeIds(performanceId, performance, {
     KRAPresenter: '' as AnyComponent,
     EditKRA: '' as AnyComponent,
     TeamSpacePresenter: '' as AnyComponent,
-    PerformanceDashboard: '' as AnyComponent
+    PerformanceDashboard: '' as AnyComponent,
+    AssignKRA: '' as AnyComponent
   },
   function: {
     GetAllKRAStates: '' as GetAllValuesFunc,

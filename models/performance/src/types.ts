@@ -7,6 +7,7 @@ import { TProject, TTask } from '@hcengineering/model-task'
 import task from '@hcengineering/task'
 import { Account, type Arr, IndexKind, Ref, type Role, type RolesAssignment, type Timestamp } from '@hcengineering/core'
 import contact, { type Contact } from '@hcengineering/contact'
+import { DOMAIN_PERFORMANCE } from './index'
 
 @Model(performance.class.ReviewSessionStatus, core.class.Status)
 export class TReviewSessionStatus extends TStatus implements ReviewSessionStatus {}
@@ -14,7 +15,7 @@ export class TReviewSessionStatus extends TStatus implements ReviewSessionStatus
 @Model(performance.class.KRAStatus, core.class.Status)
 export class TKRAStatus extends TStatus implements KRAStatus {}
 
-@Model(performance.class.ReviewSession, task.class.Project)
+@Model(performance.class.ReviewSession, task.class.Project, DOMAIN_PERFORMANCE)
 export class TReviewSession extends TProject implements ReviewSession {
   @Prop(TypeRef(core.class.Status), performance.string.ReviewSessionStatus)
     reviewSessionStatus!: Ref<ReviewSessionStatus>
@@ -29,7 +30,7 @@ export class TReviewSession extends TProject implements ReviewSession {
     kras?: Arr<Ref<KRA>>
 }
 
-@Model(performance.class.KRA, task.class.Task)
+@Model(performance.class.KRA, task.class.Task, DOMAIN_PERFORMANCE)
 export class TKRA extends TTask implements KRA {
   @Prop(TypeString(), performance.string.Title)
   @Index(IndexKind.FullText)
@@ -45,7 +46,7 @@ export class TKRA extends TTask implements KRA {
     assignedTo?: Arr<Ref<Contact>>
 }
 
-@Model(performance.class.EmployeeKRA, core.class.Doc)
+@Model(performance.class.EmployeeKRA, core.class.Doc, DOMAIN_PERFORMANCE)
 export class TEmployeeKRA extends TDoc implements EmployeeKRA {
   @Prop(TypeRef(performance.class.KRA), performance.string.AttachedKRA)
     kra!: Ref<KRA>

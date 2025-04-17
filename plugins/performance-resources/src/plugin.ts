@@ -33,7 +33,11 @@ export default mergeIds(performanceId, performance, {
     KRANamePlaceholder: '' as IntlString,
     KRADescriptionPlaceholder: '' as IntlString,
     SelectTeam: '' as IntlString,
-    NoTeam: '' as IntlString
+    NoTeam: '' as IntlString,
+    AssignKRAToEmployee: '' as IntlString,
+    AssignKRA: '' as IntlString,
+    AssignEmployee: '' as IntlString,
+    KRAWeightPlaceholder: '' as IntlString
   },
   category: {
     ReviewSessionType: '' as IntlString
@@ -41,7 +45,9 @@ export default mergeIds(performanceId, performance, {
   component: {
     EditKRA: '' as AnyComponent,
     KRAEditor: '' as AnyComponent,
-    KRARefPresenter: '' as AnyComponent
+    KRARefPresenter: '' as AnyComponent,
+    PerformanceDashboard: '' as AnyComponent,
+    AssignKRA: '' as AnyComponent
   },
   function: {
     GetAllKRAStates: '' as GetAllValuesFunc,
