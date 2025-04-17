@@ -7,6 +7,8 @@ import MemberPresenter from './components/MemberPresenter.svelte'
 import Team from './components/Team.svelte'
 import MyTeams from './components/MyTeams.svelte'
 import AllTeams from './components/AllTeams.svelte'
+import MemberRolePresenter from './components/MemberRolePresenter.svelte'
+import RolePresenter from './components/RolePresenter.svelte'
 
 export default async (): Promise<Resources> => ({
   component: {
@@ -15,6 +17,8 @@ export default async (): Promise<Resources> => ({
     TeamSpacePresenter,
     Members,
     MemberPresenter,
+    MemberRolePresenter,
+    RolePresenter,
     Team,
     MyTeams,
     AllTeams

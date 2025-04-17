@@ -34,7 +34,7 @@ export function defineSpaceTypes (builder: Builder): void {
     {
       name: 'Default Team',
       descriptor: kraTeam.descriptor.TeamType,
-      roles: 0,
+      roles: roles.length,
       targetClass: kraTeam.mixin.TeamTypeData
     },
     kraTeam.spaceType.TeamType

@@ -1,28 +1,17 @@
-import { Mixin, Model, Prop, TypeCollaborativeDoc, TypeString, UX } from '@hcengineering/model'
-import { type KraTemplate, type Team, Member, type TeamType, type TeamTypeDescriptor } from '@hcengineering/kra-team'
-import { TDoc, TSpaceTypeDescriptor } from '@hcengineering/model-core'
+import { Mixin, Model, UX } from '@hcengineering/model'
+import { type Member, type Team, type TeamType, type TeamTypeDescriptor } from '@hcengineering/kra-team'
+import { TSpaceType, TSpaceTypeDescriptor, TTypedSpace } from '@hcengineering/model-core'
 
 import kraTeam from './plugin'
-import core, { type Arr, type MarkupBlobRef, Ref, type Role, type RolesAssignment } from '@hcengineering/core'
+import core, { Ref, type Role, type RolesAssignment } from '@hcengineering/core'
 import { getEmbeddedLabel } from '@hcengineering/platform'
 import contact from '@hcengineering/contact'
 import { TPersonAccount } from '@hcengineering/model-contact'
-import task from '@hcengineering/task'
-import { TProject, TProjectType } from '@hcengineering/model-task'
 
-@Model(kraTeam.class.Team, task.class.Project)
+@Model(kraTeam.class.Team, core.class.TypedSpace)
 @UX(kraTeam.string.Team, kraTeam.icon.Team, 'Team', 'name')
-export class TTeam extends TProject implements Team {
-  declare members: Arr<Ref<Member>>
-}
-
-@Model(kraTeam.class.KraTemplate, core.class.Doc)
-export class TKraTemplate extends TDoc implements KraTemplate {
-  @Prop(TypeString(), kraTeam.string.Name)
-    name!: string
-
-  @Prop(TypeCollaborativeDoc(), kraTeam.string.Description)
-    description!: MarkupBlobRef | null
+export class TTeam extends TTypedSpace implements Team {
+  declare members: Ref<Member>[]
 }
 
 @Mixin(kraTeam.mixin.TeamTypeData, kraTeam.class.Team)
@@ -32,7 +21,7 @@ export class TTeamTypeData extends TTeam implements RolesAssignment {
 }
 
 @Model(kraTeam.class.TeamType, core.class.SpaceType)
-export class TTeamType extends TProjectType implements TeamType { }
+export class TTeamType extends TSpaceType implements TeamType { }
 
 @Model(kraTeam.class.Member, contact.class.PersonAccount)
 export class TMember extends TPersonAccount implements Member { }

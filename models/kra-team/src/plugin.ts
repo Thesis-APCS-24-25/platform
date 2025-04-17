@@ -8,6 +8,7 @@ export default mergeIds(kraTeamId, kraTeam, {
     Team: '' as Asset
   },
   string: {
+    Roles: '' as IntlString,
     Team: '' as IntlString,
     Teams: '' as IntlString,
     AllTeams: '' as IntlString,
@@ -23,6 +24,8 @@ export default mergeIds(kraTeamId, kraTeam, {
     CreateKraDescription: '' as IntlString
   },
   component: {
+    RolePresenter: '' as AnyComponent,
+    MemberRolePresenter: '' as AnyComponent,
     Team: '' as AnyComponent,
     AllTeams: '' as AnyComponent,
     MemberPresenter: '' as AnyComponent,

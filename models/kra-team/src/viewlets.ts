@@ -5,17 +5,6 @@ import kraTeam from './plugin'
 
 export function defineViewlets (builder: Builder): void {
   builder.createDoc(view.class.Viewlet, core.space.Model, {
-    attachTo: kraTeam.class.KraTemplate,
-    descriptor: view.viewlet.List,
-    config: ['name'],
-    viewOptions: {
-      groupBy: [],
-      orderBy: [],
-      other: []
-    }
-  })
-
-  builder.createDoc(view.class.Viewlet, core.space.Model, {
     attachTo: kraTeam.class.Team,
     descriptor: view.viewlet.Table,
     config: ['name', 'members'],
@@ -35,6 +24,11 @@ export function defineViewlets (builder: Builder): void {
     config: [
       {
         key: 'person'
+      },
+      {
+        key: '',
+        label: kraTeam.string.Roles,
+        presenter: kraTeam.component.MemberRolePresenter
       }
     ],
     viewOptions: {

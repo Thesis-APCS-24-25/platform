@@ -5,6 +5,9 @@
   import { Ref } from '@hcengineering/core'
   import TeamNavItem from './TeamNavItem.svelte'
   import { myTeams } from '../utils'
+  import { Action, IconAdd, showPopup } from '@hcengineering/ui'
+  import CreateTeam from './CreateTeam.svelte'
+  import { createEventDispatcher } from 'svelte'
 
   let teams: Team[] = []
   export let currentTeam: Ref<Team> | undefined
@@ -12,9 +15,24 @@
   myTeams.subscribe((res) => {
     teams = res
   })
+
+  const dispatch = createEventDispatcher()
+
+  const addSpace: Action = {
+    label: kraTeam.string.CreateTeam,
+    icon: IconAdd,
+    action: async (): Promise<void> => {
+      dispatch('open')
+      showPopup(CreateTeam, {}, 'top')
+    }
+  }
+
+  async function actions (): Promise<Action[]> {
+    return [addSpace]
+  }
 </script>
 
-<TreeNode title={kraTeam.string.MyTeams}>
+<TreeNode title={kraTeam.string.MyTeams} {actions}>
   {#each teams as team}
     <TeamNavItem {team} {currentTeam} />
   {/each}
