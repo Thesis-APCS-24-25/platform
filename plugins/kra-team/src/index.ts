@@ -46,5 +46,8 @@ export default plugin(kraTeamId, {
   },
   spaceType: {
     TeamType: '' as Ref<SpaceType>
+  },
+  ids: {
+    ClassingProjectType: '' as Ref<ProjectType>
   }
 })
