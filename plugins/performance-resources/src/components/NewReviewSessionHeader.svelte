@@ -1,6 +1,6 @@
 <script lang="ts">
   import { AccountRole, Ref, Space, getCurrentAccount, hasAccountRole } from '@hcengineering/core'
-  import { createQuery, getClient } from '@hcengineering/presentation'
+  import { createQuery } from '@hcengineering/presentation'
   import {
     Button,
     ButtonWithDropdown,

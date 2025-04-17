@@ -6,17 +6,15 @@ import chunter from '@hcengineering/chunter'
 import kraTeam from '@hcengineering/model-kra-team'
 import performance from './plugin'
 import task from '@hcengineering/task'
-import { type Domain, type Ref, type StatusCategory } from '@hcengineering/core'
+import { type Ref, type StatusCategory } from '@hcengineering/core'
 import core from '@hcengineering/model-core'
 import workbench from '@hcengineering/model-workbench'
 import view from '@hcengineering/model-view'
-import { TDefaultKRAData, TDefaultReviewSessionData, TEmployeeKRA, TKRA, TKRAStatus, TReviewSession, TReviewSessionStatus } from './types'
+import { DOMAIN_PERFORMANCE, TDefaultKRAData, TDefaultReviewSessionData, TEmployeeKRA, TKRA, TKRAStatus, TReviewSession, TReviewSessionStatus } from './types'
 
 export { performanceId } from '@hcengineering/performance'
 export { performance as default }
 export { performanceOperation } from './migration'
-
-export const DOMAIN_PERFORMANCE = 'performance' as Domain
 
 function defineTeam (builder: Builder): void {
   builder.mixin(kraTeam.class.Team, core.class.Class, view.mixin.SpacePresenter, {

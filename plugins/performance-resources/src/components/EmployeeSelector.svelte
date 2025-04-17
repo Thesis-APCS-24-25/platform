@@ -13,7 +13,7 @@
 // limitations under the License.
 -->
 <script lang="ts">
-  import { Ref, SortingOrder, Space } from '@hcengineering/core'
+  import { Ref, SortingOrder } from '@hcengineering/core'
   import { Asset, IntlString, getEmbeddedLabel, translateCB } from '@hcengineering/platform'
   import { createQuery } from '@hcengineering/presentation'
   import contact, { Contact } from '@hcengineering/contact'
@@ -22,7 +22,7 @@
   import performance from '../plugin'
 
   export let value: Ref<Contact> | undefined
-  export let space: Ref<Space>
+  // export let space: Ref<Space>
   export let shouldShowLabel: boolean = true
   export let isEditable: boolean = true
   export let onChange: ((newContactId: Ref<Contact> | undefined) => void) | undefined = undefined

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import core, { Data, Ref, Space, generateId } from '@hcengineering/core'
+  import { Data, Ref, Space } from '@hcengineering/core'
   import { OK, Status } from '@hcengineering/platform'
   import { Card, SpaceSelector, getClient } from '@hcengineering/presentation'
   import { EditBox, Grid, Status as StatusControl } from '@hcengineering/ui'
@@ -8,7 +8,7 @@
   import { EmployeeKRA, KRA } from '@hcengineering/performance'
   import KRASelector from '../KRASelector.svelte'
   import EmployeeSelector from '../EmployeeSelector.svelte'
-  import contact, { Contact } from '@hcengineering/contact'
+  import { Contact } from '@hcengineering/contact'
 
   export let space: Ref<Space>
 
@@ -21,21 +21,6 @@
 
   const dispatch = createEventDispatcher()
   const client = getClient()
-  const hierachy = client.getHierarchy()
-  const model = client.getModel()
-
-  $: {
-    void model.findAll(core.class.Doc, {
-      space: core.space.Model,
-      _class: performance.class.EmployeeKRA
-    })
-      .then((res) => {
-        console.log(model.findObject(contact.class.Contact))
-        console.log(model.findObject(performance.class.EmployeeKRA))
-        console.log(res)
-        alert(hierachy.findDomain(performance.class.EmployeeKRA))
-      })
-  }
 
   let canSave: boolean
   $: canSave = selectedKRA !== undefined && selectedEmployee !== undefined
@@ -80,7 +65,6 @@
       onChange={(newEmployeeId) => {
         selectedEmployee = newEmployeeId
       }}
-      space={_space}
     />
     <EditBox
       bind:value={weight}

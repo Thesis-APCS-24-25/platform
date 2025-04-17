@@ -14,7 +14,7 @@
 -->
 <script lang="ts">
   import { Ref, SortingOrder, Space } from '@hcengineering/core'
-  import { IntlString, getEmbeddedLabel, translateCB } from '@hcengineering/platform'
+  import { Asset, IntlString, getEmbeddedLabel, translateCB } from '@hcengineering/platform'
   import { createQuery } from '@hcengineering/presentation'
   import { KRA } from '@hcengineering/performance'
   import type { ButtonKind, ButtonSize, LabelAndProps, PopupResult } from '@hcengineering/ui'
@@ -77,7 +77,18 @@
   const kraIcon = performance.icon.KRA
   $: kraText = shouldShowLabel ? selectedKRA?.title ?? defaultKRALabel : undefined
 
-  const getKRAInfo = (rawMilestones: KRA[], sp: KRA | undefined) => {
+  const getKRAInfo = (rawMilestones: KRA[], sp: KRA | undefined):
+  ({
+    id: Ref<KRA>
+    icon: Asset
+    text: string
+    isSelected: boolean
+  } | {
+    id: null
+    icon: Asset
+    label: IntlString
+    isSelected: boolean
+  })[] => {
     return [
       {
         id: null,
