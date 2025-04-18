@@ -1,6 +1,5 @@
 import { Asset, type Plugin, plugin } from '@hcengineering/platform'
 import { Class, Mixin, Ref, SpaceType, SpaceTypeDescriptor, TypedSpace } from '@hcengineering/core'
-import { Project, ProjectType, TaskType, TaskTypeDescriptor } from '@hcengineering/task'
 import { IconProps } from '@hcengineering/view'
 import { PersonAccount } from '@hcengineering/contact'
 
@@ -34,15 +33,10 @@ export default plugin(kraTeamId, {
     Member: '' as Asset
   },
   mixin: {
-    TeamTypeData: '' as Ref<Mixin<Team>>,
-    ClassicProjectTypeData: '' as Ref<Mixin<Project>>
+    TeamTypeData: '' as Ref<Mixin<Team>>
   },
   descriptor: {
-    TeamType: '' as Ref<SpaceTypeDescriptor>,
-    ReviewSessionType: '' as Ref<TaskTypeDescriptor>
-  },
-  taskTypes: {
-    ReviewSession: '' as Ref<TaskType>
+    TeamType: '' as Ref<SpaceTypeDescriptor>
   },
   spaceType: {
     TeamType: '' as Ref<SpaceType>

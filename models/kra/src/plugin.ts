@@ -20,12 +20,12 @@ import { type NotificationGroup, type NotificationType } from '@hcengineering/no
 import { mergeIds, type IntlString, type Resource } from '@hcengineering/platform'
 import { type ProjectType } from '@hcengineering/task'
 import { kraId } from '@hcengineering/kra'
-import tracker from '@hcengineering/kra-resources/src/plugin'
+import kra from '@hcengineering/kra-resources/src/plugin'
 import type { AnyComponent } from '@hcengineering/ui/src/types'
 import { type Action, type ViewAction, type Viewlet } from '@hcengineering/view'
 import { type Application } from '@hcengineering/workbench'
 
-export default mergeIds(kraId, tracker, {
+export default mergeIds(kraId, kra, {
   string: {
     Unit: '' as IntlString,
     Symbol: '' as IntlString,

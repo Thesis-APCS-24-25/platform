@@ -20,7 +20,7 @@
         icon: act.icon ?? IconEdit,
         label: act.label,
         group: act.context.group,
-        action: async (ctx: any, evt: Event) => {
+        action: async (_ctx: any, evt: Event) => {
           const impl = await getResource(act.action)
           await impl(team, evt, act.actionProps)
         }
@@ -31,12 +31,7 @@
 </script>
 
 <NavLink app={'kra-team'} space={team._id} special={'members'} shrink={1}>
-  <TreeItem
-    title={team.name}
-    icon={classIcon(client, team._class)}
-    {selected}
-    actions={getTeamActions}
-  >
+  <TreeItem title={team.name} icon={classIcon(client, team._class)} {selected} actions={getTeamActions}>
     <div class="member-count" slot="extra">
       {team.members.length}
       <Icon icon={contact.icon.Contacts} size={'smaller'} />

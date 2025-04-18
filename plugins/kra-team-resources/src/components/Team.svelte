@@ -20,7 +20,7 @@
   import Members from './Members.svelte'
   import { TreeSeparator } from '@hcengineering/workbench-resources'
   import { createQuery } from '@hcengineering/presentation'
-  import { currentTeam, myTeams } from '../utils'
+  import { myTeams } from '../utils'
 
   let currentSpecial: SpecialNavModel | undefined
 

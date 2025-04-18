@@ -30,7 +30,7 @@ import pluginState, { Issue, kraId } from '@hcengineering/kra'
 import type { Task, TaskStatusFactory } from '@hcengineering/task'
 import { PaletteColorIndexes } from '@hcengineering/ui/src/colors'
 import { createActions as defineActions } from './actions'
-import tracker from './plugin'
+import kra from './plugin'
 import performance from '@hcengineering/performance'
 import { definePresenters } from './presenters'
 import {
@@ -92,20 +92,20 @@ export const classicIssueTaskStatuses: TaskStatusFactory[] = [
 ]
 
 function defineSortAndGrouping (builder: Builder): void {
-  builder.mixin(tracker.class.IssueStatus, core.class.Class, view.mixin.SortFuncs, {
-    func: tracker.function.IssueStatusSort
+  builder.mixin(kra.class.IssueStatus, core.class.Class, view.mixin.SortFuncs, {
+    func: kra.function.IssueStatusSort
   })
 
-  builder.mixin(tracker.class.TypeIssuePriority, core.class.Class, view.mixin.SortFuncs, {
-    func: tracker.function.IssuePrioritySort
+  builder.mixin(kra.class.TypeIssuePriority, core.class.Class, view.mixin.SortFuncs, {
+    func: kra.function.IssuePrioritySort
   })
 
-  builder.mixin(tracker.class.TypeIssuePriority, core.class.Class, view.mixin.AllValuesFunc, {
-    func: tracker.function.GetAllPriority
+  builder.mixin(kra.class.TypeIssuePriority, core.class.Class, view.mixin.AllValuesFunc, {
+    func: kra.function.GetAllPriority
   })
 
-  builder.mixin(tracker.class.IssueStatus, core.class.Class, view.mixin.AllValuesFunc, {
-    func: tracker.function.GetAllStates
+  builder.mixin(kra.class.IssueStatus, core.class.Class, view.mixin.AllValuesFunc, {
+    func: kra.function.GetAllStates
   })
 }
 
@@ -114,11 +114,11 @@ function defineNotifications (builder: Builder): void {
     notification.class.NotificationGroup,
     core.space.Model,
     {
-      label: tracker.string.Issues,
-      icon: tracker.icon.Issues,
-      objectClass: tracker.class.Issue
+      label: kra.string.Issues,
+      icon: kra.icon.Issues,
+      objectClass: kra.class.Issue
     },
-    tracker.ids.TrackerNotificationGroup
+    kra.ids.TrackerNotificationGroup
   )
 
   builder.createDoc(
@@ -128,10 +128,10 @@ function defineNotifications (builder: Builder): void {
       hidden: false,
       generated: false,
       label: task.string.AssignedToMe,
-      group: tracker.ids.TrackerNotificationGroup,
+      group: kra.ids.TrackerNotificationGroup,
       field: 'assignee',
       txClasses: [core.class.TxCreateDoc, core.class.TxUpdateDoc],
-      objectClass: tracker.class.Issue,
+      objectClass: kra.class.Issue,
       onlyOwn: true,
       templates: {
         textTemplate: '{doc} was assigned to you by {sender}',
@@ -140,13 +140,13 @@ function defineNotifications (builder: Builder): void {
       },
       defaultEnabled: true
     },
-    tracker.ids.AssigneeNotification
+    kra.ids.AssigneeNotification
   )
 
   generateClassNotificationTypes(
     builder,
-    tracker.class.Issue,
-    tracker.ids.TrackerNotificationGroup,
+    kra.class.Issue,
+    kra.ids.TrackerNotificationGroup,
     [],
     ['comments', 'status', 'priority', 'assignee', 'subIssues', 'blockedBy', 'dueDate']
   )
@@ -159,17 +159,17 @@ function defineFilters (builder: Builder): void {
   //
   // Issue
   //
-  builder.mixin(tracker.class.Issue, core.class.Class, view.mixin.ClassFilters, {
+  builder.mixin(kra.class.Issue, core.class.Class, view.mixin.ClassFilters, {
     filters: ['kind', 'status', 'priority', 'space', 'createdBy', 'assignee'],
     ignoreKeys: ['number', 'estimation', 'attachedTo'],
-    getVisibleFilters: tracker.function.GetVisibleFilters
+    getVisibleFilters: kra.function.GetVisibleFilters
   })
 
-  builder.mixin(tracker.class.Issue, core.class.Class, view.mixin.ObjectIdentifier, {
-    provider: tracker.function.IssueIdentifierProvider
+  builder.mixin(kra.class.Issue, core.class.Class, view.mixin.ObjectIdentifier, {
+    provider: kra.function.IssueIdentifierProvider
   })
 
-  builder.mixin(tracker.class.Issue, core.class.Class, chunter.mixin.ObjectChatPanel, {
+  builder.mixin(kra.class.Issue, core.class.Class, chunter.mixin.ObjectChatPanel, {
     ignoreKeys: [
       'number',
       'createdBy',
@@ -185,40 +185,40 @@ function defineFilters (builder: Builder): void {
   //
   // Issue Status
   //
-  builder.mixin(tracker.class.IssueStatus, core.class.Class, view.mixin.AttributeFilterPresenter, {
-    presenter: tracker.component.StatusFilterValuePresenter
+  builder.mixin(kra.class.IssueStatus, core.class.Class, view.mixin.AttributeFilterPresenter, {
+    presenter: kra.component.StatusFilterValuePresenter
   })
 
   //
   // Issue Template
   //
-  builder.mixin(tracker.class.IssueTemplate, core.class.Class, view.mixin.ClassFilters, {
+  builder.mixin(kra.class.IssueTemplate, core.class.Class, view.mixin.ClassFilters, {
     filters: []
   })
 
   //
   // Project
   //
-  builder.mixin(tracker.class.Project, core.class.Class, view.mixin.AttributeFilter, {
+  builder.mixin(kra.class.Project, core.class.Class, view.mixin.AttributeFilter, {
     component: view.component.ValueFilter
   })
-  builder.mixin(tracker.class.Project, core.class.Class, view.mixin.AttributeFilterPresenter, {
-    presenter: tracker.component.ProjectFilterValuePresenter
+  builder.mixin(kra.class.Project, core.class.Class, view.mixin.AttributeFilterPresenter, {
+    presenter: kra.component.ProjectFilterValuePresenter
   })
 
   //
   // Type Issue Priority
   //
   builder.mixin(
-    tracker.class.TypeIssuePriority,
+    kra.class.TypeIssuePriority,
     core.class.Class,
     view.mixin.AttributeFilterPresenter,
     {
-      presenter: tracker.component.PriorityFilterValuePresenter
+      presenter: kra.component.PriorityFilterValuePresenter
     }
   )
 
-  builder.mixin(tracker.class.TypeIssuePriority, core.class.Class, view.mixin.AttributeFilter, {
+  builder.mixin(kra.class.TypeIssuePriority, core.class.Class, view.mixin.AttributeFilter, {
     component: view.component.ValueFilter
   })
 }
@@ -226,12 +226,12 @@ function defineFilters (builder: Builder): void {
 function defineGoalMixin (builder: Builder): void {
   builder.createModel(TReportAggregator)
 
-  builder.mixin(tracker.class.Kpi, core.class.Class, tracker.mixin.ReportAggregator, {
-    aggregator: tracker.function.KpiAggregator
+  builder.mixin(kra.class.Kpi, core.class.Class, kra.mixin.ReportAggregator, {
+    aggregator: kra.function.KpiAggregator
   })
 
-  builder.mixin(tracker.class.RatingScale, core.class.Class, tracker.mixin.ReportAggregator, {
-    aggregator: tracker.function.RatingScaleAggregator
+  builder.mixin(kra.class.RatingScale, core.class.Class, kra.mixin.ReportAggregator, {
+    aggregator: kra.function.RatingScaleAggregator
   })
 }
 
@@ -249,25 +249,25 @@ function defineApplication (
     workbench.class.Application,
     core.space.Model,
     {
-      label: tracker.string.TrackerApplication,
-      icon: tracker.icon.TrackerApplication,
+      label: kra.string.TrackerApplication,
+      icon: kra.icon.TrackerApplication,
       alias: kraId,
       hidden: false,
-      locationResolver: tracker.resolver.Location,
+      locationResolver: kra.resolver.Location,
       navigatorModel: {
         specials: [
           {
             id: opt.myIssuesId,
             position: 'top',
-            label: tracker.string.MyIssues,
-            icon: tracker.icon.MyIssues,
-            component: tracker.component.MyIssues,
+            label: kra.string.MyIssues,
+            icon: kra.icon.MyIssues,
+            component: kra.component.MyIssues,
             componentProps: {
-              icon: tracker.icon.MyIssues,
+              icon: kra.icon.MyIssues,
               config: [
                 ['assigned', view.string.Assigned, {}],
-                ['active', tracker.string.Active, {}],
-                ['backlog', tracker.string.Backlog, {}],
+                ['active', kra.string.Active, {}],
+                ['backlog', kra.string.Backlog, {}],
                 ['created', view.string.Created, {}],
                 ['subscribed', view.string.Subscribed, {}]
               ]
@@ -276,17 +276,17 @@ function defineApplication (
           {
             id: opt.allIssuesId,
             position: 'top',
-            label: tracker.string.AllIssues,
-            icon: tracker.icon.Issues,
-            component: tracker.component.Issues,
+            label: kra.string.AllIssues,
+            icon: kra.icon.Issues,
+            component: kra.component.Issues,
             componentProps: {
               space: undefined,
-              icon: tracker.icon.Issues,
-              title: tracker.string.AllIssues,
+              icon: kra.icon.Issues,
+              title: kra.string.AllIssues,
               config: [
-                ['all', tracker.string.All, {}],
-                ['active', tracker.string.Active, {}],
-                ['backlog', tracker.string.Backlog, {}]
+                ['all', kra.string.All, {}],
+                ['active', kra.string.Active, {}],
+                ['backlog', kra.string.Backlog, {}]
               ],
               allProjectsTypes: true
             }
@@ -296,21 +296,21 @@ function defineApplication (
             component: workbench.component.SpecialView,
             icon: view.icon.List,
             accessLevel: AccountRole.User,
-            label: tracker.string.AllProjects,
+            label: kra.string.AllProjects,
             position: 'bottom',
-            spaceClass: tracker.class.Project,
+            spaceClass: kra.class.Project,
             componentProps: {
-              _class: tracker.class.Project,
+              _class: kra.class.Project,
               icon: view.icon.List,
-              label: tracker.string.AllProjects
+              label: kra.string.AllProjects
             }
           },
           {
             id: opt.labelsId,
-            component: tracker.component.LabelsView,
+            component: kra.component.LabelsView,
             accessLevel: AccountRole.User,
-            icon: tracker.icon.Labels,
-            label: tracker.string.Labels,
+            icon: kra.icon.Labels,
+            label: kra.string.Labels,
             // createItemLabel: task.string.TaskCreateLabel,
             position: 'bottom'
           }
@@ -318,41 +318,41 @@ function defineApplication (
         spaces: [
           {
             id: 'projects',
-            label: tracker.string.Projects,
-            spaceClass: tracker.class.Project,
-            addSpaceLabel: tracker.string.CreateProject,
-            createComponent: tracker.component.CreateProject,
-            visibleIf: tracker.function.IsProjectJoined,
-            icon: tracker.icon.Home,
+            label: kra.string.Projects,
+            spaceClass: kra.class.Project,
+            addSpaceLabel: kra.string.CreateProject,
+            createComponent: kra.component.CreateProject,
+            visibleIf: kra.function.IsProjectJoined,
+            icon: kra.icon.Home,
             specials: [
               {
                 id: opt.issuesId,
-                label: tracker.string.Issues,
-                icon: tracker.icon.Issues,
-                component: tracker.component.Issues,
+                label: kra.string.Issues,
+                icon: kra.icon.Issues,
+                component: kra.component.Issues,
                 componentProps: {
-                  icon: tracker.icon.Issues,
-                  title: tracker.string.Issues,
+                  icon: kra.icon.Issues,
+                  title: kra.string.Issues,
                   config: [
-                    ['all', tracker.string.All, {}],
-                    ['active', tracker.string.Active, {}],
-                    ['backlog', tracker.string.Backlog, {}]
+                    ['all', kra.string.All, {}],
+                    ['active', kra.string.Active, {}],
+                    ['backlog', kra.string.Backlog, {}]
                   ]
                 }
               },
               {
                 id: opt.templatesId,
-                label: tracker.string.IssueTemplates,
-                icon: tracker.icon.IssueTemplates,
-                component: tracker.component.IssueTemplates
+                label: kra.string.IssueTemplates,
+                icon: kra.icon.IssueTemplates,
+                component: kra.component.IssueTemplates
               }
             ]
           }
         ]
       },
-      navHeaderComponent: tracker.component.NewIssueHeader
+      navHeaderComponent: kra.component.NewIssueHeader
     },
-    tracker.app.Tracker
+    kra.app.Tracker
   )
 }
 
@@ -377,25 +377,25 @@ export function createModel (builder: Builder): void {
     TProjectTargetPreference
   )
 
-  builder.mixin(tracker.class.Issue, core.class.Class, performance.mixin.MeasureProgress, {
-    calculate: tracker.function.CalculateGoal
+  builder.mixin(kra.class.Issue, core.class.Class, performance.mixin.MeasureProgress, {
+    calculate: kra.function.CalculateGoal
   })
-  builder.mixin(tracker.class.Project, core.class.Class, activity.mixin.ActivityDoc, {})
-  builder.mixin(tracker.class.Issue, core.class.Class, activity.mixin.ActivityDoc, {})
-  builder.mixin(tracker.class.IssueTemplate, core.class.Class, activity.mixin.ActivityDoc, {})
+  builder.mixin(kra.class.Project, core.class.Class, activity.mixin.ActivityDoc, {})
+  builder.mixin(kra.class.Issue, core.class.Class, activity.mixin.ActivityDoc, {})
+  builder.mixin(kra.class.IssueTemplate, core.class.Class, activity.mixin.ActivityDoc, {})
 
-  builder.mixin(tracker.class.Issue, core.class.Class, view.mixin.LinkIdProvider, {
-    encode: tracker.function.GetIssueId,
-    decode: tracker.function.GetIssueIdByIdentifier
+  builder.mixin(kra.class.Issue, core.class.Class, view.mixin.LinkIdProvider, {
+    encode: kra.function.GetIssueId,
+    decode: kra.function.GetIssueIdByIdentifier
   })
 
   builder.createDoc(activity.class.ActivityExtension, core.space.Model, {
-    ofClass: tracker.class.Issue,
+    ofClass: kra.class.Issue,
     components: { input: { component: chunter.component.ChatMessageInput } }
   })
 
   builder.createDoc(activity.class.ActivityExtension, core.space.Model, {
-    ofClass: tracker.class.IssueTemplate,
+    ofClass: kra.class.IssueTemplate,
     components: { input: { component: chunter.component.ChatMessageInput } }
   })
 
@@ -410,91 +410,91 @@ export function createModel (builder: Builder): void {
 
   definePresenters(builder)
 
-  builder.mixin(tracker.class.Issue, core.class.Class, view.mixin.ObjectTitle, {
-    titleProvider: tracker.function.IssueTitleProvider
+  builder.mixin(kra.class.Issue, core.class.Class, view.mixin.ObjectTitle, {
+    titleProvider: kra.function.IssueTitleProvider
   })
 
   defineSortAndGrouping(builder)
 
-  builder.mixin(tracker.class.Issue, core.class.Class, notification.mixin.ClassCollaborators, {
+  builder.mixin(kra.class.Issue, core.class.Class, notification.mixin.ClassCollaborators, {
     fields: ['createdBy', 'assignee']
   })
 
-  builder.mixin(tracker.class.Issue, core.class.Class, setting.mixin.Editable, {
+  builder.mixin(kra.class.Issue, core.class.Class, setting.mixin.Editable, {
     value: true
   })
 
-  builder.mixin(tracker.class.Issue, core.class.Class, view.mixin.LinkProvider, {
-    encode: tracker.function.GetIssueLinkFragment
+  builder.mixin(kra.class.Issue, core.class.Class, view.mixin.LinkProvider, {
+    encode: kra.function.GetIssueLinkFragment
   })
 
-  builder.mixin(tracker.class.Issue, core.class.Class, view.mixin.ObjectPanel, {
-    component: tracker.component.EditIssue
+  builder.mixin(kra.class.Issue, core.class.Class, view.mixin.ObjectPanel, {
+    component: kra.component.EditIssue
   })
 
-  builder.mixin(tracker.class.IssueTemplate, core.class.Class, view.mixin.ObjectPanel, {
-    component: tracker.component.EditIssueTemplate
+  builder.mixin(kra.class.IssueTemplate, core.class.Class, view.mixin.ObjectPanel, {
+    component: kra.component.EditIssueTemplate
   })
 
   builder.createDoc(
     activity.class.DocUpdateMessageViewlet,
     core.space.Model,
     {
-      objectClass: tracker.class.Issue,
+      objectClass: kra.class.Issue,
       action: 'update',
-      icon: tracker.icon.Issue,
+      icon: kra.icon.Issue,
       config: {
         status: {
-          iconPresenter: tracker.component.IssueStatusIcon
+          iconPresenter: kra.component.IssueStatusIcon
         },
         priority: {
-          iconPresenter: tracker.component.PriorityIconPresenter
+          iconPresenter: kra.component.PriorityIconPresenter
         },
         estimation: {
-          icon: tracker.icon.Estimation
+          icon: kra.icon.Estimation
         }
       }
     },
-    tracker.ids.IssueUpdatedActivityViewlet
+    kra.ids.IssueUpdatedActivityViewlet
   )
 
   builder.createDoc(
     activity.class.DocUpdateMessageViewlet,
     core.space.Model,
     {
-      objectClass: tracker.class.Issue,
+      objectClass: kra.class.Issue,
       action: 'create',
-      icon: tracker.icon.Issue,
+      icon: kra.icon.Issue,
       valueAttr: 'title'
     },
-    tracker.ids.IssueCreatedActivityViewlet
+    kra.ids.IssueCreatedActivityViewlet
   )
 
   builder.createDoc(
     activity.class.DocUpdateMessageViewlet,
     core.space.Model,
     {
-      objectClass: tracker.class.Issue,
+      objectClass: kra.class.Issue,
       action: 'remove',
-      icon: tracker.icon.Issue,
+      icon: kra.icon.Issue,
       valueAttr: 'title'
     },
-    tracker.ids.IssueRemovedActivityViewlet
+    kra.ids.IssueRemovedActivityViewlet
   )
 
   builder.createDoc(
     activity.class.DocUpdateMessageViewlet,
     core.space.Model,
     {
-      objectClass: tracker.class.IssueTemplate,
+      objectClass: kra.class.IssueTemplate,
       action: 'update',
       config: {
         priority: {
-          iconPresenter: tracker.component.PriorityIconPresenter
+          iconPresenter: kra.component.PriorityIconPresenter
         }
       }
     },
-    tracker.ids.IssueTemplateUpdatedActivityViewlet
+    kra.ids.IssueTemplateUpdatedActivityViewlet
   )
 
   defineApplication(builder, { myIssuesId, allIssuesId, issuesId, templatesId, labelsId })
@@ -509,24 +509,24 @@ export function createModel (builder: Builder): void {
     presentation.class.ObjectSearchCategory,
     core.space.Model,
     {
-      icon: tracker.icon.TrackerApplication,
-      label: tracker.string.SearchIssue,
-      title: tracker.string.Issues,
-      query: tracker.completion.IssueQuery,
+      icon: kra.icon.TrackerApplication,
+      label: kra.string.SearchIssue,
+      title: kra.string.Issues,
+      query: kra.completion.IssueQuery,
       context: ['search', 'mention', 'spotlight'],
-      classToSearch: tracker.class.Issue,
+      classToSearch: kra.class.Issue,
       priority: 300
     },
-    tracker.completion.IssueCategory
+    kra.completion.IssueCategory
   )
 
   defineNotifications(builder)
 
   builder.createDoc(setting.class.WorkspaceSettingCategory, core.space.Model, {
     name: 'relations',
-    label: tracker.string.RelatedIssues,
-    icon: tracker.icon.Relations,
-    component: tracker.component.SettingsRelatedTargets,
+    label: kra.string.RelatedIssues,
+    icon: kra.icon.Relations,
+    component: kra.component.SettingsRelatedTargets,
     group: 'settings-editor',
     role: AccountRole.Maintainer,
     order: 4000
@@ -537,10 +537,10 @@ export function createModel (builder: Builder): void {
     core.space.Model,
     {
       messageClass: chunter.class.ChatMessage,
-      objectClass: tracker.class.Issue,
+      objectClass: kra.class.Issue,
       label: chunter.string.LeftComment
     },
-    tracker.ids.IssueChatMessageViewlet
+    kra.ids.IssueChatMessageViewlet
   )
 
   builder.createDoc(
@@ -548,14 +548,14 @@ export function createModel (builder: Builder): void {
     core.space.Model,
     {
       messageClass: chunter.class.ChatMessage,
-      objectClass: tracker.class.IssueTemplate,
+      objectClass: kra.class.IssueTemplate,
       label: chunter.string.LeftComment
     },
-    tracker.ids.IssueTemplateChatMessageViewlet
+    kra.ids.IssueTemplateChatMessageViewlet
   )
 
-  builder.mixin(tracker.class.Issue, core.class.Class, view.mixin.ObjectIcon, {
-    component: tracker.component.IssueStatusPresenter
+  builder.mixin(kra.class.Issue, core.class.Class, view.mixin.ObjectIcon, {
+    component: kra.component.IssueStatusPresenter
   })
 
   builder.createDoc(core.class.DomainIndexConfiguration, core.space.Model, {
@@ -587,33 +587,33 @@ function defineSpaceType (builder: Builder): void {
     task.class.ProjectTypeDescriptor,
     core.space.Model,
     {
-      name: tracker.string.TrackerApplication,
-      description: tracker.string.ManageWorkflowStatuses,
+      name: kra.string.TrackerApplication,
+      description: kra.string.ManageWorkflowStatuses,
       icon: task.icon.Task,
-      baseClass: tracker.class.Project,
+      baseClass: kra.class.Project,
       availablePermissions: [
         core.permission.UpdateSpace,
         core.permission.ArchiveSpace,
         core.permission.ForbidDeleteObject
       ],
       allowedClassic: true,
-      allowedTaskTypeDescriptors: [tracker.descriptors.Issue]
+      allowedTaskTypeDescriptors: [kra.descriptors.Issue]
     },
-    tracker.descriptors.ProjectType
+    kra.descriptors.ProjectType
   )
 
   builder.createDoc(
     task.class.TaskTypeDescriptor,
     core.space.Model,
     {
-      baseClass: tracker.class.Issue,
+      baseClass: kra.class.Issue,
       allowCreate: true,
-      description: tracker.string.Issue,
-      icon: tracker.icon.Issue,
-      name: tracker.string.Issue,
-      statusCategoriesFunc: tracker.function.GetIssueStatusCategories
+      description: kra.string.Issue,
+      icon: kra.icon.Issue,
+      name: kra.string.Issue,
+      statusCategoriesFunc: kra.function.GetIssueStatusCategories
     },
-    tracker.descriptors.Issue
+    kra.descriptors.Issue
   )
 
   const classicStatuses: Ref<Status>[] = []
@@ -632,10 +632,10 @@ function defineSpaceType (builder: Builder): void {
       classicStatuses.push(statusId)
 
       builder.createDoc(
-        tracker.class.IssueStatus,
+        kra.class.IssueStatus,
         core.space.Model,
         {
-          ofAttribute: tracker.attribute.IssueStatus,
+          ofAttribute: kra.attribute.IssueStatus,
           name,
           color,
           category
@@ -654,17 +654,17 @@ function defineSpaceType (builder: Builder): void {
     {
       parent: pluginState.ids.ClassingProjectType,
       statuses: classicStatuses,
-      descriptor: tracker.descriptors.Issue,
+      descriptor: kra.descriptors.Issue,
       name: 'Issue',
       kind: 'both',
-      ofClass: tracker.class.Issue,
-      targetClass: tracker.mixin.IssueTypeData,
-      statusClass: tracker.class.IssueStatus,
+      ofClass: kra.class.Issue,
+      targetClass: kra.mixin.IssueTypeData,
+      statusClass: kra.class.IssueStatus,
       statusCategories: classicIssueTaskStatuses.map((it) => it.category),
-      allowedAsChildOf: [tracker.taskTypes.Issue],
-      icon: tracker.icon.Issue
+      allowedAsChildOf: [kra.taskTypes.Issue],
+      icon: kra.icon.Issue
     },
-    tracker.taskTypes.Issue
+    kra.taskTypes.Issue
   )
 
   builder.createDoc(
@@ -672,13 +672,13 @@ function defineSpaceType (builder: Builder): void {
     core.space.Model,
     {
       name: 'Classic project',
-      descriptor: tracker.descriptors.ProjectType,
+      descriptor: kra.descriptors.ProjectType,
       description: '',
-      tasks: [tracker.taskTypes.Issue],
+      tasks: [kra.taskTypes.Issue],
       roles: 0,
       classic: true,
-      statuses: classicStatuses.map((s) => ({ _id: s, taskType: tracker.taskTypes.Issue })),
-      targetClass: tracker.mixin.ClassicProjectTypeData
+      statuses: classicStatuses.map((s) => ({ _id: s, taskType: kra.taskTypes.Issue })),
+      targetClass: kra.mixin.ClassicProjectTypeData
     },
     pluginState.ids.ClassingProjectType
   )

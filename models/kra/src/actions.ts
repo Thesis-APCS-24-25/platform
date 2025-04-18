@@ -22,7 +22,7 @@ import workbench, { createNavigateAction } from '@hcengineering/model-workbench'
 import { type IntlString } from '@hcengineering/platform'
 import { TrackerEvents, kraId } from '@hcengineering/kra'
 import { type KeyBinding } from '@hcengineering/view'
-import tracker from './plugin'
+import kra from './plugin'
 
 import tags from '@hcengineering/tags'
 import { defaultPriorities, issuePriorities } from '@hcengineering/kra-resources/src/types'
@@ -34,19 +34,19 @@ function createGotoSpecialAction(
   label: IntlString,
   query?: Record<string, string | null>
 ): void {
-  createNavigateAction(builder, key, label, tracker.app.Tracker, {
+  createNavigateAction(builder, key, label, kra.app.Tracker, {
     application: kraId,
     mode: 'space',
     spaceSpecial: id,
-    spaceClass: tracker.class.Project,
+    spaceClass: kra.class.Project,
     query
   })
 }
 export function createActions(builder: Builder, issuesId: string, myIssuesId: string): void {
-  createGotoSpecialAction(builder, issuesId, 'keyG->keyE', tracker.string.GotoIssues)
-  createGotoSpecialAction(builder, issuesId, 'keyG->keyA', tracker.string.GotoActive, { mode: 'active' })
-  createGotoSpecialAction(builder, issuesId, 'keyG->keyB', tracker.string.GotoBacklog, { mode: 'backlog' })
-  createNavigateAction(builder, 'keyG->keyM', tracker.string.GotoMyIssues, tracker.app.Tracker, {
+  createGotoSpecialAction(builder, issuesId, 'keyG->keyE', kra.string.GotoIssues)
+  createGotoSpecialAction(builder, issuesId, 'keyG->keyA', kra.string.GotoActive, { mode: 'active' })
+  createGotoSpecialAction(builder, issuesId, 'keyG->keyB', kra.string.GotoBacklog, { mode: 'backlog' })
+  createNavigateAction(builder, 'keyG->keyM', kra.string.GotoMyIssues, kra.app.Tracker, {
     application: kraId,
     mode: 'special',
     special: myIssuesId
@@ -58,7 +58,7 @@ export function createActions(builder: Builder, issuesId: string, myIssuesId: st
       mode: 'app',
       application: kraId
     },
-    label: tracker.string.GotoTrackerApplication,
+    label: kra.string.GotoTrackerApplication,
     icon: view.icon.ArrowRight,
     input: 'none',
     category: view.category.Navigation,
@@ -71,12 +71,12 @@ export function createActions(builder: Builder, issuesId: string, myIssuesId: st
   createAction(
     builder,
     {
-      action: tracker.actionImpl.EditWorkflowStatuses,
-      label: tracker.string.EditWorkflowStatuses,
+      action: kra.actionImpl.EditWorkflowStatuses,
+      label: kra.string.EditWorkflowStatuses,
       icon: view.icon.Statuses,
       input: 'focus',
-      category: tracker.category.Tracker,
-      target: tracker.class.Project,
+      category: kra.category.Tracker,
+      target: kra.class.Project,
       override: [task.action.EditStatuses],
       query: {},
       context: {
@@ -84,18 +84,18 @@ export function createActions(builder: Builder, issuesId: string, myIssuesId: st
         group: 'edit'
       }
     },
-    tracker.action.EditWorkflowStatuses
+    kra.action.EditWorkflowStatuses
   )
 
   createAction(
     builder,
     {
-      action: tracker.actionImpl.EditProject,
-      label: tracker.string.EditProject,
+      action: kra.actionImpl.EditProject,
+      label: kra.string.EditProject,
       icon: contact.icon.Edit,
       input: 'focus',
-      category: tracker.category.Tracker,
-      target: tracker.class.Project,
+      category: kra.category.Tracker,
+      target: kra.class.Project,
       visibilityTester: view.function.CanEditSpace,
       query: {},
       context: {
@@ -103,18 +103,18 @@ export function createActions(builder: Builder, issuesId: string, myIssuesId: st
         group: 'edit'
       }
     },
-    tracker.action.EditProject
+    kra.action.EditProject
   )
 
   createAction(
     builder,
     {
-      action: tracker.actionImpl.DeleteProject,
+      action: kra.actionImpl.DeleteProject,
       label: workbench.string.Archive,
       icon: view.icon.Archive,
       input: 'focus',
-      category: tracker.category.Tracker,
-      target: tracker.class.Project,
+      category: kra.category.Tracker,
+      target: kra.class.Project,
       visibilityTester: view.function.CanArchiveSpace,
       query: {
         archived: false
@@ -126,17 +126,17 @@ export function createActions(builder: Builder, issuesId: string, myIssuesId: st
       analyticsEvent: TrackerEvents.ProjectArchived,
       override: [view.action.Archive, view.action.Delete]
     },
-    tracker.action.DeleteProject
+    kra.action.DeleteProject
   )
   createAction(
     builder,
     {
-      action: tracker.actionImpl.DeleteProject,
+      action: kra.actionImpl.DeleteProject,
       label: workbench.string.Delete,
       icon: view.icon.Delete,
       input: 'focus',
-      category: tracker.category.Tracker,
-      target: tracker.class.Project,
+      category: kra.category.Tracker,
+      target: kra.class.Project,
       visibilityTester: view.function.CanDeleteSpace,
       query: {
         archived: true
@@ -148,18 +148,18 @@ export function createActions(builder: Builder, issuesId: string, myIssuesId: st
       analyticsEvent: TrackerEvents.ProjectDeleted,
       override: [view.action.Archive, view.action.Delete]
     },
-    tracker.action.DeleteProjectClean
+    kra.action.DeleteProjectClean
   )
 
   createAction(
     builder,
     {
-      action: tracker.actionImpl.DeleteIssue,
+      action: kra.actionImpl.DeleteIssue,
       label: workbench.string.Delete,
       icon: view.icon.Delete,
       input: 'any',
-      category: tracker.category.Tracker,
-      target: tracker.class.Issue,
+      category: kra.category.Tracker,
+      target: kra.class.Issue,
       context: {
         mode: ['context', 'browser'],
         group: 'remove'
@@ -168,14 +168,14 @@ export function createActions(builder: Builder, issuesId: string, myIssuesId: st
       override: [view.action.Delete],
       analyticsEvent: TrackerEvents.IssueDeleted
     },
-    tracker.action.DeleteIssue
+    kra.action.DeleteIssue
   )
 
   builder.createDoc(
     view.class.ActionCategory,
     core.space.Model,
-    { label: tracker.string.TrackerApplication, visible: true },
-    tracker.category.Tracker
+    { label: kra.string.TrackerApplication, visible: true },
+    kra.category.Tracker
   )
 
   createAction(
@@ -183,24 +183,24 @@ export function createActions(builder: Builder, issuesId: string, myIssuesId: st
     {
       action: view.actionImpl.ShowPopup,
       actionProps: {
-        component: tracker.component.CreateIssue,
+        component: kra.component.CreateIssue,
         element: 'top'
       },
-      label: tracker.string.NewIssue,
-      icon: tracker.icon.NewIssue,
+      label: kra.string.NewIssue,
+      icon: kra.icon.NewIssue,
       keyBinding: ['keyC'],
       input: 'none',
-      category: tracker.category.Tracker,
+      category: kra.category.Tracker,
       target: core.class.Doc,
       context: {
         mode: ['browser'],
-        application: tracker.app.Tracker,
+        application: kra.app.Tracker,
         group: 'create'
       },
-      override: [tracker.action.NewIssueGlobal],
+      override: [kra.action.NewIssueGlobal],
       analyticsEvent: TrackerEvents.NewIssueBindingCalled
     },
-    tracker.action.NewIssue
+    kra.action.NewIssue
   )
 
   createAction(
@@ -208,13 +208,13 @@ export function createActions(builder: Builder, issuesId: string, myIssuesId: st
     {
       action: view.actionImpl.ShowPopup,
       actionProps: {
-        component: tracker.component.CreateIssue,
+        component: kra.component.CreateIssue,
         element: 'top'
       },
-      label: tracker.string.NewIssue,
-      icon: tracker.icon.NewIssue,
+      label: kra.string.NewIssue,
+      icon: kra.icon.NewIssue,
       input: 'none',
-      category: tracker.category.Tracker,
+      category: kra.category.Tracker,
       target: core.class.Doc,
       context: {
         mode: [],
@@ -222,7 +222,7 @@ export function createActions(builder: Builder, issuesId: string, myIssuesId: st
       },
       analyticsEvent: TrackerEvents.IssueCreateFromGlobalActionCalled
     },
-    tracker.action.NewIssueGlobal
+    kra.action.NewIssueGlobal
   )
 
   createAction(
@@ -230,25 +230,25 @@ export function createActions(builder: Builder, issuesId: string, myIssuesId: st
     {
       action: view.actionImpl.ShowPopup,
       actionProps: {
-        component: tracker.component.CreateIssue,
+        component: kra.component.CreateIssue,
         element: 'top',
         fillProps: {
           _object: 'parentIssue',
           space: 'space'
         }
       },
-      label: tracker.string.NewSubIssue,
-      icon: tracker.icon.Subissue,
+      label: kra.string.NewSubIssue,
+      icon: kra.icon.Subissue,
       input: 'focus',
-      category: tracker.category.Tracker,
-      target: tracker.class.Issue,
+      category: kra.category.Tracker,
+      target: kra.class.Issue,
       context: {
         mode: ['context', 'browser'],
-        application: tracker.app.Tracker,
+        application: kra.app.Tracker,
         group: 'associate'
       }
     },
-    tracker.action.NewSubIssue
+    kra.action.NewSubIssue
   )
 
   createAction(
@@ -256,24 +256,24 @@ export function createActions(builder: Builder, issuesId: string, myIssuesId: st
     {
       action: view.actionImpl.ShowPopup,
       actionProps: {
-        component: tracker.component.SetParentIssueActionPopup,
+        component: kra.component.SetParentIssueActionPopup,
         element: 'top',
         fillProps: {
           _objects: 'value'
         }
       },
-      label: tracker.string.SetParent,
-      icon: tracker.icon.Parent,
+      label: kra.string.SetParent,
+      icon: kra.icon.Parent,
       input: 'none',
-      category: tracker.category.Tracker,
-      target: tracker.class.Issue,
+      category: kra.category.Tracker,
+      target: kra.class.Issue,
       context: {
         mode: ['context'],
-        application: tracker.app.Tracker,
+        application: kra.app.Tracker,
         group: 'associate'
       }
     },
-    tracker.action.SetParent
+    kra.action.SetParent
   )
   createAction(
     builder,
@@ -281,23 +281,23 @@ export function createActions(builder: Builder, issuesId: string, myIssuesId: st
       action: view.actionImpl.UpdateDocument,
       actionProps: {
         key: 'attachedTo',
-        value: tracker.ids.NoParent
+        value: kra.ids.NoParent
       },
       query: {
-        attachedTo: { $ne: tracker.ids.NoParent }
+        attachedTo: { $ne: kra.ids.NoParent }
       },
-      label: tracker.string.UnsetParentIssue,
-      icon: tracker.icon.UnsetParent,
+      label: kra.string.UnsetParentIssue,
+      icon: kra.icon.UnsetParent,
       input: 'none',
-      category: tracker.category.Tracker,
-      target: tracker.class.Issue,
+      category: kra.category.Tracker,
+      target: kra.class.Issue,
       context: {
         mode: ['context'],
-        application: tracker.app.Tracker,
+        application: kra.app.Tracker,
         group: 'associate'
       }
     },
-    tracker.action.UnsetParent
+    kra.action.UnsetParent
   )
 
   createAction(
@@ -305,45 +305,45 @@ export function createActions(builder: Builder, issuesId: string, myIssuesId: st
     {
       action: view.actionImpl.ShowPopup,
       actionProps: {
-        component: tracker.component.CreateIssue,
+        component: kra.component.CreateIssue,
         element: 'top',
         fillProps: {
           _object: 'relatedTo',
           space: 'space'
         }
       },
-      label: tracker.string.NewRelatedIssue,
-      icon: tracker.icon.NewIssue,
+      label: kra.string.NewRelatedIssue,
+      icon: kra.icon.NewIssue,
       input: 'focus',
-      category: tracker.category.Tracker,
+      category: kra.category.Tracker,
       target: core.class.Doc,
       context: {
         mode: ['context', 'browser', 'editor'],
         group: 'associate'
       }
     },
-    tracker.action.NewRelatedIssue
+    kra.action.NewRelatedIssue
   )
 
   createAction(builder, {
     action: view.actionImpl.ShowPopup,
-    actionPopup: tracker.component.SetParentIssueActionPopup,
+    actionPopup: kra.component.SetParentIssueActionPopup,
     actionProps: {
-      component: tracker.component.SetParentIssueActionPopup,
+      component: kra.component.SetParentIssueActionPopup,
       element: 'top',
       fillProps: {
         _object: 'value'
       }
     },
-    label: tracker.string.SetParent,
-    icon: tracker.icon.Parent,
+    label: kra.string.SetParent,
+    icon: kra.icon.Parent,
     input: 'none',
-    category: tracker.category.Tracker,
-    target: tracker.class.Issue,
-    override: [tracker.action.SetParent],
+    category: kra.category.Tracker,
+    target: kra.class.Issue,
+    override: [kra.action.SetParent],
     context: {
       mode: ['browser'],
-      application: tracker.app.Tracker,
+      application: kra.app.Tracker,
       group: 'associate'
     }
   })
@@ -351,9 +351,9 @@ export function createActions(builder: Builder, issuesId: string, myIssuesId: st
   createAction(builder, {
     ...actionTemplates.open,
     actionProps: {
-      component: tracker.component.EditIssue
+      component: kra.component.EditIssue
     },
-    target: tracker.class.Issue,
+    target: kra.class.Issue,
     context: {
       mode: ['browser', 'context'],
       group: 'create'
@@ -364,9 +364,9 @@ export function createActions(builder: Builder, issuesId: string, myIssuesId: st
   createAction(builder, {
     ...actionTemplates.open,
     actionProps: {
-      component: tracker.component.EditIssueTemplate
+      component: kra.component.EditIssueTemplate
     },
-    target: tracker.class.IssueTemplate,
+    target: kra.class.IssueTemplate,
     context: {
       mode: ['browser', 'context'],
       group: 'create'
@@ -377,20 +377,20 @@ export function createActions(builder: Builder, issuesId: string, myIssuesId: st
   createAction(builder, {
     action: view.actionImpl.ShowPopup,
     actionProps: {
-      component: tracker.component.TimeSpendReportPopup,
+      component: kra.component.TimeSpendReportPopup,
       fillProps: {
         _object: 'issue'
       }
     },
-    label: tracker.string.TimeSpendReportAdd,
-    icon: tracker.icon.TimeReport,
+    label: kra.string.TimeSpendReportAdd,
+    icon: kra.icon.TimeReport,
     input: 'focus',
     keyBinding: ['keyT'],
-    category: tracker.category.Tracker,
-    target: tracker.class.Issue,
+    category: kra.category.Tracker,
+    target: kra.class.Issue,
     context: {
       mode: ['context', 'browser'],
-      application: tracker.app.Tracker,
+      application: kra.app.Tracker,
       group: 'edit'
     }
   })
@@ -401,23 +401,23 @@ export function createActions(builder: Builder, issuesId: string, myIssuesId: st
       action: task.actionImpl.SelectStatus,
       actionPopup: task.component.StatusSelector,
       actionProps: {
-        _class: tracker.class.IssueStatus,
-        ofAttribute: tracker.attribute.IssueStatus,
-        placeholder: tracker.string.Status
+        _class: kra.class.IssueStatus,
+        ofAttribute: kra.attribute.IssueStatus,
+        placeholder: kra.string.Status
       },
-      label: tracker.string.Status,
-      icon: tracker.icon.CategoryBacklog,
+      label: kra.string.Status,
+      icon: kra.icon.CategoryBacklog,
       keyBinding: ['keyS->keyS'],
       input: 'any',
-      category: tracker.category.Tracker,
-      target: tracker.class.Issue,
+      category: kra.category.Tracker,
+      target: kra.class.Issue,
       context: {
         mode: ['context', 'browser'],
-        application: tracker.app.Tracker,
+        application: kra.app.Tracker,
         group: 'edit'
       }
     },
-    tracker.action.SetStatus
+    kra.action.SetStatus
   )
 
   createAction(
@@ -428,27 +428,27 @@ export function createActions(builder: Builder, issuesId: string, myIssuesId: st
       actionProps: {
         attribute: 'priority',
         values: defaultPriorities.map((p) => ({ id: p, ...issuePriorities[p] })),
-        placeholder: tracker.string.SetPriority
+        placeholder: kra.string.SetPriority
       },
-      label: tracker.string.Priority,
-      icon: tracker.icon.PriorityHigh,
+      label: kra.string.Priority,
+      icon: kra.icon.PriorityHigh,
       keyBinding: ['keyP->keyR'],
       input: 'any',
-      category: tracker.category.Tracker,
-      target: tracker.class.Issue,
+      category: kra.category.Tracker,
+      target: kra.class.Issue,
       context: {
         mode: ['context', 'browser'],
-        application: tracker.app.Tracker,
+        application: kra.app.Tracker,
         group: 'edit'
       }
     },
-    tracker.action.SetPriority
+    kra.action.SetPriority
   )
   createAction(
     builder,
     {
       action: view.actionImpl.AttributeSelector,
-      actionPopup: tracker.component.AssigneeEditor,
+      actionPopup: kra.component.AssigneeEditor,
       actionProps: {
         attribute: 'assignee',
         isAction: true,
@@ -457,19 +457,19 @@ export function createActions(builder: Builder, issuesId: string, myIssuesId: st
         // query: {},
         // placeholder: tracker.string.AssignTo
       },
-      label: tracker.string.Assignee,
+      label: kra.string.Assignee,
       icon: contact.icon.Person,
       keyBinding: ['keyA'],
       input: 'any',
-      category: tracker.category.Tracker,
-      target: tracker.class.Issue,
+      category: kra.category.Tracker,
+      target: kra.class.Issue,
       context: {
         mode: ['context', 'browser'],
-        application: tracker.app.Tracker,
+        application: kra.app.Tracker,
         group: 'edit'
       }
     },
-    tracker.action.SetAssignee
+    kra.action.SetAssignee
   )
 
   createAction(
@@ -483,19 +483,19 @@ export function createActions(builder: Builder, issuesId: string, myIssuesId: st
           _objects: 'value'
         }
       },
-      label: tracker.string.Labels,
+      label: kra.string.Labels,
       icon: tags.icon.Tags,
       keyBinding: ['keyL'],
       input: 'any',
-      category: tracker.category.Tracker,
-      target: tracker.class.Issue,
+      category: kra.category.Tracker,
+      target: kra.class.Issue,
       context: {
         mode: ['context', 'browser'],
-        application: tracker.app.Tracker,
+        application: kra.app.Tracker,
         group: 'edit'
       }
     },
-    tracker.action.SetLabels
+    kra.action.SetLabels
   )
 
   createAction(
@@ -503,26 +503,26 @@ export function createActions(builder: Builder, issuesId: string, myIssuesId: st
     {
       action: view.actionImpl.ShowPopup,
       actionProps: {
-        component: tracker.component.SetDueDateActionPopup,
+        component: kra.component.SetDueDateActionPopup,
         props: { mondayStart: true, withTime: false },
         element: 'top',
         fillProps: {
           _objects: 'value'
         }
       },
-      label: tracker.string.SetDueDate,
-      icon: tracker.icon.DueDate,
+      label: kra.string.SetDueDate,
+      icon: kra.icon.DueDate,
       keyBinding: ['keyD'],
       input: 'any',
-      category: tracker.category.Tracker,
-      target: tracker.class.Issue,
+      category: kra.category.Tracker,
+      target: kra.class.Issue,
       context: {
         mode: ['context', 'browser'],
-        application: tracker.app.Tracker,
+        application: kra.app.Tracker,
         group: 'edit'
       }
     },
-    tracker.action.SetDueDate
+    kra.action.SetDueDate
   )
 
   createAction(
@@ -530,127 +530,127 @@ export function createActions(builder: Builder, issuesId: string, myIssuesId: st
     {
       action: view.actionImpl.CopyTextToClipboard,
       actionProps: {
-        textProvider: tracker.function.GetIssueId
+        textProvider: kra.function.GetIssueId
       },
-      label: tracker.string.CopyIssueId,
+      label: kra.string.CopyIssueId,
       icon: view.icon.CopyId,
       input: 'focus',
-      category: tracker.category.Tracker,
-      target: tracker.class.Issue,
+      category: kra.category.Tracker,
+      target: kra.class.Issue,
       visibilityTester: view.function.IsClipboardAvailable,
       context: {
         mode: ['context', 'browser'],
-        application: tracker.app.Tracker,
+        application: kra.app.Tracker,
         group: 'copy'
       }
     },
-    tracker.action.CopyIssueId
+    kra.action.CopyIssueId
   )
   createAction(
     builder,
     {
       action: view.actionImpl.CopyTextToClipboard,
       actionProps: {
-        textProvider: tracker.function.GetIssueTitle
+        textProvider: kra.function.GetIssueTitle
       },
-      label: tracker.string.CopyIssueTitle,
-      icon: tracker.icon.CopyBranch,
+      label: kra.string.CopyIssueTitle,
+      icon: kra.icon.CopyBranch,
       input: 'focus',
-      category: tracker.category.Tracker,
-      target: tracker.class.Issue,
+      category: kra.category.Tracker,
+      target: kra.class.Issue,
       visibilityTester: view.function.IsClipboardAvailable,
       context: {
         mode: ['context', 'browser'],
-        application: tracker.app.Tracker,
+        application: kra.app.Tracker,
         group: 'copy'
       }
     },
-    tracker.action.CopyIssueTitle
+    kra.action.CopyIssueTitle
   )
   createAction(
     builder,
     {
       action: view.actionImpl.CopyTextToClipboard,
       actionProps: {
-        textProvider: tracker.function.GetIssueLink
+        textProvider: kra.function.GetIssueLink
       },
-      label: tracker.string.CopyIssueUrl,
+      label: kra.string.CopyIssueUrl,
       icon: view.icon.CopyLink,
       input: 'focus',
-      category: tracker.category.Tracker,
-      target: tracker.class.Issue,
+      category: kra.category.Tracker,
+      target: kra.class.Issue,
       visibilityTester: view.function.IsClipboardAvailable,
       context: {
         mode: ['context', 'browser'],
-        application: tracker.app.Tracker,
+        application: kra.app.Tracker,
         group: 'copy'
       }
     },
-    tracker.action.CopyIssueLink
+    kra.action.CopyIssueLink
   )
   createAction(
     builder,
     {
-      action: tracker.actionImpl.Move,
-      label: tracker.string.MoveToProject,
+      action: kra.actionImpl.Move,
+      label: kra.string.MoveToProject,
       icon: view.icon.Move,
       input: 'any',
-      category: tracker.category.Tracker,
-      target: tracker.class.Issue,
+      category: kra.category.Tracker,
+      target: kra.class.Issue,
       context: {
         mode: ['context', 'browser'],
-        application: tracker.app.Tracker,
+        application: kra.app.Tracker,
         group: 'associate'
       },
       override: [task.action.Move]
     },
-    tracker.action.MoveToProject
+    kra.action.MoveToProject
   )
   createAction(
     builder,
     {
       action: view.actionImpl.ValueSelector,
-      actionPopup: tracker.component.RelationsPopup,
+      actionPopup: kra.component.RelationsPopup,
       actionProps: {
         attribute: ''
       },
-      label: tracker.string.Relations,
-      icon: tracker.icon.Relations,
+      label: kra.string.Relations,
+      icon: kra.icon.Relations,
       input: 'focus',
-      category: tracker.category.Tracker,
-      target: tracker.class.Issue,
+      category: kra.category.Tracker,
+      target: kra.class.Issue,
       context: {
         mode: ['context', 'browser'],
-        application: tracker.app.Tracker,
+        application: kra.app.Tracker,
         group: 'associate'
       }
     },
-    tracker.action.Relations
+    kra.action.Relations
   )
   createAction(
     builder,
     {
       action: view.actionImpl.ShowPopup,
       actionProps: {
-        component: tracker.component.CreateIssue,
+        component: kra.component.CreateIssue,
         element: 'top',
         fillProps: {
           _object: 'originalIssue',
           space: 'space'
         }
       },
-      label: tracker.string.Duplicate,
-      icon: tracker.icon.Duplicate,
+      label: kra.string.Duplicate,
+      icon: kra.icon.Duplicate,
       input: 'focus',
-      category: tracker.category.Tracker,
-      target: tracker.class.Issue,
+      category: kra.category.Tracker,
+      target: kra.class.Issue,
       context: {
         mode: ['context', 'browser'],
-        application: tracker.app.Tracker,
+        application: kra.app.Tracker,
         group: 'associate'
       }
     },
-    tracker.action.Duplicate
+    kra.action.Duplicate
   )
 
   createAction(
@@ -658,26 +658,26 @@ export function createActions(builder: Builder, issuesId: string, myIssuesId: st
     {
       action: view.actionImpl.ShowPopup,
       actionProps: {
-        component: tracker.component.EditRelatedTargetsPopup,
+        component: kra.component.EditRelatedTargetsPopup,
         element: 'top',
         fillProps: {
           _objects: 'value'
         }
       },
-      label: tracker.string.MapRelatedIssues,
-      icon: tracker.icon.Relations,
+      label: kra.string.MapRelatedIssues,
+      icon: kra.icon.Relations,
       input: 'none',
-      category: tracker.category.Tracker,
+      category: kra.category.Tracker,
       target: core.class.Space,
       query: {
-        _class: { $ne: tracker.class.Project }
+        _class: { $ne: kra.class.Project }
       },
       context: {
         mode: ['context'],
-        application: tracker.app.Tracker,
+        application: kra.app.Tracker,
         group: 'associate'
       }
     },
-    tracker.action.EditRelatedTargets
+    kra.action.EditRelatedTargets
   )
 }
