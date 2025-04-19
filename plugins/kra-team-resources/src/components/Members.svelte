@@ -2,10 +2,12 @@
   import { Account, Ref, WithLookup } from '@hcengineering/core'
   import { SpaceHeader, ViewletContentView, ViewletSettingButton } from '@hcengineering/view-resources'
   import kraTeam from '../plugins'
-    import { Viewlet, ViewOptions } from '@hcengineering/view'
+  import { Viewlet, ViewOptions } from '@hcengineering/view'
   import { createQuery } from '@hcengineering/presentation'
   import contact from '@hcengineering/contact'
-    import { Team } from '@hcengineering/kra-team'
+  import { Team } from '@hcengineering/kra-team'
+  import { themeStore } from '@hcengineering/ui'
+  import { translate } from '@hcengineering/platform'
 
   export let currentSpace: Ref<Team> | undefined = undefined
 
@@ -30,10 +32,18 @@
   $: query = {
     _id: { $in: members }
   }
+
+  let label: string | undefined
+
+  $: if (label === undefined) {
+    void translate(kraTeam.string.Members, {}, $themeStore.language).then((res) => {
+      label = res
+    })
+  }
 </script>
 
 <SpaceHeader
-  label={kraTeam.string.Members}
+  label={label ?? ''}
   _class={kraTeam.class.Member}
   bind:viewlet
   bind:search
@@ -46,5 +56,11 @@
 </SpaceHeader>
 
 {#if viewlet !== undefined && viewOptions}
-  <ViewletContentView _class={contact.class.PersonAccount} space={contact.space.Contacts} {viewOptions} {viewlet} {query} />
+  <ViewletContentView
+    _class={contact.class.PersonAccount}
+    space={contact.space.Contacts}
+    {viewOptions}
+    {viewlet}
+    {query}
+  />
 {/if}

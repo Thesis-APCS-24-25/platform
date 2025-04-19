@@ -15,7 +15,7 @@ export class TTeam extends TTypedSpace implements Team {
 }
 
 @Mixin(kraTeam.mixin.TeamTypeData, kraTeam.class.Team)
-@UX(getEmbeddedLabel('Default Team'), kraTeam.icon.Kras)
+@UX(getEmbeddedLabel('Default Team'), kraTeam.icon.Teams)
 export class TTeamTypeData extends TTeam implements RolesAssignment {
   [key: Ref<Role>]: Ref<Member>[]
 }

@@ -96,7 +96,7 @@
       value={role}
       kind="list"
       allowDeselect
-      label={kraTeam.string.RoleLabel}
+      label={kraTeam.string.Role}
       showNavigate={false}
       on:change={handleRoleChanged.bind(undefined, team, typeType, rolesAssignment)}
     />

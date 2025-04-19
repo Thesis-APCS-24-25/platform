@@ -4,9 +4,6 @@ import { type Asset, type IntlString, mergeIds } from '@hcengineering/platform'
 import { type AnyComponent } from '@hcengineering/ui'
 
 export default mergeIds(kraTeamId, kraTeam, {
-  icon: {
-    Team: '' as Asset
-  },
   string: {
     Roles: '' as IntlString,
     Team: '' as IntlString,

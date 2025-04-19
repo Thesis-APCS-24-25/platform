@@ -37,11 +37,13 @@
   const specials: SpecialNavModel[] = [
     {
       id: 'my-teams',
+      icon: kraTeam.icon.MyTeams,
       label: kraTeam.string.MyTeams,
       component: kraTeam.component.MyTeams
     },
     {
       id: 'all-teams',
+      icon: kraTeam.icon.AllTeams,
       label: kraTeam.string.AllTeams,
       component: workbench.component.SpecialView,
       componentProps: {
@@ -109,7 +111,12 @@
               <TreeSeparator line />
             {/if}
             <NavLink space={special.id} {disabled}>
-              <NavItem label={special.label} icon={special.icon} selected={false} {disabled} />
+              <NavItem
+                label={special.label}
+                icon={special.icon}
+                selected={currentSpecial !== undefined && currentSpecial.id === special.id}
+                {disabled}
+              />
             </NavLink>
           {/each}
         {/if}

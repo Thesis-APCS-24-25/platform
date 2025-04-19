@@ -25,12 +25,13 @@ export default plugin(kraTeamId, {
     TeamTypeDescriptor: '' as Ref<Class<TeamTypeDescriptor>>
   },
   icon: {
-    KraTemplates: '' as Asset,
-    KraTemplate: '' as Asset,
+    Team: '' as Asset,
     Teams: '' as Asset,
-    Metrics: '' as Asset,
-    Kras: '' as Asset,
-    Member: '' as Asset
+    Member: '' as Asset,
+    Add: '' as Asset,
+    Home: '' as Asset,
+    MyTeams: '' as Asset,
+    AllTeams: '' as Asset
   },
   mixin: {
     TeamTypeData: '' as Ref<Mixin<Team>>
@@ -40,8 +41,5 @@ export default plugin(kraTeamId, {
   },
   spaceType: {
     TeamType: '' as Ref<SpaceType>
-  },
-  ids: {
-    ClassingProjectType: '' as Ref<ProjectType>
   }
 })

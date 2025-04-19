@@ -12,7 +12,7 @@
     IconWithEmoji
   } from '@hcengineering/ui'
   import { AccountArrayEditor } from '@hcengineering/contact-resources'
-  import presentation, { Card, createQuery, getClient } from '@hcengineering/presentation'
+  import presentation, { Card, createQuery } from '@hcengineering/presentation'
   import kraTeam from '../plugins'
   import core, { Account, Role, RolesAssignment, Arr, Ref, SpaceType, SortingOrder } from '@hcengineering/core'
   import view from '@hcengineering/view'
@@ -30,9 +30,6 @@
   let owners: Ref<Account>[] = []
   let rolesAssignment: RolesAssignment | undefined = undefined
   let color = getColorNumberByText(name)
-
-  const client = getClient()
-  const hierarchy = client.getHierarchy()
 
   let typeType: SpaceType | undefined = undefined
   const typeTypeQuery = createQuery()
@@ -90,7 +87,7 @@
     if (typeType === undefined || rolesAssignment === undefined) {
       return
     }
-    await createNewTeam(name, description, isPrivate, typeType, members, owners, rolesAssignment)
+    await createNewTeam(name, description, isPrivate, typeType, members, owners, rolesAssignment, icon, color)
     dispatch('close')
   }
 
@@ -211,7 +208,6 @@
         <div class="antiGrid-row">
           <div class="antiGrid-row__header">
             <Label label={kraTeam.string.RoleLabel} params={{ role: role.name }} />
-            {role.name}
           </div>
           <AccountArrayEditor
             value={rolesAssignment?.[role._id] ?? []}
