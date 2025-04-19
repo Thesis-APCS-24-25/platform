@@ -1,9 +1,18 @@
 <script lang="ts">
   import { classIcon, NavLink, TreeItem, getActions, TreeNode, TreeElement } from '@hcengineering/view-resources'
-  import { Team } from '@hcengineering/kra-team'
+  import view from '@hcengineering/view'
+  import kraTeam, { Team } from '@hcengineering/kra-team'
   import { getClient } from '@hcengineering/presentation'
   import core, { Ref } from '@hcengineering/core'
-  import { Action, getPlatformColorDef, Icon, IconEdit, themeStore } from '@hcengineering/ui'
+  import {
+    Action,
+    getPlatformColorDef,
+    getPlatformColorForTextDef,
+    Icon,
+    IconEdit,
+    IconWithEmoji,
+    themeStore
+  } from '@hcengineering/ui'
   import contact from '@hcengineering/contact'
   import { getResource } from '@hcengineering/platform'
 
@@ -33,8 +42,15 @@
 <NavLink app={'kra-team'} space={team._id} special={'members'} shrink={1}>
   <TreeElement
     title={team.name}
-    iconProps={{ fill: getPlatformColorDef(team.color ?? 0, $themeStore.dark).icon }}
-    icon={team.icon}
+    icon={team.icon === view.ids.IconWithEmoji ? IconWithEmoji : team.icon ?? kraTeam.icon.Teams}
+    iconProps={team.icon === view.ids.IconWithEmoji
+      ? { icon: team.color }
+      : {
+          fill:
+            team.color !== undefined
+              ? getPlatformColorDef(team.color, $themeStore.dark).icon
+              : getPlatformColorForTextDef(team.name, $themeStore.dark).icon
+        }}
     {selected}
     actions={getTeamActions}
   >
