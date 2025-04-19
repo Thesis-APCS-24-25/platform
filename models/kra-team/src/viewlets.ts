@@ -28,6 +28,9 @@ export function defineViewlets (builder: Builder): void {
       {
         key: '',
         label: kraTeam.string.Roles,
+        displayProps: {
+          compression: true
+        },
         presenter: kraTeam.component.MemberRolePresenter
       }
     ],

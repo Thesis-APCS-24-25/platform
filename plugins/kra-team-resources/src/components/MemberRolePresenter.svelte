@@ -1,16 +1,13 @@
 <script lang="ts">
   import { Member, Team, TeamType } from '@hcengineering/kra-team'
-  import { createQuery, getClient } from '@hcengineering/presentation'
-  import core, { Account, Ref, Role, RolesAssignment, Space } from '@hcengineering/core'
+  import { getClient } from '@hcengineering/presentation'
+  import core, { Ref, Role, RolesAssignment } from '@hcengineering/core'
   import kraTeam from '../plugins'
-  import contact from '@hcengineering/contact'
-  import { currentTeam } from '../utils'
-  import { Button, location, SelectPopup, showPopup } from '@hcengineering/ui'
+  import { location } from '@hcengineering/ui'
   import { decodeObjectURI } from '@hcengineering/view'
   import { onDestroy } from 'svelte'
-  import { ObjectBox, ObjectPresenter } from '@hcengineering/view-resources'
+  import { ObjectBox } from '@hcengineering/view-resources'
   import { deepEqual } from 'fast-equals'
-  import { Project } from '@hcengineering/task'
 
   export let value: Member | undefined
 
