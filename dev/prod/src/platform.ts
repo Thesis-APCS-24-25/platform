@@ -115,6 +115,7 @@ import '@hcengineering/view-assets'
 import '@hcengineering/workbench-assets'
 import '@hcengineering/kra-assets'
 import '@hcengineering/kra-team-assets'
+import '@hcengineering/performance-assets'
 
 import github, { githubId } from '@hcengineering/github'
 import '@hcengineering/github-assets'
@@ -293,6 +294,7 @@ function configureI18n(): void {
   addStringsLoader(trackerId, async (lang: string) => await import(`@hcengineering/tracker-assets/lang/${lang}.json`))
   addStringsLoader(kraId, async (lang: string) => await import(`@hcengineering/kra-assets/lang/${lang}.json`))
   addStringsLoader(kraTeamId, async (lang: string) => await import(`@hcengineering/kra-team-assets/lang/${lang}.json`))
+  addStringsLoader(performanceId, async (lang: string) => await import(`@hcengineering/performance-assets/lang/${lang}.json`))
   addStringsLoader(viewId, async (lang: string) => await import(`@hcengineering/view-assets/lang/${lang}.json`))
   addStringsLoader(
     workbenchId,

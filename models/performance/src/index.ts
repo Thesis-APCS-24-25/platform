@@ -284,6 +284,7 @@ function defineApplication (builder: Builder): void {
     {
       label: performance.string.PerformanceApplication,
       alias: performanceId,
+      icon: performance.icon.ReviewSession,
       hidden: false,
       navHeaderComponent: performance.component.NewReviewSessionHeader,
       navigatorModel: {

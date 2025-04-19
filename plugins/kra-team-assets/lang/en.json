@@ -22,6 +22,8 @@
     "Description": "Description",
     "Metrics": "Metrics",
     "Name": "Name",
+    "KRA": "KRA",
+    "NoKRA": "No KRA",
     "KRATemplates": "KRA templates",
     "ApproveKra": "Approve KRA",
     "ApproveKraDescription": "Approve KRA",

@@ -2317,6 +2317,11 @@
       "packageName": "@hcengineering/model-performance",
       "projectFolder": "models/performance",
       "shouldPublish": false
+    },
+    {
+      "packageName": "@hcengineering/performance-assets",
+      "projectFolder": "plugins/performance-assets",
+      "shouldPublish": false
     }
   ]
 }
