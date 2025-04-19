@@ -464,7 +464,9 @@ const pluginState = plugin(kraId, {
 
     // Project icons
     Home: '' as Asset,
-    RedCircle: '' as Asset
+    RedCircle: '' as Asset,
+
+    Goal: '' as Asset
   },
   category: {
     Other: '' as Ref<TagCategory>,
