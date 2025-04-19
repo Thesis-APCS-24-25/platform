@@ -42,11 +42,11 @@
 
 <FocusHandler {manager} />
 
-<Card label={kra.string.AddUnit} okAction={handleCreate} {canSave}>
+<Card label={kra.string.AddUnit} okAction={handleCreate} {canSave} on:close>
   <EditBox bind:value={data.name} kind="large-style" placeholder={kra.string.AddNamePlaceholder} focusIndex={1} />
 
   <div class="sympol">
-    <EditBox bind:value={data.symbol} kind="editbox" placeholder={kra.string.AddSympolPlaceholder} focusIndex={2} />
+    <EditBox bind:value={data.symbol} kind="editbox" placeholder={kra.string.AddSymbolPlaceholder} focusIndex={2} />
   </div>
   <div class="prefix">
     <ToggleWithLabel bind:on={data.prefix} label={kra.string.Prefix} />

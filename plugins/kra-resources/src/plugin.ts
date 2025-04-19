@@ -46,7 +46,7 @@ export default mergeIds(kraId, tracker, {
     SetGoal: '' as IntlString,
     RemoveGoal: '' as IntlString,
     AddDescriptionPlaceholder: '' as IntlString,
-    AddSympolPlaceholder: '' as IntlString,
+    AddSymbolPlaceholder: '' as IntlString,
     Prefix: '' as IntlString,
     AddUnit: '' as IntlString,
     SelectUnit: '' as IntlString,
