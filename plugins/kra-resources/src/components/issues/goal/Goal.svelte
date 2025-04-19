@@ -85,7 +85,7 @@
           {/if}
         {:else}
           <div class="empty-state">
-            <span>{kra.string.NoGoalAttached}</span>
+            <Label label={kra.string.NoGoalAttached} />
             <ButtonIcon icon={IconAdd} kind="tertiary" size="small" on:click={handleCreateGoal} />
           </div>
         {/if}

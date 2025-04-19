@@ -51,7 +51,7 @@ export default mergeIds(kraId, tracker, {
     AddUnit: '' as IntlString,
     SelectUnit: '' as IntlString,
     AddNamePlaceholder: '' as IntlString,
-    Unselected: '' as IntlString,
+    SelectGoalType: '' as IntlString,
     ChooseGoal: '' as IntlString,
     Kpi: '' as IntlString,
     AddGoal: '' as IntlString,

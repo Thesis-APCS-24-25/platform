@@ -18,7 +18,7 @@
   const items: DropdownIntlItem[] = [
     {
       id: 'none',
-      label: kra.string.Unselected
+      label: kra.string.SelectGoalType
     },
     {
       id: 'kpi',

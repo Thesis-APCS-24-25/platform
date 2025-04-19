@@ -289,7 +289,15 @@
     "RoleLabel": "Role: {role}",
     "UnsetParentIssue": "Unset parent issue",
     "SetGoal": "Set goal",
-    "NoGoalAttached": "No goal attached"
+    "NoGoalAttached": "No goal attached",
+    "SelectGoalType": "Select goal type",
+    "SelectUnit": "Select unit",
+    "Target": "Target",
+    "AddNamePlaceholder": "Add name\u2026",
+    "AddGoal": "Add goal",
+    "RatingScale": "Rating scale",
+    "AddUnit": "Add unit",
+    "Kpi": "KPI"
   },
   "status": {}
 }
