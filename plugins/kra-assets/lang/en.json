@@ -287,7 +287,9 @@
     "IssueStatus": "Status",
     "Extensions": "Extensions",
     "RoleLabel": "Role: {role}",
-    "UnsetParentIssue": "Unset parent issue"
+    "UnsetParentIssue": "Unset parent issue",
+    "SetGoal": "Set goal",
+    "NoGoalAttached": "No goal attached"
   },
   "status": {}
 }

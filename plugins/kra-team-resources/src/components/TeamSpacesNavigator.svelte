@@ -5,9 +5,10 @@
   import { Ref } from '@hcengineering/core'
   import TeamNavItem from './TeamNavItem.svelte'
   import { myTeams } from '../utils'
-  import { Action, IconAdd, showPopup } from '@hcengineering/ui'
+  import { Action, IconAdd, showPopup, themeStore } from '@hcengineering/ui'
   import CreateTeam from './CreateTeam.svelte'
   import { createEventDispatcher } from 'svelte'
+    import { translateCB } from '@hcengineering/platform'
 
   let teams: Team[] = []
   export let currentTeam: Ref<Team> | undefined
@@ -30,9 +31,14 @@
   async function actions (): Promise<Action[]> {
     return [addSpace]
   }
+
+  let title: string | undefined
+  $: translateCB(kraTeam.string.MyTeams, {}, $themeStore.language, (res) => {
+    title = res
+  })
 </script>
 
-<TreeNode title={kraTeam.string.MyTeams} {actions}>
+<TreeNode {title} {actions}>
   {#each teams as team}
     <TeamNavItem {team} {currentTeam} />
   {/each}
