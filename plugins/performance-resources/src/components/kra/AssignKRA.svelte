@@ -7,8 +7,8 @@
   import performance from '../../plugin'
   import { EmployeeKRA, KRA } from '@hcengineering/performance'
   import KRASelector from '../KRASelector.svelte'
-  import EmployeeSelector from '../EmployeeSelector.svelte'
-  import { Contact } from '@hcengineering/contact'
+  import contact, { Person, PersonAccount } from '@hcengineering/contact'
+  import AssigneeBox from '@hcengineering/contact-resources/src/components/AssigneeBox.svelte'
 
   export let space: Ref<Space>
 
@@ -16,14 +16,26 @@
   const status: Status = OK
 
   let selectedKRA: Ref<KRA> | undefined
-  let selectedEmployee: Ref<Contact> | undefined
+  let selectedEmployee: Ref<Person> | undefined
+  let selectedAccount: Ref<PersonAccount> | undefined
   let weight: number = 0
 
   const dispatch = createEventDispatcher()
   const client = getClient()
 
+  $: void client.findOne(
+    contact.class.PersonAccount,
+    {
+      person: selectedEmployee
+    }
+  ).then((res) => {
+    if (res !== undefined) {
+      selectedAccount = res._id
+    }
+  })
+
   let canSave: boolean
-  $: canSave = selectedKRA !== undefined && selectedEmployee !== undefined
+  $: canSave = selectedKRA !== undefined && selectedAccount !== undefined
 
   async function createEmployeeKRA (): Promise<void> {
     if (!canSave) {
@@ -31,7 +43,7 @@
     }
     const value: Data<EmployeeKRA> = {
       kra: selectedKRA as Ref<KRA>,
-      employee: selectedEmployee as Ref<Contact>,
+      employee: selectedAccount as Ref<PersonAccount>,
       weight
     }
     await client.createDoc(performance.class.EmployeeKRA, _space, value)
@@ -60,11 +72,10 @@
       }}
       space={_space}
     />
-    <EmployeeSelector
-      value={selectedEmployee}
-      onChange={(newEmployeeId) => {
-        selectedEmployee = newEmployeeId
-      }}
+    <AssigneeBox
+      _class={contact.class.PersonAccount}
+      label={performance.string.Assignee}
+      bind:value={selectedEmployee}
     />
     <EditBox
       bind:value={weight}

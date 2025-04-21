@@ -2,8 +2,8 @@
   import { onMount, afterUpdate, createEventDispatcher } from 'svelte'
   import { Chart, registerables } from 'chart.js'
   import { EmployeeKRA, ReviewSession, WithKRA, type KRA } from '@hcengineering/performance'
-  import contact, { Contact } from '@hcengineering/contact'
-  import { createQuery, getClient } from '@hcengineering/presentation'
+  import contact, { Person, PersonAccount } from '@hcengineering/contact'
+  import { getClient } from '@hcengineering/presentation'
   import performance from '@hcengineering/performance'
   import { Ref } from '@hcengineering/core'
   import { calculateCompletionLevel } from '../../utils/KraUtils'
@@ -13,10 +13,13 @@
 
   export let reviewSession: ReviewSession
 
-  type KRAsByEmployee = Record<Ref<Contact>, Array<KRA & { weight?: number, completionLevel?: number }>>
+  type KRAsByEmployee = Record<Ref<PersonAccount>, Array<KRA & { weight?: number, completionLevel?: number }>>
 
-  let employees: Contact[] = []
-  let tasks: Array<WithKRA & { completionLevel?: number }>
+  let employees: PersonAccount[] = []
+  let employeeIds: Ref<Person>[] | undefined = undefined
+  let employeeDetails: Record<Ref<Person>, Person> | undefined = undefined
+  let tasks: Array<WithKRA>
+  const taskCompletion: Record<Ref<WithKRA>, number> = {}
   const kras: KRA[] = []
   let kraRefs: Ref<KRA>[]
   let employeeKras: EmployeeKRA[] = []
@@ -26,7 +29,6 @@
   const colors: string[] = ['#4285F4', '#EA4335', '#FBBC05', '#34A853', '#8B44AC', '#00ACC1', '#FF7043']
 
   const client = getClient()
-  const query = createQuery()
   const dispatch = createEventDispatcher()
 
   $: void client.findAll(
@@ -51,41 +53,62 @@
     }
   })
 
-  $: void client.findAll(
-    contact.class.Contact,
-    {
-      $in: reviewSession
-    }
-  ).then((result) => {
-    if (result !== undefined) {
-      employees = result
-    }
-  })
-
-  $: void client.findAll(
-    performance.mixin.WithKRA,
-    {
-      kra: {
-        $in: kraRefs
-      }
-    }
-  ).then((result) => {
-    if (result !== undefined) {
-      tasks = result.map((entry) => {
-        const e = entry as WithKRA
-        return {
-          completionLevel: 0,
-          ...e
+  $: if (employeeIds === undefined) {
+    void client.findAll(
+      contact.class.PersonAccount,
+      {
+        _id: {
+          $in: reviewSession.members as Ref<PersonAccount>[]
         }
-      })
-    }
-  })
+      }
+    ).then((result) => {
+      if (result !== undefined) {
+        employees = result
+        employeeIds = employees.map(emp => emp.person)
+        console.log('employeeIds')
+        console.log(employeeIds)
+      }
+    })
+  }
+
+  $: if (employeeIds !== undefined && employeeDetails === undefined) {
+    void client.findAll(
+      contact.class.Person,
+      {
+        _id: {
+          $in: employeeIds
+        }
+      }
+    ).then((result) => {
+      if (result !== undefined) {
+        employeeDetails = {}
+        result.forEach(res => {
+          (employeeDetails as Record<Ref<Person>, Person>)[res._id as Ref<Person>] = res
+        })
+        console.log('employeeDetails:')
+        console.log(employeeDetails)
+      }
+    })
+  }
+
+  $: if (kraRefs !== undefined) {
+    void client.findAll(
+      performance.mixin.WithKRA,
+      {
+        kra: { $in: kraRefs }
+      }
+    ).then((result) => {
+      if (result !== undefined) {
+        tasks = result
+      }
+    })
+  }
 
   $: {
     if (tasks !== undefined) {
       const updateCompletionLevels = async (): Promise<void> => {
         for (const task of tasks) {
-          task.completionLevel = await calculateCompletionLevel(task._id)
+          taskCompletion[task._id] = await calculateCompletionLevel(task._id) ?? 0
         }
       }
       void updateCompletionLevels()
@@ -97,17 +120,23 @@
     krasByEmployee = employees.reduce<KRAsByEmployee>((acc, employee) => {
       // Get all EmployeeKRA entries for this employee
       const employeeKraEntries = employeeKras.filter(entry => entry.employee === employee._id)
-
       // For each entry, fetch the corresponding KRA details
       const employeeKraDetails = employeeKraEntries.map(entry => {
         const kra = kras.find(k => k._id === entry.kra)
-        if (kra == null) return null
-        const withKRA = tasks.filter((task) => task.kra === kra._id)
-        let completionLevel = withKRA.reduce<number>(
-          (acc, task) => acc + (task.completionLevel ?? 0),
+        if (kra == null || tasks === undefined) return null
+        const filteredTasks = tasks.filter((task) => {
+          const asMixin = client.getHierarchy().as(task, performance.mixin.WithKRA)
+          return asMixin.kra === kra._id
+        })
+        let completionLevel = filteredTasks.reduce<number>(
+          (acc, task) => {
+            return acc + (taskCompletion[task._id] ?? 0)
+          },
           0
         )
-        completionLevel = completionLevel / withKRA.length
+        console.log('completionLevel')
+        console.log(completionLevel)
+        completionLevel = completionLevel / filteredTasks.length
 
         // Return the KRA with employee-specific weight and completion level
         return {
@@ -115,7 +144,9 @@
           weight: entry.weight,
           completionLevel
         }
-      }).filter(x => x !== null)
+      }).filter(x => x != null)
+      console.log('employeeKraDetails')
+      console.log(employeeKraDetails)
 
       acc[employee._id] = employeeKraDetails
       return acc
@@ -129,17 +160,22 @@
 
   // Create datasets for Chart.js
   function createChartData (): any {
-    const employeeNames = employees.map(e => e.name)
+    if (employeeDetails === undefined) {
+      return null
+    }
+    const employeeNames = employees.map(e =>
+      (employeeDetails as Record<Ref<Person>, Person>)[e.person].name ?? ''
+    )
 
     // Create a dataset for each KRA
     const datasets = kras.map((kra, index) => {
       const data = employees.map(employee => {
         const employeeKraDetails = krasByEmployee[employee._id]
-        const matchingKra = employeeKraDetails.find(k => k.title === kra.title)
+        const matchingKra = employeeKraDetails.find(k => k._id === kra._id)
 
         // Calculate contribution to performance score
         return (matchingKra?.completionLevel != null && matchingKra.weight != null)
-          ? (matchingKra.completionLevel * matchingKra.weight / 100)
+          ? (matchingKra.completionLevel * matchingKra.weight)
           : 0
       })
 
@@ -167,6 +203,11 @@
     //   barPercentage: 0.8
     // })
 
+    console.log('data:')
+    console.log({
+      labels: employeeNames,
+      datasets
+    })
     return {
       labels: employeeNames,
       datasets
@@ -174,15 +215,15 @@
   }
 
   function createChart (): void {
-    if (!chartCanvas) return
+    if (chartCanvas == null) return
 
     // Destroy existing chart if it exists
-    if (chart) {
+    if (chart != null) {
       chart.destroy()
     }
 
     const ctx = chartCanvas.getContext('2d')
-    if (!ctx) return
+    if (ctx == null) return
 
     chart = new Chart(ctx, {
       type: 'bar',
@@ -225,7 +266,7 @@
               footer: (tooltipItems) => {
                 const employeeIndex = tooltipItems[0].dataIndex
                 const employee = employees[employeeIndex]
-                if (!employee) return ''
+                if (employee == null) return ''
 
                 // Show KRA breakdown
                 const employeeKras = krasByEmployee[employee._id]
@@ -287,20 +328,20 @@
   }
 
   function updateChart (): void {
-    if (chart) {
+    if (chart != null) {
       chart.data = createChartData()
       chart.update()
     }
   }
 
   onMount(() => {
-    if (chartCanvas && employees.length > 0) {
+    if (chartCanvas != null && employees.length > 0) {
       createChart()
     }
   })
 
   afterUpdate(() => {
-    if (chartCanvas && employees.length > 0 && !chart) {
+    if (chartCanvas != null && employees.length > 0 && chart == null) {
       createChart()
     }
   })
@@ -350,12 +391,5 @@
     font-style: italic;
     background: #f5f5f5;
     border-radius: 4px;
-  }
-
-  .summary {
-    text-align: center;
-    margin-top: 20px;
-    padding-top: 20px;
-    border-top: 1px solid #eee;
   }
 </style>

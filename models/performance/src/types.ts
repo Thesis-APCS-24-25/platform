@@ -6,7 +6,7 @@ import type { EmployeeKRA, KRA, KRAStatus, ReviewSession, ReviewSessionStatus } 
 import { TProject, TTask } from '@hcengineering/model-task'
 import task from '@hcengineering/task'
 import { Account, type Arr, type Domain, IndexKind, Ref, type Role, type RolesAssignment, type Timestamp } from '@hcengineering/core'
-import contact, { type Contact } from '@hcengineering/contact'
+import contact, { type PersonAccount } from '@hcengineering/contact'
 
 export const DOMAIN_PERFORMANCE = 'performance' as Domain
 
@@ -42,9 +42,6 @@ export class TKRA extends TTask implements KRA {
 
   @Prop(TypeRef(core.class.Status), performance.string.KRAStatus)
     kraStatus!: Ref<KRAStatus>
-
-  @Prop(ArrOf(TypeRef(contact.class.Contact)), performance.string.AssignedTo)
-    assignedTo?: Arr<Ref<Contact>>
 }
 
 @Model(performance.class.EmployeeKRA, core.class.Doc, DOMAIN_PERFORMANCE)
@@ -52,8 +49,8 @@ export class TEmployeeKRA extends TDoc implements EmployeeKRA {
   @Prop(TypeRef(performance.class.KRA), performance.string.AttachedKRA)
     kra!: Ref<KRA>
 
-  @Prop(TypeRef(contact.class.Contact), performance.string.AttachedEmployee)
-    employee!: Ref<Contact>
+  @Prop(TypeRef(contact.class.PersonAccount), performance.string.AttachedEmployee)
+    employee!: Ref<PersonAccount>
 
   @Prop(TypeNumber(), performance.string.KRAWeight)
     weight!: number

@@ -129,5 +129,5 @@ export async function createKRA (
 
 export async function calculateCompletionLevel (task: Ref<Task>): Promise<number | undefined> {
   // TODO: implement completion level
-  return undefined
+  return 100
 }

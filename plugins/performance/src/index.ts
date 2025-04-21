@@ -14,7 +14,7 @@
 // limitations under the License.
 //
 
-import { type Contact } from '@hcengineering/contact'
+import { type PersonAccount } from '@hcengineering/contact'
 import type { Arr, Attribute, Class, Doc, Mixin, Ref, SpaceType, SpaceTypeDescriptor, Status, Timestamp } from '@hcengineering/core'
 import { Asset, IntlString, plugin, Plugin, Resource } from '@hcengineering/platform'
 import type { Project, ProjectType, Task, TaskType, TaskTypeDescriptor } from '@hcengineering/task'
@@ -35,12 +35,11 @@ export interface KRA extends Task {
   title: string
   description: string
   kraStatus: Ref<KRAStatus>
-  assignedTo?: Arr<Ref<Contact>>
 }
 
 export interface EmployeeKRA extends Doc {
   kra: Ref<KRA>
-  employee: Ref<Contact>
+  employee: Ref<PersonAccount>
   weight: number
 }
 
