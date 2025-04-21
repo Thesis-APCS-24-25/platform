@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { onMount, afterUpdate, createEventDispatcher } from 'svelte'
+  import { onMount, afterUpdate, createEventDispatcher, onDestroy } from 'svelte'
   import { Chart, registerables } from 'chart.js'
   import { EmployeeKRA, ReviewSession, WithKRA, type KRA } from '@hcengineering/performance'
   import contact, { Person, PersonAccount } from '@hcengineering/contact'
@@ -65,8 +65,6 @@
       if (result !== undefined) {
         employees = result
         employeeIds = employees.map(emp => emp.person)
-        console.log('employeeIds')
-        console.log(employeeIds)
       }
     })
   }
@@ -85,8 +83,6 @@
         result.forEach(res => {
           (employeeDetails as Record<Ref<Person>, Person>)[res._id as Ref<Person>] = res
         })
-        console.log('employeeDetails:')
-        console.log(employeeDetails)
       }
     })
   }
@@ -134,8 +130,6 @@
           },
           0
         )
-        console.log('completionLevel')
-        console.log(completionLevel)
         completionLevel = completionLevel / filteredTasks.length
 
         // Return the KRA with employee-specific weight and completion level
@@ -145,8 +139,6 @@
           completionLevel
         }
       }).filter(x => x != null)
-      console.log('employeeKraDetails')
-      console.log(employeeKraDetails)
 
       acc[employee._id] = employeeKraDetails
       return acc
@@ -203,11 +195,6 @@
     //   barPercentage: 0.8
     // })
 
-    console.log('data:')
-    console.log({
-      labels: employeeNames,
-      datasets
-    })
     return {
       labels: employeeNames,
       datasets
@@ -335,14 +322,26 @@
   }
 
   onMount(() => {
-    if (chartCanvas != null && employees.length > 0) {
+  // When component is first mounted, create chart if data is available
+    if (chartCanvas != null && employees.length > 0 && kras.length > 0) {
       createChart()
     }
   })
 
   afterUpdate(() => {
-    if (chartCanvas != null && employees.length > 0 && chart == null) {
-      createChart()
+  // Check if we need to create or update the chart
+    if (chartCanvas != null && employees.length > 0 && kras.length > 0) {
+      if (chart == null) {
+        createChart()
+      } else {
+        updateChart()
+      }
+    }
+  })
+
+  onDestroy(() => {
+    if (chart != null) {
+      chart.destroy()
     }
   })
 </script>
