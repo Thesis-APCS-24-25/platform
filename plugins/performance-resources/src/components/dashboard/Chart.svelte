@@ -361,12 +361,12 @@
 <style>
   .chart-container {
     font-family: 'Inter', sans-serif;
-    max-width: 900px;
+    width: 100%;
     margin: 0 auto;
     padding: 20px;
     background-color: #ffffff;
     border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+    /* box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08); */
   }
 
   h2 {
@@ -376,7 +376,8 @@
   }
 
   .chart {
-    height: 400px;
+    width: 100%;
+    height: auto;
     margin-bottom: 20px;
     position: relative;
   }
