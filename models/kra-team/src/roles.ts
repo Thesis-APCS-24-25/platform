@@ -1,4 +1,5 @@
 import kraTeam from './plugin'
+
 export default [
   {
     _id: kraTeam.role.TeamMember,

@@ -287,7 +287,20 @@
     "IssueStatus": "Status",
     "Extensions": "Extensions",
     "RoleLabel": "Role: {role}",
-    "UnsetParentIssue": "Unset parent issue"
+    "UnsetParentIssue": "Unset parent issue",
+    "SetGoal": "Set goal",
+    "NoGoalAttached": "No goal attached",
+    "SelectGoalType": "Select goal type",
+    "SelectUnit": "Select unit",
+    "Target": "Target",
+    "Goal": "Goal",
+    "AddNamePlaceholder": "Add name\u2026",
+    "AddGoal": "Add goal",
+    "RatingScale": "Rating scale",
+    "AddUnit": "Add unit",
+    "Kpi": "KPI",
+    "Prefix": "Prefix",
+    "AddSymbolPlaceholder": "Add symbol\u2026"
   },
   "status": {}
 }

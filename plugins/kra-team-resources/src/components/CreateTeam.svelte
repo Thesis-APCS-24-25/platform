@@ -1,11 +1,7 @@
 <script lang="ts">
   import {
     Button,
-    IconAdd,
-    Breadcrumbs,
-    SearchInput,
     showPopup,
-    Header,
     EditBox,
     Label,
     Toggle,
@@ -15,14 +11,11 @@
     getColorNumberByText,
     IconWithEmoji
   } from '@hcengineering/ui'
-  import { AccountArrayEditor, AssigneeBox } from '@hcengineering/contact-resources'
-  import { Card } from '@hcengineering/presentation'
+  import { AccountArrayEditor } from '@hcengineering/contact-resources'
+  import presentation, { Card, createQuery } from '@hcengineering/presentation'
   import kraTeam from '../plugins'
-  import presentation from '@hcengineering/presentation'
-  import core, { Account, Role, RolesAssignment } from '@hcengineering/core'
+  import core, { Account, Role, RolesAssignment, Arr, Ref, SpaceType, SortingOrder } from '@hcengineering/core'
   import view from '@hcengineering/view'
-  import { Arr, Ref } from '@hcengineering/core'
-  import { Member, Team } from '@hcengineering/kra-team'
   import { Asset } from '@hcengineering/platform'
   import { IconPicker } from '@hcengineering/view-resources'
 
@@ -30,15 +23,59 @@
   import { createEventDispatcher } from 'svelte'
 
   let name = ''
-  let description = ''
+  const description = ''
   let isPrivate = false
-  let members: Arr<Ref<Member>> = []
+  let members: Arr<Ref<Account>> = []
   let icon: Asset = kraTeam.icon.Home
   let owners: Ref<Account>[] = []
   let rolesAssignment: RolesAssignment | undefined = undefined
   let color = getColorNumberByText(name)
-  let roles: Role[] = []
 
+  let typeType: SpaceType | undefined = undefined
+  const typeTypeQuery = createQuery()
+  typeTypeQuery.query(core.class.SpaceType, { _id: kraTeam.spaceType.TeamType }, (res) => {
+    typeType = res[0]
+  })
+
+  let roles: Role[] = []
+  const rolesQuery = createQuery()
+  $: if (typeType !== undefined) {
+    rolesQuery.query(
+      core.class.Role,
+      { attachedTo: typeType._id },
+      (res) => {
+        roles = res
+        //
+        // if (rolesAssignment === undefined && typeType !== undefined) {
+        //   rolesAssignment = getRolesAssignment()
+        // }
+      },
+      {
+        sort: {
+          name: SortingOrder.Ascending
+        }
+      }
+    )
+  } else {
+    rolesQuery.unsubscribe()
+  }
+
+  // function getRolesAssignment (): RolesAssignment {
+  //   if (project === undefined || typeType?.targetClass === undefined || roles === undefined) {
+  //     return {}
+  //   }
+  //
+  //   const asMixin = hierarchy.as(project, typeType?.targetClass)
+  //
+  //   const res = roles.reduce<RolesAssignment>((prev, { _id }) => {
+  //     prev[_id] = (asMixin as any)[_id] ?? []
+  //
+  //     return prev
+  //   }, {})
+  //   alert(`${project._id} | ${JSON.stringify(res)}`)
+  //   return res
+  // }
+  //
   let isColorSelected = false
   let membersChanged = false
 
@@ -46,12 +83,15 @@
 
   $: canSave = name.length > 0
 
-  async function handleOk(): Promise<void> {
-    await createNewTeam(name, description, isPrivate, members, owners, icon, color, rolesAssignment)
+  async function handleOk (): Promise<void> {
+    if (typeType === undefined || rolesAssignment === undefined) {
+      return
+    }
+    await createNewTeam(name, description, isPrivate, typeType, members, owners, rolesAssignment, icon, color)
     dispatch('close')
   }
 
-  function handleMembersChanged(newMembers: Ref<Account>[]): void | Promise<void> {
+  function handleMembersChanged (newMembers: Ref<Account>[]): void | Promise<void> {
     membersChanged = true
     // If a member was removed we need to remove it from any roles assignments as well
     const newMembersSet = new Set(newMembers)
@@ -59,15 +99,14 @@
 
     if (removedMembersSet.size > 0 && rolesAssignment !== undefined) {
       for (const [key, value] of Object.entries(rolesAssignment)) {
-        rolesAssignment[key as Ref<Role>] =
-          value != null ? value.filter((m) => !removedMembersSet.has(m as Ref<Member>)) : undefined
+        rolesAssignment[key as Ref<Role>] = value != null ? value.filter((m) => !removedMembersSet.has(m)) : undefined
       }
     }
 
-    members = newMembers.map((m) => m as Ref<Member>)
+    members = newMembers
   }
 
-  function handleRoleAssignmentChanged(roleId: Ref<Role>, newMembers: Ref<Account>[]) {
+  function handleRoleAssignmentChanged (roleId: Ref<Role>, newMembers: Ref<Account>[]): void {
     if (rolesAssignment === undefined) {
       rolesAssignment = {}
     }
@@ -75,15 +114,15 @@
     rolesAssignment[roleId] = newMembers
   }
 
-  function handleOwnersChanged(newOwners: Ref<Account>[]): void | Promise<void> {
+  function handleOwnersChanged (newOwners: Ref<Account>[]): void | Promise<void> {
     owners = newOwners
 
     const newMembersSet = new Set([...members, ...newOwners])
-    members = Array.from(newMembersSet).map((m) => m as Ref<Member>)
+    members = Array.from(newMembersSet).map((m) => m)
   }
 
-  function chooseIcon(_: MouseEvent): void {
-    const update = (result: any) => {
+  function chooseIcon (): void {
+    const update = (result: any): void => {
       if (result !== undefined && result !== null) {
         icon = result.icon
         color = result.color
@@ -94,7 +133,7 @@
   }
 </script>
 
-<Card label={kraTeam.string.Team} okAction={handleOk} {canSave}>
+<Card label={kraTeam.string.CreateTeam} okAction={handleOk} {canSave}>
   <div class="antiGrid">
     <div class="antiGrid-row">
       <div class="antiGrid-row__header">
@@ -138,7 +177,6 @@
         <AccountArrayEditor
           value={owners}
           label={core.string.Owners}
-          allowGuests
           onChange={handleOwnersChanged}
           kind={'regular'}
           size={'large'}
@@ -163,7 +201,6 @@
           onChange={handleMembersChanged}
           kind={'regular'}
           size={'large'}
-          allowGuests
         />
       </div>
 

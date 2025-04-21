@@ -995,7 +995,7 @@
     <div id="goal-editor" class="new-line">
       <Button
         focusIndex={12}
-        icon={tracker.icon.Estimation}
+        icon={tracker.icon.Goal}
         label={object.goal != null ? tracker.string.RemoveGoal : tracker.string.SetGoal}
         kind={'regular'}
         size={'large'}
@@ -1014,7 +1014,7 @@
         groupBy={'space'}
         label={performance.string.ReviewSessionKRAs}
         icon={performance.icon.KRA}
-        placeholder={performance.icon.KRA}
+        placeholder={performance.string.KRA}
         allowDeselect
         showNavigate={false}
         bind:value={object.kra}

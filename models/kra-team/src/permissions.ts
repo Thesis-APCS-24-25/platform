@@ -1,8 +1,8 @@
-import { Builder } from '@hcengineering/model'
+import { type Builder } from '@hcengineering/model'
 import core from '@hcengineering/core'
 import kraTeam from './plugin'
 
-export function definePermissions(builder: Builder) {
+export function definePermissions (builder: Builder): void {
   builder.createDoc(
     core.class.Permission,
     core.space.Model,

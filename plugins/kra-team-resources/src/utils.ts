@@ -1,27 +1,27 @@
-import {
-  Account,
-  Arr,
+import core, {
+  type Account,
+  type Arr,
   generateId,
-  reduceCalls,
-  Ref,
-  Role,
-  RolesAssignment
+  type Ref,
+  type RolesAssignment,
+  type SpaceType
 } from '@hcengineering/core'
-import kraTeam, { Member, Team } from '@hcengineering/kra-team'
-import core from '@hcengineering/core'
-import { Asset } from '@hcengineering/platform'
+import kraTeam, { type Member, type Team } from '@hcengineering/kra-team'
+import { type Asset } from '@hcengineering/platform'
 import { getClient } from '@hcengineering/presentation'
+import { writable } from 'svelte/store'
 
-function createNewKra() {}
-
-export async function createNewTeam(
+export async function createNewTeam (
   name: string,
   description: string,
   isPrivate: boolean,
-  members: Arr<Ref<Member>>,
-  owners: Ref<Account>[],
+  spaceType: SpaceType,
+  members: Arr<Ref<Account>>,
+  owners: Array<Ref<Account>>,
   rolesAssignment: RolesAssignment,
-) {
+  icon?: Asset,
+  color?: number
+): Promise<void> {
   const client = getClient()
   const teamId = generateId<Team>()
 
@@ -29,24 +29,18 @@ export async function createNewTeam(
     name,
     description,
     private: isPrivate,
-    members,
+    members: members.map((member) => member as Ref<Member>),
     owners,
     autoJoin: false,
     archived: false,
-    type: kraTeam.ids.ClassingProjectType,
-  })
+    type: kraTeam.spaceType.TeamType,
+    icon,
+    color
+  }, teamId)
 
-  const spaceType = await client
-    .getModel()
-    .findOne(core.class.SpaceType, { _id: kraTeam.spaceType.TeamType })
-  if (!spaceType) {
-    throw new Error('Default space type not found')
-  }
-  await client.createMixin(
-    teamId,
-    kraTeam.class.Team,
-    core.space.Space,
-    spaceType.targetClass,
-    rolesAssignment
-  )
+  await client.createMixin(teamId, kraTeam.class.Team, core.space.Space, spaceType.targetClass, rolesAssignment)
 }
+
+export const myTeams = writable<Team[]>([])
+
+export const currentTeam = writable<Ref<Team> | null>(null)

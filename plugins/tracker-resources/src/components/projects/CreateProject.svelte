@@ -122,11 +122,13 @@
 
     const asMixin = hierarchy.as(project, typeType?.targetClass)
 
-    return roles.reduce<RolesAssignment>((prev, { _id }) => {
+    const res = roles.reduce<RolesAssignment>((prev, { _id }) => {
       prev[_id] = (asMixin as any)[_id] ?? []
 
       return prev
     }, {})
+    alert(`${project._id} | ${JSON.stringify(res)}`)
+    return res
   }
 
   async function updateProject (): Promise<void> {

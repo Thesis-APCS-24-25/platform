@@ -277,40 +277,6 @@ function defineSpaceType (builder: Builder): void {
   for (const category of Object.values(performance.reviewStatusCategory)) {
     reviewSessionCategories.push(category)
   }
-  builder.createDoc(
-    task.class.TaskType,
-    core.space.Model,
-    {
-      parent: performance.ids.ClassingProjectType,
-      statuses: kraStatuses,
-      descriptor: kraTeam.descriptor.ReviewSessionType,
-      name: 'ReviewSession',
-      kind: 'task',
-      ofClass: performance.class.ReviewSession,
-      targetClass: performance.mixin.DefaultReviewSessionData,
-      statusClass: performance.class.ReviewSessionStatus,
-      statusCategories: reviewSessionCategories,
-      allowedAsChildOf: [kraTeam.taskTypes.ReviewSession],
-      icon: tracker.icon.Issue
-    },
-    kraTeam.taskTypes.ReviewSession
-  )
-
-  builder.createDoc(
-    task.class.ProjectType,
-    core.space.Model,
-    {
-      name: 'Classic project',
-      descriptor: kraTeam.descriptor.TeamType,
-      description: '',
-      tasks: [kraTeam.taskTypes.ReviewSession],
-      roles: 0,
-      classic: true,
-      statuses: reviewSessionStatuses.map((s) => ({ _id: s, taskType: kraTeam.taskTypes.ReviewSession })),
-      targetClass: kraTeam.mixin.TeamTypeData
-    },
-    kraTeam.ids.ClassingProjectType
-  )
 }
 
 function defineApplication (builder: Builder): void {
@@ -320,6 +286,7 @@ function defineApplication (builder: Builder): void {
     {
       label: performance.string.PerformanceApplication,
       alias: performanceId,
+      icon: performance.icon.ReviewSession,
       hidden: false,
       navHeaderComponent: performance.component.NewReviewSessionHeader,
       navigatorModel: {

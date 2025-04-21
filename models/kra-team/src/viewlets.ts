@@ -1,21 +1,9 @@
-import { Builder } from '@hcengineering/model'
+import { type Builder } from '@hcengineering/model'
 import core from '@hcengineering/core'
 import view from '@hcengineering/view'
 import kraTeam from './plugin'
-import contact from '@hcengineering/model-contact'
 
-export function defineViewlets(builder: Builder) {
-  builder.createDoc(view.class.Viewlet, core.space.Model, {
-    attachTo: kraTeam.class.KraTemplate,
-    descriptor: view.viewlet.List,
-    config: ['name'],
-    viewOptions: {
-      groupBy: [],
-      orderBy: [],
-      other: []
-    }
-  })
-
+export function defineViewlets (builder: Builder): void {
   builder.createDoc(view.class.Viewlet, core.space.Model, {
     attachTo: kraTeam.class.Team,
     descriptor: view.viewlet.Table,
@@ -35,7 +23,15 @@ export function defineViewlets(builder: Builder) {
     descriptor: view.viewlet.Table,
     config: [
       {
-        key: 'person',
+        key: 'person'
+      },
+      {
+        key: '',
+        label: kraTeam.string.Roles,
+        displayProps: {
+          compression: true
+        },
+        presenter: kraTeam.component.MemberRolePresenter
       }
     ],
     viewOptions: {
