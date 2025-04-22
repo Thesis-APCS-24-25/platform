@@ -11,10 +11,11 @@
   // Register all Chart.js components
   Chart.register(...registerables)
 
-  export let reviewSession: ReviewSession
+  export let space: Ref<ReviewSession>
 
   type KRAsByEmployee = Record<Ref<PersonAccount>, Array<KRA & { weight?: number, completionLevel?: number }>>
 
+  let reviewSession: ReviewSession
   let employees: PersonAccount[] = []
   let employeeIds: Ref<Person>[] | undefined = undefined
   let employeeDetails: Record<Ref<Person>, Person> | undefined = undefined
@@ -31,10 +32,21 @@
   const client = getClient()
   const dispatch = createEventDispatcher()
 
+  $: void client.findOne(
+    performance.class.ReviewSession,
+    {
+      _id: space
+    }
+  ).then((result) => {
+    if (result !== undefined) {
+      reviewSession = result
+    }
+  })
+
   $: void client.findAll(
     performance.class.EmployeeKRA,
     {
-      '$lookup.kra.space': reviewSession._id
+      '$lookup.kra.space': space
     },
     {
       lookup: {
@@ -53,7 +65,7 @@
     }
   })
 
-  $: if (employeeIds === undefined) {
+  $: if (employeeIds === undefined && reviewSession !== undefined) {
     void client.findAll(
       contact.class.PersonAccount,
       {

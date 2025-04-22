@@ -1,24 +1,42 @@
 <script lang="ts">
-  import { getClient } from '@hcengineering/presentation'
+  import { getClient, SpaceSelector } from '@hcengineering/presentation'
   import Chart from './Chart.svelte'
-  import performance, { ReviewSession } from '@hcengineering/performance'
+  import { ReviewSession } from '@hcengineering/performance'
+  import { Ref, SortingOrder } from '@hcengineering/core'
+  import performance from '../../plugin'
 
   const client = getClient()
 
-  let reviewSession: ReviewSession | undefined
+  let _space: Ref<ReviewSession>
 
   $: void client.findOne(
     performance.class.ReviewSession,
-    {}
+    {},
+    {
+      sort: {
+        modifiedOn: SortingOrder.Descending
+      }
+    }
   ).then((res) => {
-    reviewSession = res
+    if (res !== undefined) {
+      _space = res._id
+    }
   })
 </script>
 
-{#if reviewSession}
-  <Chart
-    {reviewSession}
+<div>
+  <SpaceSelector
+    _class={performance.class.ReviewSession}
+    label={performance.string.ReviewSessionName}
+    bind:space={_space}
+    kind={'regular'}
+    size={'small'}
   />
-{:else}
-  <span>None</span>
-{/if}
+  {#if _space}
+    <Chart
+      space={_space}
+    />
+  {:else}
+    <span>None</span>
+  {/if}
+</div>

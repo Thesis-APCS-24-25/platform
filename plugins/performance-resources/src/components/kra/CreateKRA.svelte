@@ -94,7 +94,13 @@
     on:changeContent
   >
     <svelte:fragment slot="header">
-      <SpaceSelector _class={performance.class.ReviewSession} label={performance.string.ReviewSessionName} bind:space={_space} />
+      <SpaceSelector
+        _class={performance.class.ReviewSession}
+        label={performance.string.ReviewSessionName}
+        bind:space={_space}
+        kind={'regular'}
+        size={'small'}
+      />
     </svelte:fragment>
     <StatusControl slot="error" {status} />
     <Grid column={1} rowGap={1.5}>
