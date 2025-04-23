@@ -112,6 +112,8 @@ export default plugin(performanceId, {
     ClassingProjectType: '' as Ref<ProjectType>
   },
   icon: {
+    Weight: '' as Asset,
+    AssignKRA: '' as Asset,
     ReviewSession: '' as Asset,
     KRA: '' as Asset
   },

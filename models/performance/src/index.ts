@@ -168,6 +168,11 @@ function defineKRA (builder: Builder): void {
           label: performance.string.Title,
           presenter: performance.component.KRAPresenter
         },
+        {
+          key: '',
+          label: performance.string.Assignee,
+          presenter: performance.component.KRAAssigneesEditor
+        },
         'description', 'kraStatus']
     }
   )
