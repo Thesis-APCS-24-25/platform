@@ -92,7 +92,7 @@
         {/if}
       {/each}
     {:else}
-      <div class="pseudo-element flex-row-center content-dark-color text-md nowrap">
+      <div class="hulyNavItem-container type-link pseudo-element flex-row-center content-dark-color text-md nowrap">
         <Label label={performance.string.NoReviewSessions} />
       </div>
     {/if}

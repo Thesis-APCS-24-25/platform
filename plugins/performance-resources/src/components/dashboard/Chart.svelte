@@ -13,7 +13,7 @@
 
   export let space: Ref<ReviewSession>
 
-  type KRAsByEmployee = Record<Ref<PersonAccount>, Array<KRA & { weight?: number, completionLevel?: number }>>
+  type KRAsByEmployee = Record<Ref<PersonAccount>, Array<KRA & { weight: number, completionLevel: number }>>
 
   let reviewSession: ReviewSession
   let employees: PersonAccount[] = []
@@ -152,7 +152,7 @@
         }
       }).filter(x => x != null)
 
-      acc[employee._id] = employeeKraDetails
+      acc[employee._id] = employeeKraDetails as Array<KRA & { weight: number, completionLevel: number }>
       return acc
     }, {})
 
@@ -273,7 +273,7 @@
 
                 let footerText = '\nKRA Breakdown:'
                 employeeKras.forEach(kra => {
-                  footerText += `\n${kra.title} (${kra.weight}%): ${
+                  footerText += `\n${kra.title} (${kra.weight * 100}%): ${
                     kra.completionLevel != null
                     ? kra.completionLevel.toFixed(1)
                     : 0
@@ -297,25 +297,14 @@
           const datasets = chart.data.datasets
           const dataset = datasets[datasetIndex]
 
-          // If it's the "Remaining" dataset
-          if (dataset.label === 'Remaining') {
-            dispatch('segmentClick', {
-              type: 'remaining',
-              employee
-            })
-            return
-          }
-
-          // It's a KRA dataset
           const kraName = dataset.label
           const employeeKras = krasByEmployee[employee._id]
           const kra = employeeKras.find(k => k.title === kraName)
 
           if (kra != null) {
             dispatch('segmentClick', {
-              type: 'kra',
               employee,
-              kra
+              kra: (kra as KRA)
             })
           }
         }
