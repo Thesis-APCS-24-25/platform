@@ -653,31 +653,31 @@ export function createActions(builder: Builder, issuesId: string, myIssuesId: st
     kra.action.Duplicate
   )
 
-  createAction(
-    builder,
-    {
-      action: view.actionImpl.ShowPopup,
-      actionProps: {
-        component: kra.component.EditRelatedTargetsPopup,
-        element: 'top',
-        fillProps: {
-          _objects: 'value'
-        }
-      },
-      label: kra.string.MapRelatedIssues,
-      icon: kra.icon.Relations,
-      input: 'none',
-      category: kra.category.Tracker,
-      target: core.class.Space,
-      query: {
-        _class: { $ne: kra.class.Project }
-      },
-      context: {
-        mode: ['context'],
-        application: kra.app.Tracker,
-        group: 'associate'
-      }
-    },
-    kra.action.EditRelatedTargets
-  )
+  // createAction(
+  //   builder,
+  //   {
+  //     action: view.actionImpl.ShowPopup,
+  //     actionProps: {
+  //       component: kra.component.EditRelatedTargetsPopup,
+  //       element: 'top',
+  //       fillProps: {
+  //         _objects: 'value'
+  //       }
+  //     },
+  //     label: kra.string.MapRelatedIssues,
+  //     icon: kra.icon.Relations,
+  //     input: 'none',
+  //     category: kra.category.Tracker,
+  //     target: core.class.Space,
+  //     query: {
+  //       _class: { $ne: kra.class.Project }
+  //     },
+  //     context: {
+  //       mode: ['context'],
+  //       application: kra.app.Tracker,
+  //       group: 'associate'
+  //     }
+  //   },
+  //   kra.action.EditRelatedTargets
+  // )
 }

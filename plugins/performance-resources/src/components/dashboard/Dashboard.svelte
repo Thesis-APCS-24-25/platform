@@ -5,7 +5,7 @@
   import { concatLink, Doc, getCurrentAccount, Hierarchy, Ref, SortingOrder } from '@hcengineering/core'
   import performance from '../../plugin'
   import { PersonAccount } from '@hcengineering/contact'
-  import { getPanelURI, IconForward, locationToUrl, navigate, parseLocation } from '@hcengineering/ui'
+  import { getPanelURI, IconForward, Label, locationToUrl, navigate, parseLocation } from '@hcengineering/ui'
   import view from '@hcengineering/view'
   import { getObjectLinkFragment } from '@hcengineering/view-resources'
   import { getMetadata } from '@hcengineering/platform'
@@ -16,8 +16,8 @@
 
   const me = getCurrentAccount()
 
-  let team: Ref<Team>
-  let _space: Ref<ReviewSession>
+  let team: Ref<Team> | undefined
+  let _space: Ref<ReviewSession> | undefined
 
   $: void client.findOne(
     kraTeam.class.Team,
@@ -30,19 +30,21 @@
     }
   })
 
-  $: void client.findOne(
-    performance.class.ReviewSession,
-    {},
-    {
-      sort: {
-        modifiedOn: SortingOrder.Descending
+  $: if (team !== undefined) {
+    void client.findOne(
+      performance.class.ReviewSession,
+      {
+        space: team as Ref<Space>
+      },
+      {
+        sort: {
+          modifiedOn: SortingOrder.Descending
+        }
       }
-    }
-  ).then((res) => {
-    if (res !== undefined) {
-      _space = res._id
-    }
-  })
+    ).then((res) => {
+      _space = res?._id ?? undefined
+    })
+  }
 
   async function getHref (object: Doc): Promise<string> {
     const panelComponent = hierarchy.classHierarchyMixin(object._class, view.mixin.ObjectPanel)
@@ -82,26 +84,30 @@
         size={'medium'}
       />
     </div>
-    <div>
-      <IconForward size={'medium'} />
-    </div>
-    <div>
-      <SpaceSelector
-        _class={performance.class.ReviewSession}
-        label={performance.string.ReviewSessionName}
-        bind:space={_space}
-        kind={'regular'}
-        size={'medium'}
-      />
-    </div>
+    {#if _space !== undefined}
+      <div>
+        <IconForward size={'medium'} />
+      </div>
+      <div>
+        <SpaceSelector
+          _class={performance.class.ReviewSession}
+          label={performance.string.ReviewSessionName}
+          bind:space={_space}
+          kind={'regular'}
+          size={'medium'}
+        />
+      </div>
+    {:else}
+      <div class="hulyNavItem-container type-link pseudo-element flex-row-center content-dark-color text-md nowrap">
+        <Label label={performance.string.NoReviewSessions} />
+      </div>
+    {/if}
   </div>
   {#if _space}
     <Chart
     on:segmentClick={handleSegmentClick}
       space={_space}
     />
-  {:else}
-    <span>None</span>
   {/if}
 </div>
 

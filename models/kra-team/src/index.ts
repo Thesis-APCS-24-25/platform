@@ -12,6 +12,7 @@ import { defineViewlets } from './viewlets'
 import { definePresenters } from './presenters'
 import { definePermissions } from './permissions'
 import { defineSpaceTypes } from './spacetypes'
+import { defineActions } from './actions'
 
 export { kraTeamId } from '@hcengineering/kra-team'
 
@@ -34,5 +35,6 @@ export function createModel (builder: Builder): void {
   defineSpaceTypes(builder)
   defineViewlets(builder)
   definePresenters(builder)
+  defineActions(builder)
   defineApplication(builder)
 }
