@@ -29,9 +29,11 @@ import { getAllStates } from '@hcengineering/task-resources'
 import { reviewSessionStatusSort } from './utils/ReviewSessionUtils'
 import PerformanceDashboard from './components/dashboard/Dashboard.svelte'
 import AssignKRA from './components/kra/AssignKRA.svelte'
+import KRAAssigneesEditor from './components/kra/KRAAssigneesEditor.svelte'
 
 export default async (): Promise<Resources> => ({
   component: {
+    KRAAssigneesEditor,
     NewReviewSessionHeader,
     CreateReviewSession,
     ReviewSessionSpacePresenter,

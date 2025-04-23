@@ -1,22 +1,9 @@
 <script lang="ts">
   import { Class, Ref, WithLookup } from '@hcengineering/core'
   import { Panel } from '@hcengineering/panel'
-  import presentation, {
-    ActionContext,
-    contextStore,
-    createQuery,
-    getClient
-  } from '@hcengineering/presentation'
+  import presentation, { ActionContext, contextStore, createQuery, getClient } from '@hcengineering/presentation'
   import { taskTypeStore, typeStore } from '@hcengineering/task-resources'
-  import {
-    Button,
-    EditBox,
-    FocusHandler,
-    IconMixin,
-    IconMoreH,
-    Label,
-    createFocusManager
-  } from '@hcengineering/ui'
+  import { Button, EditBox, FocusHandler, IconMixin, IconMoreH, Label, createFocusManager } from '@hcengineering/ui'
   import view from '@hcengineering/view'
   import { DocNavLink, showMenu, RelationsEditor } from '@hcengineering/view-resources'
   import { InboxNotificationsClientImpl } from '@hcengineering/notification-resources'
@@ -25,6 +12,9 @@
   import performance from '../../plugin'
   import { KRA } from '@hcengineering/performance'
   import { getKRAIdByIdentifier } from '../../navigation'
+
+  import KRAAssignees from './KRAAssignees.svelte'
+  import KRAAssigneeTable from './KRAAssigneeTable.svelte'
 
   export let _id: Ref<KRA> | string
   export let _class: Ref<Class<KRA>>
@@ -59,7 +49,7 @@
   $: read(kraId)
 
   function read (_id?: Ref<KRA>): void {
-    if ((_id != null) && (lastId != null) && lastId !== _id) {
+    if (_id != null && lastId != null && lastId !== _id) {
       const prev = lastId
       lastId = _id
       void inboxClient.readDoc(prev)
@@ -254,6 +244,9 @@
         kind="large-style"
         on:blur={save}
       />
+    </div>
+    <div class="w-full mt-6">
+      <KRAAssignees />
     </div>
 
     <RelationsEditor object={kra} {readonly} />
