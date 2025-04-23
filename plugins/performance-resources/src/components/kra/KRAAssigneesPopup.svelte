@@ -1,11 +1,13 @@
 <script lang="ts">
-  import { ObjectPopup } from '@hcengineering/presentation'
+  import { Card, ObjectPopup } from '@hcengineering/presentation'
   import contact, { Person } from '@hcengineering/contact'
   import performance from '../../plugin'
   import { Ref } from '@hcengineering/core'
   import { UserInfo } from '@hcengineering/contact-resources'
   import { createEventDispatcher } from 'svelte'
   import KraWeightEditor from './KRAWeightEditorWithPopup.svelte'
+  import { PopupOptions } from '@hcengineering/ui'
+  import { ObjectSearchBox } from '@hcengineering/view-resources'
 
   export let selected: {
     employee: Ref<Person>
@@ -29,8 +31,6 @@
     })
     dispatch('update', selected)
   }
-
-  $: console.log('selected', selected)
 </script>
 
 <ObjectPopup
@@ -38,7 +38,7 @@
   multiSelect
   allowDeselect
   selectedObjects={selected.map((s) => s.employee)}
-  width="auto"
+  width="full"
   type={'object'}
   on:update={handleObjectPopupUpdate}
   on:close
@@ -47,8 +47,8 @@
     <UserInfo value={person} size={'smaller'} />
     {#if mappedWeights.has(person._id)}
       <KraWeightEditor
-        kind='link'
-        size='x-small'
+        kind="link"
+        size="x-small"
         placeholder={performance.string.Weight}
         value={mappedWeights.get(person._id)}
         onChange={(e) => {

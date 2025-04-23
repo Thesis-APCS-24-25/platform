@@ -1,14 +1,21 @@
 <script lang="ts">
   import performance from '../../plugin'
-  import { Button, Chevron, closeTooltip, ExpandCollapse } from '@hcengineering/ui'
+  import { Button, Chevron, closeTooltip, eventToHTMLElement, ExpandCollapse, showPopup } from '@hcengineering/ui'
   import { restrictionStore } from '@hcengineering/view-resources'
   import KraAssigneeTable from './KRAAssigneeTable.svelte'
+  import KraAssigneesPopup from './KRAAssigneesPopup.svelte'
 
   export let hasAssignees = true
 
   let isCollapsed = true
 
-  function openNewAssigneeDialog () {}
+  function openNewAssigneeDialog (event: MouseEvent): void {
+    showPopup(
+      KraAssigneesPopup,
+      {
+      }
+    )
+  }
 </script>
 
 <div class="flex-between mb-1">
@@ -46,10 +53,10 @@
         labelParams={{ subIssues: 0 }}
         kind={'ghost'}
         showTooltip={{ label: performance.string.AssignTo, direction: 'bottom' }}
-        on:click={() => {
+        on:click={(e) => {
           isCollapsed = false
           closeTooltip()
-          openNewAssigneeDialog()
+          openNewAssigneeDialog(e)
         }}
       />
     {/if}
