@@ -2,14 +2,15 @@
   import presentation, { getClient, SpaceSelector } from '@hcengineering/presentation'
   import Chart from './Chart.svelte'
   import { KRA, ReviewSession } from '@hcengineering/performance'
-  import { concatLink, Doc, getCurrentAccount, Hierarchy, Ref, SortingOrder } from '@hcengineering/core'
+  import { concatLink, Doc, getCurrentAccount, Hierarchy, Ref, SortingOrder, Space } from '@hcengineering/core'
   import performance from '../../plugin'
   import { PersonAccount } from '@hcengineering/contact'
   import { getPanelURI, IconForward, Label, locationToUrl, navigate, parseLocation } from '@hcengineering/ui'
   import view from '@hcengineering/view'
   import { getObjectLinkFragment } from '@hcengineering/view-resources'
   import { getMetadata } from '@hcengineering/platform'
-  import kraTeam, { Team } from '@hcengineering/kra-team'
+  import kraTeam, { Member, Team } from '@hcengineering/kra-team'
+  import TeamAndReviewSessionSelector from '../TeamAndReviewSessionSelector.svelte'
 
   const client = getClient()
   const hierarchy = client.getHierarchy()
@@ -22,11 +23,11 @@
   $: void client.findOne(
     kraTeam.class.Team,
     {
-      members: me._id
+      members: me._id as Ref<Member>
     }
   ).then((result) => {
     if (result !== undefined) {
-      team = result
+      team = result._id
     }
   })
 
@@ -34,12 +35,14 @@
     void client.findOne(
       performance.class.ReviewSession,
       {
-        space: team as Ref<Space>
+        space: team as Ref<Space>,
+        members: me._id
       },
       {
         sort: {
           modifiedOn: SortingOrder.Descending
-        }
+        },
+        limit: 1
       }
     ).then((res) => {
       _space = res?._id ?? undefined
@@ -75,35 +78,12 @@
 
 <div>
   <div class='dashboard-header flex-row-baseline'>
-    <div>
-      <SpaceSelector
-        _class={kraTeam.class.Team}
-        label={performance.string.SelectTeam}
-        bind:space={team}
-        kind={'regular'}
-        size={'medium'}
-      />
-    </div>
-    {#if _space !== undefined}
-      <div>
-        <IconForward size={'medium'} />
-      </div>
-      <div>
-        <SpaceSelector
-          _class={performance.class.ReviewSession}
-          label={performance.string.ReviewSessionName}
-          bind:space={_space}
-          kind={'regular'}
-          size={'medium'}
-        />
-      </div>
-    {:else}
-      <div class="hulyNavItem-container type-link pseudo-element flex-row-center content-dark-color text-md nowrap">
-        <Label label={performance.string.NoReviewSessions} />
-      </div>
-    {/if}
+    <TeamAndReviewSessionSelector
+      bind:team={team}
+      bind:reviewSession={_space}
+    />
   </div>
-  {#if _space}
+  {#if _space !== undefined}
     <Chart
     on:segmentClick={handleSegmentClick}
       space={_space}
@@ -115,9 +95,5 @@
   .dashboard-header {
     padding: 1rem;
     align-items: center;
-  }
-
-  .dashboard-header > div {
-    margin-right: 0.5rem;
   }
 </style>

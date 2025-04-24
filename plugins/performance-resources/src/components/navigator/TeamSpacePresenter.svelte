@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Ref, Space } from '@hcengineering/core'
+  import { getCurrentAccount, Ref, Space } from '@hcengineering/core'
   import { Team } from '@hcengineering/kra-team'
   import performance, { ReviewSession } from '@hcengineering/performance'
   import { createQuery, getClient } from '@hcengineering/presentation'
@@ -19,6 +19,8 @@
 
   const client = getClient()
   const query = createQuery()
+  const me = getCurrentAccount()
+
   let reviewSessions: ReviewSession[] = []
 
   let currentTeam: Ref<Team>
@@ -40,7 +42,8 @@
   query.query(
     performance.class.ReviewSession,
     {
-      space: space._id
+      space: space._id,
+      members: me._id
     },
     (result) => {
       reviewSessions = []
