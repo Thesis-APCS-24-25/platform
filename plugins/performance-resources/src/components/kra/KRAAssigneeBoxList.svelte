@@ -4,7 +4,7 @@
   import { type IntlString } from '@hcengineering/platform'
   import { ObjectCreate, createQuery, getClient } from '@hcengineering/presentation'
   import type { ButtonKind, ButtonSize, TooltipAlignment } from '@hcengineering/ui'
-  import { Button, Label, showPopup, IconScale } from '@hcengineering/ui'
+  import { Button, Label, showPopup, IconScale, eventToHTMLElement } from '@hcengineering/ui'
   import { createEventDispatcher } from 'svelte'
   import {
     UserInfo,
@@ -78,7 +78,7 @@
     await ops.commit()
   }
 
-  async function addPerson (evt: Event): Promise<void> {
+  async function addPerson (evt: MouseEvent): Promise<void> {
     const accounts = new Set(
       getClient()
         .getModel()
@@ -106,7 +106,7 @@
     showPopup(
       KraAssigneesPopup,
       popupProps,
-      evt.target as HTMLElement,
+      eventToHTMLElement(evt),
       async () => {
         // diffing with the old value
         const mapped = items.reduce((acc, { employee, weight }) => {

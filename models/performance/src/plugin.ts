@@ -32,6 +32,7 @@ export default mergeIds(performanceId, performance, {
     AllReviewSessions: '' as IntlString
   },
   component: {
+    MyKRAs: '' as AnyComponent,
     KRAAssigneesEditor: '' as AnyComponent,
     KRAEditor: '' as AnyComponent,
     KRARefPresenter: '' as AnyComponent,
