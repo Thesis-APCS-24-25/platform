@@ -318,11 +318,8 @@ function defineApplication (builder: Builder): void {
             position: 'top'
           },
           {
-            id: 'kras',
-            component: workbench.component.SpecialView,
-            componentProps: {
-              _class: performance.class.KRA
-            },
+            id: '',
+            component: performance.component.MyKRAs,
             label: performance.string.MyKRAs,
             spaceClass: performance.class.KRA,
             addSpaceLabel: performance.string.CreateKraLabel,

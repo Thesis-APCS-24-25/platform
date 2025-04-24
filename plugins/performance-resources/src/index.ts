@@ -30,9 +30,11 @@ import { reviewSessionStatusSort } from './utils/ReviewSessionUtils'
 import PerformanceDashboard from './components/dashboard/Dashboard.svelte'
 import AssignKRA from './components/kra/AssignKRA.svelte'
 import KRAAssigneesEditor from './components/kra/KRAAssigneesEditor.svelte'
+import MyKRAs from './components/kra/MyKRAs.svelte'
 
 export default async (): Promise<Resources> => ({
   component: {
+    MyKRAs,
     KRAAssigneesEditor,
     NewReviewSessionHeader,
     CreateReviewSession,
