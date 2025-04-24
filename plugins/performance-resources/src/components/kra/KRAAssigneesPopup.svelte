@@ -54,6 +54,7 @@
 <ObjectPopup
   _class={contact.class.Person}
   multiSelect
+  shadows={false}
   allowDeselect
   selectedObjects={items.map((s) => $personIdByAccountId.get(s.employee)).filter((s) => s !== undefined)}
   width="full"
