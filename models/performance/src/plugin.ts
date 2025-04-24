@@ -28,7 +28,8 @@ export default mergeIds(performanceId, performance, {
     CreateKraLabel: '' as IntlString,
     ReviewSessions: '' as IntlString,
     PerformanceDashboard: '' as IntlString,
-    AssignedTo: '' as IntlString
+    AssignedTo: '' as IntlString,
+    AllReviewSessions: '' as IntlString
   },
   component: {
     KRAAssigneesEditor: '' as AnyComponent,

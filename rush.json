@@ -2322,6 +2322,21 @@
       "packageName": "@hcengineering/performance-assets",
       "projectFolder": "plugins/performance-assets",
       "shouldPublish": false
+    },
+    {
+      "packageName": "@hcengineering/server-performance",
+      "projectFolder": "server-plugins/performance",
+      "shouldPublish": false
+    },
+    {
+      "packageName": "@hcengineering/server-performance-resources",
+      "projectFolder": "server-plugins/performance-resources",
+      "shouldPublish": false
+    },
+    {
+      "packageName": "@hcengineering/model-server-performance",
+      "projectFolder": "models/server-performance",
+      "shouldPublish": false
     }
   ]
 }

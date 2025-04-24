@@ -117,6 +117,7 @@
     "@hcengineering/model-survey": "^0.6.0",
     "@hcengineering/model-presence": "^0.6.0",
     "@hcengineering/model-card": "^0.6.0",
-    "@hcengineering/model-performance": "^0.1.0"
+    "@hcengineering/model-performance": "^0.1.0",
+    "@hcengineering/model-server-performance": "^0.1.0"
   }
 }

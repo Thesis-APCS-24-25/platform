@@ -297,7 +297,7 @@ function defineApplication (builder: Builder): void {
       navigatorModel: {
         spaces: [
           {
-            id: 'review-sessions',
+            id: 'teams',
             label: kraTeam.string.Teams,
             spaceClass: kraTeam.class.Team,
             addSpaceLabel: kraTeam.string.CreateTeam,
@@ -307,12 +307,12 @@ function defineApplication (builder: Builder): void {
         ],
         specials: [
           {
-            id: 'review-session-browser',
+            id: 'review-sessions',
             component: workbench.component.SpecialView,
             componentProps: {
               _class: performance.class.ReviewSession
             },
-            label: performance.string.MyReviewSessions,
+            label: performance.string.AllReviewSessions,
             spaceClass: performance.class.ReviewSession,
             addSpaceLabel: performance.string.CreateReviewSessionLabel,
             position: 'top'

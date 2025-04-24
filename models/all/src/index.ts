@@ -72,8 +72,8 @@ import { templatesId, createModel as templatesModel } from '@hcengineering/model
 import { textEditorId, createModel as textEditorModel } from '@hcengineering/model-text-editor'
 import { timeId, createModel as timeModel } from '@hcengineering/model-time'
 import tracker, { trackerId, createModel as trackerModel } from '@hcengineering/model-tracker'
-import kra, { kraId, createModel as kraModel } from '@hcengineering/model-kra'
-import kraTeam, { kraTeamId, createModel as kraTeamModel } from '@hcengineering/model-kra-team'
+import { kraId, createModel as kraModel } from '@hcengineering/model-kra'
+import { kraTeamId, createModel as kraTeamModel } from '@hcengineering/model-kra-team'
 import { uploaderId, createModel as uploaderModel } from '@hcengineering/model-uploader'
 import view, { viewId, createModel as viewModel } from '@hcengineering/model-view'
 import workbench, { workbenchId, createModel as workbenchModel } from '@hcengineering/model-workbench'
@@ -111,6 +111,7 @@ import { serverFulltextId, createModel as serverFulltextModel } from '@hcenginee
 import { surveyId, createModel as surveyModel } from '@hcengineering/model-survey'
 import { presenceId, createModel as presenceModel } from '@hcengineering/model-presence'
 import { performanceId, createModel as performanceModel } from '@hcengineering/model-performance'
+import { serverPerformanceId, createModel as serverPerformanceModel } from '@hcengineering/model-server-performance'
 
 import { type Plugin } from '@hcengineering/platform'
 
@@ -477,7 +478,8 @@ export default function buildModel (enabled: string[] = ['*'], disabled: string[
     [serverTrainingModel, serverTrainingId],
     [serverDocumentsModel, serverDocumentsId],
     [serverAiBotModel, serverAiBotId],
-    [serverFulltextModel, serverFulltextId]
+    [serverFulltextModel, serverFulltextId],
+    [serverPerformanceModel, serverPerformanceId]
   ]
 
   for (const [b, id, config] of builders) {

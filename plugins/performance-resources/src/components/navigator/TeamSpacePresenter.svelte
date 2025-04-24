@@ -50,9 +50,6 @@
       if (result !== undefined) {
         reviewSessions = result
       }
-    },
-    {
-      limit: 50 // BUG: findAll returns all records even if they do not match
     }
   )
 
