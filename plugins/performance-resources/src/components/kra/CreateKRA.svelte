@@ -1,16 +1,17 @@
 <script lang="ts">
   import core, { AttachedData, Ref, SortingOrder, Space, generateId } from '@hcengineering/core'
   import { OK, Status } from '@hcengineering/platform'
-  import { Card, SpaceSelector, getClient } from '@hcengineering/presentation'
+  import { Card, getClient } from '@hcengineering/presentation'
   import { TaskType, makeRank } from '@hcengineering/task'
-  import { EditBox, Grid, Status as StatusControl } from '@hcengineering/ui'
+  import { EditBox, Grid, Label, Status as StatusControl } from '@hcengineering/ui'
   import { createEventDispatcher } from 'svelte'
   import performance from '../../plugin'
   import { KRA, ReviewSession } from '@hcengineering/performance'
+  import TeamAndReviewSessionSelector from '../TeamAndReviewSessionSelector.svelte'
+  import { Team } from '@hcengineering/kra-team'
 
-  export let space: Ref<Space>
-
-  let _space = space
+  let team: Ref<Team>
+  let reviewSession: Ref<ReviewSession> | undefined
   const status: Status = OK
 
   let title: string = ''
@@ -18,7 +19,7 @@
 
   const dispatch = createEventDispatcher()
   const client = getClient()
-  const cardId = generateId<KRA>()
+  const kraId = generateId<KRA>()
 
   export function canClose (): boolean {
     return title !== ''
@@ -26,8 +27,11 @@
 
   const kind: Ref<TaskType> = performance.taskTypes.KRA
 
-  async function createCard (): Promise<void> {
-    const sp = await client.findOne(performance.class.ReviewSession, { _id: _space as Ref<ReviewSession> })
+  async function createKRA (): Promise<void> {
+    if (reviewSession === undefined) {
+      return
+    }
+    const sp = await client.findOne(performance.class.ReviewSession, { _id: reviewSession })
     if (sp === undefined) {
       throw new Error('Review Session not found')
     }
@@ -45,13 +49,13 @@
 
     const lastOne = await client.findOne(
       performance.class.KRA,
-      { space: _space },
+      { space: reviewSession },
       { sort: { rank: SortingOrder.Descending } }
     )
     const incResult = await client.updateDoc(
       performance.class.ReviewSession,
       core.space.Space,
-      _space,
+      reviewSession,
       {
         $inc: { sequence: 1 }
       },
@@ -73,7 +77,7 @@
       dueDate: null
     }
 
-    await client.addCollection(performance.class.KRA, _space, _space, performance.class.ReviewSession, 'kras', value, cardId)
+    await client.addCollection(performance.class.KRA, reviewSession as Ref<Space>, reviewSession, performance.class.ReviewSession, 'kras', value, kraId)
     dispatch('close')
   }
 
@@ -86,7 +90,7 @@
 
   <Card
     label={performance.string.CreateKRA}
-    okAction={createCard}
+    okAction={createKRA}
     canSave={title.trim().length > 0}
     on:close={() => {
       dispatch('close')
@@ -94,24 +98,27 @@
     on:changeContent
   >
     <svelte:fragment slot="header">
-      <SpaceSelector
-        _class={performance.class.ReviewSession}
-        label={performance.string.ReviewSessionName}
-        bind:space={_space}
-        kind={'regular'}
-        size={'small'}
+      <TeamAndReviewSessionSelector
+        bind:team={team}
+        bind:reviewSession={reviewSession}
       />
     </svelte:fragment>
     <StatusControl slot="error" {status} />
-    <Grid column={1} rowGap={1.5}>
-      <EditBox
-        label={performance.string.KRAName}
-        bind:value={title}
-        placeholder={performance.string.KRANamePlaceholder}
-        autoFocus />
-      <EditBox
-        label={performance.string.KRADescription}
-        bind:value={description}
-        placeholder={performance.string.KRADescriptionPlaceholder}/>
-    </Grid>
+    {#if reviewSession !== undefined}
+      <Grid column={1} rowGap={1.5}>
+        <EditBox
+          label={performance.string.KRAName}
+          bind:value={title}
+          placeholder={performance.string.KRANamePlaceholder}
+          autoFocus />
+        <EditBox
+          label={performance.string.KRADescription}
+          bind:value={description}
+          placeholder={performance.string.KRADescriptionPlaceholder}/>
+      </Grid>
+    {:else}
+      <Label
+        label={performance.string.NoReviewSessions}
+      />
+    {/if}
   </Card>

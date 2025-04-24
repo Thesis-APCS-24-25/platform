@@ -10,6 +10,7 @@
   import { getObjectLinkFragment } from '@hcengineering/view-resources'
   import { getMetadata } from '@hcengineering/platform'
   import kraTeam, { Member, Team } from '@hcengineering/kra-team'
+  import TeamAndReviewSessionSelector from '../TeamAndReviewSessionSelector.svelte'
 
   const client = getClient()
   const hierarchy = client.getHierarchy()
@@ -77,46 +78,10 @@
 
 <div>
   <div class='dashboard-header flex-row-baseline'>
-    {#if team !== undefined}
-      <div>
-        <SpaceSelector
-          _class={kraTeam.class.Team}
-          label={performance.string.SelectTeam}
-          bind:space={team}
-          kind={'regular'}
-          size={'medium'}
-          query={
-            { members: me._id }
-          }
-        />
-      </div>
-      <div>
-        <IconForward size={'medium'} />
-      </div>
-      {#if _space !== undefined}
-        <div>
-          <SpaceSelector
-            _class={performance.class.ReviewSession}
-            label={performance.string.SelectReviewSession}
-            bind:space={_space}
-            kind={'regular'}
-            size={'medium'}
-            query={{
-              space: team,
-              members: me._id
-            }}
-          />
-        </div>
-      {:else}
-        <div class="hulyNavItem-container pseudo-element flex-row-center content-dark-color text-md nowrap">
-          <Label label={performance.string.NoReviewSessions} />
-        </div>
-      {/if}
-    {:else}
-      <div class="hulyNavItem-container pseudo-element flex-row-center content-dark-color text-md nowrap">
-        <Label label={performance.string.NoTeam} />
-      </div>
-    {/if}
+    <TeamAndReviewSessionSelector
+      bind:team={team}
+      bind:reviewSession={_space}
+    />
   </div>
   {#if _space !== undefined}
     <Chart
@@ -130,9 +95,5 @@
   .dashboard-header {
     padding: 1rem;
     align-items: center;
-  }
-
-  .dashboard-header > div {
-    margin-right: 0.5rem;
   }
 </style>

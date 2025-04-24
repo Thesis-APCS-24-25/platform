@@ -102,7 +102,6 @@
   async function newReviewSession (): Promise<void> {
     showPopup(
       CreateReviewSession,
-      { team: currentTeam },
       'top'
     )
   }

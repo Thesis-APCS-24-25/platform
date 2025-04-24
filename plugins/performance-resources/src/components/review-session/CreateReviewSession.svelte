@@ -81,8 +81,9 @@
       />
     </svelte:fragment>
 
-    <div class="flex-row-center clear-mins">
+    <div class="flex-row-center m-3 clear-mins">
       <EditBox
+        label={performance.string.ReviewSessionName}
         placeholder={performance.string.ReviewSessionNamePlaceholder}
         bind:value={name}
         kind={'large-style'}
@@ -90,8 +91,9 @@
         focusIndex={1}
       />
     </div>
-    <div class="flex-row-center clear-mins">
+    <div class="flex-row-center m-3 clear-mins">
       <EditBox
+        label={performance.string.ReviewSessionDescription}
         placeholder={performance.string.ReviewSessionDescriptionPlaceholder}
         bind:value={description}
         kind={'large-style'}
@@ -99,20 +101,26 @@
         focusIndex={1}
       />
     </div>
-    <div class="flex-row-center clear-mins">
-      <DatePresenter
-        kind={'regular'}
-        size={'large'}
-        bind:value={startDate}
-        editable
-      />
-    </div>
-    <div class="flex-row-center clear-mins">
-      <DatePresenter
-        kind={'regular'}
-        size={'large'}
-        bind:value={endDate}
-        editable
-      />
-    </div>
+    <svelte:fragment slot='pool'>
+      <div class="flex-row-center clear-mins">
+        <DatePresenter
+          kind={'regular'}
+          size={'large'}
+          bind:value={startDate}
+          editable
+          labelNull={performance.string.ReviewSessionStart}
+          label={performance.string.ReviewSessionStart}
+        />
+      </div>
+      <div class="flex-row-center clear-mins">
+        <DatePresenter
+          kind={'regular'}
+          size={'large'}
+          bind:value={endDate}
+          editable
+          labelNull={performance.string.ReviewSessionEnd}
+          label={performance.string.ReviewSessionEnd}
+        />
+      </div>
+    </svelte:fragment>
   </Card>
