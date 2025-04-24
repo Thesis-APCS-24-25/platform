@@ -1,10 +1,16 @@
 <script lang="ts">
   import { IntlString } from '@hcengineering/platform'
   import { Button, ButtonSize, EditBox, eventToHTMLElement, Label, showPopup } from '@hcengineering/ui'
-  import { EditBoxPopup, NumberPresenter } from '@hcengineering/view-resources'
+  import { NumberPresenter } from '@hcengineering/view-resources'
   import performance from '../../plugin'
   import KraWeightEditBoxPopup from './KRAWeightEditBoxPopup.svelte'
+  import { PersonAccount } from '@hcengineering/contact'
+  import { Ref } from '@hcengineering/core'
+  import { createQuery } from '@hcengineering/presentation'
+  import { EmployeeKRA } from '@hcengineering/performance'
 
+  export let employee: Ref<PersonAccount> | undefined
+  export let _id: Ref<EmployeeKRA> | undefined
   export let placeholder: IntlString
   export let value: number | undefined
   export let autoFocus: boolean = false
@@ -24,6 +30,29 @@
       onChange(value)
     }
   }
+
+  let otherWeights: { value: number, label: string }[] = []
+  const weightQ = createQuery()
+  weightQ.query(
+    performance.class.EmployeeKRA,
+    {
+      employee,
+      _id: { $ne: _id }
+    },
+    (res) => {
+      if (res !== undefined) {
+        otherWeights = res.map((item) => ({
+          value: item.weight,
+          label: item.$lookup?.kra?.title ?? ''
+        }))
+      }
+    },
+    {
+      lookup: {
+        kra: performance.class.KRA
+      }
+    }
+  )
 </script>
 
 {#if kind === 'button' || kind === 'link'}
@@ -39,30 +68,10 @@
         showPopup(
           KraWeightEditBoxPopup,
           {
+            otherWeights,
+            employee,
             value,
-            format: 'number',
-            otherWeights: [
-              {
-                value: 0,
-                label: 'KRA 0'
-              },
-              {
-                value: 1,
-                label: 'KRA1jr1jl 1'
-              },
-              {
-                value: 2,
-                label: '3r31wel wel '
-              },
-              {
-                value: 3,
-                label: 'klrwl'
-              },
-              {
-                value: 4,
-                label: 'g4l erfb'
-              }
-            ]
+            format: 'number'
           },
           eventToHTMLElement(ev),
           (res) => {

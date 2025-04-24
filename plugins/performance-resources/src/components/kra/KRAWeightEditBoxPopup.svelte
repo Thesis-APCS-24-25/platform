@@ -5,7 +5,7 @@
   import type { EditStyle } from '@hcengineering/ui'
   import FixedColumn from '../../../../view-resources/src/components/FixedColumn.svelte'
   import KraWeightPresenter from './KRAWeightPresenter.svelte'
-
+  
   export let value: string | number | undefined
   export let otherWeights: {
     value: number

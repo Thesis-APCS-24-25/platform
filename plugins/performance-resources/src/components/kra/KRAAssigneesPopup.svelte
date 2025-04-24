@@ -1,35 +1,53 @@
 <script lang="ts">
-  import { Card, ObjectPopup } from '@hcengineering/presentation'
+  import { ObjectPopup } from '@hcengineering/presentation'
   import contact, { Person } from '@hcengineering/contact'
   import performance from '../../plugin'
-  import { Ref } from '@hcengineering/core'
-  import { UserInfo } from '@hcengineering/contact-resources'
+  import { DocData, Ref } from '@hcengineering/core'
+  import { UserInfo, personAccountByPersonId, personIdByAccountId } from '@hcengineering/contact-resources'
   import { createEventDispatcher } from 'svelte'
   import KraWeightEditor from './KRAWeightEditorWithPopup.svelte'
-  import { PopupOptions } from '@hcengineering/ui'
-  import { ObjectSearchBox } from '@hcengineering/view-resources'
+  import { EmployeeKRA, KRA } from '@hcengineering/performance'
 
-  export let selected: {
-    employee: Ref<Person>
-    weight: number
-  }[] = []
+  export let items: Array<DocData<EmployeeKRA> | EmployeeKRA> = []
+  export let kra: Ref<KRA>
 
-  $: mappedWeights = (selected ?? []).reduce((acc, { employee, weight }) => {
-    acc.set(employee, weight)
-    return acc
-  }, new Map<Ref<Person>, number>())
+  const mapItem = (
+    items: Array<DocData<EmployeeKRA> | EmployeeKRA>
+  ): Map<Ref<Person>, DocData<EmployeeKRA> | EmployeeKRA> => {
+    return items.reduce<Map<Ref<Person>, DocData<EmployeeKRA> | EmployeeKRA>>((acc, item) => {
+      const personId = $personIdByAccountId.get(item.employee)
+      if (personId !== undefined) acc.set(personId, item)
+      return acc
+    }, new Map<Ref<Person>, DocData<EmployeeKRA> | EmployeeKRA>())
+  }
+
+  $: mappedItems = mapItem(items)
 
   const dispatch = createEventDispatcher()
 
   function handleObjectPopupUpdate (e: CustomEvent<Ref<Person>[]>): void {
     const newSelected = e.detail
-    selected = newSelected.map((person) => {
+      .filter((item) => item !== undefined)
+
+    items = newSelected.map((person) => {
+      const personAccounts = $personAccountByPersonId.get(person) ?? []
       return {
-        employee: person,
-        weight: mappedWeights.get(person) ?? 0
+        ...(mappedItems.get(person) ?? {
+          employee: personAccounts[0]._id,
+          weight: 0,
+          kra
+        })
       }
     })
-    dispatch('update', selected)
+    dispatch('update', items)
+  }
+
+  function getId (personId: Ref<Person>): Ref<EmployeeKRA> | undefined {
+    const item = mappedItems.get(personId)
+    if (item !== undefined && '_id' in item) {
+      return item._id
+    }
+    return undefined
   }
 </script>
 
@@ -37,7 +55,7 @@
   _class={contact.class.Person}
   multiSelect
   allowDeselect
-  selectedObjects={selected.map((s) => s.employee)}
+  selectedObjects={items.map((s) => $personIdByAccountId.get(s.employee)).filter((s) => s !== undefined)}
   width="full"
   type={'object'}
   on:update={handleObjectPopupUpdate}
@@ -45,25 +63,27 @@
 >
   <div class="items-center flex-between flex-grow flex-gap-2" slot="item" let:item={person}>
     <UserInfo value={person} size={'smaller'} />
-    {#if mappedWeights.has(person._id)}
+    {#if mappedItems.has(person._id)}
       <KraWeightEditor
+        _id={getId(person._id)}
+        employee={mappedItems.get(person._id)?.employee}
         kind="link"
         size="x-small"
         placeholder={performance.string.Weight}
-        value={mappedWeights.get(person._id)}
+        value={mappedItems.get(person._id)?.weight}
         onChange={(e) => {
           const weight = e
           if (weight === undefined) {
             return
           }
-          const n = selected.map((s) => {
-            if (s.employee === person._id) {
+          items = items.map((s) => {
+            const p = $personIdByAccountId.get(s.employee)
+            if (p === person._id) {
               return { ...s, weight }
             }
             return s
           })
-          selected = n
-          dispatch('update', selected)
+          dispatch('update', items)
         }}
       />
     {/if}

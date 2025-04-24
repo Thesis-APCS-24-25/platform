@@ -4,16 +4,37 @@
   import { restrictionStore } from '@hcengineering/view-resources'
   import KraAssigneeTable from './KRAAssigneeTable.svelte'
   import KraAssigneesPopup from './KRAAssigneesPopup.svelte'
+  import { createQuery } from '@hcengineering/presentation'
+  import { Ref } from '@hcengineering/core'
+  import { EmployeeKRA, KRA } from '@hcengineering/performance'
 
   export let hasAssignees = true
+  export let kra: Ref<KRA>
 
   let isCollapsed = true
+
+  let items: EmployeeKRA[] = []
+
+  const itemQ = createQuery()
+  itemQ.query(
+    performance.class.EmployeeKRA,
+    {
+      kra
+    },
+    (res) => {
+      if (res !== undefined) {
+        items = res
+      }
+    }
+  )
 
   function openNewAssigneeDialog (event: MouseEvent): void {
     showPopup(
       KraAssigneesPopup,
       {
-      }
+        items
+      },
+      eventToHTMLElement(event)
     )
   }
 </script>
@@ -66,7 +87,11 @@
   {#if !isCollapsed}
     <ExpandCollapse isExpanded={!isCollapsed}>
       <div class:collapsed={isCollapsed}>
-        <KraAssigneeTable />
+        <KraAssigneeTable
+          query={{
+            kra
+          }}
+        />
       </div>
     </ExpandCollapse>
   {/if}
