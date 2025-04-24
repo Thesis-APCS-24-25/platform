@@ -7,4 +7,4 @@
   export let query: DocumentQuery<EmployeeKRA> = {}
 </script>
 
-<TableBrowser _class={performance.class.EmployeeKRA} {query} config={['assignee', 'weight']} />
+<TableBrowser _class={performance.class.EmployeeKRA} {query} config={['employee', 'weight']} />

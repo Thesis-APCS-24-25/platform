@@ -1,18 +1,26 @@
 <script lang="ts">
-  import contact, { Person } from '@hcengineering/contact'
-  import type { Class, Doc, DocumentQuery, Ref } from '@hcengineering/core'
+  import contact, { Person, PersonAccount } from '@hcengineering/contact'
+  import type { Class, Doc, DocData, DocumentQuery, Ref, Space } from '@hcengineering/core'
   import { type IntlString } from '@hcengineering/platform'
-  import { ObjectCreate, getClient } from '@hcengineering/presentation'
+  import { ObjectCreate, createQuery, getClient } from '@hcengineering/presentation'
   import type { ButtonKind, ButtonSize, TooltipAlignment } from '@hcengineering/ui'
   import { Button, Label, showPopup, IconScale } from '@hcengineering/ui'
   import { createEventDispatcher } from 'svelte'
-  import { UserInfo, CombineAvatars, personByIdStore } from '@hcengineering/contact-resources'
+  import {
+    UserInfo,
+    CombineAvatars,
+    personAccountByIdStore,
+    personIdByAccountId,
+    personByIdStore
+  } from '@hcengineering/contact-resources'
   import KraAssigneesPopup from './KRAAssigneesPopup.svelte'
-  import { KRAAssigneeItem } from '../../types'
+  import performance from '../../plugin'
+  import { EmployeeKRA, KRA, ReviewSession } from '@hcengineering/performance'
 
-  export let items: KRAAssigneeItem[] = []
+  export let items: Array<EmployeeKRA | DocData<EmployeeKRA>> = []
+  export let space: Ref<Space>
+  export let kra: Ref<KRA>
   export let _class: Ref<Class<Person>> = contact.mixin.Employee
-  export let docQuery: DocumentQuery<Person> | undefined = {}
 
   export let label: IntlString | undefined = undefined
   export let kind: ButtonKind = 'no-border'
@@ -26,20 +34,49 @@
 
   export let sort: ((a: Person, b: Person) => number) | undefined = undefined
 
-  let beforeUpdateItems: KRAAssigneeItem[] = items
+  let beforeUpdateItems: Array<EmployeeKRA | DocData<EmployeeKRA>> = []
 
-  function filter (items: KRAAssigneeItem[] | undefined): KRAAssigneeItem[] {
-    return (items ?? []).filter((it, idx, arr) => arr.indexOf(it) === idx)
+  const itemQ = createQuery()
+  itemQ.query(
+    performance.class.EmployeeKRA,
+    {
+      kra
+    },
+    (res) => {
+      if (res !== undefined) {
+        items = res
+        beforeUpdateItems = res
+      }
+    }
+  )
+
+  function filter (items: (Ref<Person> | undefined)[] | undefined): Ref<Person>[] {
+    return (items ?? []).filter((it, idx, arr) => it !== undefined && arr.indexOf(it) === idx) as Ref<Person>[]
   }
 
-  let persons: Person[] = filter(items)
-    .map((p) => $personByIdStore.get(p.assignTo))
-    .filter((p) => p !== undefined) as Person[]
-  $: persons = filter(items)
-    .map((p) => $personByIdStore.get(p.assignTo))
-    .filter((p) => p !== undefined) as Person[]
+  $: persons = filter(items.map((i) => $personIdByAccountId.get(i.employee)))
+    .map((p) => $personByIdStore.get(p))
+    .filter((p) => p !== undefined)
 
-  const dispatch = createEventDispatcher()
+  async function saveKRAAssignment (
+    add: DocData<EmployeeKRA>[],
+    remove: EmployeeKRA[],
+    update: EmployeeKRA[]
+  ): Promise<void> {
+    const client = getClient()
+    const ops = client.apply()
+    for (const item of add) {
+      await ops.createDoc(performance.class.EmployeeKRA, space, item)
+    }
+    for (const item of remove) {
+      await ops.removeDoc(performance.class.EmployeeKRA, space, item._id)
+    }
+
+    for (const item of update) {
+      await ops.updateDoc(performance.class.EmployeeKRA, space, item._id, item)
+    }
+    await ops.commit()
+  }
 
   async function addPerson (evt: Event): Promise<void> {
     const accounts = new Set(
@@ -49,47 +86,55 @@
         .map((p) => p.person)
     )
     const popupProps: any = {
-      selected: filter(items),
+      items,
       filter: (it: Doc) => {
         const h = getClient().getHierarchy()
         if (h.hasMixin(it, contact.mixin.Employee)) {
           const isActive = h.as(it, contact.mixin.Employee).active
-          const isSelected = items.some((selectedItem) => selectedItem.assignTo === it._id)
+          const isSelected = items.some((selectedItem) => selectedItem.employee === it._id)
           return isActive || isSelected
         }
         return accounts.has(it._id as Ref<Person>)
       },
       readonly,
+      kra,
       create
     }
     if (sort !== undefined) {
       popupProps.sort = sort
     }
-    showPopup(KraAssigneesPopup, popupProps, evt.target as HTMLElement, () => {
-      // diffing with the old value
-      const mapped = items.reduce((acc, { assignTo, weight }) => {
-        acc.set(assignTo, weight)
-        return acc
-      }, new Map<Ref<Person>, number>())
-      const mappedBefore = beforeUpdateItems.reduce((acc, { assignTo, weight }) => {
-        acc.set(assignTo, weight)
-        return acc
-      }, new Map<Ref<Person>, number>())
-      const added = items.filter(({ assignTo }) => !mappedBefore.has(assignTo))
-      const removed = beforeUpdateItems.filter(({ assignTo }) => !mapped.has(assignTo))
-      const changed = items.filter(({ assignTo, weight }) => {
-        const beforeWeight = mappedBefore.get(assignTo)
-        return beforeWeight !== undefined && beforeWeight !== weight
-      })
-      beforeUpdateItems = items
-      // TODO: Actually save the changes
-      alert('Implement me')
-    }, (result) => {
-      if (result != null) {
-        items = filter(result)
-        console.log('items', result)
+    showPopup(
+      KraAssigneesPopup,
+      popupProps,
+      evt.target as HTMLElement,
+      async () => {
+        // diffing with the old value
+        const mapped = items.reduce((acc, { employee, weight }) => {
+          acc.set(employee, weight)
+          return acc
+        }, new Map<Ref<PersonAccount>, number>())
+        const mappedBefore = beforeUpdateItems.reduce((acc, { employee, weight }) => {
+          acc.set(employee, weight)
+          return acc
+        }, new Map<Ref<PersonAccount>, number>())
+        const added = items.filter(({ employee }) => !mappedBefore.has(employee))
+        const removed = beforeUpdateItems.filter(({ employee }) => !mapped.has(employee)).map((s) => s as EmployeeKRA)
+        const changed = items
+          .filter(({ employee, weight }) => {
+            const beforeWeight = mappedBefore.get(employee)
+            return beforeWeight !== undefined && beforeWeight !== weight
+          })
+          .map((s) => s as EmployeeKRA)
+        beforeUpdateItems = items
+
+        await saveKRAAssignment(added, removed, changed)
+      },
+      (result) => {
+        if (result != null) {
+          items = result
+        }
       }
-    })
+    )
   }
 </script>
 
@@ -112,7 +157,7 @@
         {#if persons.length === 1}
           <UserInfo value={persons[0]} size={'card'} />
         {:else}
-          <CombineAvatars {_class} items={items.map((person) => person.employee)} size={'card'} hideLimit />
+          <CombineAvatars {_class} items={persons.map((p) => p._id)} size={'card'} hideLimit />
           <span class="overflow-label ml-1-5">
             <Label label={contact.string.NumberMembers} params={{ count: persons.length }} />
           </span>
