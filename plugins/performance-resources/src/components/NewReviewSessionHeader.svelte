@@ -39,7 +39,8 @@
   queryCurrent.query(
     performance.class.ReviewSession,
     {
-      _id: currentSpace as Ref<ReviewSession>
+      _id: currentSpace as Ref<ReviewSession>,
+      members: me._id
     },
     (res) => {
       if (res !== undefined) {

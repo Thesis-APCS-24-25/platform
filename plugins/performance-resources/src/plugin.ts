@@ -36,6 +36,7 @@ export default mergeIds(performanceId, performance, {
     KRANamePlaceholder: '' as IntlString,
     KRADescriptionPlaceholder: '' as IntlString,
     SelectTeam: '' as IntlString,
+    SelectReviewSession: '' as IntlString,
     NoTeam: '' as IntlString,
     AssignKRAToEmployee: '' as IntlString,
     AssignKRA: '' as IntlString,
