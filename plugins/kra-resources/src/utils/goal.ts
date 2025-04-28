@@ -2,7 +2,8 @@ import {
   type Goal,
   type Issue,
   type Report,
-  type GoalAggregateFunction
+  type GoalAggregateFunction,
+  Kpi
 } from '@hcengineering/kra'
 import { createQuery, getClient } from '@hcengineering/presentation'
 import kra from '../plugin'
@@ -49,7 +50,7 @@ export const calculateRatingScaleResult: GoalAggregateFunction = (reports: Repor
 
 function _calculateGoal (goal: Goal, reports: Report[]): number {
   if (goal._class === kra.class.Kpi) {
-    return calculateKpiResult(reports)
+    return calculateKpiResult(reports) / (goal as Kpi).target
   } else if (goal._class === kra.class.RatingScale) {
     return calculateRatingScaleResult(reports)
   }

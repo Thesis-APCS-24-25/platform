@@ -10,7 +10,7 @@ import { type Ref, type StatusCategory } from '@hcengineering/core'
 import core from '@hcengineering/model-core'
 import workbench from '@hcengineering/model-workbench'
 import view from '@hcengineering/model-view'
-import { DOMAIN_PERFORMANCE, TDefaultKRAData, TDefaultReviewSessionData, TEmployeeKRA, TKRA, TKRAStatus, TReviewSession, TReviewSessionStatus } from './types'
+import { DOMAIN_PERFORMANCE, TDefaultKRAData, TDefaultReviewSessionData, TEmployeeKRA, TKRA, TKRAStatus, TMeasureProgress, TReviewSession, TReviewSessionStatus } from './types'
 
 export { performanceId } from '@hcengineering/performance'
 export { performance as default }
@@ -388,6 +388,7 @@ function defineSortAndGrouping (builder: Builder): void {
 }
 
 export function createModel (builder: Builder): void {
+  builder.createModel(TMeasureProgress)
   defineTeam(builder)
   defineReviewSession(builder)
   defineKRA(builder)

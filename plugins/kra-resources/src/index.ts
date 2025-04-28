@@ -362,12 +362,9 @@ export default async (): Promise<Resources> => ({
     GetIssueStatusCategories: getIssueStatusCategories,
     KpiAggregator: calculateKpiResult,
     RatingScaleAggregator: calculateRatingScaleResult,
-    CalculateGoal: async (taskId: Ref<Task>) => {
+    CalculateGoal: async (taskId: Ref<Task>): Promise<number | undefined> => {
       const client = getClient()
       const res = await client.findOne(task.class.Task, { _id: taskId })
-      if (res === undefined || res._class !== kra.class.Goal) {
-        return res
-      }
       const issue = res as Issue
       const goal = await client.findOne(kra.class.Goal, { _id: issue.goal })
       if (goal === undefined) {
