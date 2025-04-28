@@ -2,7 +2,7 @@ import { ArrOf, Index, Mixin, Model, Prop, TypeDate, TypeNumber, TypeRef, TypeSt
 
 import performance from './plugin'
 import core, { TDoc, TStatus } from '@hcengineering/model-core'
-import type { EmployeeKRA, KRA, KRAStatus, ReviewSession, ReviewSessionStatus } from '@hcengineering/performance'
+import type { EmployeeKRA, KRA, KRAStatus, ReviewSession } from '@hcengineering/performance'
 import { TProject, TTask } from '@hcengineering/model-task'
 import task from '@hcengineering/task'
 import { Account, type Arr, type Domain, IndexKind, Ref, type Role, type RolesAssignment, type Timestamp } from '@hcengineering/core'
@@ -10,16 +10,16 @@ import contact, { type PersonAccount } from '@hcengineering/contact'
 
 export const DOMAIN_PERFORMANCE = 'performance' as Domain
 
-@Model(performance.class.ReviewSessionStatus, core.class.Status)
-export class TReviewSessionStatus extends TStatus implements ReviewSessionStatus {}
+// @Model(performance.class.ReviewSessionStatus, core.class.Status)
+// export class TReviewSessionStatus extends TStatus implements ReviewSessionStatus {}
 
 @Model(performance.class.KRAStatus, core.class.Status)
 export class TKRAStatus extends TStatus implements KRAStatus {}
 
 @Model(performance.class.ReviewSession, task.class.Project)
 export class TReviewSession extends TProject implements ReviewSession {
-  @Prop(TypeRef(core.class.Status), performance.string.ReviewSessionStatus)
-    reviewSessionStatus!: Ref<ReviewSessionStatus>
+  // @Prop(TypeRef(core.class.Status), performance.string.ReviewSessionStatus)
+  //   reviewSessionStatus!: Ref<ReviewSessionStatus>
 
   @Prop(TypeDate(), performance.string.ReviewSessionStart)
     reviewSessionStart!: Timestamp
