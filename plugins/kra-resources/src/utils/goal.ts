@@ -1,10 +1,4 @@
-import {
-  type Goal,
-  type Issue,
-  type Report,
-  type GoalAggregateFunction,
-  Kpi
-} from '@hcengineering/kra'
+import { type Goal, type Issue, type Report, type GoalAggregateFunction, type Kpi } from '@hcengineering/kra'
 import { createQuery, getClient } from '@hcengineering/presentation'
 import kra from '../plugin'
 
@@ -52,7 +46,7 @@ function _calculateGoal (goal: Goal, reports: Report[]): number {
   if (goal._class === kra.class.Kpi) {
     return calculateKpiResult(reports) / (goal as Kpi).target
   } else if (goal._class === kra.class.RatingScale) {
-    return calculateRatingScaleResult(reports)
+    return calculateRatingScaleResult(reports) / 5
   }
   return 0
 }
@@ -66,6 +60,27 @@ export async function calculateGoal (goal: Goal, reports?: Report[] | undefined)
     attachedTo: goal._id
   })
   return _calculateGoal(goal, res)
+}
+
+export async function calculateResult (goal: Goal, reports?: Report[] | undefined): Promise<number | undefined> {
+  function sum (goal: Goal, reports: Report[]): number {
+    if (goal._class === kra.class.Kpi) {
+      return calculateKpiResult(reports)
+    } else if (goal._class === kra.class.RatingScale) {
+      return calculateRatingScaleResult(reports)
+    }
+    return 0
+  }
+
+  if (reports !== undefined) {
+    return sum(goal, reports)
+  }
+
+  const client = getClient()
+  const res = await client.findAll(kra.class.Report, {
+    attachedTo: goal._id
+  })
+  return sum(goal, res)
 }
 
 export function calculateGoalCallback (

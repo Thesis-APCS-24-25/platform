@@ -1,14 +1,15 @@
 <script lang="ts">
-  import { createFocusManager, EditBox, FocusHandler, getFocusManager } from '@hcengineering/ui'
+  import { createFocusManager, EditBox, FocusHandler } from '@hcengineering/ui'
   import kra from '../../../../plugin'
   import { getClient } from '@hcengineering/presentation'
-  import { Goal, Issue, Unit } from '@hcengineering/kra'
+  import { Goal, Issue, Project, Unit } from '@hcengineering/kra'
   import { Ref } from '@hcengineering/core'
   import UnitBox from '../unit/UnitBox.svelte'
   import { onMount } from 'svelte'
 
   export let canSave = false
-  export let issue: Ref<Issue> | Issue | undefined = undefined
+  export let issue: Ref<Issue> | undefined = undefined
+  export let space: Ref<Project>
 
   const data = {
     name: '',
@@ -23,27 +24,16 @@
 
   export async function save (): Promise<Ref<Goal> | undefined> {
     if (canSave && issue !== undefined) {
-      if (typeof issue === 'string') {
-        issue = (await client.findOne(kra.class.Issue, {
-          _id: issue
-        })) as Issue | undefined
-      }
-
-      if (issue !== undefined && data.unit !== undefined) {
+      if (issue !== undefined && data.unit !== undefined && space !== undefined) {
         const apply = client.apply()
 
-        const kpiId = await apply.createDoc(kra.class.Kpi, issue.space, {
+        const kpiId = await apply.createDoc(kra.class.Kpi, space, {
           name: data.name,
           description: data.description,
           target: data.target ?? 0,
           unit: data.unit,
           reports: 0
         })
-
-        await apply.updateDoc(kra.class.Issue, issue.space, issue._id, {
-          goal: kpiId
-        })
-
         await apply.commit()
         return kpiId
       }
@@ -87,7 +77,7 @@
     placeholder={kra.string.Target}
     focusIndex={3}
   />
-  <UnitBox {issue} bind:value={data.unit} focusIndex={4} />
+  <UnitBox {space} bind:value={data.unit} focusIndex={4} />
 </div>
 
 <style>

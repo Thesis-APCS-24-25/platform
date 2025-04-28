@@ -5,10 +5,9 @@
   import RatingScaleEditor from './ratingscale/RatingScale.svelte'
   import KpiEditor from './kpi/Kpi.svelte'
   import AddGoalPopup from './AddGoalPopup.svelte'
-  import { createQuery } from '@hcengineering/presentation'
+  import { createQuery, getClient } from '@hcengineering/presentation'
   import kra from '../../../plugin'
-  import { WithLookup } from '@hcengineering/core'
-  import { createEventDispatcher } from 'svelte'
+  import { Ref, WithLookup } from '@hcengineering/core'
 
   export let issue: Issue
 
@@ -36,6 +35,13 @@
     }
   )
 
+  async function onNewGoal (e: Ref<Goal> | undefined): Promise<void> {
+    const client = getClient()
+    await client.updateDoc(kra.class.Issue, issue.space, issue._id, {
+      goal: e
+    })
+  }
+
   let kpi: Kpi | null = null
   let ratingScale: RatingScale | null = null
 
@@ -52,9 +58,11 @@
     showPopup(
       AddGoalPopup,
       {
-        issue
+        issue: issue._id,
+        space: issue.space
       },
-      'top'
+      'top',
+      onNewGoal
     )
   }
 </script>
