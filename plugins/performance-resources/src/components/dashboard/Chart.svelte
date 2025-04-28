@@ -58,7 +58,7 @@
       if (result !== undefined) {
         employeeKras = result
         result.forEach((entry) => {
-          if (entry.$lookup?.kra !== undefined && !kras.includes(entry.$lookup.kra)) {
+          if (entry.$lookup?.kra !== undefined && !kras.some((value) => value._id === entry.$lookup?.kra?._id)) {
             kras.push(entry.$lookup.kra)
           }
         })
@@ -121,8 +121,6 @@
     }
   }
 
-  $: console.log('Tasks', taskCompletion)
-
   $: {
     // Group KRAs by employee using the relationships table
     krasByEmployee = employees.reduce<KRAsByEmployee>((acc, employee) => {
@@ -135,7 +133,7 @@
           if (kra == null || tasks === undefined) return null
           const filteredTasks = tasks.filter((task) => {
             const asMixin = client.getHierarchy().as(task, performance.mixin.WithKRA)
-            return asMixin.kra === kra._id
+            return asMixin.kra === kra._id && asMixin.assignee === employee.person
           })
           let completionLevel = filteredTasks.reduce<number>((acc, task) => {
             return acc + (taskCompletion[task._id] ?? 0)
@@ -172,15 +170,16 @@
     const datasets = kras.map((kra, index) => {
       const data = employees.map((employee) => {
         const employeeKraDetails = krasByEmployee[employee._id]
+        if (employeeKraDetails == null) {
+          return 0
+        }
         const matchingKra = employeeKraDetails.find((k) => k._id === kra._id)
-        console.log('detail', matchingKra)
 
         // Calculate contribution to performance score
         const d =
           matchingKra?.completionLevel != null && matchingKra.weight != null
             ? matchingKra.completionLevel * matchingKra.weight
             : 0
-        console.log(`${matchingKra?.title} ${matchingKra?.weight} ${matchingKra?.completionLevel} ${d}`)
         return d * 100
       })
 
@@ -275,8 +274,8 @@
                 let footerText = '\nKRA Breakdown:'
                 employeeKras.forEach((kra) => {
                   footerText += `\n${kra.title} (${kra.weight * 100}%): ${
-                    kra.completionLevel != null ? kra.completionLevel.toFixed(1) : 0
-                  }%`
+                    kra.completionLevel ?? 0
+                  }`
                 })
 
                 return footerText
