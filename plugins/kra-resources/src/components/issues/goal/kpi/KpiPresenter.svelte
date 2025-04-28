@@ -5,14 +5,14 @@
   import { ButtonKind, ButtonSize, eventToHTMLElement, showPopup } from '@hcengineering/ui'
   import KpiReportsPopup from './KpiReportsPopup.svelte'
   import { WithLookup } from '@hcengineering/core'
-  import { calculateGoal } from '../../../../utils/goal'
+  import { calculateResult } from '../../../../utils/goal'
 
   export let value: WithLookup<Kpi>
   export let issue: WithLookup<Issue>
   export let kind: ButtonKind = 'regular'
   export let size: ButtonSize = 'small'
 
-  $: sum = calculateGoal(value, undefined)
+  $: sum = calculateResult(value, undefined)
 
   function handleOpenEditor (sum: number, e: MouseEvent): void {
     e.stopPropagation()

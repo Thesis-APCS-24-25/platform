@@ -1,19 +1,20 @@
 <script lang="ts">
   import kra from '../../../plugin'
-  import { Card, getClient } from '@hcengineering/presentation'
+  import { Card } from '@hcengineering/presentation'
   import { ObjectBox } from '@hcengineering/view-resources'
-  import { Goal, Issue } from '@hcengineering/kra'
-  import { DropdownIntlItem, DropdownLabelsIntl, FocusHandler } from '@hcengineering/ui'
+  import { Goal, Issue, Project } from '@hcengineering/kra'
+  import { DropdownIntlItem, DropdownLabelsIntl } from '@hcengineering/ui'
   import AddKpi from './kpi/AddKpi.svelte'
   import AddRatingScale from './ratingscale/AddRatingScale.svelte'
   import { Ref } from '@hcengineering/core'
   import { createEventDispatcher } from 'svelte'
 
+  export let issue: Ref<Issue>
+  export let space: Ref<Project>
+  export let canEditIssue: boolean = true
+
   let kpiForm: AddKpi | undefined
   let ratingScaleForm: AddRatingScale | undefined
-
-  export let issue: Ref<Issue> | undefined = undefined
-  export let canEditIssue: boolean = true
 
   const items: DropdownIntlItem[] = [
     {
@@ -38,6 +39,8 @@
   let canSaveRatingScale = false
   $: canSave = selected !== 'none' && issue !== undefined && (canSaveKpi || canSaveRatingScale)
 
+  let id: Ref<Goal> | undefined = undefined
+
   function handleIssueChange (evt: CustomEvent<Ref<Issue>>): void {
     issue = evt.detail
   }
@@ -48,12 +51,9 @@
     }
 
     if (selected === 'kpi' && kpiForm !== undefined) {
-      const id = await kpiForm.save()
-      dispatch('close', id)
+      id = await kpiForm.save()
     } else if (selected === 'rating-scale' && ratingScaleForm !== undefined) {
-      const id = await ratingScaleForm.save()
-
-      dispatch('close', id)
+      id = await ratingScaleForm.save()
     }
   }
 
@@ -71,7 +71,15 @@
   // }
 </script>
 
-<Card label={kra.string.AddGoal} okAction={save} {canSave} width="medium" on:close>
+<Card
+  label={kra.string.AddGoal}
+  okAction={save}
+  {canSave}
+  width="medium"
+  on:close={() => {
+    dispatch('close', id)
+  }}
+>
   <svelte:fragment slot="header">
     {#if canEditIssue}
       <ObjectBox
@@ -96,8 +104,8 @@
   </svelte:fragment>
 
   {#if selected === 'kpi'}
-    <AddKpi bind:canSave={canSaveKpi} bind:this={kpiForm} {issue} />
+    <AddKpi {space} bind:canSave={canSaveKpi} bind:this={kpiForm} {issue} />
   {:else if selected === 'rating-scale'}
-    <AddRatingScale bind:canSave={canSaveRatingScale} bind:this={ratingScaleForm} {issue} />
+    <AddRatingScale {space} bind:canSave={canSaveRatingScale} bind:this={ratingScaleForm} {issue} />
   {/if}
 </Card>

@@ -12,7 +12,7 @@ distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRAN
 <script lang="ts">
   import { Issue, Kpi } from '@hcengineering/kra'
   import { EditBox, eventToHTMLElement, showPopup } from '@hcengineering/ui'
-  import { calculateGoal } from '../../../../utils/goal'
+  import { calculateResult } from '../../../../utils/goal'
   import KpiProgressBar from './KpiProgressBar.svelte'
   import { WithLookup } from '@hcengineering/core'
   import KpiReportsPopup from './KpiReportsPopup.svelte'
@@ -21,7 +21,7 @@ distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRAN
   export let kpi: WithLookup<Kpi>
   export let focusIndex: number | undefined = undefined
 
-  $: sum = calculateGoal(kpi, undefined)
+  $: sum = calculateResult(kpi, undefined)
 
   function handleEdit (sum: number, e: MouseEvent): void {
     showPopup(KpiReportsPopup, { sum, kpi, issue }, eventToHTMLElement(e))

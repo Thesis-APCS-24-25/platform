@@ -32,125 +32,124 @@
   const client = getClient()
   const dispatch = createEventDispatcher()
 
-  $: void client.findOne(
-    performance.class.ReviewSession,
-    {
+  $: void client
+    .findOne(performance.class.ReviewSession, {
       _id: space
-    }
-  ).then((result) => {
-    if (result !== undefined) {
-      reviewSession = result
-    }
-  })
-
-  $: void client.findAll(
-    performance.class.EmployeeKRA,
-    {
-      '$lookup.kra.space': space
-    },
-    {
-      lookup: {
-        kra: performance.class.KRA
+    })
+    .then((result) => {
+      if (result !== undefined) {
+        reviewSession = result
       }
-    }
-  ).then((result) => {
-    if (result !== undefined) {
-      employeeKras = result
-      result.forEach((entry) => {
-        if (entry.$lookup?.kra !== undefined && !kras.includes(entry.$lookup.kra)) {
-          kras.push(entry.$lookup.kra)
+    })
+
+  $: void client
+    .findAll(
+      performance.class.EmployeeKRA,
+      {
+        '$lookup.kra.space': space
+      },
+      {
+        lookup: {
+          kra: performance.class.KRA
         }
-      })
-      kraRefs = kras.map(kra => kra._id)
-    }
-  })
+      }
+    )
+    .then((result) => {
+      if (result !== undefined) {
+        employeeKras = result
+        result.forEach((entry) => {
+          if (entry.$lookup?.kra !== undefined && !kras.includes(entry.$lookup.kra)) {
+            kras.push(entry.$lookup.kra)
+          }
+        })
+        kraRefs = kras.map((kra) => kra._id)
+      }
+    })
 
   $: if (employeeIds === undefined && reviewSession !== undefined) {
-    void client.findAll(
-      contact.class.PersonAccount,
-      {
+    void client
+      .findAll(contact.class.PersonAccount, {
         _id: {
           $in: reviewSession.members as Ref<PersonAccount>[]
         }
-      }
-    ).then((result) => {
-      if (result !== undefined) {
-        employees = result
-        employeeIds = employees.map(emp => emp.person)
-      }
-    })
+      })
+      .then((result) => {
+        if (result !== undefined) {
+          employees = result
+          employeeIds = employees.map((emp) => emp.person)
+        }
+      })
   }
 
   $: if (employeeIds !== undefined && employeeDetails === undefined) {
-    void client.findAll(
-      contact.class.Person,
-      {
+    void client
+      .findAll(contact.class.Person, {
         _id: {
           $in: employeeIds
         }
-      }
-    ).then((result) => {
-      if (result !== undefined) {
-        employeeDetails = {}
-        result.forEach(res => {
-          (employeeDetails as Record<Ref<Person>, Person>)[res._id as Ref<Person>] = res
-        })
-      }
-    })
+      })
+      .then((result) => {
+        if (result !== undefined) {
+          employeeDetails = {}
+          result.forEach((res) => {
+            ;(employeeDetails as Record<Ref<Person>, Person>)[res._id as Ref<Person>] = res
+          })
+        }
+      })
   }
 
   $: if (kraRefs !== undefined) {
-    void client.findAll(
-      performance.mixin.WithKRA,
-      {
+    void client
+      .findAll(performance.mixin.WithKRA, {
         kra: { $in: kraRefs }
-      }
-    ).then((result) => {
-      if (result !== undefined) {
-        tasks = result
-      }
-    })
+      })
+      .then((result) => {
+        if (result !== undefined) {
+          tasks = result
+        }
+      })
   }
 
   $: {
     if (tasks !== undefined) {
       const updateCompletionLevels = async (): Promise<void> => {
         for (const task of tasks) {
-          taskCompletion[task._id] = await calculateCompletionLevel(task._id) ?? 0
+          taskCompletion[task._id] = (await calculateCompletionLevel(task._id)) ?? 0
         }
       }
       void updateCompletionLevels()
     }
   }
 
+  $: console.log('Tasks', taskCompletion)
+
   $: {
     // Group KRAs by employee using the relationships table
     krasByEmployee = employees.reduce<KRAsByEmployee>((acc, employee) => {
       // Get all EmployeeKRA entries for this employee
-      const employeeKraEntries = employeeKras.filter(entry => entry.employee === employee._id)
+      const employeeKraEntries = employeeKras.filter((entry) => entry.employee === employee._id)
       // For each entry, fetch the corresponding KRA details
-      const employeeKraDetails = employeeKraEntries.map(entry => {
-        const kra = kras.find(k => k._id === entry.kra)
-        if (kra == null || tasks === undefined) return null
-        const filteredTasks = tasks.filter((task) => {
-          const asMixin = client.getHierarchy().as(task, performance.mixin.WithKRA)
-          return asMixin.kra === kra._id
-        })
-        let completionLevel = filteredTasks.reduce<number>(
-          (acc, task) => {
+      const employeeKraDetails = employeeKraEntries
+        .map((entry) => {
+          const kra = kras.find((k) => k._id === entry.kra)
+          if (kra == null || tasks === undefined) return null
+          const filteredTasks = tasks.filter((task) => {
+            const asMixin = client.getHierarchy().as(task, performance.mixin.WithKRA)
+            return asMixin.kra === kra._id
+          })
+          let completionLevel = filteredTasks.reduce<number>((acc, task) => {
             return acc + (taskCompletion[task._id] ?? 0)
-          },
-          0
-        )
-        completionLevel = completionLevel / filteredTasks.length
+          }, 0)
+          completionLevel = filteredTasks.length !== 0 ? completionLevel / filteredTasks.length : 0
 
-        // Return the KRA with employee-specific weight and completion level
-        return {
-          ...kra,
-          weight: entry.weight,
-          completionLevel
-        }
-      }).filter(x => x != null)
+          // Return the KRA with employee-specific weight and completion level
+          return {
+            ...kra,
+            weight: entry.weight,
+            completionLevel
+          }
+        })
+        .filter((x) => x != null)
 
       acc[employee._id] = employeeKraDetails as Array<KRA & { weight: number, completionLevel: number }>
       return acc
@@ -167,20 +166,22 @@
     if (employeeDetails === undefined) {
       return null
     }
-    const employeeNames = employees.map(e =>
-      (employeeDetails as Record<Ref<Person>, Person>)[e.person].name ?? ''
-    )
+    const employeeNames = employees.map((e) => (employeeDetails as Record<Ref<Person>, Person>)[e.person].name ?? '')
 
     // Create a dataset for each KRA
     const datasets = kras.map((kra, index) => {
-      const data = employees.map(employee => {
+      const data = employees.map((employee) => {
         const employeeKraDetails = krasByEmployee[employee._id]
-        const matchingKra = employeeKraDetails.find(k => k._id === kra._id)
+        const matchingKra = employeeKraDetails.find((k) => k._id === kra._id)
+        console.log('detail', matchingKra)
 
         // Calculate contribution to performance score
-        return (matchingKra?.completionLevel != null && matchingKra.weight != null)
-          ? (matchingKra.completionLevel * matchingKra.weight)
-          : 0
+        const d =
+          matchingKra?.completionLevel != null && matchingKra.weight != null
+            ? matchingKra.completionLevel * matchingKra.weight
+            : 0
+        console.log(`${matchingKra?.title} ${matchingKra?.weight} ${matchingKra?.completionLevel} ${d}`)
+        return d * 100
       })
 
       return {
@@ -272,11 +273,9 @@
                 if (employeeKras.length === 0) return ''
 
                 let footerText = '\nKRA Breakdown:'
-                employeeKras.forEach(kra => {
+                employeeKras.forEach((kra) => {
                   footerText += `\n${kra.title} (${kra.weight * 100}%): ${
-                    kra.completionLevel != null
-                    ? kra.completionLevel.toFixed(1)
-                    : 0
+                    kra.completionLevel != null ? kra.completionLevel.toFixed(1) : 0
                   }%`
                 })
 
@@ -299,12 +298,12 @@
 
           const kraName = dataset.label
           const employeeKras = krasByEmployee[employee._id]
-          const kra = employeeKras.find(k => k.title === kraName)
+          const kra = employeeKras.find((k) => k.title === kraName)
 
           if (kra != null) {
             dispatch('segmentClick', {
               employee,
-              kra: (kra as KRA)
+              kra: kra as KRA
             })
           }
         }
@@ -323,14 +322,14 @@
   }
 
   onMount(() => {
-  // When component is first mounted, create chart if data is available
+    // When component is first mounted, create chart if data is available
     if (chartCanvas != null && employees.length > 0 && kras.length > 0) {
       createChart()
     }
   })
 
   afterUpdate(() => {
-  // Check if we need to create or update the chart
+    // Check if we need to create or update the chart
     if (chartCanvas != null && employees.length > 0 && kras.length > 0) {
       if (chart == null) {
         createChart()

@@ -738,7 +738,8 @@
     showPopup(
       AddGoalPopup,
       {
-        issue: object,
+        issue: object._id,
+        space: object.space,
         canEditIssue: false
       },
       'top',

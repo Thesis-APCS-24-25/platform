@@ -4,14 +4,14 @@
   import RatingScaleCircle from './RatingScaleCircle.svelte'
   import GoalPresenterContainer from '../GoalPresenterContainer.svelte'
   import RatingScaleEditPopup from './RatingScaleEditPopup.svelte'
-  import { calculateGoal } from '../../../../utils/goal'
+  import { calculateResult } from '../../../../utils/goal'
 
   export let value: RatingScale
   export let issue: Issue
   export let size: ButtonSize = 'small'
   export let kind: ButtonKind = 'regular'
 
-  $: rating = calculateGoal(value, undefined)
+  $: rating = calculateResult(value, undefined)
 
   const handleOpen = (rating: number, e: MouseEvent): void => {
     e.stopPropagation()

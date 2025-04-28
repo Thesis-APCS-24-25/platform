@@ -1,15 +1,16 @@
 <script lang="ts">
   import { ObjectCreate, ObjectPopup } from '@hcengineering/presentation'
   import kra from '../../../../plugin'
-  import { Issue } from '@hcengineering/kra'
+  import { Project } from '@hcengineering/kra'
+  import { Ref } from '@hcengineering/core'
 
-  export let issue: Issue
+  export let space: Ref<Project>
 
   const create: ObjectCreate = {
     label: kra.string.AddUnit,
     component: kra.component.AddUnitPopup,
     props: {
-      issue
+      space
     }
   }
 </script>

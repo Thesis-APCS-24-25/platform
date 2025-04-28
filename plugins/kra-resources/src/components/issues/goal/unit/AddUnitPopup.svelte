@@ -1,13 +1,13 @@
 <script lang="ts">
   import { Card, getClient } from '@hcengineering/presentation'
-  import { createFocusManager, EditBox, FocusHandler, getFocusManager } from '@hcengineering/ui'
+  import { createFocusManager, EditBox, FocusHandler } from '@hcengineering/ui'
   import kra from '../../../../plugin'
   import ToggleWithLabel from '@hcengineering/ui/src/components/ToggleWithLabel.svelte'
-  import { Issue, Project } from '@hcengineering/kra'
+  import { Project } from '@hcengineering/kra'
   import { createEventDispatcher } from 'svelte'
   import { Ref } from '@hcengineering/core'
 
-  export let space: Ref<Project>
+  export let space: Ref<Project> | undefined
 
   const data = {
     name: '',
@@ -24,6 +24,10 @@
 
   async function handleCreate (): Promise<void> {
     if (!canSave) {
+      return
+    }
+
+    if (space === undefined) {
       return
     }
 
