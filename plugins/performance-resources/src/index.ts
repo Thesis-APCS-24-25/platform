@@ -26,11 +26,13 @@ import KRAEditor from './components/kra/KRAEditor.svelte'
 import { kraStatusSort } from './utils/KraUtils'
 import { type Attribute, type Doc, type DocumentQuery, type Ref, type Space } from '@hcengineering/core'
 import { getAllStates } from '@hcengineering/task-resources'
-import { reviewSessionStatusSort } from './utils/ReviewSessionUtils'
 import PerformanceDashboard from './components/dashboard/Dashboard.svelte'
 import AssignKRA from './components/kra/AssignKRA.svelte'
 import KRAAssigneesEditor from './components/kra/KRAAssigneesEditor.svelte'
 import MyKRAs from './components/kra/MyKRAs.svelte'
+// import ReviewSessionStatusPresenter from './components/review-session/ReviewSessionStatusPresenter.svelte'
+// import ReviewSessionStatusRefPresenter from './components/review-session/ReviewSessionStatusRefPresenter.svelte'
+// import ReviewSessionStateEditor from './components/review-session/ReviewSessionStateEditor.svelte'
 
 export default async (): Promise<Resources> => ({
   component: {
@@ -47,17 +49,13 @@ export default async (): Promise<Resources> => ({
     KRAEditor,
     PerformanceDashboard,
     AssignKRA
+    // ReviewSessionStatusPresenter,
+    // ReviewSessionStatusRefPresenter,
+    // ReviewSessionStateEditor
   },
   function: {
     KRAStatusSort: kraStatusSort,
-    ReviewSessionStatusSort: reviewSessionStatusSort,
     GetAllKRAStates: async (
-      query: DocumentQuery<Doc<Space>> | undefined,
-      onUpdate: () => void,
-      queryId: Ref<Doc<Space>>,
-      attr: Attribute<Status>
-    ) => await getAllStates(query, onUpdate, queryId, attr, false),
-    GetAllReviewSessionStates: async (
       query: DocumentQuery<Doc<Space>> | undefined,
       onUpdate: () => void,
       queryId: Ref<Doc<Space>>,

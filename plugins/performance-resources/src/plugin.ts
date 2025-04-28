@@ -53,11 +53,12 @@ export default mergeIds(performanceId, performance, {
     KRARefPresenter: '' as AnyComponent,
     PerformanceDashboard: '' as AnyComponent,
     AssignKRA: '' as AnyComponent
+    // ReviewSessionStatusPresenter: '' as AnyComponent,
+    // ReviewSessionStatusRefPresenter: '' as AnyComponent,
+    // ReviewSessionStateEditor: '' as AnyComponent
   },
   function: {
     GetAllKRAStates: '' as GetAllValuesFunc,
-    GetAllReviewSessionStates: '' as GetAllValuesFunc,
-    KRAStatusSort: '' as SortFunc,
-    ReviewSessionStatusSort: '' as SortFunc
+    KRAStatusSort: '' as SortFunc
   }
 })

@@ -1,5 +1,5 @@
 import { type Builder } from '@hcengineering/model'
-import { type KRAStatus, performanceId, type ReviewSessionStatus } from '@hcengineering/performance'
+import { type KRAStatus, performanceId } from '@hcengineering/performance'
 import tracker from '@hcengineering/model-tracker'
 import activity from '@hcengineering/activity'
 import chunter from '@hcengineering/chunter'
@@ -10,7 +10,7 @@ import { type Ref, type StatusCategory } from '@hcengineering/core'
 import core from '@hcengineering/model-core'
 import workbench from '@hcengineering/model-workbench'
 import view from '@hcengineering/model-view'
-import { DOMAIN_PERFORMANCE, TDefaultKRAData, TDefaultReviewSessionData, TEmployeeKRA, TKRA, TKRAStatus, TMeasureProgress, TReviewSession, TReviewSessionStatus } from './types'
+import { DOMAIN_PERFORMANCE, TDefaultKRAData, TDefaultReviewSessionData, TEmployeeKRA, TKRA, TKRAStatus, TReviewSession, TMeasureProgress } from './types'
 
 export { performanceId } from '@hcengineering/performance'
 export { performance as default }
@@ -23,7 +23,7 @@ function defineTeam (builder: Builder): void {
 }
 
 function defineReviewSession (builder: Builder): void {
-  builder.createModel(TReviewSession, TReviewSessionStatus, TDefaultReviewSessionData)
+  builder.createModel(TReviewSession, TDefaultReviewSessionData)
 
   builder.createDoc(
     core.class.SpaceTypeDescriptor,
@@ -60,7 +60,13 @@ function defineReviewSession (builder: Builder): void {
     {
       attachTo: performance.class.ReviewSession,
       descriptor: view.viewlet.Table,
-      config: ['name', 'description', 'reviewSessionStatus', 'reviewSessionStart', 'reviewSessionEnd', 'members'],
+      config: [
+        'name',
+        'description',
+        'reviewSessionStart',
+        'reviewSessionEnd',
+        'members'
+      ],
       viewOptions: {
         groupBy: [],
         orderBy: [],
@@ -82,35 +88,17 @@ function defineReviewSession (builder: Builder): void {
     actions: [tracker.action.EditRelatedTargets, tracker.action.NewRelatedIssue]
   })
 
-  builder.createDoc(
-    performance.class.ReviewSessionStatus,
-    core.space.Model,
-    {
-      name: 'Drafting',
-      ofAttribute: performance.attribute.ReviewSessionAttribute
-    },
-    performance.reviewSessionStatus.Drafting
-  )
+  // builder.mixin(performance.class.ReviewSessionStatus, core.class.Class, view.mixin.AttributeEditor, {
+  //   inlineEditor: performance.component.ReviewSessionStateEditor
+  // })
 
-  builder.createDoc(
-    performance.class.ReviewSessionStatus,
-    core.space.Model,
-    {
-      name: 'InProgress',
-      ofAttribute: performance.attribute.ReviewSessionAttribute
-    },
-    performance.reviewSessionStatus.InProgress
-  )
+  // builder.mixin(performance.class.ReviewSessionStatus, core.class.Class, view.mixin.ObjectPresenter, {
+  //   presenter: performance.component.ReviewSessionStatusPresenter
+  // })
 
-  builder.createDoc(
-    performance.class.ReviewSessionStatus,
-    core.space.Model,
-    {
-      name: 'Concluded',
-      ofAttribute: performance.attribute.ReviewSessionAttribute
-    },
-    performance.reviewSessionStatus.Concluded
-  )
+  // builder.mixin(performance.class.ReviewSessionStatus, core.class.Class, view.mixin.AttributePresenter, {
+  //   presenter: performance.component.ReviewSessionStatusRefPresenter
+  // })
 }
 
 function defineKRA (builder: Builder): void {
@@ -274,14 +262,35 @@ function defineSpaceType (builder: Builder): void {
   )
 
   // Review Session
-  const reviewSessionStatuses: Ref<ReviewSessionStatus>[] = []
-  for (const statusId of Object.values(performance.reviewSessionStatus)) {
-    reviewSessionStatuses.push(statusId)
-  }
-  const reviewSessionCategories: Ref<StatusCategory>[] = []
-  for (const category of Object.values(performance.reviewStatusCategory)) {
-    reviewSessionCategories.push(category)
-  }
+  // builder.createDoc(
+  //   core.class.Status,
+  //   core.space.Model,
+  //   {
+  //     name: 'Drafting',
+  //     ofAttribute: performance.attribute.ReviewSessionAttribute
+  //   },
+  //   performance.reviewSessionStatus.Drafting
+  // )
+
+  // builder.createDoc(
+  //   core.class.Status,
+  //   core.space.Model,
+  //   {
+  //     name: 'In Progress',
+  //     ofAttribute: performance.attribute.ReviewSessionAttribute
+  //   },
+  //   performance.reviewSessionStatus.InProgress
+  // )
+
+  // builder.createDoc(
+  //   core.class.Status,
+  //   core.space.Model,
+  //   {
+  //     name: 'Concluded',
+  //     ofAttribute: performance.attribute.ReviewSessionAttribute
+  //   },
+  //   performance.reviewSessionStatus.Concluded
+  // )
 }
 
 function defineApplication (builder: Builder): void {
@@ -307,6 +316,12 @@ function defineApplication (builder: Builder): void {
         ],
         specials: [
           {
+            id: 'dashboard',
+            component: performance.component.PerformanceDashboard,
+            label: performance.string.PerformanceDashboard,
+            position: 'top'
+          },
+          {
             id: 'review-sessions',
             component: workbench.component.SpecialView,
             componentProps: {
@@ -315,21 +330,15 @@ function defineApplication (builder: Builder): void {
             label: performance.string.AllReviewSessions,
             spaceClass: performance.class.ReviewSession,
             addSpaceLabel: performance.string.CreateReviewSessionLabel,
-            position: 'top'
+            position: 'bottom'
           },
           {
-            id: '',
+            id: 'my-kras',
             component: performance.component.MyKRAs,
             label: performance.string.MyKRAs,
             spaceClass: performance.class.KRA,
             addSpaceLabel: performance.string.CreateKraLabel,
-            position: 'top'
-          },
-          {
-            id: 'performance',
-            component: performance.component.PerformanceDashboard,
-            label: performance.string.PerformanceDashboard,
-            position: 'top'
+            position: 'bottom'
           }
         ]
       }
@@ -374,16 +383,8 @@ function defineSortAndGrouping (builder: Builder): void {
     func: performance.function.KRAStatusSort
   })
 
-  builder.mixin(performance.class.ReviewSessionStatus, core.class.Class, view.mixin.SortFuncs, {
-    func: performance.function.ReviewSessionStatusSort
-  })
-
   builder.mixin(performance.class.KRAStatus, core.class.Class, view.mixin.AllValuesFunc, {
     func: performance.function.GetAllKRAStates
-  })
-
-  builder.mixin(performance.class.ReviewSessionStatus, core.class.Class, view.mixin.AllValuesFunc, {
-    func: performance.function.GetAllReviewSessionStates
   })
 }
 

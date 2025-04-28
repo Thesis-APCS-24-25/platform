@@ -45,18 +45,19 @@ export default mergeIds(performanceId, performance, {
     TeamSpacePresenter: '' as AnyComponent,
     PerformanceDashboard: '' as AnyComponent,
     AssignKRA: '' as AnyComponent
+    // ReviewSessionStatusPresenter: '' as AnyComponent,
+    // ReviewSessionStatusRefPresenter: '' as AnyComponent,
+    // ReviewSessionStateEditor: '' as AnyComponent
   },
   function: {
     GetAllKRAStates: '' as GetAllValuesFunc,
-    GetAllReviewSessionStates: '' as GetAllValuesFunc,
-    KRAStatusSort: '' as SortFunc,
-    ReviewSessionStatusSort: '' as SortFunc
+    KRAStatusSort: '' as SortFunc
   },
-  reviewStatusCategory: {
-    Drafting: '' as Ref<StatusCategory>,
-    InProgress: '' as Ref<StatusCategory>,
-    Concluded: '' as Ref<StatusCategory>
-  },
+  // reviewStatusCategory: {
+  //   Drafting: '' as Ref<StatusCategory>,
+  //   InProgress: '' as Ref<StatusCategory>,
+  //   Concluded: '' as Ref<StatusCategory>
+  // },
   kraStatusCategory: {
     Drafting: '' as Ref<StatusCategory>,
     NeedChanges: '' as Ref<StatusCategory>,

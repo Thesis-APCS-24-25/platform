@@ -20,12 +20,9 @@ import { Asset, IntlString, plugin, Plugin, Resource } from '@hcengineering/plat
 import type { Project, ProjectType, Task, TaskType, TaskTypeDescriptor } from '@hcengineering/task'
 import { Viewlet } from '@hcengineering/view'
 
-export interface ReviewSessionStatus extends Status {}
-
 export interface KRAStatus extends Status {}
 
 export interface ReviewSession extends Project {
-  reviewSessionStatus: Ref<ReviewSessionStatus>
   reviewSessionStart: Timestamp
   reviewSessionEnd: Timestamp
   kras?: Arr<Ref<KRA>>
@@ -58,11 +55,9 @@ export default plugin(performanceId, {
     Performance: '' as Ref<Doc>
   },
   attribute: {
-    ReviewSessionAttribute: '' as Ref<Attribute<ReviewSessionStatus>>,
     KRAStatusAttribute: '' as Ref<Attribute<KRAStatus>>
   },
   class: {
-    ReviewSessionStatus: '' as Ref<Class<ReviewSessionStatus>>,
     KRAStatus: '' as Ref<Class<KRAStatus>>,
     ReviewSession: '' as Ref<Class<ReviewSession>>,
     KRA: '' as Ref<Class<KRA>>,
@@ -70,7 +65,6 @@ export default plugin(performanceId, {
   },
   string: {
     KRA: '' as IntlString,
-    ReviewSessionStatus: '' as IntlString,
     ReviewSessionStart: '' as IntlString,
     ReviewSessionEnd: '' as IntlString,
     ReviewSessionKRAs: '' as IntlString,
@@ -83,11 +77,6 @@ export default plugin(performanceId, {
     AttachedKRA: '' as IntlString,
     AttachedEmployee: '' as IntlString,
     KRAWeight: '' as IntlString
-  },
-  reviewSessionStatus: {
-    Drafting: '' as Ref<ReviewSessionStatus>,
-    InProgress: '' as Ref<ReviewSessionStatus>,
-    Concluded: '' as Ref<ReviewSessionStatus>
   },
   kraStatus: {
     Drafting: '' as Ref<KRAStatus>,
