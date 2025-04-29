@@ -10,7 +10,7 @@
   import TeamAndReviewSessionSelector from '../TeamAndReviewSessionSelector.svelte'
   import { Team } from '@hcengineering/kra-team'
 
-  let team: Ref<Team>
+  export let team: Ref<Team>
   let reviewSession: Ref<ReviewSession> | undefined
   const status: Status = OK
 

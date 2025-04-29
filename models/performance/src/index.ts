@@ -128,10 +128,6 @@ function defineKRA (builder: Builder): void {
     component: performance.component.EditKRA
   })
 
-  builder.mixin(performance.class.EmployeeKRA, core.class.Class, view.mixin.ObjectFactory, {
-    component: performance.component.AssignKRA
-  })
-
   builder.mixin(performance.class.ReviewSession, core.class.Class, workbench.mixin.SpaceView, {
     view: {
       class: performance.class.KRA,
@@ -199,7 +195,7 @@ function defineKRA (builder: Builder): void {
     performance.class.KRAStatus,
     core.space.Model,
     {
-      name: 'InProgress',
+      name: 'In Progress',
       ofAttribute: performance.attribute.KRAStatusAttribute
     },
     performance.kraStatus.InProgress

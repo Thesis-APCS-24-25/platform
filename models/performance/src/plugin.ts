@@ -43,8 +43,7 @@ export default mergeIds(performanceId, performance, {
     KRAPresenter: '' as AnyComponent,
     EditKRA: '' as AnyComponent,
     TeamSpacePresenter: '' as AnyComponent,
-    PerformanceDashboard: '' as AnyComponent,
-    AssignKRA: '' as AnyComponent
+    PerformanceDashboard: '' as AnyComponent
     // ReviewSessionStatusPresenter: '' as AnyComponent,
     // ReviewSessionStatusRefPresenter: '' as AnyComponent,
     // ReviewSessionStateEditor: '' as AnyComponent
