@@ -22,9 +22,9 @@
 
   export let value: WithLookup<Issue>
   export let shouldUseMargin: boolean = false
-  export let showParent: boolean = true
+  // export let showParent: boolean = true
   export let kind: 'list' | undefined = undefined
-  export let disabled: boolean = false
+  // export let disabled: boolean = false
   export let maxWidth: string | undefined = undefined
 
   let element: HTMLSpanElement

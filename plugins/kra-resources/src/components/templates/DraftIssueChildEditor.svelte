@@ -20,11 +20,9 @@
   import { TaskType } from '@hcengineering/task'
   import { TaskKindSelector } from '@hcengineering/task-resources'
   import {
-    Component as ComponentType,
     Issue,
     IssueDraft,
     IssuePriority,
-    Milestone,
     Project
   } from '@hcengineering/kra'
   import { Button, Component, EditBox } from '@hcengineering/ui'
@@ -37,8 +35,6 @@
 
   export let parendIssueId: Ref<Issue>
   export let project: Project
-  export let milestone: Ref<Milestone> | null = null
-  export let component: Ref<ComponentType> | null = null
   export let childIssue: IssueDraft | undefined = undefined
   export let showBorder = false
   export let shouldSaveDraft: boolean = false
@@ -47,9 +43,14 @@
   const client = getClient()
   const draftController = new DraftController<IssueDraft>(`${parendIssueId}_subIssue`)
   const draft = shouldSaveDraft ? draftController.get() : undefined
-  let object = childIssue !== undefined ? childIssue : draft ?? getIssueDefaults()
+  let object = childIssue ?? draft ?? getIssueDefaults()
   let thisRef: HTMLDivElement
   let focusIssueTitle: () => void
+
+  $: thisRef != null && thisRef.scrollIntoView({ behavior: 'smooth' })
+  $: canSave = getTitle(object.title ?? '').length > 0
+
+  $: objectId = object._id
 
   onDestroy(() => {
     draftController.destroy()
@@ -75,9 +76,7 @@
       subIssues: [],
       attachments: 0,
       labels: [],
-      component,
       priority: IssuePriority.NoPriority,
-      milestone,
       estimation: 0
     }
   }
@@ -86,12 +85,10 @@
     space: project._id,
     status: project.defaultIssueStatus,
     assignee: project.defaultAssignee ?? null,
-    component,
-    priority: IssuePriority.NoPriority,
-    milestone
+    priority: IssuePriority.NoPriority
   }
 
-  function objectChange (object: IssueDraft, empty: any) {
+  function objectChange (object: IssueDraft, empty: any): void {
     if (shouldSaveDraft) {
       draftController.save(object, empty)
     }
@@ -99,30 +96,30 @@
 
   $: objectChange(object, empty)
 
-  function resetToDefaults () {
+  function resetToDefaults (): void {
     object = getIssueDefaults()
     focusIssueTitle?.()
   }
 
-  function getTitle (value: string) {
+  function getTitle (value: string): string {
     return value.trim()
   }
 
-  export function removeDraft () {
+  export function removeDraft (): void {
     draftController.remove()
   }
 
-  function close () {
+  function close (): void {
     removeDraft()
     dispatch('close')
   }
 
-  async function createIssue () {
+  async function createIssue (): Promise<void> {
     if (!canSave) {
       return
     }
 
-    dispatch(childIssue ? 'close' : 'create', object)
+    dispatch(childIssue !== undefined ? 'close' : 'create', object)
 
     removeDraft()
     resetToDefaults()
@@ -147,11 +144,6 @@
   function addTagRef (tag: TagElement): void {
     object.labels = [...object.labels, tagAsRef(tag)]
   }
-
-  $: thisRef && thisRef.scrollIntoView({ behavior: 'smooth' })
-  $: canSave = getTitle(object.title ?? '').length > 0
-
-  $: objectId = object._id
 </script>
 
 <div

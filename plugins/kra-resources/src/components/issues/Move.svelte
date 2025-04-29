@@ -196,12 +196,8 @@
   {:else if loading}<Spinner />{/if}
 
   <svelte:fragment slot="blocks" let:block>
-    {#if !showManageAttributes}
-      {#if targetProject !== undefined && !keepOriginalAttribytes}
-      {/if}
-    {:else if toMove.length > 0 && targetProject}
+    {#if toMove.length > 0 && targetProject}
       {@const issue = toMove[block]}
-      {@const upd = issueToUpdate.get(issue._id) ?? {}}
       {#key keepOriginalAttribytes}
         {#if issue.space !== targetProject._id}
           <div class="flex-row-center min-h-9 gap-1-5 content-color">

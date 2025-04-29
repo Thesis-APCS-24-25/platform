@@ -123,10 +123,6 @@
     padding: 0.75rem;
     padding-top: 0.5rem;
   }
-  .buttons {
-    display: flex;
-    gap: 0.5rem;
-  }
   .empty-state {
     display: flex;
     align-items: center;

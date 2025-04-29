@@ -16,7 +16,7 @@
   import { Ref } from '@hcengineering/core'
   import { ActionContext, createQuery } from '@hcengineering/presentation'
   import { TaskKindSelector } from '@hcengineering/task-resources'
-  import tracker, { Component, Issue, IssueTemplateChild, Milestone, Project } from '@hcengineering/kra'
+  import tracker, { Issue, IssueTemplateChild, Project } from '@hcengineering/kra'
   import { IconCircles, eventToHTMLElement, showPopup } from '@hcengineering/ui'
   import { FixedColumn } from '@hcengineering/view-resources'
   import { createEventDispatcher } from 'svelte'
@@ -28,8 +28,6 @@
 
   export let issues: IssueTemplateChild[]
   export let project: Ref<Project>
-  export let milestone: Ref<Milestone> | null = null
-  export let component: Ref<Component> | null = null
 
   const dispatch = createEventDispatcher()
 
@@ -43,8 +41,6 @@
       {
         showBorder: true,
         projectId: project,
-        milestone,
-        component,
         childIssue: target
       },
       eventToHTMLElement(evt),

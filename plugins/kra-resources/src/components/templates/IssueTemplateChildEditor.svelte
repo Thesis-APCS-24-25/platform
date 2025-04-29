@@ -19,10 +19,8 @@
   import { TaskKindSelector } from '@hcengineering/task-resources'
   import { StyledTextArea } from '@hcengineering/text-editor-resources'
   import {
-    Component as ComponentType,
     IssuePriority,
     IssueTemplateChild,
-    Milestone,
     Project
   } from '@hcengineering/kra'
   import { Button, Component, EditBox } from '@hcengineering/ui'
@@ -33,8 +31,6 @@
   import EstimationEditor from './EstimationEditor.svelte'
 
   export let projectId: Ref<Project>
-  export let milestone: Ref<Milestone> | null = null
-  export let component: Ref<ComponentType> | null = null
   export let childIssue: IssueTemplateChild | undefined = undefined
   export let showBorder = false
   export let isScrollable: boolean = false
@@ -67,9 +63,7 @@
       title: '',
       description: '',
       assignee: null,
-      component: null,
       priority: IssuePriority.NoPriority,
-      milestone,
       estimation: 0
     }
   }
@@ -100,7 +94,6 @@
     const value: IssueTemplateChild = {
       ...newIssue,
       title: getTitle(newIssue.title),
-      component: component ?? null,
       labels: labels.map((it) => it._id)
     }
     if (childIssue === undefined) {

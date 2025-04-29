@@ -8,7 +8,7 @@
 
   export let value: WithLookup<Issue>
 
-  export let kind: GoalPresenterKind
+  export let kind: ButtonKind
   export let size: ButtonSize = 'small'
   export let justify: 'left' | 'center' = 'left'
   export let width: string | undefined = undefined

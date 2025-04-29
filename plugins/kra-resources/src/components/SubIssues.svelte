@@ -19,7 +19,7 @@
   import tags from '@hcengineering/tags'
   import { makeRank } from '@hcengineering/task'
   import { isEmptyMarkup } from '@hcengineering/text'
-  import { Component, Issue, IssueDraft, IssueParentInfo, Milestone, Project } from '@hcengineering/kra'
+  import { Issue, IssueDraft, IssueParentInfo, Project } from '@hcengineering/kra'
   import { Button, ExpandCollapse, Scroller } from '@hcengineering/ui'
   import { onDestroy } from 'svelte'
   import tracker from '../plugin'
@@ -28,12 +28,10 @@
   import DraftIssueChildList from './templates/DraftIssueChildList.svelte'
   export let projectId: Ref<Project>
   export let project: Project | undefined
-  export let milestone: Ref<Milestone> | null = null
-  export let component: Ref<Component> | null = null
   export let subIssues: IssueDraft[] = []
   let lastProject = project
   let isCollapsed = false
-  async function handleIssueSwap (ev: CustomEvent<{ fromIndex: number, toIndex: number }>) {
+  async function handleIssueSwap (ev: CustomEvent<{ fromIndex: number, toIndex: number }>): Promise<void> {
     if (subIssues) {
       const { fromIndex, toIndex } = ev.detail
       const [fromIssue] = subIssues.splice(fromIndex, 1)
@@ -43,7 +41,7 @@
     }
   }
   $: onProjectChange(project)
-  function onProjectChange (project: Project | undefined) {
+  function onProjectChange (project: Project | undefined): void {
     if (lastProject?._id === project?._id) return
     lastProject = project
     if (project === undefined) return
@@ -54,7 +52,7 @@
   }
   const client = getClient()
   // TODO: move to utils
-  export async function save (parents: IssueParentInfo[], _id: Ref<Doc>) {
+  export async function save (parents: IssueParentInfo[], _id: Ref<Doc>): Promise<void> {
     if (project === undefined) return
     saved = true
     for (const subIssue of subIssues) {
@@ -74,8 +72,6 @@
         title: subIssue.title.trim(),
         description: null,
         assignee: subIssue.assignee,
-        component: subIssue.component,
-        milestone: subIssue.milestone,
         number,
         status: subIssue.status ?? project.defaultIssueStatus,
         priority: subIssue.priority,
@@ -120,7 +116,7 @@
       saveAttachments(childId)
     }
   }
-  async function saveAttachments (issue: Ref<Issue>) {
+  async function saveAttachments (issue: Ref<Issue>): Promise<void> {
     const draftAttachments = $draftsStore[`${issue}_attachments`]
     if (draftAttachments) {
       for (const key in draftAttachments) {
@@ -140,7 +136,7 @@
       doc._id
     )
   }
-  export function load (value: IssueDraft[]) {
+  export function load (value: IssueDraft[]): void {
     subIssues = value
   }
   let saved = false
@@ -182,8 +178,6 @@
     <div class="flex-col flex-no-shrink max-h-30 list clear-mins" class:collapsed={isCollapsed}>
       <Scroller>
         <DraftIssueChildList
-          {component}
-          {milestone}
           bind:issues={subIssues}
           project={projectId}
           on:move={handleIssueSwap}
