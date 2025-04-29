@@ -901,6 +901,11 @@
       "shouldPublish": false
     },
     {
+      "packageName": "@hcengineering/tool",
+      "projectFolder": "dev/tool",
+      "shouldPublish": false
+    },
+    {
       "packageName": "@hcengineering/pod-workspace",
       "projectFolder": "pods/workspace",
       "shouldPublish": false
