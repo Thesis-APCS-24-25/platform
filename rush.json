@@ -901,21 +901,6 @@
       "shouldPublish": false
     },
     {
-      "packageName": "@hcengineering/tool",
-      "projectFolder": "dev/tool",
-      "shouldPublish": false
-    },
-    {
-      "packageName": "@hcengineering/import-tool",
-      "projectFolder": "dev/import-tool",
-      "shouldPublish": false
-    },
-    {
-      "packageName": "@hcengineering/pod-account",
-      "projectFolder": "pods/account",
-      "shouldPublish": false
-    },
-    {
       "packageName": "@hcengineering/pod-workspace",
       "projectFolder": "pods/workspace",
       "shouldPublish": false
@@ -2059,11 +2044,6 @@
       "shouldPublish": false
     },
     {
-      "packageName": "@hcengineering/pod-github",
-      "projectFolder": "services/github/pod-github",
-      "shouldPublish": false
-    },
-    {
       "packageName": "@hcengineering/server-github",
       "projectFolder": "services/github/server-github",
       "shouldPublish": false
@@ -2099,56 +2079,6 @@
       "shouldPublish": false
     },
     {
-      "packageName": "@hcengineering/pod-ses",
-      "projectFolder": "services/ses/pod-ses",
-      "shouldPublish": false
-    },
-    {
-      "packageName": "@hcengineering/pod-telegram",
-      "projectFolder": "services/telegram/pod-telegram",
-      "shouldPublish": false
-    },
-    {
-      "packageName": "@hcengineering/pod-gmail",
-      "projectFolder": "services/gmail/pod-gmail",
-      "shouldPublish": false
-    },
-    {
-      "packageName": "@hcengineering/pod-calendar",
-      "projectFolder": "services/calendar/pod-calendar",
-      "shouldPublish": false
-    },
-    {
-      "packageName": "@hcengineering/qms-doc-import-tool",
-      "projectFolder": "dev/doc-import-tool",
-      "shouldPublish": false
-    },
-    {
-      "packageName": "@hcengineering/pod-love",
-      "projectFolder": "services/love",
-      "shouldPublish": false
-    },
-    {
-      "packageName": "@hcengineering/pod-print",
-      "projectFolder": "services/print/pod-print",
-      "shouldPublish": false
-    },
-    {
-      "packageName": "@hcengineering/pod-sign",
-      "projectFolder": "services/sign/pod-sign",
-      "shouldPublish": false
-    },
-    {
-      "packageName": "@hcengineering/rekoni-service",
-      "projectFolder": "services/rekoni",
-      "shouldPublish": false
-    },
-    {
-      "packageName": "@hcengineering/pod-analytics-collector",
-      "projectFolder": "services/analytics-collector/pod-analytics-collector",
-      "shouldPublish": false
-    },
-    {
       "packageName": "@hcengineering/analytics-collector",
       "projectFolder": "plugins/analytics-collector",
       "shouldPublish": false
@@ -2179,11 +2109,6 @@
       "shouldPublish": false
     },
     {
-      "packageName": "@hcengineering/pod-ai-bot",
-      "projectFolder": "services/ai-bot/pod-ai-bot",
-      "shouldPublish": false
-    },
-    {
       "packageName": "@hcengineering/ai-bot",
       "projectFolder": "plugins/ai-bot",
       "shouldPublish": false
@@ -2211,11 +2136,6 @@
     {
       "packageName": "@hcengineering/server-ai-bot-resources",
       "projectFolder": "server-plugins/ai-bot-resources",
-      "shouldPublish": false
-    },
-    {
-      "packageName": "@hcengineering/pod-telegram-bot",
-      "projectFolder": "services/telegram-bot/pod-telegram-bot",
       "shouldPublish": false
     },
     {
@@ -2296,11 +2216,6 @@
     {
       "packageName": "@hcengineering/card-resources",
       "projectFolder": "plugins/card-resources",
-      "shouldPublish": false
-    },
-    {
-      "packageName": "@hcengineering/green",
-      "projectFolder": "pods/green",
       "shouldPublish": false
     },
     {
