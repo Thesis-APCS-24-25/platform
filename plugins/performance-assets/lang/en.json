@@ -30,6 +30,7 @@
     "Assignees": "Assignees",
     "AttachedEmployee": "Attached Employee",
     "KRAWeight": "KRA Weight",
-    "KRA": "KRA"
+    "KRA": "KRA",
+    "ReviewSessionKRAs": "Review Session KRAs"
   }
 }
