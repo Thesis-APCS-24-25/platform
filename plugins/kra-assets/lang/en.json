@@ -300,7 +300,10 @@
     "AddUnit": "Add unit",
     "Kpi": "KPI",
     "Prefix": "Prefix",
-    "AddSymbolPlaceholder": "Add symbol\u2026"
+    "AddSymbolPlaceholder": "Add symbol\u2026",
+    "Report": "Report",
+    "Date": "Date",
+    "Comment": "Comment"
   },
   "status": {}
 }

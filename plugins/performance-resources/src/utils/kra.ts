@@ -138,7 +138,6 @@ export async function calculateCompletionLevel (task: Ref<Task> | Task): Promise
     if (measure !== undefined) {
       const fn = await getResource(measure.calculate)
       const d = await fn?.(task._id)
-      console.log(d)
       return d
     }
     return undefined
@@ -146,13 +145,11 @@ export async function calculateCompletionLevel (task: Ref<Task> | Task): Promise
 
   if (typeof task === 'object') {
     const d = await calculate(task)
-    console.log(`${task.identifier} - ${d}`)
     return d
   } else {
     const _task = await client.findOne(hcTask.class.Task, { _id: task })
     if (_task !== undefined) {
       const d = await calculate(_task)
-      console.log(`${_task.identifier} - ${d}`, d)
       return d
     }
   }

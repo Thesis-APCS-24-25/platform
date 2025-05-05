@@ -1,10 +1,11 @@
 <script lang="ts">
-  import { ButtonKind, ButtonSize, Component } from '@hcengineering/ui'
+  import { ButtonSize, Component } from '@hcengineering/ui'
   import { Goal, Issue } from '@hcengineering/kra'
   import { createQuery, getClient } from '@hcengineering/presentation'
   import view, { AttributePresenter } from '@hcengineering/view'
   import { Doc, Space, WithLookup } from '@hcengineering/core'
   import kra from '../../../plugin'
+  import { GoalPresenterKind } from '../../../types'
 
   export let value: WithLookup<Issue>
 

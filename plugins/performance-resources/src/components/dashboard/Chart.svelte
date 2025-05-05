@@ -6,7 +6,7 @@
   import { getClient } from '@hcengineering/presentation'
   import performance from '@hcengineering/performance'
   import { Ref } from '@hcengineering/core'
-  import { calculateCompletionLevel } from '../../utils/KraUtils'
+  import { calculateCompletionLevel } from '../../utils/kra'
 
   // Register all Chart.js components
   Chart.register(...registerables)

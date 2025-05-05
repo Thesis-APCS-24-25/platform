@@ -1,9 +1,8 @@
 <script lang="ts">
   import { WithLookup } from '@hcengineering/core'
-  import { Unit } from '@hcengineering/kra'
+  import { Unit, Report } from '@hcengineering/kra'
   import { createQuery } from '@hcengineering/presentation'
-  import kra from '../../../plugin'
-  import Report from '../../../../../setting-resources/src/components/icons/Report.svelte'
+  import kra from '../../../../plugin'
 
   export let value: WithLookup<Report>
 

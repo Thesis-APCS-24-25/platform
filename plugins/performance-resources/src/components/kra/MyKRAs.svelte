@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Ref, Class, Doc, Space, DocumentQuery, getCurrentAccount } from '@hcengineering/core'
+  import { Ref, Doc, Space, DocumentQuery, getCurrentAccount } from '@hcengineering/core'
   import { Asset, IntlString } from '@hcengineering/platform'
   import { AnyComponent, IModeSelector } from '@hcengineering/ui'
   import { ViewletDescriptor } from '@hcengineering/view'

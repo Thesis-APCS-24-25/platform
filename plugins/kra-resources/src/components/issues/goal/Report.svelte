@@ -1,7 +1,7 @@
 <script lang="ts">
   import { WithLookup } from '@hcengineering/core'
   import { Report, Unit } from '@hcengineering/kra'
-  import { createQuery, getClient } from '@hcengineering/presentation'
+  import { createQuery } from '@hcengineering/presentation'
   import kra from '../../../plugin'
 
   export let value: WithLookup<Report>

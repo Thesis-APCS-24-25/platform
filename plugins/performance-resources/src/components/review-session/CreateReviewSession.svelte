@@ -10,7 +10,7 @@
   import { createEventDispatcher } from 'svelte'
 
   import performance from '../../plugin'
-  import { createReviewSession } from '../../utils/ReviewSessionUtils'
+  import { createReviewSession } from '../../utils/review-session'
     import kraTeam, { Team } from '@hcengineering/kra-team'
   import TeamPresenter from '../team/TeamPresenter.svelte'
 
