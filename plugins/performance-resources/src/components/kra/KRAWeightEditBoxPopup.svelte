@@ -23,8 +23,8 @@
 
   function calculateRemaining (value: number): number {
     const total = otherWeights.reduce((acc, item) => acc + item.value, 0)
-    const result = 100 - total - value
-    return result < 0 ? 0 : result
+    const result = 1 - total - value
+    return result < 0 ? 0 : result * 100
   }
 
   $: remaining = calculateRemaining(typeof value === 'number' ? value : 0)
