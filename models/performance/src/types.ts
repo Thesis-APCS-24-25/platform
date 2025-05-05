@@ -33,8 +33,7 @@ export class TReviewSession extends TProject implements ReviewSession {
   @Prop(TypeDate(), performance.string.ReviewSessionEnd)
     reviewSessionEnd!: Timestamp
 
-  @Prop(ArrOf(TypeRef(performance.class.KRA)), performance.string.ReviewSessionKRAs)
-    kras?: Arr<Ref<KRA>>
+  kras?: Arr<Ref<KRA>>
 }
 
 @Model(performance.class.KRA, task.class.Task)
