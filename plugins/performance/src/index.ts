@@ -15,7 +15,7 @@
 //
 
 import { type PersonAccount } from '@hcengineering/contact'
-import type { Arr, Attribute, Class, Doc, Mixin, Ref, SpaceType, SpaceTypeDescriptor, Status, Timestamp } from '@hcengineering/core'
+import type { Attribute, Class, Doc, Mixin, Ref, SpaceType, SpaceTypeDescriptor, Status, Timestamp } from '@hcengineering/core'
 import { Asset, IntlString, plugin, Plugin, Resource } from '@hcengineering/platform'
 import type { Project, ProjectType, Task, TaskType, TaskTypeDescriptor } from '@hcengineering/task'
 import { Viewlet } from '@hcengineering/view'
@@ -25,7 +25,6 @@ export interface KRAStatus extends Status {}
 export interface ReviewSession extends Project {
   reviewSessionStart: Timestamp
   reviewSessionEnd: Timestamp
-  kras?: Arr<Ref<KRA>>
 }
 
 export interface KRA extends Task {

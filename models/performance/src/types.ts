@@ -1,11 +1,11 @@
-import { ArrOf, Index, Mixin, Model, Prop, TypeDate, TypeNumber, TypeRef, TypeString } from '@hcengineering/model'
+import { Index, Mixin, Model, Prop, TypeDate, TypeNumber, TypeRef, TypeString } from '@hcengineering/model'
 
 import performance from './plugin'
 import core, { TClass, TDoc, TStatus } from '@hcengineering/model-core'
 import type { EmployeeKRA, KRA, KRAStatus, MeasureProgress, ReviewSession } from '@hcengineering/performance'
 import { TProject, TTask } from '@hcengineering/model-task'
 import task, { type Task } from '@hcengineering/task'
-import { Account, type Arr, type Domain, IndexKind, Ref, type Role, type RolesAssignment, type Timestamp } from '@hcengineering/core'
+import { Account, type Domain, IndexKind, Ref, type Role, type RolesAssignment, type Timestamp } from '@hcengineering/core'
 import contact, { type PersonAccount } from '@hcengineering/contact'
 import { type Resource } from '@hcengineering/platform'
 
@@ -32,8 +32,6 @@ export class TReviewSession extends TProject implements ReviewSession {
 
   @Prop(TypeDate(), performance.string.ReviewSessionEnd)
     reviewSessionEnd!: Timestamp
-
-  kras?: Arr<Ref<KRA>>
 }
 
 @Model(performance.class.KRA, task.class.Task)
