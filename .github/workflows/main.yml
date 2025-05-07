@@ -513,7 +513,7 @@ jobs:
           name: docker-logs-ws
           path: ./ws-tests/sanity/logs
   docker-build:
-    needs: [build, test, svelte-check, uitest]
+    needs: [build, test, svelte-check]
     runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
@@ -676,23 +676,3 @@ jobs:
           r2-bucket: desktop-distro
           source-dir: desktop-package/${{ env.PublishTempFolder}}
           destination-dir: ./
-      - name: Upload MacOS
-        uses: actions/upload-artifact@v4
-        with:
-          name: Huly-MacOS-x64
-          path: ./desktop-package/deploy/Huly-macos-*-x64.dmg
-      - name: Upload MacOS arm64
-        uses: actions/upload-artifact@v4
-        with:
-          name: Huly-MacOS-arm64
-          path: ./desktop-package/deploy/Huly-macos-*-arm64.dmg
-      - name: Upload Windows
-        uses: actions/upload-artifact@v4
-        with:
-          name: Huly-Windows
-          path: ./desktop-package/deploy/Huly-windows-*.zip
-      - name: Upload Linux
-        uses: actions/upload-artifact@v4
-        with:
-          name: Huly-Linux
-          path: ./desktop-package/deploy/Huly-linux-*.zip
