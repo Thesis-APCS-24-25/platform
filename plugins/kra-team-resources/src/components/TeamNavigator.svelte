@@ -1,6 +1,5 @@
 <script lang="ts">
-  import kraTeam from '../plugins'
-  import { Label, Scroller } from '@hcengineering/ui'
+  import { Scroller } from '@hcengineering/ui'
   import TeamSpacesNavigator from './TeamSpacesNavigator.svelte'
   import { NavFooter } from '@hcengineering/workbench-resources'
   import { Ref } from '@hcengineering/core'

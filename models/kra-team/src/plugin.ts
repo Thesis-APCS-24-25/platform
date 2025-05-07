@@ -1,6 +1,6 @@
 import { type Permission, type Ref, type Role } from '@hcengineering/core'
 import kraTeam, { kraTeamId } from '@hcengineering/kra-team'
-import { type Asset, type IntlString, mergeIds } from '@hcengineering/platform'
+import { type IntlString, mergeIds } from '@hcengineering/platform'
 import { type AnyComponent } from '@hcengineering/ui'
 
 export default mergeIds(kraTeamId, kraTeam, {
@@ -24,7 +24,6 @@ export default mergeIds(kraTeamId, kraTeam, {
     RolePresenter: '' as AnyComponent,
     MemberRolePresenter: '' as AnyComponent,
     Team: '' as AnyComponent,
-    AllTeams: '' as AnyComponent,
     MemberPresenter: '' as AnyComponent,
     CreateTeam: '' as AnyComponent,
     Members: '' as AnyComponent,

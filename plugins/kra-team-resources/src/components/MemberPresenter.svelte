@@ -1,6 +1,6 @@
 <script lang="ts">
   import { Member } from '@hcengineering/kra-team'
-  import { createQuery, getClient } from '@hcengineering/presentation'
+  import { getClient } from '@hcengineering/presentation'
   import contact from '@hcengineering/contact'
   export let value: Member | undefined
 

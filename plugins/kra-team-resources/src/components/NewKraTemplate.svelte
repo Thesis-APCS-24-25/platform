@@ -2,10 +2,11 @@
   import { Ref } from '@hcengineering/core'
   import kraTeam from '../plugins'
   import { Team } from '@hcengineering/kra-team'
-  import { Card, getClient, SpaceSelector } from '@hcengineering/presentation'
+  import { Card } from '@hcengineering/presentation'
   import { Button, ButtonIcon, EditBox, ExpandCollapse } from '@hcengineering/ui'
   import Collapsed from './icons/Collapsed.svelte'
   import Expanded from './icons/Expanded.svelte'
+
   export let space: Ref<Team> | undefined
 
   let name = ''
