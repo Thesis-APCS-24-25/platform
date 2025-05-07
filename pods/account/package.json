@@ -15,7 +15,7 @@
     "_phase:docker-build": "rushx docker:build",
     "_phase:docker-staging": "rushx docker:staging",
     "bundle": "node ../../common/scripts/esbuild.js --entry=src/__start.ts --keep-names=true --define=MODEL_VERSION --sourcemap=external --external=*.node --external=snappy",
-    "docker:build": "../../common/scripts/docker_build.sh hardcoreeng/account",
+    "docker:build": "../../common/scripts/docker_build.sh asia-southeast1-docker.pkg.dev/thesis2425/platform/account",
     "docker:tbuild": "docker build -t asia-southeast1-docker.pkg.dev/thesis2425/platform/account . --platform=linux/amd64 && ../../common/scripts/docker_tag_push.sh asia-southeast1-docker.pkg.dev/thesis2425/platform/account",
     "docker:abuild": "docker build -t asia-southeast1-docker.pkg.dev/thesis2425/platform/account . --platform=linux/arm64 && ../../common/scripts/docker_tag_push.sh asia-southeast1-docker.pkg.dev/thesis2425/platform/account",
     "docker:staging": "../../common/scripts/docker_tag.sh asia-southeast1-docker.pkg.dev/thesis2425/platform/account staging",

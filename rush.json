@@ -906,6 +906,11 @@
       "shouldPublish": false
     },
     {
+      "packageName": "@hcengineering/pod-account",
+      "projectFolder": "pods/account",
+      "shouldPublish": false
+    },
+    {
       "packageName": "@hcengineering/pod-workspace",
       "projectFolder": "pods/workspace",
       "shouldPublish": false
