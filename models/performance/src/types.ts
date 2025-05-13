@@ -1,11 +1,11 @@
-import { Index, Mixin, Model, Prop, TypeDate, TypeNumber, TypeRef, TypeString } from '@hcengineering/model'
+import { ArrOf, Index, Mixin, Model, Prop, TypeDate, TypeNumber, TypeRef, TypeString } from '@hcengineering/model'
 
 import performance from './plugin'
 import core, { TClass, TDoc, TStatus } from '@hcengineering/model-core'
-import type { EmployeeKRA, KRA, KRAStatus, MeasureProgress, ReviewSession } from '@hcengineering/performance'
+import type { EmployeeKRA, KRA, KRAStatus, MeasureProgress, PerformanceReport, ReviewComment, ReviewSession } from '@hcengineering/performance'
 import { TProject, TTask } from '@hcengineering/model-task'
 import task, { type Task } from '@hcengineering/task'
-import { Account, type Domain, IndexKind, Ref, type Role, type RolesAssignment, type Timestamp } from '@hcengineering/core'
+import { Account, type Arr, type Domain, IndexKind, Ref, type Role, type RolesAssignment, type Timestamp } from '@hcengineering/core'
 import contact, { type PersonAccount } from '@hcengineering/contact'
 import { type Resource } from '@hcengineering/platform'
 
@@ -57,6 +57,30 @@ export class TEmployeeKRA extends TDoc implements EmployeeKRA {
 
   @Prop(TypeNumber(), performance.string.KRAWeight)
     weight!: number
+}
+
+@Model(performance.class.ReviewComment, core.class.Doc, DOMAIN_PERFORMANCE)
+export class TReviewComment extends TDoc implements ReviewComment {
+  @Prop(TypeRef(contact.class.PersonAccount), performance.string.ReviewCommentAuthor)
+    author!: Ref<PersonAccount>
+
+  @Prop(TypeString(), performance.string.ReviewerComment)
+    comment!: string
+
+  @Prop(TypeNumber(), performance.string.ReviewerScore)
+    score?: number
+}
+
+@Model(performance.class.PerformanceReport, core.class.Doc, DOMAIN_PERFORMANCE)
+export class TPerformanceReport extends TDoc implements PerformanceReport {
+  @Prop(TypeRef(contact.class.PersonAccount), performance.string.Reviewee)
+    reviewee!: Ref<PersonAccount>
+
+  @Prop(TypeRef(performance.class.ReviewSession), performance.string.ReviewSession)
+    reviewSession!: Ref<ReviewSession>
+
+  @Prop(ArrOf(TypeRef(performance.class.ReviewComment)), performance.string.ReviewComments)
+    reviewComments!: Arr<Ref<ReviewComment>>
 }
 
 @Mixin(performance.mixin.DefaultReviewSessionData, performance.class.ReviewSession)

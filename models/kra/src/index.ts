@@ -25,9 +25,9 @@ import view from '@hcengineering/model-view'
 import workbench from '@hcengineering/model-workbench'
 import notification from '@hcengineering/notification'
 import setting from '@hcengineering/setting'
-import pluginState, { Issue, kraId } from '@hcengineering/kra'
+import pluginState, { kraId } from '@hcengineering/kra'
 
-import type { Task, TaskStatusFactory } from '@hcengineering/task'
+import type { TaskStatusFactory } from '@hcengineering/task'
 import { PaletteColorIndexes } from '@hcengineering/ui/src/colors'
 import { createActions as defineActions } from './actions'
 import kra from './plugin'
@@ -574,7 +574,8 @@ export function createModel (builder: Builder): void {
       { modifiedBy: 1 },
       { createdBy: 1 },
       { relations: 1 },
-      { createdOn: -1 }
+      { createdOn: -1 },
+      { kra: 1 }
     ]
   })
 

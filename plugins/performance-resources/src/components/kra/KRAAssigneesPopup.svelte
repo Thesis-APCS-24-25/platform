@@ -89,5 +89,4 @@
       />
     {/if}
   </div>
-  >
 </ObjectPopup>

@@ -240,6 +240,8 @@ export interface Issue extends Task {
   todos?: CollectionSize<ToDo>
 
   goal?: Ref<Goal>
+
+  kra: Ref<KRA>
 }
 
 /**
@@ -269,7 +271,7 @@ export interface IssueDraft {
     childId?: string
   }
   goal?: Ref<Goal>
-  kra?: Ref<KRA>
+  kra: Ref<KRA>
 }
 
 /**

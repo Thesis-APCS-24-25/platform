@@ -31,6 +31,10 @@
     "AttachedEmployee": "Attached Employee",
     "KRAWeight": "KRA Weight",
     "KRA": "KRA",
-    "ReviewSessionKRAs": "Review Session KRAs"
+    "ReviewSessionKRAs": "Review Session KRAs",
+    "SelectTeam": "Select Team",
+    "SelectReviewSession": "Select Review Session",
+    "PerformanceReports": "Performance Reports",
+    "NoKRA": "No KRA"
   }
 }

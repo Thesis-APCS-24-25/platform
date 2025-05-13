@@ -29,6 +29,11 @@ import { getAllStates } from '@hcengineering/task-resources'
 import PerformanceDashboard from './components/dashboard/Dashboard.svelte'
 import KRAAssigneesEditor from './components/kra/KRAAssigneesEditor.svelte'
 import MyKRAs from './components/kra/MyKRAs.svelte'
+import PerformanceReports from './components/report/PerformanceReports.svelte'
+import ReportPanel from './components/report/ReportPanel.svelte'
+import ReportPresenter from './components/report/ReportPresenter.svelte'
+import CreateReport from './components/report/CreateReport.svelte'
+import CreateReportButton from './components/report/CreateReportButton.svelte'
 // import ReviewSessionStatusPresenter from './components/review-session/ReviewSessionStatusPresenter.svelte'
 // import ReviewSessionStatusRefPresenter from './components/review-session/ReviewSessionStatusRefPresenter.svelte'
 // import ReviewSessionStateEditor from './components/review-session/ReviewSessionStateEditor.svelte'
@@ -46,7 +51,12 @@ export default async (): Promise<Resources> => ({
     TeamSpacePresenter,
     KRARefPresenter,
     KRAEditor,
-    PerformanceDashboard
+    PerformanceDashboard,
+    PerformanceReports,
+    ReportPanel,
+    ReportPresenter,
+    CreateReport,
+    CreateReportButton
     // ReviewSessionStatusPresenter,
     // ReviewSessionStatusRefPresenter,
     // ReviewSessionStateEditor

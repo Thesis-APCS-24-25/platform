@@ -27,7 +27,7 @@ import kra from './plugin'
 import tags from '@hcengineering/tags'
 import { defaultPriorities, issuePriorities } from '@hcengineering/kra-resources/src/types'
 
-function createGotoSpecialAction(
+function createGotoSpecialAction (
   builder: Builder,
   id: string,
   key: KeyBinding,
@@ -42,7 +42,7 @@ function createGotoSpecialAction(
     query
   })
 }
-export function createActions(builder: Builder, issuesId: string, myIssuesId: string): void {
+export function createActions (builder: Builder, issuesId: string, myIssuesId: string): void {
   createGotoSpecialAction(builder, issuesId, 'keyG->keyE', kra.string.GotoIssues)
   createGotoSpecialAction(builder, issuesId, 'keyG->keyA', kra.string.GotoActive, { mode: 'active' })
   createGotoSpecialAction(builder, issuesId, 'keyG->keyB', kra.string.GotoBacklog, { mode: 'backlog' })

@@ -10,7 +10,7 @@ import { type Ref, type StatusCategory } from '@hcengineering/core'
 import core from '@hcengineering/model-core'
 import workbench from '@hcengineering/model-workbench'
 import view from '@hcengineering/model-view'
-import { DOMAIN_PERFORMANCE, TDefaultKRAData, TDefaultReviewSessionData, TEmployeeKRA, TKRA, TKRAStatus, TReviewSession, TMeasureProgress } from './types'
+import { DOMAIN_PERFORMANCE, TDefaultKRAData, TDefaultReviewSessionData, TEmployeeKRA, TKRA, TKRAStatus, TReviewSession, TMeasureProgress, TReviewComment, TPerformanceReport } from './types'
 
 export { performanceId } from '@hcengineering/performance'
 export { performance as default }
@@ -109,19 +109,11 @@ function defineKRA (builder: Builder): void {
   })
 
   builder.mixin(performance.class.KRA, core.class.Class, view.mixin.AttributeEditor, {
-    inlineEditor: performance.component.KRARefPresenter
+    inlineEditor: performance.component.KRAEditor
   })
 
   builder.mixin(performance.class.KRA, core.class.Class, view.mixin.ObjectFactory, {
     component: performance.component.CreateKRA
-  })
-
-  builder.mixin(performance.class.KRA, core.class.Class, view.mixin.AttributePresenter, {
-    presenter: performance.component.KRARefPresenter
-  })
-
-  builder.mixin(performance.class.KRA, core.class.Class, view.mixin.AttributeEditor, {
-    inlineEditor: performance.component.KRAEditor
   })
 
   builder.mixin(performance.class.KRA, core.class.Class, view.mixin.ObjectPanel, {
@@ -175,7 +167,7 @@ function defineKRA (builder: Builder): void {
     performance.class.KRAStatus,
     core.space.Model,
     {
-      name: 'NeedChanges',
+      name: 'Need Changes',
       ofAttribute: performance.attribute.KRAStatusAttribute
     },
     performance.kraStatus.NeedChanges
@@ -210,6 +202,35 @@ function defineKRA (builder: Builder): void {
     },
     performance.kraStatus.Archived
   )
+}
+
+function defineReport (builder: Builder): void {
+  builder.createModel(TReviewComment, TPerformanceReport)
+
+  builder.mixin(performance.class.PerformanceReport, core.class.Class, view.mixin.ObjectPresenter, {
+    presenter: performance.component.ReportPresenter
+  })
+
+  builder.mixin(performance.class.PerformanceReport, core.class.Class, view.mixin.ObjectPanel, {
+    component: performance.component.ReportPanel
+  })
+
+  builder.createDoc(view.class.Viewlet, core.space.Model, {
+    attachTo: performance.class.PerformanceReport,
+    descriptor: view.viewlet.Table,
+    config: [
+      {
+        key: '',
+        presenter: performance.component.ReportPresenter,
+        label: performance.string.Reviewee
+      }
+    ],
+    viewOptions: {
+      groupBy: [],
+      orderBy: [],
+      other: []
+    }
+  })
 }
 
 function defineSpaceType (builder: Builder): void {
@@ -335,6 +356,19 @@ function defineApplication (builder: Builder): void {
             spaceClass: performance.class.KRA,
             addSpaceLabel: performance.string.CreateKraLabel,
             position: 'bottom'
+          },
+          {
+            id: 'report',
+            component: performance.component.PerformanceReports,
+            componentProps: {
+              createComponent: performance.component.CreateReport,
+              createButton: performance.component.CreateReportButton
+            },
+            label: performance.string.PerformanceReports,
+            spaceClass: performance.class.PerformanceReport,
+            addSpaceLabel: performance.string.CreateReportLabel,
+            createComponent: performance.component.CreateReport,
+            position: 'bottom'
           }
         ]
       }
@@ -389,6 +423,7 @@ export function createModel (builder: Builder): void {
   defineTeam(builder)
   defineReviewSession(builder)
   defineKRA(builder)
+  defineReport(builder)
   defineActivity(builder)
   defineSortAndGrouping(builder)
 

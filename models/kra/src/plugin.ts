@@ -59,7 +59,9 @@ export default mergeIds(kraId, kra, {
     SettingsRelatedTargets: '' as AnyComponent,
     IssueSearchIcon: '' as AnyComponent,
     MembersArrayEditor: '' as AnyComponent,
-    IssueExtra: '' as AnyComponent
+    IssueExtra: '' as AnyComponent,
+    KRAEditor: '' as AnyComponent,
+    KRAPresenter: '' as AnyComponent
   },
   app: {
     Tracker: '' as Ref<Application>
@@ -69,7 +71,8 @@ export default mergeIds(kraId, kra, {
     IssueTemplateList: '' as Ref<Viewlet>,
     IssueKanban: '' as Ref<Viewlet>,
     ComponentList: '' as Ref<Viewlet>,
-    ProjectList: '' as Ref<Viewlet>
+    ProjectList: '' as Ref<Viewlet>,
+    WithKRAList: '' as Ref<Viewlet>
   },
   ids: {
     TrackerNotificationGroup: '' as Ref<NotificationGroup>,

@@ -23,7 +23,6 @@ export default mergeIds(performanceId, performance, {
     Assignees: '' as IntlString,
     AssignTo: '' as IntlString,
     Weight: '' as IntlString,
-    NoKRA: '' as IntlString,
     CreateReviewSession: '' as IntlString,
     ReviewSessionName: '' as IntlString,
     ReviewSession: '' as IntlString,
@@ -39,7 +38,8 @@ export default mergeIds(performanceId, performance, {
     SelectTeam: '' as IntlString,
     SelectReviewSession: '' as IntlString,
     NoTeam: '' as IntlString,
-    AssignKRA: '' as IntlString
+    AssignKRA: '' as IntlString,
+    CreateReport: '' as IntlString
   },
   category: {
     ReviewSessionType: '' as IntlString
@@ -48,7 +48,9 @@ export default mergeIds(performanceId, performance, {
     EditKRA: '' as AnyComponent,
     KRAEditor: '' as AnyComponent,
     KRARefPresenter: '' as AnyComponent,
-    PerformanceDashboard: '' as AnyComponent
+    PerformanceDashboard: '' as AnyComponent,
+    ReportPanel: '' as AnyComponent,
+    ReportPresenter: '' as AnyComponent
     // ReviewSessionStatusPresenter: '' as AnyComponent,
     // ReviewSessionStatusRefPresenter: '' as AnyComponent,
     // ReviewSessionStateEditor: '' as AnyComponent
