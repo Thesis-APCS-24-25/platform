@@ -26,7 +26,7 @@ import type { Account, AccountDB, AccountInfo, RegionInfo, WorkspaceInfo } from 
 import { sharedPipelineContextVars } from '@hcengineering/server-pipeline'
 
 export async function getAccountDB (uri: string, dbNs?: string): Promise<[AccountDB, () => void]> {
-  const isMongo = uri.startsWith('mongodb://')
+  const isMongo = uri.startsWith('mongodb')
 
   if (isMongo) {
     const client = getMongoClient(uri)
