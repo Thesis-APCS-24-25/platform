@@ -59,6 +59,8 @@ import { testManagementId } from '@hcengineering/test-management'
 import textEditor, { textEditorId } from '@hcengineering/text-editor'
 import { timeId } from '@hcengineering/time'
 import tracker, { trackerId } from '@hcengineering/tracker'
+import kra, { kraId } from '@hcengineering/kra'
+import kraTeam, { kraTeamId } from '@hcengineering/kra-team'
 import { trainingId } from '@hcengineering/training'
 import uiPlugin from '@hcengineering/ui'
 import { uploaderId } from '@hcengineering/uploader'
@@ -66,6 +68,7 @@ import { viewId } from '@hcengineering/view'
 import workbench, { workbenchId } from '@hcengineering/workbench'
 
 import { bitrixId } from '@hcengineering/bitrix'
+import { performanceId } from '@hcengineering/performance'
 
 import '@hcengineering/activity-assets'
 import '@hcengineering/analytics-collector-assets'
@@ -110,6 +113,9 @@ import '@hcengineering/training-assets'
 import '@hcengineering/uploader-assets'
 import '@hcengineering/view-assets'
 import '@hcengineering/workbench-assets'
+import '@hcengineering/kra-assets'
+import '@hcengineering/kra-team-assets'
+import '@hcengineering/performance-assets'
 
 import github, { githubId } from '@hcengineering/github'
 import '@hcengineering/github-assets'
@@ -286,6 +292,9 @@ function configureI18n(): void {
     async (lang: string) => await import(`@hcengineering/templates-assets/lang/${lang}.json`)
   )
   addStringsLoader(trackerId, async (lang: string) => await import(`@hcengineering/tracker-assets/lang/${lang}.json`))
+  addStringsLoader(kraId, async (lang: string) => await import(`@hcengineering/kra-assets/lang/${lang}.json`))
+  addStringsLoader(kraTeamId, async (lang: string) => await import(`@hcengineering/kra-team-assets/lang/${lang}.json`))
+  addStringsLoader(performanceId, async (lang: string) => await import(`@hcengineering/performance-assets/lang/${lang}.json`))
   addStringsLoader(viewId, async (lang: string) => await import(`@hcengineering/view-assets/lang/${lang}.json`))
   addStringsLoader(
     workbenchId,
@@ -483,6 +492,8 @@ export async function configurePlatform() {
   addLocation(aiBotId, async () => await import('@hcengineering/ai-bot-resources'))
 
   addLocation(trackerId, () => import(/* webpackChunkName: "tracker" */ '@hcengineering/tracker-resources'))
+  addLocation(kraId, () => import(/* webpackChunkName: "kra" */ '@hcengineering/kra-resources'))
+  addLocation(kraTeamId, () => import(/* webpackChunkName: "kraTeam" */ '@hcengineering/kra-team-resources'))
   addLocation(boardId, () => import(/* webpackChunkName: "board" */ '@hcengineering/board-resources'))
   addLocation(hrId, () => import(/* webpackChunkName: "hr" */ '@hcengineering/hr-resources'))
   addLocation(bitrixId, () => import(/* webpackChunkName: "bitrix" */ '@hcengineering/bitrix-resources'))
@@ -511,6 +522,7 @@ export async function configurePlatform() {
   addLocation(surveyId, () => import(/* webpackChunkName: "survey" */ '@hcengineering/survey-resources'))
   addLocation(presenceId, () => import(/* webpackChunkName: "presence" */ '@hcengineering/presence-resources'))
   addLocation(cardId, () => import(/* webpackChunkName: "card" */ '@hcengineering/card-resources'))
+  addLocation(performanceId, () => import('@hcengineering/performance-resources'))
 
   setMetadata(client.metadata.FilterModel, 'ui')
   setMetadata(client.metadata.ExtraPlugins, ['preference' as Plugin])

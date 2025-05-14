@@ -72,6 +72,8 @@ import { templatesId, createModel as templatesModel } from '@hcengineering/model
 import { textEditorId, createModel as textEditorModel } from '@hcengineering/model-text-editor'
 import { timeId, createModel as timeModel } from '@hcengineering/model-time'
 import tracker, { trackerId, createModel as trackerModel } from '@hcengineering/model-tracker'
+import { kraId, createModel as kraModel } from '@hcengineering/model-kra'
+import { kraTeamId, createModel as kraTeamModel } from '@hcengineering/model-kra-team'
 import { uploaderId, createModel as uploaderModel } from '@hcengineering/model-uploader'
 import view, { viewId, createModel as viewModel } from '@hcengineering/model-view'
 import workbench, { workbenchId, createModel as workbenchModel } from '@hcengineering/model-workbench'
@@ -108,6 +110,8 @@ import {
 import { serverFulltextId, createModel as serverFulltextModel } from '@hcengineering/model-server-fulltext'
 import { surveyId, createModel as surveyModel } from '@hcengineering/model-survey'
 import { presenceId, createModel as presenceModel } from '@hcengineering/model-presence'
+import { performanceId, createModel as performanceModel } from '@hcengineering/model-performance'
+import { serverPerformanceId, createModel as serverPerformanceModel } from '@hcengineering/model-server-performance'
 
 import { type Plugin } from '@hcengineering/platform'
 
@@ -260,6 +264,7 @@ export default function buildModel (enabled: string[] = ['*'], disabled: string[
     [notificationModel, notificationId],
     [preferenceModel, preferenceId],
     [analyticsCollectorModel, analyticsCollectorId],
+    [kraTeamModel, kraTeamId],
     [
       hrModel,
       hrId,
@@ -269,6 +274,18 @@ export default function buildModel (enabled: string[] = ['*'], disabled: string[
         enabled: true,
         beta: false,
         icon: hr.icon.Structure,
+        classFilter: defaultFilter
+      }
+    ],
+    [
+      kraModel,
+      kraId,
+      {
+        label: tracker.string.ConfigLabel,
+        description: tracker.string.ConfigDescription,
+        enabled: true,
+        beta: false,
+        icon: tracker.icon.TrackerApplication,
         classFilter: defaultFilter
       }
     ],
@@ -428,6 +445,7 @@ export default function buildModel (enabled: string[] = ['*'], disabled: string[
     ],
     [surveyModel, surveyId],
     [presenceModel, presenceId],
+    [performanceModel, performanceId],
 
     [serverCoreModel, serverCoreId],
     [serverAttachmentModel, serverAttachmentId],
@@ -460,7 +478,8 @@ export default function buildModel (enabled: string[] = ['*'], disabled: string[
     [serverTrainingModel, serverTrainingId],
     [serverDocumentsModel, serverDocumentsId],
     [serverAiBotModel, serverAiBotId],
-    [serverFulltextModel, serverFulltextId]
+    [serverFulltextModel, serverFulltextId],
+    [serverPerformanceModel, serverPerformanceId]
   ]
 
   for (const [b, id, config] of builders) {

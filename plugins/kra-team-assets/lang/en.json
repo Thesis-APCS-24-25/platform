@@ -1,0 +1,33 @@
+{
+  "string": {
+    "CreateTeam": "Create team",
+    "AllTeams": "All teams",
+    "MyTeams": "My teams",
+    "KraTemplate": "KRA template",
+    "Members": "Members",
+    "RoleLabel": "Role: {role}",
+    "Role": "Role",
+    "TeamName": "Team name",
+    "ChooseIcon": "Choose icon",
+    "NewKraTemplate": "New KRA template",
+    "KraNamePlaceholder": "KRA name",
+    "KraDescriptionPlaceholder": "Add Description...",
+    "MetricsList": "Metrics",
+    "Team": "Team",
+    "TeamNamePlaceholder": "Add Team Name...",
+    "TeamDescriptionPlaceholder": "Add Description...",
+    "TeamMembers": "Team members",
+    "Roles": "Roles",
+    "Teams": "Teams",
+    "Description": "Description",
+    "Metrics": "Metrics",
+    "Name": "Name",
+    "KRA": "KRA",
+    "NoKRA": "No KRA",
+    "KRATemplates": "KRA templates",
+    "ApproveKra": "Approve KRA",
+    "ApproveKraDescription": "Approve KRA",
+    "CreateKra": "Create KRA",
+    "CreateKraDescription": "Create KRA"
+  }
+}

@@ -906,11 +906,6 @@
       "shouldPublish": false
     },
     {
-      "packageName": "@hcengineering/import-tool",
-      "projectFolder": "dev/import-tool",
-      "shouldPublish": false
-    },
-    {
       "packageName": "@hcengineering/pod-account",
       "projectFolder": "pods/account",
       "shouldPublish": false
@@ -1408,6 +1403,48 @@
     {
       "packageName": "@hcengineering/model-tracker",
       "projectFolder": "models/tracker",
+      "shouldPublish": false
+    },
+
+    {
+      "packageName": "@hcengineering/kra",
+      "projectFolder": "plugins/kra",
+      "shouldPublish": true
+    },
+    {
+      "packageName": "@hcengineering/kra-assets",
+      "projectFolder": "plugins/kra-assets",
+      "shouldPublish": false
+    },
+    {
+      "packageName": "@hcengineering/kra-resources",
+      "projectFolder": "plugins/kra-resources",
+      "shouldPublish": false
+    },
+    {
+      "packageName": "@hcengineering/model-kra",
+      "projectFolder": "models/kra",
+      "shouldPublish": false
+    },
+
+    {
+      "packageName": "@hcengineering/kra-team",
+      "projectFolder": "plugins/kra-team",
+      "shouldPublish": true
+    },
+    {
+      "packageName": "@hcengineering/kra-team-assets",
+      "projectFolder": "plugins/kra-team-assets",
+      "shouldPublish": false
+    },
+    {
+      "packageName": "@hcengineering/kra-team-resources",
+      "projectFolder": "plugins/kra-team-resources",
+      "shouldPublish": false
+    },
+    {
+      "packageName": "@hcengineering/model-kra-team",
+      "projectFolder": "models/kra-team",
       "shouldPublish": false
     },
 
@@ -2017,11 +2054,6 @@
       "shouldPublish": false
     },
     {
-      "packageName": "@hcengineering/pod-github",
-      "projectFolder": "services/github/pod-github",
-      "shouldPublish": false
-    },
-    {
       "packageName": "@hcengineering/server-github",
       "projectFolder": "services/github/server-github",
       "shouldPublish": false
@@ -2057,56 +2089,6 @@
       "shouldPublish": false
     },
     {
-      "packageName": "@hcengineering/pod-ses",
-      "projectFolder": "services/ses/pod-ses",
-      "shouldPublish": false
-    },
-    {
-      "packageName": "@hcengineering/pod-telegram",
-      "projectFolder": "services/telegram/pod-telegram",
-      "shouldPublish": false
-    },
-    {
-      "packageName": "@hcengineering/pod-gmail",
-      "projectFolder": "services/gmail/pod-gmail",
-      "shouldPublish": false
-    },
-    {
-      "packageName": "@hcengineering/pod-calendar",
-      "projectFolder": "services/calendar/pod-calendar",
-      "shouldPublish": false
-    },
-    {
-      "packageName": "@hcengineering/qms-doc-import-tool",
-      "projectFolder": "dev/doc-import-tool",
-      "shouldPublish": false
-    },
-    {
-      "packageName": "@hcengineering/pod-love",
-      "projectFolder": "services/love",
-      "shouldPublish": false
-    },
-    {
-      "packageName": "@hcengineering/pod-print",
-      "projectFolder": "services/print/pod-print",
-      "shouldPublish": false
-    },
-    {
-      "packageName": "@hcengineering/pod-sign",
-      "projectFolder": "services/sign/pod-sign",
-      "shouldPublish": false
-    },
-    {
-      "packageName": "@hcengineering/rekoni-service",
-      "projectFolder": "services/rekoni",
-      "shouldPublish": false
-    },
-    {
-      "packageName": "@hcengineering/pod-analytics-collector",
-      "projectFolder": "services/analytics-collector/pod-analytics-collector",
-      "shouldPublish": false
-    },
-    {
       "packageName": "@hcengineering/analytics-collector",
       "projectFolder": "plugins/analytics-collector",
       "shouldPublish": false
@@ -2134,11 +2116,6 @@
     {
       "packageName": "@hcengineering/server-analytics-collector-resources",
       "projectFolder": "server-plugins/analytics-collector-resources",
-      "shouldPublish": false
-    },
-    {
-      "packageName": "@hcengineering/pod-ai-bot",
-      "projectFolder": "services/ai-bot/pod-ai-bot",
       "shouldPublish": false
     },
     {
@@ -2172,18 +2149,8 @@
       "shouldPublish": false
     },
     {
-      "packageName": "@hcengineering/pod-telegram-bot",
-      "projectFolder": "services/telegram-bot/pod-telegram-bot",
-      "shouldPublish": false
-    },
-    {
       "packageName": "@hcengineering/openai",
       "projectFolder": "plugins/openai",
-      "shouldPublish": false
-    },
-    {
-      "packageName": "@hcengineering/cloud-branding",
-      "projectFolder": "workers/branding",
       "shouldPublish": false
     },
     {
@@ -2232,11 +2199,6 @@
       "shouldPublish": false
     },
     {
-      "packageName": "@hcengineering/cloud-transactor",
-      "projectFolder": "workers/transactor",
-      "shouldPublish": false
-    },
-    {
       "packageName": "@hcengineering/card",
       "projectFolder": "plugins/card",
       "shouldPublish": false
@@ -2257,8 +2219,38 @@
       "shouldPublish": false
     },
     {
-      "packageName": "@hcengineering/green",
-      "projectFolder": "pods/green",
+      "packageName": "@hcengineering/performance",
+      "projectFolder": "plugins/performance",
+      "shouldPublish": false
+    },
+    {
+      "packageName": "@hcengineering/performance-resources",
+      "projectFolder": "plugins/performance-resources",
+      "shouldPublish": false
+    },
+    {
+      "packageName": "@hcengineering/model-performance",
+      "projectFolder": "models/performance",
+      "shouldPublish": false
+    },
+    {
+      "packageName": "@hcengineering/performance-assets",
+      "projectFolder": "plugins/performance-assets",
+      "shouldPublish": false
+    },
+    {
+      "packageName": "@hcengineering/server-performance",
+      "projectFolder": "server-plugins/performance",
+      "shouldPublish": false
+    },
+    {
+      "packageName": "@hcengineering/server-performance-resources",
+      "projectFolder": "server-plugins/performance-resources",
+      "shouldPublish": false
+    },
+    {
+      "packageName": "@hcengineering/model-server-performance",
+      "projectFolder": "models/server-performance",
       "shouldPublish": false
     }
   ]

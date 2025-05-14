@@ -46,7 +46,6 @@ services:
       test: curl -s http://localhost:9200/_cluster/health | grep -vq '"status":"red"'
   account:
     image: hardcoreeng/account
-    pull_policy: never
     links:
       - mongodb
       - minio
@@ -83,7 +82,7 @@ services:
       - STATS_URL=http://stats:4901
     restart: unless-stopped
   front:
-    image: hardcoreeng/front
+    image: ltp1405/front
     pull_policy: never
     links:
       - account
@@ -112,7 +111,7 @@ services:
       - STATS_URL=http://stats:4901
       - STATS_API=http://localhost:4901
   transactor:
-    image: hardcoreeng/transactor
+    image: ltp1405/transactor
     pull_policy: never
     links:
       - mongodb

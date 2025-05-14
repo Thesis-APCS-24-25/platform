@@ -332,12 +332,6 @@
 
     <RelationsEditor object={issue} {readonly} />
 
-    {#if editorFooter}
-      <div class="step-tb-6">
-        <Component is={editorFooter.footer} props={{ object: issue, _class, ...editorFooter.props, readonly }} />
-      </div>
-    {/if}
-
     <span slot="actions-label" class="select-text">
       {issue.identifier}
     </span>

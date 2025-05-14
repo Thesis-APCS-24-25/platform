@@ -52,7 +52,7 @@ export * from './analytics'
 /**
  * @public
  */
-export interface IssueStatus extends Status {}
+export interface IssueStatus extends Status { }
 
 /**
  * @public
@@ -536,7 +536,7 @@ export default pluginState
 /**
  * @public
  */
-export function createStatesData (data: TaskStatusFactory[]): Omit<Data<Status>, 'rank'>[] {
+export function createStatesData(data: TaskStatusFactory[]): Omit<Data<Status>, 'rank'>[] {
   const states: Omit<Data<Status>, 'rank'>[] = []
 
   for (const category of data) {
