@@ -79,7 +79,7 @@ import {
   issueTitleProvider,
   resolveLocation
 } from './issues'
-import tracker from './plugin'
+import kra from './plugin'
 
 import SubIssuesSelector from './components/issues/edit/SubIssuesSelector.svelte'
 import EstimationEditor from './components/issues/timereport/EstimationEditor.svelte'
@@ -92,7 +92,7 @@ import RelatedIssueTemplates from './components/issues/related/RelatedIssueTempl
 import IssueTemplatePresenter from './components/templates/IssueTemplatePresenter.svelte'
 import IssueTemplates from './components/templates/IssueTemplates.svelte'
 
-import { AggregationManager, deleteObjects } from '@hcengineering/view-resources'
+import { deleteObjects } from '@hcengineering/view-resources'
 import EditIssueTemplate from './components/templates/EditIssueTemplate.svelte'
 import TemplateEstimationEditor from './components/templates/EstimationEditor.svelte'
 import {
@@ -132,7 +132,7 @@ import GoalObjectPresenter from './components/issues/goal/GoalObjectPresenter.sv
 import './styles/_colors.scss'
 import { calculateGoal, calculateKpiResult, calculateRatingScaleResult } from './utils/goal'
 import task, { type Task } from '@hcengineering/task'
-import kra from './plugin'
+import KRAEditor from './components/kra/KRAEditor.svelte'
 
 export { default as AssigneeEditor } from './components/issues/AssigneeEditor.svelte'
 export { default as SubIssueList } from './components/issues/edit/SubIssueList.svelte'
@@ -180,7 +180,7 @@ export async function queryIssue<D extends Issue> (
   return Array.from(numbered.values()).map((e) => ({
     doc: e,
     title: e.identifier,
-    icon: tracker.icon.TrackerApplication,
+    icon: kra.icon.TrackerApplication,
     component: IssueItem
   }))
 }
@@ -214,9 +214,9 @@ async function deleteIssue (issue: Issue | Issue[]): Promise<void> {
     subissues = issue.subIssues
   }
   showPopup(MessageBox, {
-    label: tracker.string.DeleteIssue,
+    label: kra.string.DeleteIssue,
     labelProps: { issueCount },
-    message: tracker.string.DeleteIssueConfirm,
+    message: kra.string.DeleteIssueConfirm,
     params: {
       issueCount,
       subIssueCount: subissues
@@ -240,20 +240,20 @@ async function deleteProject (project: Project | undefined): Promise<void> {
     if (project.archived) {
       // Clean project and all issues
       showPopup(MessageBox, {
-        label: tracker.string.DeleteProject,
+        label: kra.string.DeleteProject,
         labelProps: { name: project.name },
-        message: tracker.string.DeleteProjectConfirm,
+        message: kra.string.DeleteProjectConfirm,
         action: async () => {
           const client = getClient()
           await client.remove(project)
         }
       })
     } else {
-      const anyIssue = await client.findOne(tracker.class.Issue, { space: project._id })
+      const anyIssue = await client.findOne(kra.class.Issue, { space: project._id })
       showPopup(MessageBox, {
-        label: tracker.string.ArchiveProjectName,
+        label: kra.string.ArchiveProjectName,
         labelProps: { name: project.name },
-        message: anyIssue !== undefined ? tracker.string.ProjectHasIssues : tracker.string.ArchiveProjectConfirm,
+        message: anyIssue !== undefined ? kra.string.ProjectHasIssues : kra.string.ArchiveProjectConfirm,
         action: async () => {
           await client.update(project, { archived: true })
         }
@@ -332,11 +332,12 @@ export default async (): Promise<Resources> => ({
     KpiObjectPresenter,
     AddUnitPopup,
     UnitPresenter,
-    GoalObjectPresenter
+    GoalObjectPresenter,
+    KRAEditor
   },
   completion: {
     IssueQuery: async (client: Client, query: string, filter?: { in?: RelatedDocument[], nin?: RelatedDocument[] }) =>
-      await queryIssue(tracker.class.Issue, client, query, filter)
+      await queryIssue(kra.class.Issue, client, query, filter)
   },
   function: {
     IssueIdentifierProvider: issueIdentifierProvider,

@@ -29,7 +29,15 @@ export default mergeIds(performanceId, performance, {
     ReviewSessions: '' as IntlString,
     PerformanceDashboard: '' as IntlString,
     AssignedTo: '' as IntlString,
-    AllReviewSessions: '' as IntlString
+    AllReviewSessions: '' as IntlString,
+    ReviewCommentAuthor: '' as IntlString,
+    ReviewerComment: '' as IntlString,
+    ReviewerScore: '' as IntlString,
+    Reviewee: '' as IntlString,
+    ReviewSession: '' as IntlString,
+    ReviewComments: '' as IntlString,
+    PerformanceReports: '' as IntlString,
+    CreateReportLabel: '' as IntlString
   },
   component: {
     MyKRAs: '' as AnyComponent,
@@ -44,10 +52,11 @@ export default mergeIds(performanceId, performance, {
     EditKRA: '' as AnyComponent,
     TeamSpacePresenter: '' as AnyComponent,
     PerformanceDashboard: '' as AnyComponent,
-    AssignKRA: '' as AnyComponent
-    // ReviewSessionStatusPresenter: '' as AnyComponent,
-    // ReviewSessionStatusRefPresenter: '' as AnyComponent,
-    // ReviewSessionStateEditor: '' as AnyComponent
+    PerformanceReports: '' as AnyComponent,
+    ReportPanel: '' as AnyComponent,
+    ReportPresenter: '' as AnyComponent,
+    CreateReport: '' as AnyComponent,
+    CreateReportButton: '' as AnyComponent
   },
   function: {
     GetAllKRAStates: '' as GetAllValuesFunc,

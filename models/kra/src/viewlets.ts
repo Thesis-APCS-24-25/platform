@@ -21,6 +21,7 @@ import view, { showColorsViewOption } from '@hcengineering/model-view'
 import tags from '@hcengineering/tags'
 import { type BuildModelKey, type ViewOptionsModel } from '@hcengineering/view'
 import kra from './plugin'
+import performance from '@hcengineering/model-performance'
 
 export const issuesOptions = (kanban: boolean): ViewOptionsModel => ({
   groupBy: [
@@ -32,7 +33,8 @@ export const issuesOptions = (kanban: boolean): ViewOptionsModel => ({
     'modifiedBy',
     'estimation',
     'remainingTime',
-    'reportedTime'
+    'reportedTime',
+    'kra'
   ],
   orderBy: [
     ['modifiedOn', SortingOrder.Descending],
@@ -75,7 +77,7 @@ export const issuesOptions = (kanban: boolean): ViewOptionsModel => ({
   ]
 })
 
-export function issueConfig(
+export function issueConfig (
   key: string = '',
   compact: boolean = false
 ): (BuildModelKey | string)[] {
@@ -171,11 +173,12 @@ export function issueConfig(
       presenter: kra.component.AssigneeEditor,
       displayProps: { key: 'assignee', fixed: 'right' },
       props: { kind: 'list', shouldShowName: false, avatarSize: 'x-small' }
-    }
+    },
+    'kra'
   ]
 }
 
-export function defineViewlets(builder: Builder): void {
+export function defineViewlets (builder: Builder): void {
   builder.createDoc(
     view.class.ViewletDescriptor,
     core.space.Model,
@@ -374,5 +377,62 @@ export function defineViewlets(builder: Builder): void {
       }
     },
     kra.viewlet.ProjectList
+  )
+
+  builder.createDoc(
+    view.class.Viewlet,
+    core.space.Model,
+    {
+      attachTo: performance.mixin.WithKRA,
+      descriptor: view.viewlet.List,
+      config: [
+        ...issueConfig()
+      ],
+      viewOptions: {
+        groupDepth: 1,
+        groupBy: [
+          'kra'
+        ],
+        orderBy: [
+          ['modifiedOn', SortingOrder.Descending],
+          ['status', SortingOrder.Ascending],
+          ['kind', SortingOrder.Ascending],
+          ['priority', SortingOrder.Ascending],
+          ['createdOn', SortingOrder.Descending],
+          ['dueDate', SortingOrder.Ascending],
+          ['rank', SortingOrder.Ascending],
+          ['estimation', SortingOrder.Descending],
+          ['remainingTime', SortingOrder.Descending],
+          ['reportedTime', SortingOrder.Descending]
+        ],
+        other: [
+          {
+            key: 'shouldShowSubIssues',
+            type: 'toggle',
+            defaultValue: true,
+            actionTarget: 'query',
+            action: kra.function.SubIssueQuery,
+            label: kra.string.SubIssues
+          },
+          {
+            key: 'shouldShowAll',
+            type: 'toggle',
+            defaultValue: false,
+            actionTarget: 'category',
+            action: view.function.ShowEmptyGroups,
+            label: view.string.ShowEmptyGroups
+          },
+          {
+            key: 'hideArchived',
+            type: 'toggle',
+            defaultValue: true,
+            actionTarget: 'options',
+            action: view.function.HideArchived,
+            label: view.string.HideArchived
+          }
+        ]
+      }
+    },
+    kra.viewlet.WithKRAList
   )
 }

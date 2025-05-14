@@ -1,10 +1,10 @@
 <script lang="ts">
-  import { Button, IconAdd, Breadcrumbs, SearchInput, showPopup, Header } from '@hcengineering/ui'
+  import { Button, IconAdd, SearchInput, showPopup, Header } from '@hcengineering/ui'
   import kraTeam from '../plugins'
-  import NewKraTemplate from './NewKraTemplate.svelte';
+  import NewKraTemplate from './NewKraTemplate.svelte'
   export let search = ''
 
-  function showCreateDialog(e: MouseEvent): void {
+  function showCreateDialog (_e: MouseEvent): void {
     showPopup(NewKraTemplate, {})
   }
 </script>

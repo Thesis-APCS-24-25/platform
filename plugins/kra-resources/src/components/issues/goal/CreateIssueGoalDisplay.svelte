@@ -1,12 +1,11 @@
 <script lang="ts">
   import { Goal, Kpi, RatingScale } from '@hcengineering/kra'
-  import { Button, ButtonIcon, IconClose, IconDelete, IconStop } from '@hcengineering/ui'
+  import { Button, IconClose } from '@hcengineering/ui'
   import { createQuery } from '@hcengineering/presentation'
   import kra from '../../../plugin'
   import { Ref, WithLookup } from '@hcengineering/core'
   import IconKpi from './IconKpi.svelte'
   import IconRatingScale from './IconRatingScale.svelte'
-  import { createEventDispatcher } from 'svelte'
 
   export let goal: Ref<Goal>
   export let onRemove: () => void = () => {}

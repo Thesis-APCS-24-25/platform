@@ -16,7 +16,6 @@
   import CreateReviewSession from './review-session/CreateReviewSession.svelte'
   import kraTeam, { Member, Team } from '@hcengineering/kra-team'
   import { ReviewSession } from '@hcengineering/performance'
-  import AssignKRA from './kra/AssignKRA.svelte'
 
   export let currentSpace: Ref<Space> | undefined
   // export let currentFragment: string | undefined
@@ -25,14 +24,12 @@
   const queryCurrent = createQuery()
   const queryTeam = createQuery()
   const queryReviewSession = createQuery()
-  const queryKra = createQuery()
 
   const me = getCurrentAccount()
 
   let loading = true
   let hasReviewSession = false
   let hasTeam = false
-  let hasKRA = false
   let currentTeam: Team | undefined
   let currentReviewSession: ReviewSession | undefined
 
@@ -75,19 +72,6 @@
       if (res !== undefined) {
         hasReviewSession = res.length > 0
       }
-    },
-    {
-      limit: 1, projection: { _id: 1 }
-    }
-  )
-
-  queryKra.query(
-    performance.class.KRA,
-    { archived: false },
-    (res) => {
-      if (res !== undefined) {
-        hasKRA = res.length > 0
-      }
       loading = false
     },
     {
@@ -96,20 +80,13 @@
   )
 
   async function newKRA (): Promise<void> {
-    showPopup(CreateKra, { space: currentSpace }, 'top')
+    showPopup(CreateKra, { team: currentTeam }, 'top')
   }
 
   async function newReviewSession (): Promise<void> {
     showPopup(
       CreateReviewSession,
-      'top'
-    )
-  }
-
-  async function newEmployeeKRA (): Promise<void> {
-    showPopup(
-      AssignKRA,
-      { space: currentSpace },
+      { team: currentTeam },
       'top'
     )
   }
@@ -119,16 +96,13 @@
       await newKRA()
     } else if (res === performance.string.CreateReviewSession) {
       await newReviewSession()
-    } else if (res === performance.string.AssignKRAToEmployee) {
-      await newEmployeeKRA()
     }
   }
 
   const dropdownItems = hasAccountRole(me, AccountRole.User)
     ? [
         { id: performance.string.CreateKRA, label: performance.string.CreateKRA },
-        { id: performance.string.CreateReviewSession, label: performance.string.CreateReviewSession },
-        { id: performance.string.AssignKRAToEmployee, label: performance.string.AssignKRAToEmployee }
+        { id: performance.string.CreateReviewSession, label: performance.string.CreateReviewSession }
       ]
     : [{ id: performance.string.CreateKRA, label: performance.string.CreateKRA }]
 </script>
@@ -152,18 +126,6 @@
             void dropdownItemSelected(ev.detail)
           }}
         />
-        {#if hasKRA}
-          <Button
-            id={performance.string.AssignKRAToEmployee}
-            icon={IconAdd}
-            label={performance.string.AssignKRAToEmployee}
-            justify={'left'}
-            width={'100%'}
-            kind={'primary'}
-            gap={'large'}
-            on:click={newEmployeeKRA}
-          />
-        {/if}
       {:else}
         <Button
           id={performance.string.CreateReviewSession}

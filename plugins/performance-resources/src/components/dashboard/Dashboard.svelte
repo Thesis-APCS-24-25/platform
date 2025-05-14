@@ -1,11 +1,11 @@
 <script lang="ts">
-  import presentation, { getClient, SpaceSelector } from '@hcengineering/presentation'
+  import presentation, { getClient } from '@hcengineering/presentation'
   import Chart from './Chart.svelte'
   import { KRA, ReviewSession } from '@hcengineering/performance'
   import { concatLink, Doc, getCurrentAccount, Hierarchy, Ref, SortingOrder, Space } from '@hcengineering/core'
   import performance from '../../plugin'
   import { PersonAccount } from '@hcengineering/contact'
-  import { getPanelURI, IconForward, Label, locationToUrl, navigate, parseLocation } from '@hcengineering/ui'
+  import { getPanelURI, locationToUrl, navigate, parseLocation } from '@hcengineering/ui'
   import view from '@hcengineering/view'
   import { getObjectLinkFragment } from '@hcengineering/view-resources'
   import { getMetadata } from '@hcengineering/platform'

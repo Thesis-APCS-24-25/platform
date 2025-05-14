@@ -1,15 +1,16 @@
-<script lang="ts">
-  import { Ref, Doc, Space, DocumentQuery, getCurrentAccount } from '@hcengineering/core'
+<script lang='ts'>
+  import { Team } from '@hcengineering/kra-team'
+  import TeamAndReviewSessionSelector from '../TeamAndReviewSessionSelector.svelte'
+  import { ReviewSession } from '@hcengineering/performance'
+  import { Doc, DocumentQuery, Ref } from '@hcengineering/core'
+  import performance from '../../plugin'
+  import { SpecialView } from '@hcengineering/workbench-resources'
   import { Asset, IntlString } from '@hcengineering/platform'
   import { AnyComponent, IModeSelector } from '@hcengineering/ui'
   import { ViewletDescriptor } from '@hcengineering/view'
-  import { SpecialView } from '@hcengineering/workbench-resources'
   import { ParentsNavigationModel } from '@hcengineering/workbench'
-  import { createQuery } from '@hcengineering/presentation'
-  import performance from '../../plugin'
-  import { PersonAccount } from '@hcengineering/contact'
 
-  export let space: Ref<Space> | undefined = undefined
+  // export let space: Ref<Space> | undefined = undefined
   export let icon: Asset
   export let label: IntlString
   export let createEvent: string | undefined = undefined
@@ -23,33 +24,19 @@
   export let modes: IModeSelector<any> | undefined = undefined
   export let navigationModel: ParentsNavigationModel | undefined = undefined
 
-  const userId = getCurrentAccount()._id as Ref<PersonAccount>
-  const employeeKRAQuery = createQuery()
-  employeeKRAQuery.query(
-    performance.class.EmployeeKRA,
-    {
-      employee: userId
-    },
-    (res) => {
-      if (res !== undefined) {
-        const kras = res.map((item) => {
-          return item.kra
-        })
+  let team: Ref<Team> | undefined
+  let reviewSession: Ref<ReviewSession> | undefined
 
-        baseQuery = {
-          ...baseQuery,
-          _id: {
-            $in: kras
-          }
-        }
-      }
-    }
-  )
 </script>
 
+<div class={'reports-header'}>
+  <TeamAndReviewSessionSelector
+    bind:team
+    bind:reviewSession
+  />
+</div>
 <SpecialView
-  _class={performance.class.KRA}
-  {space}
+  _class={performance.class.PerformanceReport}
   {icon}
   {label}
   {createEvent}
@@ -63,3 +50,10 @@
   {modes}
   {navigationModel}
 />
+
+<style lang="scss">
+  .reports-header {
+    padding: 1rem;
+    align-items: center;
+  }
+</style>

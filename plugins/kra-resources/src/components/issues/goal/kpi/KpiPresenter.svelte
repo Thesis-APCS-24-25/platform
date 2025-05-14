@@ -37,11 +37,11 @@
     <div class="separator"></div>
 
     {#if value.$lookup?.unit?.prefix === true}
-      <span> {value.$lookup.unit.symbol}</span>
+      <span class="unit-symbol">{value.$lookup.unit.symbol}</span>
     {/if}
     <strong>{sum}</strong>
     {#if value.$lookup?.unit?.prefix === false}
-      <span> {value.$lookup.unit.symbol}</span>
+      <span class="unit-symbol">{value.$lookup.unit.symbol}</span>
     {/if}
     {#if value.target > 0}
       <span> / {value.target}</span>
@@ -54,5 +54,9 @@
     height: 16px;
     margin: 0 8px;
     background-color: var(--theme-divider-color, #e0e0e0);
+  }
+
+  .unit-symbol {
+    margin: 0 0.25rem;
   }
 </style>

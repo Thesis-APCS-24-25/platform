@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { classIcon, NavLink, TreeItem, getActions, TreeNode, TreeElement } from '@hcengineering/view-resources'
+  import { NavLink, getActions, TreeElement } from '@hcengineering/view-resources'
   import view from '@hcengineering/view'
   import kraTeam, { Team } from '@hcengineering/kra-team'
   import { getClient } from '@hcengineering/presentation'

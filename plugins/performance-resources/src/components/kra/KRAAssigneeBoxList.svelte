@@ -1,21 +1,19 @@
 <script lang="ts">
   import contact, { Person, PersonAccount } from '@hcengineering/contact'
-  import type { Class, Doc, DocData, DocumentQuery, Ref, Space } from '@hcengineering/core'
+  import type { Class, Doc, DocData, Ref, Space } from '@hcengineering/core'
   import { type IntlString } from '@hcengineering/platform'
   import { ObjectCreate, createQuery, getClient } from '@hcengineering/presentation'
   import type { ButtonKind, ButtonSize, TooltipAlignment } from '@hcengineering/ui'
   import { Button, Label, showPopup, IconScale, eventToHTMLElement } from '@hcengineering/ui'
-  import { createEventDispatcher } from 'svelte'
   import {
     UserInfo,
     CombineAvatars,
-    personAccountByIdStore,
     personIdByAccountId,
     personByIdStore
   } from '@hcengineering/contact-resources'
   import KraAssigneesPopup from './KRAAssigneesPopup.svelte'
   import performance from '../../plugin'
-  import { EmployeeKRA, KRA, ReviewSession } from '@hcengineering/performance'
+  import { EmployeeKRA, KRA } from '@hcengineering/performance'
 
   export let items: Array<EmployeeKRA | DocData<EmployeeKRA>> = []
   export let space: Ref<Space>

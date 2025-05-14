@@ -1,12 +1,13 @@
 <script lang="ts">
   import { onMount, afterUpdate, createEventDispatcher, onDestroy } from 'svelte'
-  import { Chart, registerables } from 'chart.js'
+  import { Chart, ChartOptions, registerables } from 'chart.js'
   import { EmployeeKRA, ReviewSession, WithKRA, type KRA } from '@hcengineering/performance'
   import contact, { Person, PersonAccount } from '@hcengineering/contact'
   import { getClient } from '@hcengineering/presentation'
   import performance from '@hcengineering/performance'
   import { Ref } from '@hcengineering/core'
-  import { calculateCompletionLevel } from '../../utils/KraUtils'
+  import { calculateCompletionLevel } from '../../utils/kra'
+  import { themeStore } from '@hcengineering/ui'
 
   // Register all Chart.js components
   Chart.register(...registerables)
@@ -28,6 +29,8 @@
   let chart: Chart
   let krasByEmployee: KRAsByEmployee
   const colors: string[] = ['#4285F4', '#EA4335', '#FBBC05', '#34A853', '#8B44AC', '#00ACC1', '#FF7043']
+
+  themeStore.subscribe(() => { updateChart() })
 
   const client = getClient()
   const dispatch = createEventDispatcher()
@@ -58,7 +61,7 @@
       if (result !== undefined) {
         employeeKras = result
         result.forEach((entry) => {
-          if (entry.$lookup?.kra !== undefined && !kras.includes(entry.$lookup.kra)) {
+          if (entry.$lookup?.kra !== undefined && !kras.some((value) => value._id === entry.$lookup?.kra?._id)) {
             kras.push(entry.$lookup.kra)
           }
         })
@@ -121,8 +124,6 @@
     }
   }
 
-  $: console.log('Tasks', taskCompletion)
-
   $: {
     // Group KRAs by employee using the relationships table
     krasByEmployee = employees.reduce<KRAsByEmployee>((acc, employee) => {
@@ -135,7 +136,7 @@
           if (kra == null || tasks === undefined) return null
           const filteredTasks = tasks.filter((task) => {
             const asMixin = client.getHierarchy().as(task, performance.mixin.WithKRA)
-            return asMixin.kra === kra._id
+            return asMixin.kra === kra._id && asMixin.assignee === employee.person
           })
           let completionLevel = filteredTasks.reduce<number>((acc, task) => {
             return acc + (taskCompletion[task._id] ?? 0)
@@ -172,15 +173,16 @@
     const datasets = kras.map((kra, index) => {
       const data = employees.map((employee) => {
         const employeeKraDetails = krasByEmployee[employee._id]
+        if (employeeKraDetails == null) {
+          return 0
+        }
         const matchingKra = employeeKraDetails.find((k) => k._id === kra._id)
-        console.log('detail', matchingKra)
 
         // Calculate contribution to performance score
         const d =
           matchingKra?.completionLevel != null && matchingKra.weight != null
             ? matchingKra.completionLevel * matchingKra.weight
             : 0
-        console.log(`${matchingKra?.title} ${matchingKra?.weight} ${matchingKra?.completionLevel} ${d}`)
         return d * 100
       })
 
@@ -188,7 +190,7 @@
         label: kra.title,
         data,
         backgroundColor: colors[index % colors.length],
-        borderColor: 'white',
+        borderColor: $themeStore.dark ? '#3c3f44' : '#dfe1e4',
         borderWidth: 1,
         barPercentage: 0.8
       }
@@ -228,95 +230,103 @@
     chart = new Chart(ctx, {
       type: 'bar',
       data: createChartData(),
-      options: {
-        indexAxis: 'y', // Horizontal bar chart
-        responsive: true,
-        maintainAspectRatio: false,
-        scales: {
-          x: {
-            stacked: true,
-            min: 0,
-            max: 100,
-            title: {
-              display: true,
-              text: 'Performance Score (%)'
-            },
-            grid: {
-              display: true,
-              color: 'rgba(0, 0, 0, 0.05)'
-            }
-          },
-          y: {
-            stacked: true,
-            title: {
-              display: true,
-              text: 'Employees'
-            }
-          }
-        },
-        plugins: {
-          legend: {
-            position: 'bottom'
-          },
-          tooltip: {
-            callbacks: {
-              title: (tooltipItems) => {
-                return tooltipItems[0].label // Employee name
-              },
-              footer: (tooltipItems) => {
-                const employeeIndex = tooltipItems[0].dataIndex
-                const employee = employees[employeeIndex]
-                if (employee == null) return ''
-
-                // Show KRA breakdown
-                const employeeKras = krasByEmployee[employee._id]
-                if (employeeKras.length === 0) return ''
-
-                let footerText = '\nKRA Breakdown:'
-                employeeKras.forEach((kra) => {
-                  footerText += `\n${kra.title} (${kra.weight * 100}%): ${
-                    kra.completionLevel != null ? kra.completionLevel.toFixed(1) : 0
-                  }%`
-                })
-
-                return footerText
-              }
-            }
-          }
-        },
-        onClick: (event, elements, chart) => {
-          if (elements === undefined || elements.length === 0) return
-
-          const element = elements[0]
-          const index = element.index
-          const datasetIndex = element.datasetIndex
-          const employee = employees[index]
-
-          // Get the clicked KRA data
-          const datasets = chart.data.datasets
-          const dataset = datasets[datasetIndex]
-
-          const kraName = dataset.label
-          const employeeKras = krasByEmployee[employee._id]
-          const kra = employeeKras.find((k) => k.title === kraName)
-
-          if (kra != null) {
-            dispatch('segmentClick', {
-              employee,
-              kra: kra as KRA
-            })
-          }
-        }
-      }
+      options: getChartOptions()
     })
 
     // Add this to make segments clickable with cursor pointer
     chartCanvas.style.cursor = 'pointer'
   }
 
+  function getChartOptions (): ChartOptions {
+    return {
+      indexAxis: 'y', // Horizontal bar chart
+      responsive: true,
+      maintainAspectRatio: false,
+      color: $themeStore.dark ? 'rgba(255, 255, 255, .8)' : '#rgba(0, 0, 0, .8)',
+      scales: {
+        x: {
+          stacked: true,
+          min: 0,
+          max: 100,
+          title: {
+            color: $themeStore.dark ? 'rgba(255, 255, 255, .8)' : '#rgba(0, 0, 0, .8)',
+            display: true,
+            text: 'Performance Score (%)'
+          },
+          grid: {
+            display: true,
+            color: $themeStore.dark ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.05)'
+          }
+        },
+        y: {
+          stacked: true,
+          title: {
+            color: $themeStore.dark ? 'rgba(255, 255, 255, .8)' : '#rgba(0, 0, 0, .8)',
+            display: true,
+            text: 'Employees'
+          }
+        }
+      },
+      plugins: {
+        legend: {
+          position: 'bottom'
+        },
+        tooltip: {
+          callbacks: {
+            title: (tooltipItems) => {
+              return tooltipItems[0].label // Employee name
+            },
+            footer: (tooltipItems) => {
+              const employeeIndex = tooltipItems[0].dataIndex
+              const employee = employees[employeeIndex]
+              if (employee == null) return ''
+
+              // Show KRA breakdown
+              const employeeKras = krasByEmployee[employee._id]
+              if (employeeKras.length === 0) return ''
+
+              let footerText = '\nKRA Breakdown:'
+              employeeKras.forEach((kra) => {
+                footerText += `\n${kra.title} (${kra.weight * 100}%): ${
+                  kra.completionLevel ?? 0
+                }`
+              })
+
+              return footerText
+            }
+          }
+        }
+      },
+      onClick: (event, elements, chart) => {
+        if (elements === undefined || elements.length === 0) return
+
+        const element = elements[0]
+        const index = element.index
+        const datasetIndex = element.datasetIndex
+        const employee = employees[index]
+
+        // Get the clicked KRA data
+        const datasets = chart.data.datasets
+        const dataset = datasets[datasetIndex]
+
+        const kraName = dataset.label
+        const employeeKras = krasByEmployee[employee._id]
+        const kra = employeeKras.find((k) => k.title === kraName)
+
+        if (kra != null) {
+          dispatch('segmentClick', {
+            employee,
+            kra: kra as KRA
+          })
+        }
+      }
+    }
+  }
+
   function updateChart (): void {
     if (chart != null) {
       chart.data = createChartData()
+      chart.options = getChartOptions()
       chart.update()
     }
   }
@@ -364,7 +374,7 @@
     width: 100%;
     margin: 0 auto;
     padding: 20px;
-    background-color: #ffffff;
+    background-color: var(--theme-panel-color);
     border-radius: 8px;
     /* box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08); */
   }
@@ -372,7 +382,7 @@
   h2 {
     text-align: center;
     margin-bottom: 20px;
-    color: #333;
+    color: var(--theme-text-primary-color);
   }
 
   .chart {

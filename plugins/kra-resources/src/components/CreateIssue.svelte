@@ -48,11 +48,10 @@
     getMarkup
   } from '@hcengineering/presentation'
   import tags, { TagElement, TagReference } from '@hcengineering/tags'
-  import task, { Task, TaskType, makeRank } from '@hcengineering/task'
+  import { Task, TaskType, makeRank } from '@hcengineering/task'
   import { TaskKindSelector } from '@hcengineering/task-resources'
   import { EmptyMarkup, isEmptyMarkup } from '@hcengineering/text'
   import {
-    Goal,
     Issue,
     IssueDraft,
     IssueParentInfo,
@@ -184,7 +183,8 @@
       assignee,
       labels: [],
       parentIssue: parentIssue?._id,
-      subIssues: []
+      subIssues: [],
+      kra: performance.ids.NoKRARef
     }
     if (originalIssue !== undefined && !ignoreOriginal) {
       const res: IssueDraft = {
@@ -312,7 +312,8 @@
                 })
                 .filter((p) => p !== undefined) as TagReference[])
             : [],
-        status: currentProject?.defaultIssueStatus
+        status: currentProject?.defaultIssueStatus,
+        kra: performance.ids.NoKRARef
       }
     })
 
@@ -501,7 +502,8 @@
         childInfo: [],
         kind,
         identifier,
-        goal: object.goal
+        goal: object.goal,
+        kra: object.kra
       }
 
       if (!isEmptyMarkup(object.description)) {
@@ -540,11 +542,7 @@
           }
         }
       }
-      if (object.kra !== undefined) {
-        await operations.createMixin<Task, WithKRA>(_id, tracker.class.Issue, object.space, performance.mixin.WithKRA, {
-          kra: object.kra
-        })
-      }
+      await operations.createMixin<Task, WithKRA>(_id, tracker.class.Issue, object.space, performance.mixin.WithKRA, {})
 
       await descriptionBox?.createAttachments(_id, operations)
       const result = await operations.commit()

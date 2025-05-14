@@ -14,9 +14,8 @@
   import { getKRAIdByIdentifier } from '../../navigation'
 
   import KRAAssignees from './KRAAssignees.svelte'
-  import KRAAssigneeTable from './KRAAssigneeTable.svelte'
 
-  export let _id: Ref<KRA> | string
+  export let _id: Ref<KRA>
   export let _class: Ref<Class<KRA>>
   export let embedded: boolean = false
   export let readonly: boolean = false
@@ -39,7 +38,7 @@
   let kraId: Ref<KRA> | undefined
 
   $: void getKRAIdByIdentifier(_id).then((res) => {
-    kraId = res ?? (_id as Ref<KRA>)
+    kraId = res ?? (_id)
 
     if (lastId === undefined) {
       lastId = kraId
@@ -246,7 +245,7 @@
       />
     </div>
     <div class="w-full mt-6">
-      <KRAAssignees kra={_id}/>
+      <KRAAssignees kra={kraId ?? _id}/>
     </div>
 
     <RelationsEditor object={kra} {readonly} />

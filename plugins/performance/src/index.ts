@@ -25,7 +25,6 @@ export interface KRAStatus extends Status {}
 export interface ReviewSession extends Project {
   reviewSessionStart: Timestamp
   reviewSessionEnd: Timestamp
-  kras?: Arr<Ref<KRA>>
 }
 
 export interface KRA extends Task {
@@ -44,8 +43,18 @@ export interface MeasureProgress extends Class<Task> {
   calculate: Resource<(task: Ref<Task>) => Promise<number | undefined>>
 }
 
-export interface WithKRA extends Task {
-  kra?: Ref<KRA>
+export interface WithKRA extends Task { }
+
+export interface ReviewComment extends Doc {
+  author: Ref<PersonAccount>
+  comment: string
+  score?: number
+}
+
+export interface PerformanceReport extends Doc {
+  reviewee: Ref<PersonAccount>
+  reviewSession: Ref<ReviewSession>
+  reviewComments: Arr<Ref<ReviewComment>>
 }
 
 export const performanceId = 'performance' as Plugin
@@ -61,7 +70,9 @@ export default plugin(performanceId, {
     KRAStatus: '' as Ref<Class<KRAStatus>>,
     ReviewSession: '' as Ref<Class<ReviewSession>>,
     KRA: '' as Ref<Class<KRA>>,
-    EmployeeKRA: '' as Ref<Class<EmployeeKRA>>
+    EmployeeKRA: '' as Ref<Class<EmployeeKRA>>,
+    ReviewComment: '' as Ref<Class<ReviewComment>>,
+    PerformanceReport: '' as Ref<Class<PerformanceReport>>
   },
   string: {
     KRA: '' as IntlString,
@@ -76,7 +87,8 @@ export default plugin(performanceId, {
     NoReviewSessions: '' as IntlString,
     AttachedKRA: '' as IntlString,
     AttachedEmployee: '' as IntlString,
-    KRAWeight: '' as IntlString
+    KRAWeight: '' as IntlString,
+    NoKRA: '' as IntlString
   },
   kraStatus: {
     Drafting: '' as Ref<KRAStatus>,
@@ -98,7 +110,8 @@ export default plugin(performanceId, {
     KRA: '' as Ref<TaskType>
   },
   ids: {
-    ClassingProjectType: '' as Ref<ProjectType>
+    ClassingProjectType: '' as Ref<ProjectType>,
+    NoKRARef: '' as Ref<KRA>
   },
   icon: {
     Weight: '' as Asset,

@@ -22,6 +22,21 @@
     "KRADescription": "KRA Description",
     "KRADescriptionPlaceholder": "Enter KRA Description\u2026",
     "CreateKRA": "Create KRA",
-    "PerformanceApplication": "Performance"
+    "PerformanceApplication": "Performance",
+    "NoTeam": "No Team",
+    "AllReviewSessions": "All Review Sessions",
+    "Weight": "Weight",
+    "Assignee": "Assignee",
+    "Assignees": "Assignees",
+    "AttachedEmployee": "Attached Employee",
+    "KRAWeight": "KRA Weight",
+    "KRA": "KRA",
+    "ReviewSessionKRAs": "Review Session KRAs",
+    "SelectTeam": "Select Team",
+    "SelectReviewSession": "Select Review Session",
+    "PerformanceReports": "Performance Reports",
+    "NoKRA": "No KRA",
+    "CreateReport": "Create Report",
+    "Reviewee": "Reviewee"
   }
 }
