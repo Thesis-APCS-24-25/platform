@@ -16,9 +16,9 @@
   import contact, { Employee, Person, PersonAccount } from '@hcengineering/contact'
   import { AssigneeBox, AssigneePopup, personAccountByIdStore } from '@hcengineering/contact-resources'
   import { AssigneeCategory } from '@hcengineering/contact-resources/src/assignee'
-  import { Account, Doc, DocumentQuery, Ref, Space, generateId } from '@hcengineering/core'
+  import { Account, Doc, DocumentQuery, Ref, Space } from '@hcengineering/core'
   import { RuleApplyResult, getClient, getDocRules } from '@hcengineering/presentation'
-  import { Component, Issue, TrackerEvents } from '@hcengineering/kra'
+  import { Issue, TrackerEvents } from '@hcengineering/kra'
   import { ButtonKind, ButtonSize, IconSize, TooltipAlignment } from '@hcengineering/ui'
   import { Analytics } from '@hcengineering/analytics'
   import { createEventDispatcher } from 'svelte'
@@ -27,7 +27,7 @@
   import tracker from '../../plugin'
   import { getPreviousAssignees } from '../../utils'
 
-  type AssigneeObject = (Doc | any) & Pick<Issue, 'space' | 'component' | 'assignee' | 'identifier'>
+  type AssigneeObject = (Doc | any) & Pick<Issue, 'space' | 'assignee' | 'identifier'>
 
   export let object: AssigneeObject | AssigneeObject[] | undefined = undefined
   export let value: AssigneeObject | AssigneeObject[] | undefined = undefined
@@ -98,17 +98,6 @@
         }
       })
     }
-    categories.push({
-      label: tracker.string.ComponentLead,
-      func: async () => {
-        const components = Array.from(docs.map((it) => it.component).filter((it) => it)) as Ref<Component>[]
-        if (components.length === 0) {
-          return []
-        }
-        const component = await client.findAll(tracker.class.Component, { _id: { $in: components } })
-        return component.map((it) => it.lead).filter((it) => it) as Ref<Person>[]
-      }
-    })
     categories.push({
       label: tracker.string.Members,
       func: async () => {

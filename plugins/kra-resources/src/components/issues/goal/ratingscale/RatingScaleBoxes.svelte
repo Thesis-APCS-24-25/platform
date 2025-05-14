@@ -39,7 +39,7 @@
       class="rating-box {size}"
       class:filled={i < (value ?? 0)}
       class:highlight={i <= hoveringIndex}
-      style={i < (value ?? 0) ? `background-color: ${ratingColors[value]};` : ''}
+      style={i < (value ?? 0) ? `background-color: ${ratingColors[value ?? 0]};` : ''}
     ></button>
   {/each}
 </div>

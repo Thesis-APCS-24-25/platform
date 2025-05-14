@@ -12,4 +12,4 @@
 
 </script>
 
-{value.name}
+{value?.name}

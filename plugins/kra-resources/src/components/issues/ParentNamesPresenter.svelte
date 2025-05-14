@@ -16,7 +16,7 @@
   import { concatLink } from '@hcengineering/core'
   import { getMetadata } from '@hcengineering/platform'
   import presentation, { NavLink } from '@hcengineering/presentation'
-  import { trackerId, type Issue, type IssueParentInfo } from '@hcengineering/kra'
+  import { kraId, type Issue, type IssueParentInfo } from '@hcengineering/kra'
   import { getCurrentLocation, locationToUrl } from '@hcengineering/ui'
 
   export let value: Issue | undefined
@@ -25,7 +25,7 @@
 
   function getHref (parentInfo: IssueParentInfo) {
     const loc = getCurrentLocation()
-    loc.path[2] = trackerId
+    loc.path[2] = kraId
     loc.path[3] = parentInfo.identifier
     loc.path.length = 4
     const frontUrl = getMetadata(presentation.metadata.FrontUrl) ?? window.location.origin

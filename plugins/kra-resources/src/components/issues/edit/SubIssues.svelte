@@ -13,7 +13,7 @@
 // limitations under the License.
 -->
 <script lang="ts">
-  import { Issue, trackerId } from '@hcengineering/kra'
+  import { Issue, kraId } from '@hcengineering/kra'
   import { Button, IconScaleFull, Label, closeTooltip, getCurrentResolvedLocation, navigate } from '@hcengineering/ui'
   import { createFilter, restrictionStore, setFilters } from '@hcengineering/view-resources'
   import tracker from '../../../plugin'
@@ -56,7 +56,7 @@
             const loc = getCurrentResolvedLocation()
             loc.fragment = undefined
             loc.query = undefined
-            loc.path[2] = trackerId
+            loc.path[2] = kraId
             loc.path[3] = issue.space
             loc.path[4] = 'issues'
             navigate(loc)

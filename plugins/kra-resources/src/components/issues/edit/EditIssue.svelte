@@ -332,7 +332,7 @@
     </div>
     <div class="space-divider" />
     <div class="mt-6">
-      <Goal {issue} {readonly} />
+      <Goal {issue} />
     </div>
 
     <RelationsEditor object={issue} {readonly} />

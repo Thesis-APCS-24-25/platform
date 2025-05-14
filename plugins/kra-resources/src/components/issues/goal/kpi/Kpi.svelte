@@ -82,19 +82,4 @@ distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRAN
       border: 1px solid var(--theme-border-color, #e0e0e0);
     }
   }
-
-  .progress-bar-container {
-    width: 100%;
-    height: 8px;
-    background-color: var(--theme-border-color, #e0e0e0);
-    border-radius: 4px;
-    overflow: hidden;
-    margin-top: 0.5rem;
-  }
-
-  .progress-bar {
-    height: 100%;
-    background-color: var(--theme-primary-color, #4c6ef5);
-    transition: width 0.3s ease-in-out;
-  }
 </style>
