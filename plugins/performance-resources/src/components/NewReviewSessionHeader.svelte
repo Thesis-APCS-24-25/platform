@@ -6,6 +6,7 @@
     ButtonWithDropdown,
     IconAdd,
     IconDropdown,
+    Label,
     Loading,
     SelectPopupValueType,
     showPopup
@@ -139,9 +140,9 @@
         />
       {/if}
     {:else}
-      <div>
-        {performance.string.NoTeam}
-      </div>
+      <Label
+        label={performance.string.NoTeam}
+      />
     {/if}
   </div>
 {/if}
