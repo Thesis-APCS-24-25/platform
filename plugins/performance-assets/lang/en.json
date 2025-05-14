@@ -35,6 +35,8 @@
     "SelectTeam": "Select Team",
     "SelectReviewSession": "Select Review Session",
     "PerformanceReports": "Performance Reports",
-    "NoKRA": "No KRA"
+    "NoKRA": "No KRA",
+    "CreateReport": "Create Report",
+    "Reviewee": "Reviewee"
   }
 }
