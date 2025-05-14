@@ -26,6 +26,7 @@
   import Collapsed from './icons/Collapsed.svelte'
   import Expanded from './icons/Expanded.svelte'
   import DraftIssueChildList from './templates/DraftIssueChildList.svelte'
+  import performance from '@hcengineering/performance'
   export let projectId: Ref<Project>
   export let project: Project | undefined
   export let subIssues: IssueDraft[] = []
@@ -87,7 +88,8 @@
         relations: [],
         childInfo: [],
         kind: subIssue.kind,
-        identifier: `${project.identifier}-${number}`
+        identifier: `${project.identifier}-${number}`,
+        kra: performance.ids.NoKRARef
       }
 
       if (!isEmptyMarkup(subIssue.description)) {
