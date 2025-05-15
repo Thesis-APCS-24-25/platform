@@ -71,7 +71,7 @@ services:
       test: curl -s http://localhost:9200/_cluster/health | grep -vq '"status":"red"'
     restart: unless-stopped
   account:
-    image: hardcoreeng/account
+    image: asia-southeast1-docker.pkg.dev/thesis2425/platform/account
     extra_hosts:
       - 'host.docker.internal:host-gateway'
     links:
@@ -107,7 +107,7 @@ services:
       # - INIT_WORKSPACE=onboarding
     restart: unless-stopped
   stats:
-    image: hardcoreeng/stats
+    image: asia-southeast1-docker.pkg.dev/thesis2425/platform/stats
     extra_hosts:
       - 'host.docker.internal:host-gateway'
     ports:
@@ -117,7 +117,7 @@ services:
       - SERVER_SECRET=secret
     restart: unless-stopped
   workspace:
-    image: hardcoreeng/workspace
+    image: asia-southeast1-docker.pkg.dev/thesis2425/platform/workspace
     extra_hosts:
       - 'host.docker.internal:host-gateway'
     links:
@@ -143,7 +143,7 @@ services:
       - BACKUP_BUCKET=${BACKUP_BUCKET_NAME}
     restart: unless-stopped
   workspacepg:
-    image: hardcoreeng/workspace
+    image: asia-southeast1-docker.pkg.dev/thesis2425/platform/workspace
     extra_hosts:
       - 'host.docker.internal:host-gateway'
     links:
@@ -171,7 +171,7 @@ services:
       - BACKUP_BUCKET=${BACKUP_BUCKET_NAME}
     restart: unless-stopped
   workspace_cockroach:
-    image: hardcoreeng/workspace
+    image: asia-southeast1-docker.pkg.dev/thesis2425/platform/workspace
     extra_hosts:
       - 'host.docker.internal:host-gateway'
     links:
@@ -198,7 +198,7 @@ services:
       - BACKUP_BUCKET=${BACKUP_BUCKET_NAME}
     restart: unless-stopped
   collaborator:
-    image: hardcoreeng/collaborator
+    image: asia-southeast1-docker.pkg.dev/thesis2425/platform/collaborator
     extra_hosts:
       - 'host.docker.internal:host-gateway'
     links:
@@ -216,7 +216,7 @@ services:
       - STATS_URL=http://host.docker.internal:4900
     restart: unless-stopped
   front:
-    image: hardcoreeng/front
+    image: asia-southeast1-docker.pkg.dev/thesis2425/platform/front
     extra_hosts:
       - 'host.docker.internal:host-gateway'
     links:
@@ -251,7 +251,7 @@ services:
       # - DISABLE_SIGNUP=true
     restart: unless-stopped
   transactor:
-    image: hardcoreeng/transactor
+    image: asia-southeast1-docker.pkg.dev/thesis2425/platform/transactor
     extra_hosts:
       - 'host.docker.internal:host-gateway'
     links:
@@ -290,7 +290,7 @@ services:
       - AI_BOT_URL=http://host.docker.internal:4010
     restart: unless-stopped
   transactor_pg:
-    image: hardcoreeng/transactor
+    image: asia-southeast1-docker.pkg.dev/thesis2425/platform/transactor
     extra_hosts:
       - 'host.docker.internal:host-gateway'
     links:
@@ -324,7 +324,7 @@ services:
       - BRANDING_PATH=/var/cfg/branding.json
     restart: unless-stopped
   transactor_cockroach:
-    image: hardcoreeng/transactor
+    image: asia-southeast1-docker.pkg.dev/thesis2425/platform/transactor
     extra_hosts:
       - 'host.docker.internal:host-gateway'
     links:
@@ -357,28 +357,8 @@ services:
       - LAST_NAME_FIRST=true
       - BRANDING_PATH=/var/cfg/branding.json
     restart: unless-stopped
-  green:
-    image: hardcoreeng/green
-    extra_hosts:
-      - 'host.docker.internal:host-gateway'
-    links:
-      - cockroach
-      - stats
-    ports:
-      - 6767:6767
-    environment:
-      - PORT=6767
-      - AUTH_TOKEN=secret
-      - STATS_URL=http://host.docker.internal:4900
-      - DB_URL=postgresql://root@host.docker.internal:26257/defaultdb?sslmode=disable
-    restart: unless-stopped    
-  rekoni:
-    image: hardcoreeng/rekoni-service
-    restart: unless-stopped
-    ports:
-      - 4004:4004
   fulltext:
-    image: hardcoreeng/fulltext
+    image: asia-southeast1-docker.pkg.dev/thesis2425/platform/fulltext
     extra_hosts:
       - 'host.docker.internal:host-gateway'
     restart: unless-stopped
@@ -397,7 +377,7 @@ services:
       - REKONI_URL=http://host.docker.internal:4004
       - ACCOUNTS_URL=http://host.docker.internal:3000
   fulltext_pg:
-    image: hardcoreeng/fulltext
+    image: asia-southeast1-docker.pkg.dev/thesis2425/platform/fulltext
     extra_hosts:
       - 'host.docker.internal:host-gateway'
     restart: unless-stopped
@@ -417,7 +397,7 @@ services:
       - REKONI_URL=http://host.docker.internal:4004
       - ACCOUNTS_URL=http://host.docker.internal:3000
   fulltext_cockroach:
-    image: hardcoreeng/fulltext
+    image: asia-southeast1-docker.pkg.dev/thesis2425/platform/fulltext
     extra_hosts:
       - 'host.docker.internal:host-gateway'
     restart: unless-stopped
@@ -436,89 +416,6 @@ services:
       - STATS_URL=http://host.docker.internal:4900
       - REKONI_URL=http://host.docker.internal:4004
       - ACCOUNTS_URL=http://host.docker.internal:3000
-  print:
-    image: hardcoreeng/print
-    extra_hosts:
-      - 'host.docker.internal:host-gateway'
-    restart: unless-stopped
-    ports:
-      - 4005:4005
-    environment:
-      - SECRET=secret
-      - STORAGE_CONFIG=${STORAGE_CONFIG}
-      - STATS_URL=http://host.docker.internal:4900
-  sign:
-    image: hardcoreeng/sign
-    extra_hosts:
-      - 'host.docker.internal:host-gateway'
-    restart: unless-stopped
-    ports:
-      - 4006:4006
-    volumes:
-      - ../services/sign/pod-sign/debug/certificate.p12:/var/cfg/certificate.p12
-      - ../services/sign/pod-sign/debug/branding.json:/var/cfg/branding.json
-    environment:
-      - SECRET=secret
-      - MINIO_ENDPOINT=minio
-      - MINIO_ACCESS_KEY=minioadmin
-      - ACCOUNTS_URL=http://host.docker.internal:3000
-      - MINIO_SECRET_KEY=minioadmin
-      - CERTIFICATE_PATH=/var/cfg/certificate.p12
-      - SERVICE_ID=sign-service
-      - BRANDING_PATH=/var/cfg/branding.json
-      - STATS_URL=http://host.docker.internal:4900
-  analytics:
-    image: hardcoreeng/analytics-collector
-    extra_hosts:
-      - 'host.docker.internal:host-gateway'
-    restart: unless-stopped
-    ports:
-      - 4017:4017
-    environment:
-      - SECRET=secret
-      - PORT=4017
-      - MONGO_URL=${MONGO_URL}
-      - 'MONGO_OPTIONS={"appName":"analytics","maxPoolSize":1}'
-      - SERVICE_ID=analytics-collector-service
-      - ACCOUNTS_URL=http://host.docker.internal:3000
-      - SUPPORT_WORKSPACE=support
-      - STATS_URL=http://host.docker.internal:4900
-  aiBot:
-    image: hardcoreeng/ai-bot
-    ports:
-      - 4010:4010
-    extra_hosts:
-      - 'host.docker.internal:host-gateway'
-    restart: unless-stopped
-    environment:
-      - SERVER_SECRET=secret
-      - MONGO_URL=${MONGO_URL}
-      - ACCOUNTS_URL=http://host.docker.internal:3000
-      - SUPPORT_WORKSPACE=support
-      - STORAGE_CONFIG=${STORAGE_CONFIG}
-      - FIRST_NAME=Jolie
-      - LAST_NAME=AI
-      - PASSWORD=password
-      - AVATAR_PATH=./avatar.png
-      - AVATAR_CONTENT_TYPE=.png
-      - STATS_URL=http://host.docker.internal:4900
-#      - LOVE_ENDPOINT=http://host.docker.internal:8096
-#      - OPENAI_API_KEY=token
-#  telegram-bot:
-#    image: hardcoreeng/telegram-bot
-#   extra_hosts:
-#     - "host.docker.internal:host-gateway"
-#    restart: unless-stopped
-#    environment:
-#      - PORT=4020
-#      - BOT_TOKEN=token
-#      - MONGO_URL=${MONGO_URL}
-#      - MONGO_DB=telegram-bot
-#      - SECRET=secret
-#      - DOMAIN=domain
-#      - ACCOUNTS_URL=http://host.docker.internal:3000
-#      - SERVICE_ID=telegram-bot-service
-#      - STATS_URL=http://host.docker.internal:4900
 volumes:
   db:
   dbpg:
