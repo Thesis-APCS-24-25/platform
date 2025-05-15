@@ -55,7 +55,8 @@
     'milestone',
     'relations',
     'blockedBy',
-    'identifier'
+    'identifier',
+    'goal'
   ]
 
   let keys: KeyedAttribute[] = []

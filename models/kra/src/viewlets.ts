@@ -214,7 +214,8 @@ export function defineViewlets (builder: Builder): void {
           'dueDate',
           'attachedTo',
           'createdBy',
-          'modifiedBy'
+          'modifiedBy',
+          'goal'
         ]
       },
       config: issueConfig()
@@ -256,7 +257,8 @@ export function defineViewlets (builder: Builder): void {
           'estimation',
           'remainingTime',
           'createdBy',
-          'modifiedBy'
+          'modifiedBy',
+          'goal'
         ]
       },
       config: issueConfig('sub', true)
@@ -289,7 +291,8 @@ export function defineViewlets (builder: Builder): void {
           'title',
           'description',
           'createdBy',
-          'modifiedBy'
+          'modifiedBy',
+          'goal'
         ]
       },
       config: [
@@ -337,7 +340,8 @@ export function defineViewlets (builder: Builder): void {
         groupDepth: 1
       },
       configOptions: {
-        strict: true
+        strict: true,
+        hiddenKeys: ['goal']
       },
       config: ['subIssues', 'priority', 'dueDate', 'labels', 'estimation', 'attachments', 'comments']
     },
@@ -351,7 +355,7 @@ export function defineViewlets (builder: Builder): void {
       attachTo: kra.class.Project,
       descriptor: view.viewlet.Table,
       configOptions: {
-        hiddenKeys: ['identifier', 'name', 'description']
+        hiddenKeys: ['identifier', 'name', 'description', 'goal']
       },
       config: [
         {
