@@ -12,10 +12,14 @@
 {#if onChange !== undefined && !readonly}
   <NumberEditor {onChange} {value} {placeholder} {kind} />
 {:else}
-  <span class="fs-bold text-md">
-    {value}
-  </span>
   {#if showPercent}
+    <span class="fs-bold text-md">
+      {value !== undefined ? (value * 100.0).toFixed(0) : 0}
+    </span>
     %
+  {:else}
+    <span class="fs-bold text-md">
+      {value?.toFixed(2)}
+    </span>
   {/if}
 {/if}
