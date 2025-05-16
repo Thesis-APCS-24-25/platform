@@ -76,7 +76,7 @@
   }
 </script>
 
-<div>
+<div class='dashboard'>
   <div class='dashboard-header flex-row-baseline'>
     <TeamAndReviewSessionSelector
       bind:team={team}
@@ -84,10 +84,12 @@
     />
   </div>
   {#if _space !== undefined}
-    <Chart
-    on:segmentClick={handleSegmentClick}
-      space={_space}
-    />
+    <div class='dashboard-content'>
+      <Chart
+        on:segmentClick={handleSegmentClick}
+          space={_space}
+      />
+    </div>
   {/if}
 </div>
 
@@ -95,5 +97,15 @@
   .dashboard-header {
     padding: 1rem;
     align-items: center;
+  }
+
+  .dashboard {
+    width: 100%;
+    height: 100%;
+  }
+
+  .dashboard-content {
+    width: 100%;
+    height: calc(90% - 20px);
   }
 </style>

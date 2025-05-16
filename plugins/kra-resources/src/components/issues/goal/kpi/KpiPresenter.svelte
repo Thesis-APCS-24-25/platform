@@ -39,12 +39,12 @@
     {#if value.$lookup?.unit?.prefix === true}
       <span class="unit-symbol">{value.$lookup.unit.symbol}</span>
     {/if}
-    <strong>{sum}</strong>
+    <strong class="kpi-num">{sum}</strong>
     {#if value.$lookup?.unit?.prefix === false}
       <span class="unit-symbol">{value.$lookup.unit.symbol}</span>
     {/if}
     {#if value.target > 0}
-      <span> / {value.target}</span>
+      <span class="kpi-num"> / {value.target}</span>
     {/if}
   </GoalPresenterContainer>
 {/await}
@@ -58,5 +58,10 @@
 
   .unit-symbol {
     margin: 0 0.25rem;
+    color: var(--theme-halfcontent-color);
+  }
+
+  .kpi-num {
+    color: var(--theme-halfcontent-color);
   }
 </style>
