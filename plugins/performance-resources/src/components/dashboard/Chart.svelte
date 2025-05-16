@@ -362,9 +362,10 @@
   {#if employees.length === 0}
     <div class="no-data">No data available.</div>
   {:else}
-    <div class="chart">
-      <canvas bind:this={chartCanvas}></canvas>
-    </div>
+    <canvas
+      class="chart"
+      bind:this={chartCanvas}
+    />
   {/if}
 </div>
 
@@ -372,6 +373,7 @@
   .chart-container {
     font-family: 'Inter', sans-serif;
     width: 100%;
+    height: 100%;
     margin: 0 auto;
     padding: 20px;
     background-color: var(--theme-panel-color);
@@ -386,10 +388,9 @@
   }
 
   .chart {
-    width: 100%;
-    height: auto;
     margin-bottom: 20px;
     position: relative;
+    max-height: 90%;
   }
 
   .no-data {
