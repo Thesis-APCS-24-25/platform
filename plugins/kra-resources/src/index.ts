@@ -369,7 +369,7 @@ export default async (): Promise<Resources> => ({
       const issue = res as Issue
       const goal = await client.findOne(kra.class.Goal, { _id: issue.goal })
       if (goal === undefined) {
-        return undefined
+        return issue.status === kra.status.Done ? 1 : undefined
       }
       return await calculateGoal(goal)
     }
