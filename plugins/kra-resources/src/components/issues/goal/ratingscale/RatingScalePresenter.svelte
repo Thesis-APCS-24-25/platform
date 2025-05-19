@@ -33,7 +33,7 @@
     <div class="separator"></div>
 
     <div class="label">
-      <span class="current-value">{rating}</span> <span class="divider">/</span> <span class="target-value">5</span>
+      <strong class="current-value">{rating}</strong> <span class="divider">/</span> <span class="target-value">5</span>
     </div>
   </GoalPresenterContainer>
 {/await}
@@ -46,13 +46,12 @@
     background-color: var(--theme-divider-color, #e0e0e0);
   }
   .current-value {
-    font-weight: 600;
-    font-size: 1.1em;
+    color: var(--theme-halfcontent-color)
   }
   .divider {
-    opacity: 0.7;
+    color: var(--theme-halfcontent-color)
   }
   .target-value {
-    opacity: 0.7;
+    color: var(--theme-halfcontent-color)
   }
 </style>
