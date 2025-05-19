@@ -7,7 +7,7 @@
   import { decodeObjectURI } from '@hcengineering/view'
   import { onDestroy } from 'svelte'
   import { ObjectBox } from '@hcengineering/view-resources'
-  import { deepEqual } from 'fast-equals'
+  import { assignRoleToMember } from '../utils'
 
   export let value: Member | undefined
 
@@ -37,6 +37,7 @@
     return {
       team,
       typeType,
+      roles,
       role: role?._id,
       rolesAssignment
     }
@@ -55,36 +56,10 @@
       return prev
     }, {})
   }
-
-  async function handleRoleChanged (
-    team: Team,
-    typeType: TeamType,
-    rolesAssignment: RolesAssignment,
-    event: CustomEvent<Ref<Role>>
-  ): Promise<void> {
-    if (value === undefined) {
-      return
-    }
-
-    const { detail: role } = event
-    const memberId = value._id
-
-    const newAssignment = Object.entries(rolesAssignment).reduce<RolesAssignment>((acc, [key, members]) => {
-      const updatedMembers = members?.filter((id) => id !== memberId) ?? []
-      if (key === role) {
-        updatedMembers.push(memberId)
-      }
-      return { ...acc, [key]: updatedMembers }
-    }, {})
-
-    if (!deepEqual(newAssignment, rolesAssignment)) {
-      await client.updateMixin(team._id, kraTeam.class.Team, core.space.Space, typeType.targetClass, newAssignment)
-    }
-  }
 </script>
 
-{#await data then { team, typeType, role, rolesAssignment }}
-  {#if team !== undefined && typeType !== undefined && rolesAssignment !== undefined}
+{#await data then { team, typeType, role, rolesAssignment, roles }}
+  {#if value !== undefined && team !== undefined && typeType !== undefined && rolesAssignment !== undefined}
     <ObjectBox
       _class={core.class.Role}
       docQuery={{
@@ -95,7 +70,9 @@
       allowDeselect
       label={kraTeam.string.Role}
       showNavigate={false}
-      on:change={handleRoleChanged.bind(undefined, team, typeType, rolesAssignment)}
+      on:change={async (event) => {
+        await assignRoleToMember(team._id, typeType, roles, value?._id, event.detail)
+      }}
     />
   {/if}
 {/await}
