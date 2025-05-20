@@ -23,6 +23,7 @@ import { Viewlet } from '@hcengineering/view'
 export interface KRAStatus extends Status {}
 
 export interface ReviewSession extends Project {
+  active: boolean
   reviewSessionStart: Timestamp
   reviewSessionEnd: Timestamp
 }
@@ -60,9 +61,6 @@ export interface PerformanceReport extends Doc {
 export const performanceId = 'performance' as Plugin
 
 export default plugin(performanceId, {
-  app: {
-    Performance: '' as Ref<Doc>
-  },
   attribute: {
     KRAStatusAttribute: '' as Ref<Attribute<KRAStatus>>
   },
@@ -88,7 +86,8 @@ export default plugin(performanceId, {
     AttachedKRA: '' as IntlString,
     AttachedEmployee: '' as IntlString,
     KRAWeight: '' as IntlString,
-    NoKRA: '' as IntlString
+    NoKRA: '' as IntlString,
+    Active: '' as IntlString
   },
   kraStatus: {
     Drafting: '' as Ref<KRAStatus>,

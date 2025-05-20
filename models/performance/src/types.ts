@@ -1,4 +1,4 @@
-import { ArrOf, Index, Mixin, Model, Prop, TypeDate, TypeNumber, TypeRef, TypeString } from '@hcengineering/model'
+import { ArrOf, Index, Mixin, Model, Prop, TypeBoolean, TypeDate, TypeNumber, TypeRef, TypeString } from '@hcengineering/model'
 
 import performance from './plugin'
 import core, { TClass, TDoc, TStatus } from '@hcengineering/model-core'
@@ -26,6 +26,8 @@ export class TMeasureProgress extends TClass implements MeasureProgress {
 export class TReviewSession extends TProject implements ReviewSession {
   // @Prop(TypeRef(core.class.Status), performance.string.ReviewSessionStatus)
   //   reviewSessionStatus!: Ref<ReviewSessionStatus>
+  @Prop(TypeBoolean(), performance.string.Active)
+    active!: boolean
 
   @Prop(TypeDate(), performance.string.ReviewSessionStart)
     reviewSessionStart!: Timestamp

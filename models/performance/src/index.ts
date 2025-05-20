@@ -8,7 +8,7 @@ import performance from './plugin'
 import task from '@hcengineering/task'
 import { type Ref, type StatusCategory } from '@hcengineering/core'
 import core from '@hcengineering/model-core'
-import workbench from '@hcengineering/model-workbench'
+import workbench, { Application } from '@hcengineering/model-workbench'
 import view from '@hcengineering/model-view'
 import { DOMAIN_PERFORMANCE, TDefaultKRAData, TDefaultReviewSessionData, TEmployeeKRA, TKRA, TKRAStatus, TReviewSession, TMeasureProgress, TReviewComment, TPerformanceReport } from './types'
 
@@ -311,67 +311,15 @@ function defineSpaceType (builder: Builder): void {
 }
 
 function defineApplication (builder: Builder): void {
-  builder.createDoc(
+  builder.createDoc<Application>(
     workbench.class.Application,
     core.space.Model,
     {
       label: performance.string.PerformanceApplication,
       alias: performanceId,
       icon: performance.icon.ReviewSession,
-      hidden: false,
-      navHeaderComponent: performance.component.NewReviewSessionHeader,
-      navigatorModel: {
-        spaces: [
-          {
-            id: 'teams',
-            label: kraTeam.string.Teams,
-            spaceClass: kraTeam.class.Team,
-            addSpaceLabel: kraTeam.string.CreateTeam,
-            createComponent: kraTeam.component.CreateTeam,
-            specials: []
-          }
-        ],
-        specials: [
-          {
-            id: 'dashboard',
-            component: performance.component.PerformanceDashboard,
-            label: performance.string.PerformanceDashboard,
-            position: 'top'
-          },
-          {
-            id: 'review-sessions',
-            component: workbench.component.SpecialView,
-            componentProps: {
-              _class: performance.class.ReviewSession
-            },
-            label: performance.string.AllReviewSessions,
-            spaceClass: performance.class.ReviewSession,
-            addSpaceLabel: performance.string.CreateReviewSessionLabel,
-            position: 'bottom'
-          },
-          {
-            id: 'my-kras',
-            component: performance.component.MyKRAs,
-            label: performance.string.MyKRAs,
-            spaceClass: performance.class.KRA,
-            addSpaceLabel: performance.string.CreateKraLabel,
-            position: 'bottom'
-          },
-          {
-            id: 'report',
-            component: performance.component.PerformanceReports,
-            componentProps: {
-              createComponent: performance.component.CreateReport,
-              createButton: performance.component.CreateReportButton
-            },
-            label: performance.string.PerformanceReports,
-            spaceClass: performance.class.PerformanceReport,
-            addSpaceLabel: performance.string.CreateReportLabel,
-            createComponent: performance.component.CreateReport,
-            position: 'bottom'
-          }
-        ]
-      }
+      component: performance.component.PerformanceApplication,
+      hidden: false
     },
     performance.app.Performance
   )
