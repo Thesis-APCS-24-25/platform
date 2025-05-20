@@ -135,7 +135,7 @@
           const kra = kras.find((k) => k._id === entry.kra)
           if (kra == null || tasks === undefined) return null
           const filteredTasks = tasks.filter((task) => {
-            const asMixin = client.getHierarchy().as(task, performance.mixin.WithKRA)
+            const asMixin = client.getHierarchy().as(task, performance.mixin.WithKRA) as any
             return asMixin.kra === kra._id && asMixin.assignee === employee.person
           })
           let completionLevel = filteredTasks.reduce<number>((acc, task) => {
@@ -363,9 +363,9 @@
     <div class="no-data">No data available.</div>
   {:else}
     <canvas
-      class="chart"
+      id="chart"
       bind:this={chartCanvas}
-    />
+    ></canvas>
   {/if}
 </div>
 
@@ -385,12 +385,6 @@
     text-align: center;
     margin-bottom: 20px;
     color: var(--theme-text-primary-color);
-  }
-
-  .chart {
-    margin-bottom: 20px;
-    position: relative;
-    max-height: 90%;
   }
 
   .no-data {
