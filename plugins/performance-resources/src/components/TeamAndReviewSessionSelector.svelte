@@ -1,12 +1,13 @@
 <script lang="ts">
-  import { getClient, IconForward, SpaceSelector } from '@hcengineering/presentation'
+  import { createQuery, getClient, IconForward, SpaceSelector } from '@hcengineering/presentation'
   import { ReviewSession } from '@hcengineering/performance'
   import { getCurrentAccount, Ref, SortingOrder, Space } from '@hcengineering/core'
   import performance from '../plugin'
   import kraTeam, { Member, Team } from '@hcengineering/kra-team'
-  import { Label } from '@hcengineering/ui'
+  import { createFocusManager, FocusHandler, Label } from '@hcengineering/ui'
 
   const client = getClient()
+  const query = createQuery()
 
   const me = getCurrentAccount()
 
@@ -25,11 +26,14 @@
   })
 
   $: if (team !== undefined) {
-    void client.findOne(
+    query.query(
       performance.class.ReviewSession,
       {
         space: team as Ref<Space>,
         members: me._id
+      },
+      (res) => {
+        reviewSession = res[0]?._id ?? undefined
       },
       {
         sort: {
@@ -37,11 +41,13 @@
         },
         limit: 1
       }
-    ).then((res) => {
-      reviewSession = res?._id ?? undefined
-    })
+    )
   }
+
+  const manager = createFocusManager()
 </script>
+
+<FocusHandler {manager}/>
 
 <div class='flex-row-baseline double-selector-container'>
   {#if team !== undefined}

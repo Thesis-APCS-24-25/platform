@@ -1,9 +1,8 @@
 <script lang="ts">
   import core, { AttachedData, Ref, SortingOrder, Space, generateId } from '@hcengineering/core'
-  import { OK, Status } from '@hcengineering/platform'
   import { Card, getClient } from '@hcengineering/presentation'
   import { TaskType, makeRank } from '@hcengineering/task'
-  import { EditBox, Grid, Label, Status as StatusControl } from '@hcengineering/ui'
+  import { createFocusManager, EditBox, FocusHandler, Label } from '@hcengineering/ui'
   import { createEventDispatcher } from 'svelte'
   import performance from '../../plugin'
   import { KRA, ReviewSession } from '@hcengineering/performance'
@@ -12,13 +11,13 @@
 
   export let team: Ref<Team>
   let reviewSession: Ref<ReviewSession> | undefined
-  const status: Status = OK
 
   let title: string = ''
   let description: string = ''
 
   const dispatch = createEventDispatcher()
   const client = getClient()
+  const manager = createFocusManager()
   const kraId = generateId<KRA>()
 
   export function canClose (): boolean {
@@ -88,37 +87,46 @@
   // })
 </script>
 
-  <Card
-    label={performance.string.CreateKRA}
-    okAction={createKRA}
-    canSave={title.trim().length > 0}
-    on:close={() => {
-      dispatch('close')
-    }}
-    on:changeContent
-  >
-    <svelte:fragment slot="header">
-      <TeamAndReviewSessionSelector
-        bind:team={team}
-        bind:reviewSession={reviewSession}
+<FocusHandler {manager} />
+
+<Card
+  label={performance.string.CreateKRA}
+  okAction={createKRA}
+  canSave={title.trim().length > 0}
+  on:close={() => {
+    dispatch('close')
+  }}
+  on:changeContent
+>
+  <svelte:fragment slot="header">
+    <TeamAndReviewSessionSelector
+      bind:team={team}
+      bind:reviewSession={reviewSession}
+    />
+  </svelte:fragment>
+  {#if reviewSession !== undefined}
+    <div class="flex-row-center m-3 clear-mins">
+      <EditBox
+        label={performance.string.KRAName}
+        bind:value={title}
+        placeholder={performance.string.KRANamePlaceholder}
+        autoFocus
+        kind={'large-style'}
+        focusIndex={1}
       />
-    </svelte:fragment>
-    <StatusControl slot="error" {status} />
-    {#if reviewSession !== undefined}
-      <Grid column={1} rowGap={1.5}>
-        <EditBox
-          label={performance.string.KRAName}
-          bind:value={title}
-          placeholder={performance.string.KRANamePlaceholder}
-          autoFocus />
-        <EditBox
-          label={performance.string.KRADescription}
-          bind:value={description}
-          placeholder={performance.string.KRADescriptionPlaceholder}/>
-      </Grid>
-    {:else}
-      <Label
-        label={performance.string.NoReviewSessions}
+    </div>
+    <div class="flex-row-center m-3 clear-mins">
+      <EditBox
+        label={performance.string.KRADescription}
+        bind:value={description}
+        placeholder={performance.string.KRADescriptionPlaceholder}
+        kind={'large-style'}
+        focusIndex={2}
       />
-    {/if}
-  </Card>
+    </div>
+  {:else}
+    <Label
+      label={performance.string.NoReviewSessions}
+    />
+  {/if}
+</Card>
