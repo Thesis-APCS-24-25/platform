@@ -2,6 +2,7 @@ import { type Permission, type Ref, type Role } from '@hcengineering/core'
 import kraTeam, { kraTeamId } from '@hcengineering/kra-team'
 import { type IntlString, mergeIds } from '@hcengineering/platform'
 import { type AnyComponent } from '@hcengineering/ui'
+import { type ViewAction } from '@hcengineering/view'
 
 export default mergeIds(kraTeamId, kraTeam, {
   string: {
@@ -18,7 +19,8 @@ export default mergeIds(kraTeamId, kraTeam, {
     ApproveKra: '' as IntlString,
     ApproveKraDescription: '' as IntlString,
     CreateKra: '' as IntlString,
-    CreateKraDescription: '' as IntlString
+    CreateKraDescription: '' as IntlString,
+    RemoveMember: '' as IntlString
   },
   component: {
     RolePresenter: '' as AnyComponent,
@@ -37,5 +39,8 @@ export default mergeIds(kraTeamId, kraTeam, {
   role: {
     TeamMember: '' as Ref<Role>,
     TeamManager: '' as Ref<Role>
+  },
+  actionImpl: {
+    RemoveMember: '' as ViewAction
   }
 })

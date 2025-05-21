@@ -21,6 +21,7 @@
   import { TreeSeparator } from '@hcengineering/workbench-resources'
   import { createQuery } from '@hcengineering/presentation'
   import { myTeams } from '../utils'
+  import { currentTeam } from '../stores'
 
   let currentSpecial: SpecialNavModel | undefined
 
@@ -70,11 +71,13 @@
     if (special !== undefined) {
       currentSpecial = special
       currentSpace = undefined
+      $currentTeam = undefined
       return
     }
 
     const [id] = decodeObjectURI(loc.path[3])
     currentSpace = id as Ref<Team>
+    $currentTeam = id as Ref<Team>
     currentSpecial = undefined
   }
 

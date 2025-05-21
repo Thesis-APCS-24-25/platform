@@ -2,12 +2,7 @@ import { type Builder } from '@hcengineering/model'
 import core, { AccountRole } from '@hcengineering/core'
 import workbench from '@hcengineering/workbench'
 import kraTeam from './plugin'
-import {
-  TMember,
-  TTeam,
-  TTeamType,
-  TTeamTypeDescriptor
-} from './types'
+import { TMember, TTeam, TTeamType, TTeamTypeDescriptor } from './types'
 import { defineViewlets } from './viewlets'
 import { definePresenters } from './presenters'
 import { definePermissions } from './permissions'

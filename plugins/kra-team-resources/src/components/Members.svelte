@@ -1,17 +1,25 @@
 <script lang="ts">
-  import { Account, Ref, WithLookup } from '@hcengineering/core'
-  import { SpaceHeader, ViewletContentView, ViewletSettingButton } from '@hcengineering/view-resources'
+  import core, { Account, Ref, WithLookup } from '@hcengineering/core'
+  import {
+    SpaceHeader,
+    Table,
+    TableBrowser,
+    ViewletContentView,
+    ViewletSettingButton
+  } from '@hcengineering/view-resources'
   import kraTeam from '../plugins'
   import { Viewlet, ViewOptions } from '@hcengineering/view'
-  import { createQuery } from '@hcengineering/presentation'
-  import contact from '@hcengineering/contact'
-  import { Team } from '@hcengineering/kra-team'
-  import { themeStore } from '@hcengineering/ui'
+  import { createQuery, getClient, ObjectPopup } from '@hcengineering/presentation'
+  import contact, { Person, PersonAccount } from '@hcengineering/contact'
+  import { Member, Team } from '@hcengineering/kra-team'
+  import { Button, showPopup, themeStore } from '@hcengineering/ui'
   import { translate } from '@hcengineering/platform'
+  import AddMember from './AddMember.svelte'
+  import { personIdByAccountId } from '@hcengineering/contact-resources'
 
   export let currentSpace: Ref<Team> | undefined = undefined
 
-  let members: Ref<Account>[] = []
+  let members: Ref<Member>[] = []
 
   const liveQuery = createQuery()
 
@@ -21,7 +29,13 @@
       _id: currentSpace
     },
     (rs) => {
-      members = rs[0]?.members ?? []
+      members = rs[0]?.members
+        .map((personRef) => {
+          return $personIdByAccountId.get(personRef as Ref<PersonAccount>)
+        })
+        .filter((personRef) => {
+          return personRef !== undefined
+        }) as Ref<Member>[] ?? []
     }
   )
 
@@ -40,27 +54,35 @@
       label = res
     })
   }
+
+  function handleAddMember (): void {
+    showPopup(
+      AddMember,
+      {
+        currentSpace
+      },
+      'centered'
+    )
+  }
 </script>
 
 <SpaceHeader
   label={label ?? ''}
-  _class={kraTeam.class.Member}
+  _class={kraTeam.mixin.Member}
   bind:viewlet
   bind:search
-  viewletQuery={{ attachTo: kraTeam.class.Member }}
+  viewletQuery={{ attachTo: kraTeam.mixin.Member }}
   space={contact.space.Contacts}
 >
   <svelte:fragment slot="header-tools">
     <ViewletSettingButton bind:viewOptions bind:viewlet />
   </svelte:fragment>
+
+  <svelte:fragment slot="actions">
+    <Button label={kraTeam.string.AddMember} kind="primary" on:click={handleAddMember} />
+  </svelte:fragment>
 </SpaceHeader>
 
 {#if viewlet !== undefined && viewOptions}
-  <ViewletContentView
-    _class={contact.class.PersonAccount}
-    space={contact.space.Contacts}
-    {viewOptions}
-    {viewlet}
-    {query}
-  />
+  <ViewletContentView _class={kraTeam.mixin.Member} space={contact.space.Contacts} {viewOptions} {viewlet} {query} />
 {/if}

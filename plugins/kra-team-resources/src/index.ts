@@ -8,6 +8,22 @@ import Team from './components/Team.svelte'
 import MyTeams from './components/MyTeams.svelte'
 import MemberRolePresenter from './components/MemberRolePresenter.svelte'
 import RolePresenter from './components/RolePresenter.svelte'
+import { currentTeam } from './stores'
+import { removePersonsFromTeam } from './utils'
+import { get } from 'svelte/store'
+import { type Person } from '@hcengineering/contact'
+
+async function removeMember (doc: Person | Person[]): Promise<void> {
+  const team = get(currentTeam)
+  if (team === undefined) {
+    return
+  }
+  if (!Array.isArray(doc)) {
+    doc = [doc]
+  }
+  const refs = doc.map((p) => p._id)
+  await removePersonsFromTeam(refs, team)
+}
 
 export default async (): Promise<Resources> => ({
   component: {
@@ -20,5 +36,8 @@ export default async (): Promise<Resources> => ({
     RolePresenter,
     Team,
     MyTeams
+  },
+  actionImpl: {
+    RemoveMember: removeMember
   }
 })

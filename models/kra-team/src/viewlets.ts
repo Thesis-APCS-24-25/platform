@@ -19,11 +19,11 @@ export function defineViewlets (builder: Builder): void {
   })
 
   builder.createDoc(view.class.Viewlet, core.space.Model, {
-    attachTo: kraTeam.class.Member,
+    attachTo: kraTeam.mixin.Member,
     descriptor: view.viewlet.Table,
     config: [
       {
-        key: 'person'
+        key: ''
       },
       {
         key: '',
