@@ -1,6 +1,7 @@
 import { type Member } from '@hcengineering/contact'
 import { type Permission, type Ref, type Role } from '@hcengineering/core'
-import kraTeam, { kraTeamId } from '@hcengineering/kra-team'
+import { kraTeamId } from '@hcengineering/kra-team'
+import kraTeam from '@hcengineering/kra-team-resources/src/plugins'
 import { type IntlString, mergeIds, type Resource } from '@hcengineering/platform'
 import { type AnyComponent } from '@hcengineering/ui'
 import { type ViewActionAvailabilityFunction, type ViewAction } from '@hcengineering/view'
@@ -8,15 +9,11 @@ import { type ViewActionAvailabilityFunction, type ViewAction } from '@hcenginee
 export default mergeIds(kraTeamId, kraTeam, {
   string: {
     Roles: '' as IntlString,
-    Team: '' as IntlString,
     Teams: '' as IntlString,
-    AllTeams: '' as IntlString,
-    CreateTeam: '' as IntlString,
     Description: '' as IntlString,
     Metrics: '' as IntlString,
     Name: '' as IntlString,
     KRATemplates: '' as IntlString,
-    Members: '' as IntlString,
     ApproveKra: '' as IntlString,
     ApproveKraDescription: '' as IntlString,
     CreateKra: '' as IntlString,
