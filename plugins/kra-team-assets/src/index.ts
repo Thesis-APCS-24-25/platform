@@ -9,5 +9,6 @@ loadMetadata(kraTeam.icon, {
   Add: `${icons}#add`,
   Home: `${icons}#home`,
   MyTeams: `${icons}#my-teams`,
+  Manager: `${icons}#manager`,
   AllTeams: `${icons}#all-teams`
 })

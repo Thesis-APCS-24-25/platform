@@ -22,6 +22,7 @@ export default plugin(kraTeamId, {
     TeamTypeDescriptor: '' as Ref<Class<TeamTypeDescriptor>>
   },
   icon: {
+    Manager: '' as Asset,
     Team: '' as Asset,
     Teams: '' as Asset,
     Member: '' as Asset,
