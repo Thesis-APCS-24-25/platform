@@ -1,8 +1,9 @@
+import { type Member } from '@hcengineering/contact'
 import { type Permission, type Ref, type Role } from '@hcengineering/core'
 import kraTeam, { kraTeamId } from '@hcengineering/kra-team'
-import { type IntlString, mergeIds } from '@hcengineering/platform'
+import { type IntlString, mergeIds, type Resource } from '@hcengineering/platform'
 import { type AnyComponent } from '@hcengineering/ui'
-import { type ViewAction } from '@hcengineering/view'
+import { type ViewActionAvailabilityFunction, type ViewAction } from '@hcengineering/view'
 
 export default mergeIds(kraTeamId, kraTeam, {
   string: {
@@ -39,6 +40,9 @@ export default mergeIds(kraTeamId, kraTeam, {
   role: {
     TeamMember: '' as Ref<Role>,
     TeamManager: '' as Ref<Role>
+  },
+  function: {
+    ShouldDisplayRemoveMemberAction: '' as Resource<ViewActionAvailabilityFunction<Member>>
   },
   actionImpl: {
     RemoveMember: '' as ViewAction

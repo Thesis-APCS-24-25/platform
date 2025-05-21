@@ -12,6 +12,7 @@ import { currentTeam } from './stores'
 import { removePersonsFromTeam } from './utils'
 import { get } from 'svelte/store'
 import { type Person } from '@hcengineering/contact'
+import AllMembers from './components/AllMembers.svelte'
 
 async function removeMember (doc: Person | Person[]): Promise<void> {
   const team = get(currentTeam)
@@ -25,6 +26,14 @@ async function removeMember (doc: Person | Person[]): Promise<void> {
   await removePersonsFromTeam(refs, team)
 }
 
+async function shouldDisplayRemoveMemberAction (_doc: Person | Person[]): Promise<boolean> {
+  const team = get(currentTeam)
+  if (team === undefined) {
+    return false
+  }
+  return true
+}
+
 export default async (): Promise<Resources> => ({
   component: {
     KraTemplates,
@@ -35,7 +44,11 @@ export default async (): Promise<Resources> => ({
     MemberRolePresenter,
     RolePresenter,
     Team,
+    AllMembers,
     MyTeams
+  },
+  function: {
+    ShouldDisplayRemoveMemberAction: shouldDisplayRemoveMemberAction
   },
   actionImpl: {
     RemoveMember: removeMember

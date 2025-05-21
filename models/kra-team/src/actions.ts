@@ -29,6 +29,7 @@ export function defineActions (builder: Builder): void {
     input: 'any',
     target: kraTeam.mixin.Member,
     context: { mode: 'context' },
+    visibilityTester: kraTeam.function.ShouldDisplayRemoveMemberAction,
     category: view.category.Editor
   })
 }

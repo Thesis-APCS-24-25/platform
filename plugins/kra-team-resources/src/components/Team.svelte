@@ -22,6 +22,8 @@
   import { createQuery } from '@hcengineering/presentation'
   import { myTeams } from '../utils'
   import { currentTeam } from '../stores'
+  import contact from '@hcengineering/contact'
+  import AllMembers from './AllMembers.svelte'
 
   let currentSpecial: SpecialNavModel | undefined
 
@@ -37,10 +39,10 @@
 
   const specials: SpecialNavModel[] = [
     {
-      id: 'my-teams',
-      icon: kraTeam.icon.MyTeams,
-      label: kraTeam.string.MyTeams,
-      component: kraTeam.component.MyTeams
+      id: 'members',
+      icon: contact.icon.Person,
+      label: contact.string.Employees,
+      component: kraTeam.component.AllMembers
     },
     {
       id: 'all-teams',
