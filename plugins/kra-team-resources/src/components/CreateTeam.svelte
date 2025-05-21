@@ -133,7 +133,7 @@
   }
 </script>
 
-<Card label={kraTeam.string.CreateTeam} okAction={handleOk} {canSave}>
+<Card label={kraTeam.string.CreateTeam} okAction={handleOk} {canSave} on:close>
   <div class="antiGrid">
     <div class="antiGrid-row">
       <div class="antiGrid-row__header">
