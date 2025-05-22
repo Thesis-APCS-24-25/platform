@@ -11,6 +11,7 @@ import core from '@hcengineering/model-core'
 import workbench, { Application } from '@hcengineering/model-workbench'
 import view from '@hcengineering/model-view'
 import { DOMAIN_PERFORMANCE, TDefaultKRAData, TDefaultReviewSessionData, TEmployeeKRA, TKRA, TKRAStatus, TReviewSession, TMeasureProgress, TReviewComment, TPerformanceReport } from './types'
+import { defineViewlets } from './viewlets'
 
 export { performanceId } from '@hcengineering/performance'
 export { performance as default }
@@ -330,6 +331,11 @@ function defineActivity (builder: Builder): void {
   builder.mixin(performance.class.KRA, core.class.Class, activity.mixin.ActivityDoc, {})
 
   builder.createDoc(activity.class.ActivityExtension, core.space.Model, {
+    ofClass: performance.class.PerformanceReport,
+    components: { input: { component: chunter.component.ChatMessageInput } }
+  })
+
+  builder.createDoc(activity.class.ActivityExtension, core.space.Model, {
     ofClass: performance.class.KRA,
     components: { input: { component: chunter.component.ChatMessageInput } }
   })
@@ -374,6 +380,7 @@ export function createModel (builder: Builder): void {
   defineReport(builder)
   defineActivity(builder)
   defineSortAndGrouping(builder)
+  defineViewlets(builder)
 
   defineApplication(builder)
 

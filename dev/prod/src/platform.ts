@@ -25,7 +25,7 @@ import calendar, { calendarId } from '@hcengineering/calendar'
 import { chunterId } from '@hcengineering/chunter'
 import client, { clientId } from '@hcengineering/client'
 import contactPlugin, { contactId } from '@hcengineering/contact'
-// import { documentsId } from '@hcengineering/controlled-documents'
+import { documentsId } from '@hcengineering/controlled-documents'
 // import { desktopPreferencesId } from '@hcengineering/desktop-preferences'
 import { diffviewId } from '@hcengineering/diffview'
 import { documentId } from '@hcengineering/document'
@@ -79,7 +79,7 @@ import '@hcengineering/calendar-assets'
 import '@hcengineering/card-assets'
 import '@hcengineering/chunter-assets'
 import '@hcengineering/contact-assets'
-// import '@hcengineering/controlled-documents-assets'
+import '@hcengineering/controlled-documents-assets'
 import '@hcengineering/desktop-preferences-assets'
 import '@hcengineering/diffview-assets'
 import '@hcengineering/document-assets'
@@ -309,10 +309,10 @@ function configureI18n(): void {
   addStringsLoader(documentId, async (lang: string) => await import(`@hcengineering/document-assets/lang/${lang}.json`))
   // addStringsLoader(timeId, async (lang: string) => await import(`@hcengineering/time-assets/lang/${lang}.json`))
   // addStringsLoader(githubId, async (lang: string) => await import(`@hcengineering/github-assets/lang/${lang}.json`))
-  // addStringsLoader(
-  //   documentsId,
-  //   async (lang: string) => await import(`@hcengineering/controlled-documents-assets/lang/${lang}.json`)
-  // )
+  addStringsLoader(
+    documentsId,
+    async (lang: string) => await import(`@hcengineering/controlled-documents-assets/lang/${lang}.json`)
+  )
   // addStringsLoader(productsId, async (lang: string) => await import(`@hcengineering/products-assets/lang/${lang}.json`))
   // addStringsLoader(
   //   questionsId,
@@ -506,10 +506,10 @@ export async function configurePlatform() {
   // addLocation(questionsId, () => import(/* webpackChunkName: "training" */ '@hcengineering/questions-resources'))
   // addLocation(trainingId, () => import(/* webpackChunkName: "training" */ '@hcengineering/training-resources'))
   // addLocation(productsId, () => import(/* webpackChunkName: "products" */ '@hcengineering/products-resources'))
-  // addLocation(
-  //   documentsId,
-  //   () => import(/* webpackChunkName: "documents" */ '@hcengineering/controlled-documents-resources')
-  // )
+  addLocation(
+    documentsId,
+    () => import(/* webpackChunkName: "documents" */ '@hcengineering/controlled-documents-resources')
+  )
   addLocation(guestId, () => import(/* webpackChunkName: "guest" */ '@hcengineering/guest-resources'))
   // addLocation(loveId, () => import(/* webpackChunkName: "love" */ '@hcengineering/love-resources'))
   addLocation(printId, () => import(/* webpackChunkName: "print" */ '@hcengineering/print-resources'))

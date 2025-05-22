@@ -36,6 +36,7 @@ import CreateReport from './components/report/CreateReport.svelte'
 import CreateReportButton from './components/report/CreateReportButton.svelte'
 import TeamSwitchHeader from './components/TeamSwitchHeader.svelte'
 import PerformanceApplication from './components/PerformanceApplication.svelte'
+import ListView from './components/list/ListView.svelte'
 // import ReviewSessionStatusPresenter from './components/review-session/ReviewSessionStatusPresenter.svelte'
 // import ReviewSessionStatusRefPresenter from './components/review-session/ReviewSessionStatusRefPresenter.svelte'
 // import ReviewSessionStateEditor from './components/review-session/ReviewSessionStateEditor.svelte'
@@ -60,7 +61,8 @@ export default async (): Promise<Resources> => ({
     CreateReport,
     CreateReportButton,
     PerformanceApplication,
-    TeamSwitchHeader
+    TeamSwitchHeader,
+    ListView
     // ReviewSessionStatusPresenter,
     // ReviewSessionStatusRefPresenter,
     // ReviewSessionStateEditor

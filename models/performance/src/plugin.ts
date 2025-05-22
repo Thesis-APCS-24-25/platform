@@ -16,12 +16,57 @@
 import { performanceId } from '@hcengineering/performance'
 import performance from '@hcengineering/performance-resources/src/plugin'
 import type { Ref, StatusCategory } from '@hcengineering/core'
-import { mergeIds } from '@hcengineering/platform'
+import { type IntlString, mergeIds } from '@hcengineering/platform'
 import { type Application } from '@hcengineering/workbench'
+import { type AnyComponent } from '@hcengineering/ui'
+import { type GetAllValuesFunc, type SortFunc } from '@hcengineering/view'
 
 export default mergeIds(performanceId, performance, {
   app: {
     Performance: '' as Ref<Application>
+  },
+  string: {
+    PerformanceApplication: '' as IntlString,
+    MyReviewSessions: '' as IntlString,
+    CreateReviewSessionLabel: '' as IntlString,
+    MyKRAs: '' as IntlString,
+    CreateKraLabel: '' as IntlString,
+    ReviewSessions: '' as IntlString,
+    PerformanceDashboard: '' as IntlString,
+    AssignedTo: '' as IntlString,
+    AllReviewSessions: '' as IntlString,
+    ReviewCommentAuthor: '' as IntlString,
+    ReviewerComment: '' as IntlString,
+    ReviewerScore: '' as IntlString,
+    Reviewee: '' as IntlString,
+    ReviewSession: '' as IntlString,
+    ReviewComments: '' as IntlString,
+    PerformanceReports: '' as IntlString,
+    CreateReportLabel: '' as IntlString
+  },
+  component: {
+    MyKRAs: '' as AnyComponent,
+    KRAAssigneesEditor: '' as AnyComponent,
+    KRAEditor: '' as AnyComponent,
+    KRARefPresenter: '' as AnyComponent,
+    NewReviewSessionHeader: '' as AnyComponent,
+    ReviewSessionSpacePresenter: '' as AnyComponent,
+    CreateReviewSession: '' as AnyComponent,
+    CreateKRA: '' as AnyComponent,
+    KRAPresenter: '' as AnyComponent,
+    EditKRA: '' as AnyComponent,
+    TeamSpacePresenter: '' as AnyComponent,
+    PerformanceDashboard: '' as AnyComponent,
+    PerformanceReports: '' as AnyComponent,
+    ReportPanel: '' as AnyComponent,
+    ReportPresenter: '' as AnyComponent,
+    CreateReport: '' as AnyComponent,
+    CreateReportButton: '' as AnyComponent,
+    ListView: '' as AnyComponent
+  },
+  function: {
+    GetAllKRAStates: '' as GetAllValuesFunc,
+    KRAStatusSort: '' as SortFunc
   },
   // reviewStatusCategory: {
   //   Drafting: '' as Ref<StatusCategory>,

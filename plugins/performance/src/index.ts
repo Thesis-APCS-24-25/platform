@@ -18,7 +18,7 @@ import { type PersonAccount } from '@hcengineering/contact'
 import type { Arr, Attribute, Class, Doc, Mixin, Ref, SpaceType, SpaceTypeDescriptor, Status, Timestamp } from '@hcengineering/core'
 import { Asset, IntlString, plugin, Plugin, Resource } from '@hcengineering/platform'
 import type { Project, ProjectType, Task, TaskType, TaskTypeDescriptor } from '@hcengineering/task'
-import { Viewlet } from '@hcengineering/view'
+import { Viewlet, ViewletDescriptor } from '@hcengineering/view'
 
 export interface KRAStatus extends Status {}
 
@@ -97,7 +97,8 @@ export default plugin(performanceId, {
     Archived: '' as Ref<KRAStatus>
   },
   viewlet: {
-    ReviewSessionTable: '' as Ref<Viewlet>
+    TaskList: '' as Ref<ViewletDescriptor>,
+    WithKRAList: '' as Ref<Viewlet>
   },
   mixin: {
     DefaultReviewSessionData: '' as Ref<Mixin<ReviewSession>>,

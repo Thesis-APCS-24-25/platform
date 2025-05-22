@@ -7,7 +7,7 @@
   import { Person, PersonAccount } from '@hcengineering/contact'
   import { getClient } from '@hcengineering/presentation'
   import { createEventDispatcher } from 'svelte'
-  import { Panel } from '@hcengineering/ui'
+  import { Panel } from '@hcengineering/panel'
   import { Viewlet, ViewOptions } from '@hcengineering/view'
   import ViewletSelector from '@hcengineering/view-resources/src/components/ViewletSelector.svelte'
 
@@ -16,6 +16,7 @@
 
   export let _id: Ref<PerformanceReport>
   export let _class: Ref<Class<PerformanceReport>>
+  export let withoutInput: boolean | undefined = false
 
   let value: WithLookup<PerformanceReport> | undefined
   let reviewee: PersonAccount | undefined
@@ -42,6 +43,8 @@
     })
   }
 
+  let content: HTMLElement
+
   $: if (value !== undefined) {
     reviewee = $personAccountByIdStore.get(value.reviewee)
     person = reviewee !== undefined ? $personAccountPersonByIdStore.get(reviewee?.person) : undefined
@@ -52,61 +55,25 @@
 <!-- svelte-ignore a11y-no-static-element-interactions -->
 {#if value !== undefined}
   <Panel
+    object={value}
     allowClose={false}
     selectedAside={false}
+    isAside={false}
+    isPresence={false}
+    isHeader={false}
+    useMaxWidth={true}
+    {withoutInput}
+    bind:content
     on:close={() => { dispatch('close') }}
   >
-    <svelte:fragment slot="beforeTitle">
+    <svelte:fragment slot="title">
       <ViewletSelector
         bind:viewlet
         viewletQuery={{ attachTo: performance.mixin.WithKRA }}
       />
       <ViewletSettingButton bind:viewOptions bind:viewlet />
-    </svelte:fragment>
-    <svelte:fragment slot="title">
       <div class="title not-active">{person?.name}'s {reviewSession?.name} Report</div>
     </svelte:fragment>
-    <!-- <ListView count={tasks.length} addClass={'step-tb-2-accent'}>
-      <svelte:fragment slot="item" let:item>
-        {@const task = tasks[item]}
-        <div
-          class="{'flex-between'} p-text-2 clear-mins"
-          on:contextmenu={(ev) => {
-            showMenu(ev, { object: task })
-          }}
-          on:mouseenter={() => {
-            listProvider.updateFocus(task)
-          }}
-          on:focus={() => {
-            listProvider.updateFocus(task)
-          }}
-        >
-          <div class="flex-row-center clear-mins gap-2 flex-grow mr-4">
-            <FixedColumn key={'report_issue'} justify={'left'} addClass={'fs-bold'}>
-              {#if task.identifier}
-                {task.identifier}
-              {/if}
-            </FixedColumn>
-          </div>
-          <div class="flex-row-center clear-mins gap-2 self-end flex-no-shrink">
-            <FixedColumn key={'report_assignee'} justify={'left'}>
-              <UserBox
-                width={'100%'}
-                kind={'ghost'}
-                label={performance.string.Assignee}
-                _class={contact.mixin.Employee}
-                value={task.assignee}
-                readonly
-                showNavigate={false}
-              />
-            </FixedColumn>
-            <FixedColumn key={'report_date'} justify={'left'}>
-              <DatePresenter value={task.dueDate} kind={'ghost'} size={'small'} />
-            </FixedColumn>
-          </div>
-        </div>
-      </svelte:fragment>
-    </ListView> -->
     {#if viewlet !== undefined && viewOptions}
       <ViewletContentView
         _class={performance.mixin.WithKRA}

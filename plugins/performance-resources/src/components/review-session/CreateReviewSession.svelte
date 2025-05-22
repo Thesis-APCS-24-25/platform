@@ -97,8 +97,7 @@
         placeholder={performance.string.ReviewSessionDescriptionPlaceholder}
         bind:value={description}
         kind={'large-style'}
-        autoFocus
-        focusIndex={1}
+        focusIndex={2}
       />
     </div>
     <svelte:fragment slot='pool'>
@@ -110,6 +109,7 @@
           editable
           labelNull={performance.string.ReviewSessionStart}
           label={performance.string.ReviewSessionStart}
+          focusIndex={3}
         />
       </div>
       <div class="flex-row-center clear-mins">
@@ -120,6 +120,7 @@
           editable
           labelNull={performance.string.ReviewSessionEnd}
           label={performance.string.ReviewSessionEnd}
+          focusIndex={4}
         />
       </div>
     </svelte:fragment>
