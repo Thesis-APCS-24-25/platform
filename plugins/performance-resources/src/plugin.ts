@@ -46,7 +46,6 @@ export default mergeIds(performanceId, performance, {
   },
   component: {
     EditKRA: '' as AnyComponent,
-    KRAEditor: '' as AnyComponent,
     KRARefPresenter: '' as AnyComponent,
     PerformanceDashboard: '' as AnyComponent,
     ReportPanel: '' as AnyComponent,

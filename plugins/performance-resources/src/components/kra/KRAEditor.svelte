@@ -2,7 +2,7 @@
   import { Ref } from '@hcengineering/core'
   import { KRA } from '@hcengineering/performance'
   import { ButtonKind, ButtonSize } from '@hcengineering/ui'
-  import { ObjectBox } from '@hcengineering/view-resources'
+  import { FixedColumn, ObjectBox } from '@hcengineering/view-resources'
   import performance from '../../plugin'
 
   export let value: Ref<KRA>
@@ -17,17 +17,36 @@
       await onChange(ev.detail)
     }
   }
+
 </script>
 
-<ObjectBox
-  _class={performance.class.KRA}
-  searchField={'title'}
-  label={performance.string.NoKRA}
-  {value}
-  {readonly}
-  {kind}
-  {size}
-  {width}
-  allowDeselect
-  on:change={handleChange}
-/>
+{#if kind === 'list'}
+  <FixedColumn key="kra-editor-total">
+    <ObjectBox
+      _class={performance.class.KRA}
+      searchField={'title'}
+      label={performance.string.NoKRA}
+      {value}
+      {readonly}
+      {kind}
+      {size}
+      {width}
+      allowDeselect
+      showNavigate={false}
+      on:change={handleChange}
+      />
+  </FixedColumn>
+{:else}
+  <ObjectBox
+    _class={performance.class.KRA}
+    searchField={'title'}
+    label={performance.string.NoKRA}
+    {value}
+    {readonly}
+    {kind}
+    {size}
+    {width}
+    allowDeselect
+    on:change={handleChange}
+  />
+{/if}

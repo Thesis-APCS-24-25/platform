@@ -79,7 +79,8 @@ export const issuesOptions = (kanban: boolean): ViewOptionsModel => ({
 
 export function issueConfig (
   key: string = '',
-  compact: boolean = false
+  compact: boolean = false,
+  showKra: boolean = true
 ): (BuildModelKey | string)[] {
   return [
     {
@@ -174,7 +175,23 @@ export function issueConfig (
       displayProps: { key: 'assignee', fixed: 'right' },
       props: { kind: 'list', shouldShowName: false, avatarSize: 'x-small' }
     },
-    'kra'
+    ...(showKra
+      ? [
+          {
+            key: '',
+            presenter: kra.component.KRAEditor,
+            displayProps: {
+              key: '',
+              fixed: 'right',
+              dividerBefore: true,
+              align: 'right'
+            },
+            props: {
+              kind: 'list'
+            }
+          } as const
+        ]
+      : [])
   ]
 }
 
@@ -215,7 +232,8 @@ export function defineViewlets (builder: Builder): void {
           'attachedTo',
           'createdBy',
           'modifiedBy',
-          'goal'
+          'goal',
+          'kra'
         ]
       },
       config: issueConfig()
@@ -258,7 +276,8 @@ export function defineViewlets (builder: Builder): void {
           'remainingTime',
           'createdBy',
           'modifiedBy',
-          'goal'
+          'goal',
+          'kra'
         ]
       },
       config: issueConfig('sub', true)
@@ -388,9 +407,9 @@ export function defineViewlets (builder: Builder): void {
     core.space.Model,
     {
       attachTo: performance.mixin.WithKRA,
-      descriptor: view.viewlet.List,
+      descriptor: performance.viewlet.TaskList,
       config: [
-        ...issueConfig()
+        ...issueConfig(undefined, undefined, false)
       ],
       viewOptions: {
         groupDepth: 1,
@@ -409,34 +428,9 @@ export function defineViewlets (builder: Builder): void {
           ['remainingTime', SortingOrder.Descending],
           ['reportedTime', SortingOrder.Descending]
         ],
-        other: [
-          {
-            key: 'shouldShowSubIssues',
-            type: 'toggle',
-            defaultValue: true,
-            actionTarget: 'query',
-            action: kra.function.SubIssueQuery,
-            label: kra.string.SubIssues
-          },
-          {
-            key: 'shouldShowAll',
-            type: 'toggle',
-            defaultValue: false,
-            actionTarget: 'category',
-            action: view.function.ShowEmptyGroups,
-            label: view.string.ShowEmptyGroups
-          },
-          {
-            key: 'hideArchived',
-            type: 'toggle',
-            defaultValue: true,
-            actionTarget: 'options',
-            action: view.function.HideArchived,
-            label: view.string.HideArchived
-          }
-        ]
+        other: []
       }
     },
-    kra.viewlet.WithKRAList
+    performance.viewlet.WithKRAList
   )
 }

@@ -34,6 +34,7 @@ import ReportPanel from './components/report/ReportPanel.svelte'
 import ReportPresenter from './components/report/ReportPresenter.svelte'
 import CreateReport from './components/report/CreateReport.svelte'
 import CreateReportButton from './components/report/CreateReportButton.svelte'
+import ListView from './components/list/ListView.svelte'
 // import ReviewSessionStatusPresenter from './components/review-session/ReviewSessionStatusPresenter.svelte'
 // import ReviewSessionStatusRefPresenter from './components/review-session/ReviewSessionStatusRefPresenter.svelte'
 // import ReviewSessionStateEditor from './components/review-session/ReviewSessionStateEditor.svelte'
@@ -56,7 +57,8 @@ export default async (): Promise<Resources> => ({
     ReportPanel,
     ReportPresenter,
     CreateReport,
-    CreateReportButton
+    CreateReportButton,
+    ListView
     // ReviewSessionStatusPresenter,
     // ReviewSessionStatusRefPresenter,
     // ReviewSessionStateEditor

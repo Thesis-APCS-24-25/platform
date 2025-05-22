@@ -277,6 +277,7 @@ export default function buildModel (enabled: string[] = ['*'], disabled: string[
         classFilter: defaultFilter
       }
     ],
+    [performanceModel, performanceId],
     [
       kraModel,
       kraId,
@@ -445,7 +446,6 @@ export default function buildModel (enabled: string[] = ['*'], disabled: string[
     ],
     [surveyModel, surveyId],
     [presenceModel, presenceId],
-    [performanceModel, performanceId],
 
     [serverCoreModel, serverCoreId],
     [serverAttachmentModel, serverAttachmentId],
