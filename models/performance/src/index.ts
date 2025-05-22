@@ -383,6 +383,11 @@ function defineActivity (builder: Builder): void {
   builder.mixin(performance.class.KRA, core.class.Class, activity.mixin.ActivityDoc, {})
 
   builder.createDoc(activity.class.ActivityExtension, core.space.Model, {
+    ofClass: performance.class.PerformanceReport,
+    components: { input: { component: chunter.component.ChatMessageInput } }
+  })
+
+  builder.createDoc(activity.class.ActivityExtension, core.space.Model, {
     ofClass: performance.class.KRA,
     components: { input: { component: chunter.component.ChatMessageInput } }
   })
