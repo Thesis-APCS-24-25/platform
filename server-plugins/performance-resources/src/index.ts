@@ -46,7 +46,7 @@ export async function OnTeamMemberUpdate (txes: Tx[], control: TriggerControl): 
       const reviewSessions = await control.findAll(control.ctx, performance.class.ReviewSession, {
         space: updateTx.objectId
       })
-      const { $in } = oldMembers as PullArray<Ref<Member>>
+      const { $in } = oldMembers as PullArray<Ref<Account>>
       if ($in !== undefined) { // Multiple updates
         for (const mem in oldMembers) {
           result.push(...addUpdates(control, mem as Ref<Account>, reviewSessions))

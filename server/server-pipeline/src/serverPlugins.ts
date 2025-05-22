@@ -29,6 +29,7 @@ import { serverViewId } from '@hcengineering/server-view'
 import { serverAiBotId } from '@hcengineering/server-ai-bot'
 import { serverFulltextId } from '@hcengineering/server-fulltext'
 import { serverPerformanceId } from '@hcengineering/server-performance'
+import { serverKraTeamId } from '@hcengineering/server-kra-team'
 
 export function registerServerPlugins (): void {
   addLocation(serverActivityId, () => import('@hcengineering/server-activity-resources'))
@@ -61,4 +62,5 @@ export function registerServerPlugins (): void {
   addLocation(serverAiBotId, () => import('@hcengineering/server-ai-bot-resources'))
   addLocation(serverFulltextId, () => import('@hcengineering/server-fulltext-resources'))
   addLocation(serverPerformanceId, () => import('@hcengineering/server-performance-resources'))
+  addLocation(serverKraTeamId, () => import('@hcengineering/server-kra-team-resources'))
 }

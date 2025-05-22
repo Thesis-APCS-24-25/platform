@@ -8,9 +8,9 @@
   import { Action, IconAdd, showPopup, themeStore } from '@hcengineering/ui'
   import CreateTeam from './CreateTeam.svelte'
   import { createEventDispatcher } from 'svelte'
-    import { translateCB } from '@hcengineering/platform'
+  import { translateCB } from '@hcengineering/platform'
 
-  let teams: Team[] = []
+  let teams: Team[]
   export let currentTeam: Ref<Team> | undefined
 
   myTeams.subscribe((res) => {
@@ -33,7 +33,7 @@
   }
 
   let title: string | undefined
-  $: translateCB(kraTeam.string.MyTeams, {}, $themeStore.language, (res) => {
+  $: translateCB(kraTeam.string.AllTeams, {}, $themeStore.language, (res) => {
     title = res
   })
 </script>

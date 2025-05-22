@@ -7,7 +7,15 @@ export function defineViewlets (builder: Builder): void {
   builder.createDoc(view.class.Viewlet, core.space.Model, {
     attachTo: kraTeam.class.Team,
     descriptor: view.viewlet.Table,
-    config: ['name', 'members'],
+    config: [
+      'name',
+      {
+        key: 'members',
+        props: {
+          readonly: true
+        }
+      }
+    ],
     options: {
       showArchived: true
     },
@@ -19,11 +27,11 @@ export function defineViewlets (builder: Builder): void {
   })
 
   builder.createDoc(view.class.Viewlet, core.space.Model, {
-    attachTo: kraTeam.class.Member,
+    attachTo: kraTeam.mixin.Member,
     descriptor: view.viewlet.Table,
     config: [
       {
-        key: 'person'
+        key: ''
       },
       {
         key: '',

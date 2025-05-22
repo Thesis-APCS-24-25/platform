@@ -1,15 +1,15 @@
 <script lang="ts">
   import { Ref, Role } from '@hcengineering/core'
+  import { Icon } from '@hcengineering/ui'
+  import kraTeam from '../plugins'
   export let value: Role | undefined
-  export let inline: boolean = false
-  export let accent: boolean = false
-  export let colorInherit: boolean = false
-  export let shouldShowAvatar: boolean = true
-  export let noUnderline: boolean = true
-  export let disabled: boolean = false
-  export let shouldShowName: boolean = true
-  export let shrink: number = 1
-
 </script>
 
-{value?.name}
+{#if value?.name === 'Team Manager'}
+  <div class="flex-row-center flex-gap-2">
+    <Icon size="small" icon={kraTeam.icon.Manager} />
+    <span class="manager font-medium-14">Team Manager</span>
+  </div>
+{:else if value?.name === 'Team Member'}
+  <span class="member">Team Member</span>
+{/if}

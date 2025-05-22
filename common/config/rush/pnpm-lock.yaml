@@ -511,6 +511,9 @@ importers:
       '@rush-temp/model-server-inventory':
         specifier: file:./projects/model-server-inventory.tgz
         version: file:projects/model-server-inventory.tgz
+      '@rush-temp/model-server-kra-team':
+        specifier: file:./projects/model-server-kra-team.tgz
+        version: file:projects/model-server-kra-team.tgz
       '@rush-temp/model-server-lead':
         specifier: file:./projects/model-server-lead.tgz
         version: file:projects/model-server-lead.tgz
@@ -877,6 +880,12 @@ importers:
       '@rush-temp/server-inventory-resources':
         specifier: file:./projects/server-inventory-resources.tgz
         version: file:projects/server-inventory-resources.tgz(@babel/core@7.23.9)(@jest/types@29.6.3)(@types/node@20.11.19)(babel-jest@29.7.0(@babel/core@7.23.9))(esbuild@0.24.2)(ts-node@10.9.2(@types/node@20.11.19)(typescript@5.3.3))
+      '@rush-temp/server-kra-team':
+        specifier: file:./projects/server-kra-team.tgz
+        version: file:projects/server-kra-team.tgz(@babel/core@7.23.9)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.23.9))(esbuild@0.24.2)(ts-node@10.9.2(@types/node@20.11.19)(typescript@5.3.3))
+      '@rush-temp/server-kra-team-resources':
+        specifier: file:./projects/server-kra-team-resources.tgz
+        version: file:projects/server-kra-team-resources.tgz(@babel/core@7.23.9)(@jest/types@29.6.3)(@types/node@20.11.19)(babel-jest@29.7.0(@babel/core@7.23.9))(esbuild@0.24.2)(ts-node@10.9.2(@types/node@20.11.19)(typescript@5.3.3))
       '@rush-temp/server-lead':
         specifier: file:./projects/server-lead.tgz
         version: file:projects/server-lead.tgz(@babel/core@7.23.9)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.23.9))(esbuild@0.24.2)(ts-node@10.9.2(@types/node@20.11.19)(typescript@5.3.3))
@@ -3506,7 +3515,7 @@ packages:
     version: 0.0.0
 
   '@rush-temp/kra-resources@file:projects/kra-resources.tgz':
-    resolution: {integrity: sha512-oP/A8vHPX8O6LCYR8Fqx4KeCukX/L7T7uUcajPsoJklfKBnDNmim7olKmS5youd7pGER1Ytvw6p+8oX6huVZDQ==, tarball: file:projects/kra-resources.tgz}
+    resolution: {integrity: sha512-0W73IrVDUcGmPOEFW91y/0LJ10gOVcpouQHWX2+rSkE1bdEFO9b3Xy81z67WAqsQAm/s41c4533rr4QXtt0jfw==, tarball: file:projects/kra-resources.tgz}
     version: 0.0.0
 
   '@rush-temp/kra-team-assets@file:projects/kra-team-assets.tgz':
@@ -3658,7 +3667,7 @@ packages:
     version: 0.0.0
 
   '@rush-temp/model-kra@file:projects/model-kra.tgz':
-    resolution: {integrity: sha512-J+jXxm58Ho28ltkwQ8vqAsyyJ+wFfFnMezN+Rg+6BYnKFlfgeSTw2WHPr2sqbwP3vlvHTMiKTCrsA3UUgJTgZg==, tarball: file:projects/model-kra.tgz}
+    resolution: {integrity: sha512-Z4DDmyF+5D3mDxjC4eFK6ElgnGYqpeyFcjDhVAvRHDF+78Aflbpg3QG6hu4Z/+QXFkeNSzpn5Tq9iL8/Eo3LHg==, tarball: file:projects/model-kra.tgz}
     version: 0.0.0
 
   '@rush-temp/model-lead@file:projects/model-lead.tgz':
@@ -3771,6 +3780,10 @@ packages:
 
   '@rush-temp/model-server-inventory@file:projects/model-server-inventory.tgz':
     resolution: {integrity: sha512-OSX6GNDep9eTmjhLNDMsC73/20qvJSjex/TGWUq7zpkMPgt1J8jdyFbhSjokP7d7KqPn1oEKMxYdb3Bswkke8w==, tarball: file:projects/model-server-inventory.tgz}
+    version: 0.0.0
+
+  '@rush-temp/model-server-kra-team@file:projects/model-server-kra-team.tgz':
+    resolution: {integrity: sha512-Cc3B1WW2t1PvF+9szYM+NBg9n4O6F19ffDvzOjXCDAfZTuEGj1J2/bCo3dVYsIf6d9cvMuO/fTwI7wmBRM0JQQ==, tarball: file:projects/model-server-kra-team.tgz}
     version: 0.0.0
 
   '@rush-temp/model-server-lead@file:projects/model-server-lead.tgz':
@@ -4259,6 +4272,14 @@ packages:
 
   '@rush-temp/server-inventory@file:projects/server-inventory.tgz':
     resolution: {integrity: sha512-FWTRVejiBGxa792gRoKYiJPHzch0fAeU2XoqY5ZIFMXpx4r4jGXxsT0P2gcQyUQDXa56fFAoA+RJS21xA3C+aw==, tarball: file:projects/server-inventory.tgz}
+    version: 0.0.0
+
+  '@rush-temp/server-kra-team-resources@file:projects/server-kra-team-resources.tgz':
+    resolution: {integrity: sha512-9TvMx1mqOCCnuX2t+4CIObgN24vuwCf/RopJGRYw1rb74p/1bHAKJEpdAWYUvTKNT/8zhBYXOJ/nitNJBpQHIg==, tarball: file:projects/server-kra-team-resources.tgz}
+    version: 0.0.0
+
+  '@rush-temp/server-kra-team@file:projects/server-kra-team.tgz':
+    resolution: {integrity: sha512-+MA0YIpyPlHj9F3J+dZMaWN/eXMdnPX+IJOa3ltU4cVdY3n/xE+AtRxp0IRxK7n/YvEKaLFUMmymaAmK99fSOQ==, tarball: file:projects/server-kra-team.tgz}
     version: 0.0.0
 
   '@rush-temp/server-lead-resources@file:projects/server-lead-resources.tgz':
@@ -16939,6 +16960,20 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
+  '@rush-temp/model-server-kra-team@file:projects/model-server-kra-team.tgz':
+    dependencies:
+      '@typescript-eslint/eslint-plugin': 6.21.0(@typescript-eslint/parser@6.21.0(eslint@8.56.0)(typescript@5.3.3))(eslint@8.56.0)(typescript@5.7.3)
+      '@typescript-eslint/parser': 6.21.0(eslint@8.56.0)(typescript@5.7.3)
+      eslint: 8.56.0
+      eslint-config-standard-with-typescript: 40.0.0(@typescript-eslint/eslint-plugin@6.21.0(@typescript-eslint/parser@6.21.0(eslint@8.56.0)(typescript@5.3.3))(eslint@8.56.0)(typescript@5.3.3))(eslint-plugin-import@2.29.1(eslint@8.56.0))(eslint-plugin-n@15.7.0(eslint@8.56.0))(eslint-plugin-promise@6.1.1(eslint@8.56.0))(eslint@8.56.0)(typescript@5.7.3)
+      eslint-plugin-import: 2.29.1(eslint@8.56.0)
+      eslint-plugin-n: 15.7.0(eslint@8.56.0)
+      eslint-plugin-promise: 6.1.1(eslint@8.56.0)
+      prettier: 3.2.5
+      typescript: 5.7.3
+    transitivePeerDependencies:
+      - supports-color
+
   '@rush-temp/model-server-lead@file:projects/model-server-lead.tgz':
     dependencies:
       '@typescript-eslint/eslint-plugin': 6.21.0(@typescript-eslint/parser@6.21.0(eslint@8.56.0)(typescript@5.3.3))(eslint@8.56.0)(typescript@5.3.3)
@@ -19962,6 +19997,56 @@ snapshots:
       prettier: 3.2.5
       ts-jest: 29.1.2(@babel/core@7.23.9)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.23.9))(esbuild@0.24.2)(jest@29.7.0(@types/node@20.11.19)(ts-node@10.9.2(@types/node@20.11.19)(typescript@5.3.3)))(typescript@5.3.3)
       typescript: 5.3.3
+    transitivePeerDependencies:
+      - '@babel/core'
+      - '@jest/types'
+      - babel-jest
+      - babel-plugin-macros
+      - esbuild
+      - node-notifier
+      - supports-color
+      - ts-node
+
+  '@rush-temp/server-kra-team-resources@file:projects/server-kra-team-resources.tgz(@babel/core@7.23.9)(@jest/types@29.6.3)(@types/node@20.11.19)(babel-jest@29.7.0(@babel/core@7.23.9))(esbuild@0.24.2)(ts-node@10.9.2(@types/node@20.11.19)(typescript@5.3.3))':
+    dependencies:
+      '@types/jest': 29.5.12
+      '@typescript-eslint/eslint-plugin': 6.21.0(@typescript-eslint/parser@6.21.0(eslint@8.56.0)(typescript@5.3.3))(eslint@8.56.0)(typescript@5.7.3)
+      '@typescript-eslint/parser': 6.21.0(eslint@8.56.0)(typescript@5.7.3)
+      eslint: 8.56.0
+      eslint-config-standard-with-typescript: 40.0.0(@typescript-eslint/eslint-plugin@6.21.0(@typescript-eslint/parser@6.21.0(eslint@8.56.0)(typescript@5.3.3))(eslint@8.56.0)(typescript@5.3.3))(eslint-plugin-import@2.29.1(eslint@8.56.0))(eslint-plugin-n@15.7.0(eslint@8.56.0))(eslint-plugin-promise@6.1.1(eslint@8.56.0))(eslint@8.56.0)(typescript@5.7.3)
+      eslint-plugin-import: 2.29.1(eslint@8.56.0)
+      eslint-plugin-n: 15.7.0(eslint@8.56.0)
+      eslint-plugin-promise: 6.1.1(eslint@8.56.0)
+      jest: 29.7.0(@types/node@20.11.19)(ts-node@10.9.2(@types/node@20.11.19)(typescript@5.3.3))
+      prettier: 3.2.5
+      ts-jest: 29.1.2(@babel/core@7.23.9)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.23.9))(esbuild@0.24.2)(jest@29.7.0(@types/node@20.11.19)(ts-node@10.9.2(@types/node@20.11.19)(typescript@5.3.3)))(typescript@5.7.3)
+      typescript: 5.7.3
+    transitivePeerDependencies:
+      - '@babel/core'
+      - '@jest/types'
+      - '@types/node'
+      - babel-jest
+      - babel-plugin-macros
+      - esbuild
+      - node-notifier
+      - supports-color
+      - ts-node
+
+  '@rush-temp/server-kra-team@file:projects/server-kra-team.tgz(@babel/core@7.23.9)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.23.9))(esbuild@0.24.2)(ts-node@10.9.2(@types/node@20.11.19)(typescript@5.3.3))':
+    dependencies:
+      '@types/jest': 29.5.12
+      '@types/node': 20.11.19
+      '@typescript-eslint/eslint-plugin': 6.21.0(@typescript-eslint/parser@6.21.0(eslint@8.56.0)(typescript@5.3.3))(eslint@8.56.0)(typescript@5.7.3)
+      '@typescript-eslint/parser': 6.21.0(eslint@8.56.0)(typescript@5.7.3)
+      eslint: 8.56.0
+      eslint-config-standard-with-typescript: 40.0.0(@typescript-eslint/eslint-plugin@6.21.0(@typescript-eslint/parser@6.21.0(eslint@8.56.0)(typescript@5.3.3))(eslint@8.56.0)(typescript@5.3.3))(eslint-plugin-import@2.29.1(eslint@8.56.0))(eslint-plugin-n@15.7.0(eslint@8.56.0))(eslint-plugin-promise@6.1.1(eslint@8.56.0))(eslint@8.56.0)(typescript@5.7.3)
+      eslint-plugin-import: 2.29.1(eslint@8.56.0)
+      eslint-plugin-n: 15.7.0(eslint@8.56.0)
+      eslint-plugin-promise: 6.1.1(eslint@8.56.0)
+      jest: 29.7.0(@types/node@20.11.19)(ts-node@10.9.2(@types/node@20.11.19)(typescript@5.3.3))
+      prettier: 3.2.5
+      ts-jest: 29.1.2(@babel/core@7.23.9)(@jest/types@29.6.3)(babel-jest@29.7.0(@babel/core@7.23.9))(esbuild@0.24.2)(jest@29.7.0(@types/node@20.11.19)(ts-node@10.9.2(@types/node@20.11.19)(typescript@5.3.3)))(typescript@5.7.3)
+      typescript: 5.7.3
     transitivePeerDependencies:
       - '@babel/core'
       - '@jest/types'

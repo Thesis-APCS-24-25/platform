@@ -7,7 +7,7 @@ import { getRoleAttributeProps } from '@hcengineering/setting'
 
 const permissions = [kraTeam.permission.CreateKra, kraTeam.permission.ApproveKra]
 
-export function defineSpaceTypes (builder: Builder): void {
+export function defineSpaceTypes(builder: Builder): void {
   for (const role of roles) {
     const { label, roleType } = getRoleAttributeProps(role.name)
 
@@ -41,12 +41,17 @@ export function defineSpaceTypes (builder: Builder): void {
   )
 
   roles.forEach((role) => {
-    builder.createDoc(core.class.Role, core.space.Model, {
-      attachedTo: kraTeam.spaceType.TeamType,
-      attachedToClass: kraTeam.class.TeamType,
-      collection: 'roles',
-      name: role.name,
-      permissions: role.permissions
-    })
+    builder.createDoc(
+      core.class.Role,
+      core.space.Model,
+      {
+        attachedTo: kraTeam.spaceType.TeamType,
+        attachedToClass: kraTeam.class.TeamType,
+        collection: 'roles',
+        name: role.name,
+        permissions: role.permissions
+      },
+      role._id
+    )
   })
 }

@@ -1,15 +1,13 @@
 import { Asset, type Plugin, plugin } from '@hcengineering/platform'
-import { Class, Mixin, Ref, SpaceType, SpaceTypeDescriptor, TypedSpace } from '@hcengineering/core'
+import { Class, Mixin, Ref, Role, SpaceType, SpaceTypeDescriptor, TypedSpace } from '@hcengineering/core'
 import { IconProps } from '@hcengineering/view'
-import { PersonAccount } from '@hcengineering/contact'
+import { Person } from '@hcengineering/contact'
 
 export const kraTeamId = 'kraTeam' as Plugin
 
-export interface Member extends PersonAccount { }
+export interface Member extends Person { }
 
-export interface Team extends TypedSpace, IconProps {
-  members: Ref<Member>[]
-}
+export interface Team extends TypedSpace, IconProps { }
 
 export interface TeamTypeDescriptor extends SpaceTypeDescriptor { }
 
@@ -19,12 +17,16 @@ export type Weight = number
 
 export default plugin(kraTeamId, {
   class: {
-    Member: '' as Ref<Class<Member>>,
     Team: '' as Ref<Class<Team>>,
     TeamType: '' as Ref<Class<TeamType>>,
     TeamTypeDescriptor: '' as Ref<Class<TeamTypeDescriptor>>
   },
+  role: {
+    TeamMember: '' as Ref<Role>,
+    TeamManager: '' as Ref<Role>
+  },
   icon: {
+    Manager: '' as Asset,
     Team: '' as Asset,
     Teams: '' as Asset,
     Member: '' as Asset,
@@ -34,6 +36,7 @@ export default plugin(kraTeamId, {
     AllTeams: '' as Asset
   },
   mixin: {
+    Member: '' as Ref<Mixin<Member>>,
     TeamTypeData: '' as Ref<Mixin<Team>>
   },
   descriptor: {

@@ -21,6 +21,8 @@
   import { TreeSeparator } from '@hcengineering/workbench-resources'
   import { createQuery } from '@hcengineering/presentation'
   import { myTeams } from '../utils'
+  import { currentTeam } from '../stores'
+  import contact from '@hcengineering/contact'
 
   let currentSpecial: SpecialNavModel | undefined
 
@@ -31,26 +33,15 @@
   const myTeamQ = createQuery()
 
   $: myTeamQ.query(kraTeam.class.Team, {}, (res) => {
-    myTeams.set(res.filter((team) => team.members.some((member) => member === getCurrentAccount()._id)))
+    myTeams.set(res)
   })
 
   const specials: SpecialNavModel[] = [
     {
-      id: 'my-teams',
-      icon: kraTeam.icon.MyTeams,
-      label: kraTeam.string.MyTeams,
-      component: kraTeam.component.MyTeams
-    },
-    {
-      id: 'all-teams',
-      icon: kraTeam.icon.AllTeams,
-      label: kraTeam.string.AllTeams,
-      component: workbench.component.SpecialView,
-      componentProps: {
-        _class: kraTeam.class.Team,
-        icon: kraTeam.icon.Teams,
-        label: kraTeam.string.AllTeams
-      }
+      id: 'members',
+      icon: contact.icon.Person,
+      label: contact.string.Employees,
+      component: kraTeam.component.AllMembers
     }
   ]
 
@@ -70,11 +61,13 @@
     if (special !== undefined) {
       currentSpecial = special
       currentSpace = undefined
+      $currentTeam = undefined
       return
     }
 
     const [id] = decodeObjectURI(loc.path[3])
     currentSpace = id as Ref<Team>
+    $currentTeam = id as Ref<Team>
     currentSpecial = undefined
   }
 
@@ -120,6 +113,8 @@
             </NavLink>
           {/each}
         {/if}
+
+        <div class="antiVSpacer" />
 
         <TeamNavigator
           currentTeam={currentSpace}

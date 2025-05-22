@@ -8,6 +8,7 @@
   import { createQuery } from '@hcengineering/presentation'
   import performance from '../../plugin'
   import { PersonAccount } from '@hcengineering/contact'
+  import { activeReviewSession } from '../../store'
 
   export let space: Ref<Space> | undefined = undefined
   export let icon: Asset
@@ -45,6 +46,10 @@
       }
     }
   )
+  $: baseQuery = {
+    ...baseQuery,
+    space: $activeReviewSession ?? '' as Ref<Space>
+  }
 </script>
 
 <SpecialView

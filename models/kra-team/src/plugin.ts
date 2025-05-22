@@ -1,24 +1,24 @@
+import { type Member } from '@hcengineering/contact'
 import { type Permission, type Ref, type Role } from '@hcengineering/core'
-import kraTeam, { kraTeamId } from '@hcengineering/kra-team'
-import { type IntlString, mergeIds } from '@hcengineering/platform'
+import { kraTeamId } from '@hcengineering/kra-team'
+import kraTeam from '@hcengineering/kra-team-resources/src/plugins'
+import { type IntlString, mergeIds, type Resource } from '@hcengineering/platform'
 import { type AnyComponent } from '@hcengineering/ui'
+import { type ViewActionAvailabilityFunction, type ViewAction } from '@hcengineering/view'
 
 export default mergeIds(kraTeamId, kraTeam, {
   string: {
     Roles: '' as IntlString,
-    Team: '' as IntlString,
     Teams: '' as IntlString,
-    AllTeams: '' as IntlString,
-    CreateTeam: '' as IntlString,
     Description: '' as IntlString,
     Metrics: '' as IntlString,
     Name: '' as IntlString,
     KRATemplates: '' as IntlString,
-    Members: '' as IntlString,
     ApproveKra: '' as IntlString,
     ApproveKraDescription: '' as IntlString,
     CreateKra: '' as IntlString,
-    CreateKraDescription: '' as IntlString
+    CreateKraDescription: '' as IntlString,
+    RemoveMember: '' as IntlString
   },
   component: {
     RolePresenter: '' as AnyComponent,
@@ -34,8 +34,10 @@ export default mergeIds(kraTeamId, kraTeam, {
     ApproveKra: '' as Ref<Permission>,
     CreateKra: '' as Ref<Permission>
   },
-  role: {
-    TeamMember: '' as Ref<Role>,
-    TeamManager: '' as Ref<Role>
+  function: {
+    ShouldDisplayRemoveMemberAction: '' as Resource<ViewActionAvailabilityFunction<Member>>
+  },
+  actionImpl: {
+    RemoveMember: '' as ViewAction
   }
 })

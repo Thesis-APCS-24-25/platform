@@ -8,6 +8,8 @@
   import { onDestroy } from 'svelte'
   import { ObjectBox } from '@hcengineering/view-resources'
   import { deepEqual } from 'fast-equals'
+  import { personAccountByPersonId } from '@hcengineering/contact-resources'
+  import { Person } from '@hcengineering/contact'
 
   export let value: Member | undefined
 
@@ -30,13 +32,15 @@
     const rolesAssignment = getRolesAssignment(team, typeType, roles)
     const role = roles.find((role) => {
       if (value !== undefined) {
-        return rolesAssignment[role._id]?.includes(value?._id)
+        const p = $personAccountByPersonId.get(value?._id)?.[0]
+        return p !== undefined ? rolesAssignment[role._id]?.includes(p?._id) : false
       }
       return false
     })
     return {
       team,
       typeType,
+      roles,
       role: role?._id,
       rolesAssignment
     }
@@ -59,7 +63,7 @@
   async function handleRoleChanged (
     team: Team,
     typeType: TeamType,
-    rolesAssignment: RolesAssignment,
+    roles: Role[],
     event: CustomEvent<Ref<Role>>
   ): Promise<void> {
     if (value === undefined) {
@@ -67,23 +71,23 @@
     }
 
     const { detail: role } = event
-    const memberId = value._id
+    const memberId = $personAccountByPersonId.get(value._id)?.[0]._id
 
-    const newAssignment = Object.entries(rolesAssignment).reduce<RolesAssignment>((acc, [key, members]) => {
-      const updatedMembers = members?.filter((id) => id !== memberId) ?? []
-      if (key === role) {
-        updatedMembers.push(memberId)
-      }
-      return { ...acc, [key]: updatedMembers }
-    }, {})
-
-    if (!deepEqual(newAssignment, rolesAssignment)) {
-      await client.updateMixin(team._id, kraTeam.class.Team, core.space.Space, typeType.targetClass, newAssignment)
+    const updateData = {
+      $push: {} as any,
+      $pull: {} as any
     }
+    updateData.$push[role] = memberId
+    roles.forEach((r) => {
+      if (r._id !== role) {
+        updateData.$pull[r._id] = memberId
+      }
+    })
+    await client.updateMixin(team._id, kraTeam.class.Team, core.space.Space, typeType.targetClass, updateData)
   }
 </script>
 
-{#await data then { team, typeType, role, rolesAssignment }}
+{#await data then { team, typeType, roles, role, rolesAssignment }}
   {#if team !== undefined && typeType !== undefined && rolesAssignment !== undefined}
     <ObjectBox
       _class={core.class.Role}
@@ -95,7 +99,7 @@
       allowDeselect
       label={kraTeam.string.Role}
       showNavigate={false}
-      on:change={handleRoleChanged.bind(undefined, team, typeType, rolesAssignment)}
+      on:change={handleRoleChanged.bind(undefined, team, typeType, roles)}
     />
   {/if}
 {/await}
