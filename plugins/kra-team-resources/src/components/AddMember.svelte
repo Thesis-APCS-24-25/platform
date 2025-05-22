@@ -52,15 +52,17 @@
   }}
 >
   {#await members then members}
-    <ObjectBox
-      label={kraTeam.string.ChooseMember}
-      bind:value={selectedMember}
-      _class={contact.class.Person}
-      docQuery={{
-        _id: {
-          $nin: members
-        }
-      }}
-    />
+    {#if members !== undefined}
+      <ObjectBox
+        label={kraTeam.string.ChooseMember}
+        bind:value={selectedMember}
+        _class={contact.class.Person}
+        docQuery={{
+          _id: {
+            $nin: members
+          }
+        }}
+      />
+    {/if}
   {/await}
 </Card>

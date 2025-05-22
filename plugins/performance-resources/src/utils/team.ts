@@ -3,8 +3,12 @@ import { team as currentTeam } from '../store'
 import { get } from 'svelte/store'
 import { getClient } from '@hcengineering/presentation'
 import { getCurrentAccount, type Ref } from '@hcengineering/core'
+import { personAccountByPersonId, personIdByAccountId } from '@hcengineering/contact-resources'
+import { type PersonAccount } from '@hcengineering/contact'
 
-export const currentMemberId = getCurrentAccount()._id as Ref<Member>
+export const currentMemberId = get(personIdByAccountId).get(
+  getCurrentAccount()._id as Ref<PersonAccount>
+)
 
 /**
  * Find all teams that a member belongs to.
@@ -13,9 +17,13 @@ export const currentMemberId = getCurrentAccount()._id as Ref<Member>
  */
 export async function findTeamsWithMember (memberId: Ref<Member>): Promise<Team[]> {
   const client = getClient()
+  const id = get(personAccountByPersonId).get(memberId)?.[0]._id
+  if (id === undefined) {
+    return []
+  }
   const teams = await client.findAll(kraTeam.class.Team, {
     members: {
-      $all: [memberId]
+      $all: [id]
     }
   })
   return teams
@@ -31,7 +39,7 @@ export async function getOrInitCurrentTeam (): Promise<Team | undefined> {
     _id: get(currentTeam)
   })
   // query and get the first star team
-  if (cur === undefined) {
+  if (cur === undefined && currentMemberId !== undefined) {
     const teams = await findTeamsWithMember(currentMemberId)
     cur = teams.at(0)
     if (cur !== undefined) {
