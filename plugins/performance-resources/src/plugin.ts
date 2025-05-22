@@ -79,6 +79,7 @@ export default mergeIds(performanceId, performance, {
     ReportPresenter: '' as AnyComponent,
     CreateReport: '' as AnyComponent,
     CreateReportButton: '' as AnyComponent,
+    ListView: '' as AnyComponent,
     TeamSwitchHeader: '' as AnyComponent
     // ReviewSessionStatusPresenter: '' as AnyComponent,
     // ReviewSessionStatusRefPresenter: '' as AnyComponent,
