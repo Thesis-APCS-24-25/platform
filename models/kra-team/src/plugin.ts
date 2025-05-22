@@ -34,10 +34,6 @@ export default mergeIds(kraTeamId, kraTeam, {
     ApproveKra: '' as Ref<Permission>,
     CreateKra: '' as Ref<Permission>
   },
-  role: {
-    TeamMember: '' as Ref<Role>,
-    TeamManager: '' as Ref<Role>
-  },
   function: {
     ShouldDisplayRemoveMemberAction: '' as Resource<ViewActionAvailabilityFunction<Member>>
   },

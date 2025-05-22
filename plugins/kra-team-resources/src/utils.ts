@@ -35,7 +35,7 @@ export async function createNewTeam (
       name,
       description,
       private: isPrivate,
-      members: [], // will be added later
+      members,
       owners,
       autoJoin: false,
       archived: false,
@@ -45,17 +45,6 @@ export async function createNewTeam (
     },
     teamId
   )
-
-  const persons = members
-    .map((member) => {
-      return get(personIdByAccountId).get(member)
-    })
-    .filter((person) => person !== undefined)
-
-  for (const person of persons) {
-    await addPersonToTeam(person, teamId)
-  }
-
   await client.createMixin(teamId, kraTeam.class.Team, core.space.Space, spaceType.targetClass, rolesAssignment)
 }
 
@@ -82,10 +71,10 @@ export async function addPersonToTeam (person: Ref<Person>, teamId: Ref<Team>): 
       members: account._id
     }
   })
-  const hierarchy = client.getHierarchy()
-  if (!hierarchy.hasMixin(member, kraTeam.mixin.Member)) {
-    await client.createMixin(member._id, member._class, member.space, kraTeam.mixin.Member, {})
-  }
+  // const hierarchy = client.getHierarchy()
+  // if (!hierarchy.hasMixin(member, kraTeam.mixin.Member)) {
+  //   await client.createMixin(member._id, member._class, member.space, kraTeam.mixin.Member, {})
+  // }
 }
 
 export async function removePersonsFromTeam (persons: Ref<Person> | Array<Ref<Person>>, team: Ref<Team>): Promise<void> {

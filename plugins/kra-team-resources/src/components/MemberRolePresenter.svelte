@@ -8,6 +8,8 @@
   import { onDestroy } from 'svelte'
   import { ObjectBox } from '@hcengineering/view-resources'
   import { deepEqual } from 'fast-equals'
+  import { personAccountByPersonId } from '@hcengineering/contact-resources'
+  import { Person } from '@hcengineering/contact'
 
   export let value: Member | undefined
 
@@ -30,7 +32,8 @@
     const rolesAssignment = getRolesAssignment(team, typeType, roles)
     const role = roles.find((role) => {
       if (value !== undefined) {
-        return rolesAssignment[role._id]?.includes(value?._id)
+        const p = $personAccountByPersonId.get(value?._id)?.[0]
+        return p !== undefined ? rolesAssignment[role._id]?.includes(p?._id) : false
       }
       return false
     })
@@ -67,7 +70,10 @@
     }
 
     const { detail: role } = event
-    const memberId = value._id
+    const memberId = $personAccountByPersonId.get(value._id)?.[0]._id
+    if (memberId === undefined) {
+      return
+    }
 
     const newAssignment = Object.entries(rolesAssignment).reduce<RolesAssignment>((acc, [key, members]) => {
       const updatedMembers = members?.filter((id) => id !== memberId) ?? []

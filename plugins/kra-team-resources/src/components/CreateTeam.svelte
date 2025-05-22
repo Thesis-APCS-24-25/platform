@@ -4,7 +4,6 @@
     showPopup,
     EditBox,
     Label,
-    Toggle,
     getPlatformColorDef,
     getPlatformColorForTextDef,
     themeStore,
@@ -12,20 +11,21 @@
     IconWithEmoji
   } from '@hcengineering/ui'
   import { AccountArrayEditor } from '@hcengineering/contact-resources'
-  import presentation, { Card, createQuery } from '@hcengineering/presentation'
+  import { Card, createQuery } from '@hcengineering/presentation'
   import kraTeam from '../plugins'
-  import core, { Account, Role, RolesAssignment, Arr, Ref, SpaceType, SortingOrder } from '@hcengineering/core'
+  import core, { Account, Role, RolesAssignment, Arr, Ref, SpaceType } from '@hcengineering/core'
   import view from '@hcengineering/view'
   import { Asset } from '@hcengineering/platform'
   import { IconPicker } from '@hcengineering/view-resources'
 
   import { createNewTeam } from '../utils'
   import { createEventDispatcher } from 'svelte'
+  import { PersonAccount } from '@hcengineering/contact'
 
   let name = ''
   const description = ''
-  let isPrivate = false
-  let members: Arr<Ref<Account>> = []
+  const isPrivate = true
+  let members: Arr<Ref<PersonAccount>> = []
   let icon: Asset = kraTeam.icon.Home
   let owners: Ref<Account>[] = []
   let rolesAssignment: RolesAssignment | undefined = undefined
@@ -36,29 +36,6 @@
   typeTypeQuery.query(core.class.SpaceType, { _id: kraTeam.spaceType.TeamType }, (res) => {
     typeType = res[0]
   })
-
-  let roles: Role[] = []
-  const rolesQuery = createQuery()
-  $: if (typeType !== undefined) {
-    rolesQuery.query(
-      core.class.Role,
-      { attachedTo: typeType._id },
-      (res) => {
-        roles = res
-        //
-        // if (rolesAssignment === undefined && typeType !== undefined) {
-        //   rolesAssignment = getRolesAssignment()
-        // }
-      },
-      {
-        sort: {
-          name: SortingOrder.Ascending
-        }
-      }
-    )
-  } else {
-    rolesQuery.unsubscribe()
-  }
 
   // function getRolesAssignment (): RolesAssignment {
   //   if (project === undefined || typeType?.targetClass === undefined || roles === undefined) {
@@ -91,15 +68,18 @@
     dispatch('close')
   }
 
-  function handleMembersChanged (newMembers: Ref<Account>[]): void | Promise<void> {
+  function handleMembersChanged (newPersons: Ref<Account>[]): void | Promise<void> {
     membersChanged = true
+    const newMembers = newPersons.map((m) => m as Ref<PersonAccount>).filter((m) => m !== undefined && m !== null)
+
     // If a member was removed we need to remove it from any roles assignments as well
     const newMembersSet = new Set(newMembers)
     const removedMembersSet = new Set(members.filter((m) => !newMembersSet.has(m)))
 
     if (removedMembersSet.size > 0 && rolesAssignment !== undefined) {
       for (const [key, value] of Object.entries(rolesAssignment)) {
-        rolesAssignment[key as Ref<Role>] = value != null ? value.filter((m) => !removedMembersSet.has(m)) : undefined
+        rolesAssignment[key as Ref<Role>] =
+          value != null ? value.filter((m) => !removedMembersSet.has(m as Ref<PersonAccount>)) : undefined
       }
     }
 
@@ -118,7 +98,7 @@
     owners = newOwners
 
     const newMembersSet = new Set([...members, ...newOwners])
-    members = Array.from(newMembersSet).map((m) => m)
+    members = Array.from(newMembersSet).map((m) => m as Ref<PersonAccount>)
   }
 
   function chooseIcon (): void {
@@ -184,14 +164,6 @@
       </div>
 
       <div class="antiGrid-row">
-        <div class="antiGrid-row__header withDesciption">
-          <Label label={presentation.string.MakePrivate} />
-          <span><Label label={presentation.string.MakePrivateDescription} /></span>
-        </div>
-        <Toggle id={'project-private'} bind:on={isPrivate} disabled={!isPrivate && members.length === 0} />
-      </div>
-
-      <div class="antiGrid-row">
         <div class="antiGrid-row__header">
           <Label label={kraTeam.string.Members} />
         </div>
@@ -204,24 +176,22 @@
         />
       </div>
 
-      {#each roles as role}
-        <div class="antiGrid-row">
-          <div class="antiGrid-row__header">
-            <Label label={kraTeam.string.RoleLabel} params={{ role: role.name }} />
-          </div>
-          <AccountArrayEditor
-            value={rolesAssignment?.[role._id] ?? []}
-            label={kraTeam.string.Members}
-            includeItems={members}
-            readonly={members.length === 0}
-            onChange={(refs) => {
-              handleRoleAssignmentChanged(role._id, refs)
-            }}
-            kind={'regular'}
-            size={'large'}
-          />
+      <div class="antiGrid-row">
+        <div class="antiGrid-row__header">
+          <Label label={kraTeam.string.Manager} />
         </div>
-      {/each}
+        <AccountArrayEditor
+          value={rolesAssignment?.[kraTeam.role.TeamManager] ?? []}
+          label={kraTeam.string.Members}
+          includeItems={members}
+          readonly={members.length === 0}
+          onChange={(refs) => {
+            handleRoleAssignmentChanged(kraTeam.role.TeamManager, refs)
+          }}
+          kind={'regular'}
+          size={'large'}
+        />
+      </div>
     </div>
   </div>
 </Card>

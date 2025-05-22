@@ -1,5 +1,5 @@
 import { Asset, type Plugin, plugin } from '@hcengineering/platform'
-import { Class, Mixin, Ref, SpaceType, SpaceTypeDescriptor, TypedSpace } from '@hcengineering/core'
+import { Class, Mixin, Ref, Role, SpaceType, SpaceTypeDescriptor, TypedSpace } from '@hcengineering/core'
 import { IconProps } from '@hcengineering/view'
 import { Person } from '@hcengineering/contact'
 
@@ -20,6 +20,10 @@ export default plugin(kraTeamId, {
     Team: '' as Ref<Class<Team>>,
     TeamType: '' as Ref<Class<TeamType>>,
     TeamTypeDescriptor: '' as Ref<Class<TeamTypeDescriptor>>
+  },
+  role: {
+    TeamMember: '' as Ref<Role>,
+    TeamManager: '' as Ref<Role>
   },
   icon: {
     Manager: '' as Asset,

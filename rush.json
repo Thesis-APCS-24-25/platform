@@ -1430,7 +1430,7 @@
     {
       "packageName": "@hcengineering/kra-team",
       "projectFolder": "plugins/kra-team",
-      "shouldPublish": true
+      "shouldPublish": false
     },
     {
       "packageName": "@hcengineering/kra-team-assets",
@@ -2251,6 +2251,21 @@
     {
       "packageName": "@hcengineering/model-server-performance",
       "projectFolder": "models/server-performance",
+      "shouldPublish": false
+    },
+    {
+      "packageName": "@hcengineering/server-kra-team",
+      "projectFolder": "server-plugins/kra-team",
+      "shouldPublish": false
+    },
+    {
+      "packageName": "@hcengineering/server-kra-team-resources",
+      "projectFolder": "server-plugins/kra-team-resources",
+      "shouldPublish": false
+    },
+    {
+      "packageName": "@hcengineering/model-server-kra-team",
+      "projectFolder": "models/server-kra-team",
       "shouldPublish": false
     }
   ]

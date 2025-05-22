@@ -114,6 +114,8 @@
           {/each}
         {/if}
 
+        <div class="antiVSpacer" />
+
         <TeamNavigator
           currentTeam={currentSpace}
           on:selected={(space) => {

@@ -8,7 +8,7 @@ import tracker from '@hcengineering/tracker'
 
 export function defineActions (builder: Builder): void {
   builder.mixin(kraTeam.class.Team, core.class.Class, view.mixin.IgnoreActions, {
-    actions: [tracker.action.EditRelatedTargets]
+    actions: [tracker.action.EditRelatedTargets, view.action.Leave]
   })
 
   builder.mixin(kraTeam.mixin.Member, core.class.Class, view.mixin.IgnoreActions, {

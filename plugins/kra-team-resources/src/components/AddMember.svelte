@@ -44,10 +44,10 @@
           members: account._id
         }
       })
-      const hierarchy = client.getHierarchy()
-      if (!hierarchy.hasMixin(member, kraTeam.mixin.Member)) {
-        await client.createMixin(member._id, member._class, member.space, kraTeam.mixin.Member, {})
-      }
+      // const hierarchy = client.getHierarchy()
+      // if (!hierarchy.hasMixin(member, kraTeam.mixin.Member)) {
+      //   await client.createMixin(member._id, member._class, member.space, kraTeam.mixin.Member, {})
+      // }
     }
   }}
 >
