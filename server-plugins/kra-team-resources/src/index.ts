@@ -13,7 +13,7 @@
 // limitations under the License.
 //
 
-import core, { Ref, RolesAssignment, Tx, TxMixin, TxUpdateDoc } from '@hcengineering/core'
+import core, { AccountRole, Ref, RolesAssignment, Tx, TxCreateDoc, TxMixin, TxUpdateDoc } from '@hcengineering/core'
 import { TriggerControl } from '@hcengineering/server-core'
 import kraTeam, { Team, TeamType } from '@hcengineering/kra-team'
 import contact, { PersonAccount } from '@hcengineering/contact'
@@ -54,7 +54,36 @@ export async function getRolesAssignment (
   }, {})
 }
 
+async function assignWorkspaceOwnerToTeam (control: TriggerControl, tx: TxCreateDoc<Team>): Promise<Tx[]> {
+  const account = await control
+    .queryFind(control.ctx, contact.class.PersonAccount, {
+      role: AccountRole.Owner
+    })
+    .then((account) => account[0])
+  if (account === undefined) {
+    throw new Error('Owner account not found')
+  }
+  if (tx.attributes.owners?.includes(account._id) === true) {
+    return []
+  }
+  const addOwnerTx = control.txFactory.createTxUpdateDoc(tx.objectClass, tx.objectSpace, tx.objectId, {
+    owners: [...(tx.attributes.owners ?? []), account._id]
+  })
+  return [addOwnerTx]
+}
+
 export async function OnTeamCreate (txes: Tx[], control: TriggerControl): Promise<Tx[]> {
+  const result: Tx[] = []
+
+  for (const tx of txes) {
+    const createTx = tx as TxCreateDoc<Team>
+    result.push(...(await assignWorkspaceOwnerToTeam(control, createTx)))
+  }
+
+  return result
+}
+
+export async function OnTeamRolesAssignmentUpdate (txes: Tx[], control: TriggerControl): Promise<Tx[]> {
   // Assign default role 'TeamMember' to the members with no role
   const result: Tx[] = []
 
@@ -82,7 +111,6 @@ export async function OnTeamCreate (txes: Tx[], control: TriggerControl): Promis
         mixinTx.mixin,
         attr
       )
-      console.log('apply rolesAssignment', rtx)
       result.push(rtx)
     }
   }
@@ -145,10 +173,54 @@ export async function OnTeamMemberUpdate (txes: Tx[], control: TriggerControl): 
   return result
 }
 
+// /**
+//  * @public
+//  */
+// export async function OnWorkspaceOwnerAdded (txes: Tx[], control: TriggerControl): Promise<Tx[]> {
+//   const result: Tx[] = []
+//   for (const tx of txes) {
+//     let ownerId: Ref<PersonAccount> | undefined
+//     if (control.hierarchy.isDerived(tx._class, core.class.TxCreateDoc)) {
+//       const createTx = tx as TxCreateDoc<PersonAccount>
+//
+//       if (createTx.attributes.role === AccountRole.Owner) {
+//         ownerId = createTx.objectId
+//       }
+//     } else if (control.hierarchy.isDerived(tx._class, core.class.TxUpdateDoc)) {
+//       const updateTx = tx as TxUpdateDoc<PersonAccount>
+//
+//       if (updateTx.operations.role === AccountRole.Owner) {
+//         ownerId = updateTx.objectId
+//       }
+//     }
+//
+//     if (ownerId === undefined) {
+//       continue
+//     }
+//
+//     const teams = await control.findAll(control.ctx, kraTeam.class.Team, {})
+//     for (const team in teams) {
+//       if (
+//         team.owners === undefined ||
+//         team.owners.length === 0 ||
+//         team.owners[0] === core.account.System
+//       ) {
+//         result.push(
+//           control.txFactory.createTxUpdateDoc(tracker.class.Project, targetProject.space, targetProject._id, {
+//             owners: [ownerId]
+//           })
+//         )
+//       }
+//     }
+//   }
+//   return result
+// }
+
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export default async () => ({
   trigger: {
     OnTeamMemberUpdate,
-    OnTeamCreate
+    OnTeamCreate,
+    OnTeamRolesAssignmentUpdate
   }
 })

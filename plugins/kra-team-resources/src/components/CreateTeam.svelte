@@ -24,10 +24,9 @@
 
   let name = ''
   const description = ''
-  const isPrivate = true
+  const isPrivate = false
   let members: Arr<Ref<PersonAccount>> = []
   let icon: Asset = kraTeam.icon.Home
-  let owners: Ref<Account>[] = []
   let rolesAssignment: RolesAssignment | undefined = undefined
   let color = getColorNumberByText(name)
 
@@ -64,7 +63,7 @@
     if (typeType === undefined || rolesAssignment === undefined) {
       return
     }
-    await createNewTeam(name, description, isPrivate, typeType, members, owners, rolesAssignment, icon, color)
+    await createNewTeam(name, description, isPrivate, typeType, members, [], rolesAssignment, icon, color)
     dispatch('close')
   }
 
@@ -92,13 +91,6 @@
     }
 
     rolesAssignment[roleId] = newMembers
-  }
-
-  function handleOwnersChanged (newOwners: Ref<Account>[]): void | Promise<void> {
-    owners = newOwners
-
-    const newMembersSet = new Set([...members, ...newOwners])
-    members = Array.from(newMembersSet).map((m) => m as Ref<PersonAccount>)
   }
 
   function chooseIcon (): void {
@@ -147,19 +139,6 @@
               }}
           size={'large'}
           on:click={chooseIcon}
-        />
-      </div>
-
-      <div class="antiGrid-row">
-        <div class="antiGrid-row__header">
-          <Label label={core.string.Owners} />
-        </div>
-        <AccountArrayEditor
-          value={owners}
-          label={core.string.Owners}
-          onChange={handleOwnersChanged}
-          kind={'regular'}
-          size={'large'}
         />
       </div>
 

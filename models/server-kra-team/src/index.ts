@@ -30,10 +30,17 @@ export function createModel (builder: Builder): void {
     }
   })
   builder.createDoc(serverCore.class.Trigger, core.space.Model, {
-    trigger: serverKraTeam.trigger.OnTeamCreate,
+    trigger: serverKraTeam.trigger.OnTeamRolesAssignmentUpdate,
     txMatch: {
       _class: core.class.TxMixin,
       mixin: kraTeam.mixin.TeamTypeData
+    }
+  })
+  builder.createDoc(serverCore.class.Trigger, core.space.Model, {
+    trigger: serverKraTeam.trigger.OnTeamCreate,
+    txMatch: {
+      _class: core.class.TxCreateDoc,
+      objectClass: kraTeam.class.Team
     }
   })
 }

@@ -28,6 +28,7 @@ export const serverKraTeamId = 'server-kra-team' as Plugin
 export default plugin(serverKraTeamId, {
   trigger: {
     OnTeamMemberUpdate: '' as Resource<TriggerFunc>,
-    OnTeamCreate: '' as Resource<TriggerFunc>
+    OnTeamCreate: '' as Resource<TriggerFunc>,
+    OnTeamRolesAssignmentUpdate: '' as Resource<TriggerFunc>
   }
 })

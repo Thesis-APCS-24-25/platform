@@ -40,6 +40,7 @@
     return {
       team,
       typeType,
+      roles,
       role: role?._id,
       rolesAssignment
     }
@@ -62,7 +63,7 @@
   async function handleRoleChanged (
     team: Team,
     typeType: TeamType,
-    rolesAssignment: RolesAssignment,
+    roles: Role[],
     event: CustomEvent<Ref<Role>>
   ): Promise<void> {
     if (value === undefined) {
@@ -71,25 +72,22 @@
 
     const { detail: role } = event
     const memberId = $personAccountByPersonId.get(value._id)?.[0]._id
-    if (memberId === undefined) {
-      return
-    }
 
-    const newAssignment = Object.entries(rolesAssignment).reduce<RolesAssignment>((acc, [key, members]) => {
-      const updatedMembers = members?.filter((id) => id !== memberId) ?? []
-      if (key === role) {
-        updatedMembers.push(memberId)
+    const updateData = {
+      $push: {} as any,
+      $pull: {} as any
+    }
+    updateData.$push[role] = memberId
+    roles.forEach((r) => {
+      if (r._id !== role) {
+        updateData.$pull[r._id] = memberId
       }
-      return { ...acc, [key]: updatedMembers }
-    }, {})
-
-    if (!deepEqual(newAssignment, rolesAssignment)) {
-      await client.updateMixin(team._id, kraTeam.class.Team, core.space.Space, typeType.targetClass, newAssignment)
-    }
+    })
+    await client.updateMixin(team._id, kraTeam.class.Team, core.space.Space, typeType.targetClass, updateData)
   }
 </script>
 
-{#await data then { team, typeType, role, rolesAssignment }}
+{#await data then { team, typeType, roles, role, rolesAssignment }}
   {#if team !== undefined && typeType !== undefined && rolesAssignment !== undefined}
     <ObjectBox
       _class={core.class.Role}
@@ -101,7 +99,7 @@
       allowDeselect
       label={kraTeam.string.Role}
       showNavigate={false}
-      on:change={handleRoleChanged.bind(undefined, team, typeType, rolesAssignment)}
+      on:change={handleRoleChanged.bind(undefined, team, typeType, roles)}
     />
   {/if}
 {/await}
