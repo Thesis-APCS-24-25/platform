@@ -84,7 +84,7 @@ export async function removePersonsFromTeam (persons: Ref<Person> | Array<Ref<Pe
   }
   const accounts = persons
     .map((person) => get(personAccountByPersonId).get(person)?.[0])
-    .filter((account) => account !== undefined)
+    .filter((account) => account !== undefined) as PersonAccount[]
   for (const account of accounts) {
     await client.updateDoc(kraTeam.class.Team, core.space.Space, team, {
       $pull: {
@@ -107,7 +107,7 @@ export async function getMembersWithRoles (
     }
     team = temp
   }
-  const members = team.members
+  const members = team.members as Array<Ref<PersonAccount>>
   const rolesAssignment = await getRolesAssignment(team)
   return members
     .map((accountRef) => {
@@ -117,7 +117,7 @@ export async function getMembersWithRoles (
         }
         return acc
       }, new Array<Ref<Role>>())
-      const person = get(personIdByAccountId).get(accountRef as Ref<PersonAccount>)
+      const person = get(personIdByAccountId).get(accountRef)
       if (person !== undefined) {
         return {
           person,
@@ -126,7 +126,7 @@ export async function getMembersWithRoles (
       }
       return undefined
     })
-    .filter((member) => member !== undefined)
+    .filter((member) => member !== undefined) as Array<{ person: Ref<Person>, roles: Array<Ref<Role>> }> | undefined
 }
 
 /**

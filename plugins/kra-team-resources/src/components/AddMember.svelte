@@ -17,7 +17,7 @@
     .then((team) =>
       team?.members
         .map((accountRef) => $personIdByAccountId.get(accountRef as Ref<PersonAccount>))
-        .filter((s) => s !== undefined)
+        .filter((s) => s !== undefined) as Ref<Person>[]
     )
 </script>
 
