@@ -57,7 +57,7 @@
 
   const dispatch = createEventDispatcher()
 
-  $: canSave = name.length > 0
+  $: canSave = name.length > 0 && rolesAssignment?.[kraTeam.role.TeamManager]?.length !== 0 && members.length > 0
 
   async function handleOk (): Promise<void> {
     if (typeType === undefined || rolesAssignment === undefined) {
