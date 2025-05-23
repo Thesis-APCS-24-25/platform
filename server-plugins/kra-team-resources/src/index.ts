@@ -72,12 +72,34 @@ async function assignWorkspaceOwnerToTeam (control: TriggerControl, tx: TxCreate
   return [addOwnerTx]
 }
 
+async function makePersonIntoMember (control: TriggerControl, person: Ref<PersonAccount>): Promise<Tx> {
+  const p = await control
+    .findAll(control.ctx, contact.class.PersonAccount, {
+      _id: person
+    })
+    .then((person) => person[0].person)
+
+  const mixinTx = control.txFactory.createTxMixin(
+    p,
+    contact.class.Person,
+    contact.space.Contacts,
+    kraTeam.mixin.Member,
+    {}
+  )
+  return mixinTx
+}
+
 export async function OnTeamCreate (txes: Tx[], control: TriggerControl): Promise<Tx[]> {
   const result: Tx[] = []
 
   for (const tx of txes) {
     const createTx = tx as TxCreateDoc<Team>
     result.push(...(await assignWorkspaceOwnerToTeam(control, createTx)))
+
+    for (const member of createTx.attributes.members ?? []) {
+      const mixinTx = await makePersonIntoMember(control, member as Ref<PersonAccount>)
+      result.push(mixinTx)
+    }
   }
 
   return result
@@ -86,6 +108,7 @@ export async function OnTeamCreate (txes: Tx[], control: TriggerControl): Promis
 export async function OnTeamRolesAssignmentUpdate (txes: Tx[], control: TriggerControl): Promise<Tx[]> {
   // Assign default role 'TeamMember' to the members with no role
   const result: Tx[] = []
+  console.log('OnTeamRolesAssignmentUpdate', txes)
 
   for (const tx of txes) {
     const mixinTx = tx as TxMixin<Team, Team>
@@ -128,19 +151,7 @@ export async function OnTeamMemberUpdate (txes: Tx[], control: TriggerControl): 
     const updateTx = tx as TxUpdateDoc<Team>
     const newMember = updateTx.operations.$push?.members as Ref<PersonAccount>
     if (newMember !== undefined) {
-      const person = await control
-        .findAll(control.ctx, contact.class.PersonAccount, {
-          _id: newMember
-        })
-        .then((person) => person[0].person)
-
-      const mixinTx = control.txFactory.createTxMixin(
-        person,
-        contact.class.Person,
-        contact.space.Contacts,
-        kraTeam.mixin.Member,
-        {}
-      )
+      const mixinTx = await makePersonIntoMember(control, newMember)
       result.push(mixinTx)
       const rolesAssignment: RolesAssignment = await getRolesAssignment(control, updateTx.objectId)
       const isManager = (rolesAssignment[kraTeam.role.TeamManager] ?? []).includes(newMember)
