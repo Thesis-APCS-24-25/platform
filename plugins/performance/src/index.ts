@@ -46,16 +46,16 @@ export interface MeasureProgress extends Class<Task> {
 
 export interface WithKRA extends Task { }
 
-export interface ReviewComment extends Doc {
-  author: Ref<PersonAccount>
-  comment: string
-  score?: number
-}
+// export interface ReviewComment extends Doc {
+//   author: Ref<PersonAccount>
+//   comment: string
+//   score?: number
+// }
 
 export interface PerformanceReport extends Doc {
   reviewee: Ref<PersonAccount>
   reviewSession: Ref<ReviewSession>
-  reviewComments: Arr<Ref<ReviewComment>>
+  tasks?: Arr<Ref<WithKRA>>
 }
 
 export const performanceId = 'performance' as Plugin
@@ -69,7 +69,6 @@ export default plugin(performanceId, {
     ReviewSession: '' as Ref<Class<ReviewSession>>,
     KRA: '' as Ref<Class<KRA>>,
     EmployeeKRA: '' as Ref<Class<EmployeeKRA>>,
-    ReviewComment: '' as Ref<Class<ReviewComment>>,
     PerformanceReport: '' as Ref<Class<PerformanceReport>>
   },
   string: {

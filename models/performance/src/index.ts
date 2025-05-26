@@ -10,18 +10,7 @@ import { type Ref, type StatusCategory } from '@hcengineering/core'
 import core from '@hcengineering/model-core'
 import workbench, { type Application } from '@hcengineering/model-workbench'
 import view from '@hcengineering/model-view'
-import {
-  DOMAIN_PERFORMANCE,
-  TDefaultKRAData,
-  TDefaultReviewSessionData,
-  TEmployeeKRA,
-  TKRA,
-  TKRAStatus,
-  TReviewSession,
-  TMeasureProgress,
-  TReviewComment,
-  TPerformanceReport
-} from './types'
+import { DOMAIN_PERFORMANCE, TDefaultKRAData, TDefaultReviewSessionData, TEmployeeKRA, TKRA, TKRAStatus, TReviewSession, TMeasureProgress, TPerformanceReport } from './types'
 import { defineViewlets } from './viewlets'
 
 export { performanceId } from '@hcengineering/performance'
@@ -241,7 +230,7 @@ function defineKRA (builder: Builder): void {
 }
 
 function defineReport (builder: Builder): void {
-  builder.createModel(TReviewComment, TPerformanceReport)
+  builder.createModel(TPerformanceReport)
 
   builder.mixin(performance.class.PerformanceReport, core.class.Class, view.mixin.ObjectPresenter, {
     presenter: performance.component.ReportPresenter
