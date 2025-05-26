@@ -366,6 +366,8 @@
   --theme-state-regular-background-color: rgba(123, 123, 123, 0.1);
   --theme-state-regular-border-color: rgba(123, 123, 123, 0.15);
   --theme-wizard-not-visited-color: #34343c;
+
+  --theme-goal-panel-header: linear-gradient(to left, #8e2de2, #4a00e0);
 }
 
 /* Light Theme */
@@ -648,4 +650,6 @@
   --theme-state-regular-background-color: rgba(123, 123, 123, 0.1);
   --theme-state-regular-border-color: rgba(123, 123, 123, 0.15);
   --theme-wizard-not-visited-color: #e8e9e9;
+
+  --theme-goal-panel-header: linear-gradient(to left, #8e2de2, #4a00e0);
 }

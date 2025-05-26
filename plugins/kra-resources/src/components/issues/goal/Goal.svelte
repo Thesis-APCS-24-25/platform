@@ -101,15 +101,15 @@
 
 <div class="goal-section">
   <div class="header" class:collapsed={isCollapsed}>
-    <Icon icon={IconDetails} size="medium" fill={'var(--caption-color)'} />
+    <Icon icon={kra.icon.Goal} size="medium" />
     <Label label={kra.string.Goal} />
     {#if goal}
       <div>
-        <ButtonIcon icon={IconEdit} kind="tertiary" size="small" on:click={handleEditGoal} />
-        <ButtonIcon icon={IconDelete} kind="tertiary" size="small" on:click={handleRemoveGoal} />
+        <ButtonIcon icon={IconEdit} kind="tertiary" size="small" on:click={handleEditGoal} inheritColor/>
+        <ButtonIcon icon={IconDelete} kind="tertiary" size="small" on:click={handleRemoveGoal} inheritColor/>
       </div>
     {:else}
-      <ButtonIcon icon={IconAdd} kind="tertiary" size="small" on:click={handleCreateGoal} />
+      <ButtonIcon icon={IconAdd} kind="tertiary" size="small" on:click={handleCreateGoal} inheritColor/>
     {/if}
   </div>
   <div class="content">
@@ -130,14 +130,14 @@
 <style lang="scss">
   .goal-section {
     margin-bottom: 1rem;
-    border: 1px solid var(--theme-divider-color, #e0e0e0);
+    border: 1px solid var(--button-border-color);
     border-radius: 0.25rem;
   }
   .header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background: linear-gradient(to right, var(--theme-primary-color, #4c6ef5), var(--theme-secondary-color, #7048e8));
+    background: var(--theme-goal-panel-header);
     padding: 0.5rem;
     border-radius: 0.25rem 0.25rem 0 0;
     color: white;
