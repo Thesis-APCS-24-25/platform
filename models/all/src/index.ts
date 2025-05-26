@@ -113,6 +113,7 @@ import { presenceId, createModel as presenceModel } from '@hcengineering/model-p
 import { performanceId, createModel as performanceModel } from '@hcengineering/model-performance'
 import { serverPerformanceId, createModel as serverPerformanceModel } from '@hcengineering/model-server-performance'
 import { serverKraTeamId, createModel as serverKraTeamModel } from '@hcengineering/model-server-kra-team'
+import { serverKraId, createModel as serverKraModel } from '@hcengineering/model-server-kra'
 
 import { type Plugin } from '@hcengineering/platform'
 
@@ -481,7 +482,8 @@ export default function buildModel (enabled: string[] = ['*'], disabled: string[
     [serverAiBotModel, serverAiBotId],
     [serverFulltextModel, serverFulltextId],
     [serverPerformanceModel, serverPerformanceId],
-    [serverKraTeamModel, serverKraTeamId]
+    [serverKraTeamModel, serverKraTeamId],
+    [serverKraModel, serverKraId]
   ]
 
   for (const [b, id, config] of builders) {

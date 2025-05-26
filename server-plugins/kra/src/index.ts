@@ -13,23 +13,31 @@
 // limitations under the License.
 //
 
+import { Doc } from '@hcengineering/core'
 import type { Plugin, Resource } from '@hcengineering/platform'
 import { plugin } from '@hcengineering/platform'
 import { TriggerFunc } from '@hcengineering/server-core'
+import { Presenter, NotificationContentProvider } from '@hcengineering/server-notification'
 
 /**
  * @public
  */
-export const serverKraTeamId = 'server-kra-team' as Plugin
+export const serverKraId = 'server-kra' as Plugin
 
 /**
  * @public
  */
-export default plugin(serverKraTeamId, {
+export default plugin(serverKraId, {
+  function: {
+    IssueHTMLPresenter: '' as Resource<Presenter>,
+    IssueTextPresenter: '' as Resource<Presenter>,
+    IssueNotificationContentProvider: '' as Resource<NotificationContentProvider>,
+    IssueLinkIdProvider: '' as Resource<(doc: Doc) => Promise<string>>
+  },
   trigger: {
-    OnTeamMemberUpdate: '' as Resource<TriggerFunc>,
-    OnTeamCreate: '' as Resource<TriggerFunc>,
-    OnPersonCreate: '' as Resource<TriggerFunc>,
-    OnTeamRolesAssignmentUpdate: '' as Resource<TriggerFunc>
+    OnIssueUpdate: '' as Resource<TriggerFunc>,
+    OnProjectRemove: '' as Resource<TriggerFunc>,
+    OnGoalRemove: '' as Resource<TriggerFunc>,
+    OnWorkspaceOwnerAdded: '' as Resource<TriggerFunc>
   }
 })

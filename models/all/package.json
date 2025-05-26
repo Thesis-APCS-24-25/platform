@@ -119,6 +119,7 @@
     "@hcengineering/model-card": "^0.6.0",
     "@hcengineering/model-performance": "^0.1.0",
     "@hcengineering/model-server-performance": "^0.1.0",
-    "@hcengineering/model-server-kra-team": "^0.1.0"
+    "@hcengineering/model-server-kra-team": "^0.1.0",
+    "@hcengineering/model-server-kra": "^0.1.0"
   }
 }

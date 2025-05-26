@@ -13,23 +13,14 @@
 // limitations under the License.
 //
 
-import type { Plugin, Resource } from '@hcengineering/platform'
-import { plugin } from '@hcengineering/platform'
-import { TriggerFunc } from '@hcengineering/server-core'
-
-/**
- * @public
- */
-export const serverKraTeamId = 'server-kra-team' as Plugin
-
-/**
- * @public
- */
-export default plugin(serverKraTeamId, {
-  trigger: {
-    OnTeamMemberUpdate: '' as Resource<TriggerFunc>,
-    OnTeamCreate: '' as Resource<TriggerFunc>,
-    OnPersonCreate: '' as Resource<TriggerFunc>,
-    OnTeamRolesAssignmentUpdate: '' as Resource<TriggerFunc>
+export function arrayEquals<T> (first: Array<T>, second: Array<T>): boolean {
+  if (first === second) {
+    return true
   }
-})
+
+  if (first.length !== second.length) {
+    return false
+  }
+
+  return first.every((val, index) => val === second[index])
+}

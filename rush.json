@@ -2267,6 +2267,21 @@
       "packageName": "@hcengineering/model-server-kra-team",
       "projectFolder": "models/server-kra-team",
       "shouldPublish": false
+    },
+    {
+      "packageName": "@hcengineering/server-kra",
+      "projectFolder": "server-plugins/kra",
+      "shouldPublish": false
+    },
+    {
+      "packageName": "@hcengineering/server-kra-resources",
+      "projectFolder": "server-plugins/kra-resources",
+      "shouldPublish": false
+    },
+    {
+      "packageName": "@hcengineering/model-server-kra",
+      "projectFolder": "models/server-kra",
+      "shouldPublish": false
     }
   ]
 }

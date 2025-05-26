@@ -96,3 +96,14 @@ export function calculateGoalCallback (
     callback(null, result)
   })
 }
+
+export async function removeGoal (issue: Issue): Promise<void> {
+  const client = getClient()
+  if (issue.goal === undefined) {
+    return
+  }
+  const ops = client.apply()
+  await ops.update(issue, { goal: undefined })
+  await ops.removeDoc(kra.class.Goal, issue.space, issue.goal)
+  await ops.commit()
+}

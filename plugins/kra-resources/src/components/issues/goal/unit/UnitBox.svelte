@@ -1,11 +1,11 @@
 <script lang="ts">
   import kra from '../../../../plugin'
-  import { Project, Unit } from '@hcengineering/kra'
+  import { Unit } from '@hcengineering/kra'
   import { ObjectCreate } from '@hcengineering/presentation'
   import ObjectBox from '@hcengineering/view-resources/src/components/ObjectBox.svelte'
-  import { Ref } from '@hcengineering/core'
+  import { Ref, Space } from '@hcengineering/core'
 
-  export let space: Ref<Project>
+  export let space: Ref<Space>
   export let value: Ref<Unit> | null = null
 
   export let focusIndex = -1
