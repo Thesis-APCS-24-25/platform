@@ -29,6 +29,7 @@ export default plugin(serverKraTeamId, {
   trigger: {
     OnTeamMemberUpdate: '' as Resource<TriggerFunc>,
     OnTeamCreate: '' as Resource<TriggerFunc>,
+    OnPersonCreate: '' as Resource<TriggerFunc>,
     OnTeamRolesAssignmentUpdate: '' as Resource<TriggerFunc>
   }
 })
