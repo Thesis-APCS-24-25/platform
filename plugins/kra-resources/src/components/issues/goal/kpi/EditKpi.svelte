@@ -1,96 +1,93 @@
 <script lang="ts">
-  import { Kpi } from '@hcengineering/kra'
   import { createFocusManager, EditBox, FocusHandler } from '@hcengineering/ui'
-  import { Card, getClient } from '@hcengineering/presentation'
   import kra from '../../../../plugin'
-  import { createEventDispatcher } from 'svelte'
+  import { getClient } from '@hcengineering/presentation'
+  import { Goal, Issue, Kpi } from '@hcengineering/kra'
+  import { Ref, Space } from '@hcengineering/core'
   import UnitBox from '../unit/UnitBox.svelte'
+  import { onMount } from 'svelte'
 
-  export let kpi: Kpi
+  export let canSave = false
+  export let issue: Ref<Issue> | undefined = undefined
+  export let space: Ref<Space> | undefined = undefined
+  export let kpi: Kpi | undefined = undefined
 
   const data = {
-    name: kpi.name,
-    description: kpi.description,
-    target: kpi.target,
-    unit: kpi.unit
+    name: kpi?.name ?? '',
+    description: kpi?.description ?? '',
+    target: kpi?.target,
+    unit: kpi?.unit ?? undefined
+  }
+
+  space = space ?? kpi?.space
+  const client = getClient()
+
+  $: canSave = data.name.length > 0 && Number.isFinite(data.target) && data.unit !== undefined
+
+  export async function save (): Promise<Ref<Goal> | undefined> {
+    if (canSave) {
+      if (issue !== undefined && data.unit !== undefined && space !== undefined) {
+        const kpiId = await client.createDoc(kra.class.Kpi, space, {
+          name: data.name,
+          description: data.description,
+          target: data.target ?? 0,
+          unit: data.unit,
+          reports: 0
+        })
+        return kpiId
+      } else if (kpi !== undefined) {
+        await client.update(kpi, {
+          name: data.name,
+          description: data.description,
+          target: data.target,
+          unit: data.unit
+        })
+        return kpi._id
+      }
+    }
   }
 
   const focusManager = createFocusManager()
-  const dispatch = createEventDispatcher()
-
-  async function save (): Promise<void> {
-    if (
-      data.name === kpi.name &&
-      data.description === kpi.description &&
-      data.target === kpi.target &&
-      data.unit === kpi.unit
-    ) {
-      return
-    }
-
-    const client = getClient()
-    await client.update(kpi, {
-      name: data.name,
-      description: data.description,
-      target: data.target,
-      unit: data.unit
-    })
-
-    dispatch('close')
-  }
-
-  $: canSave = data.name.length > 0 && Number.isFinite(data.target) && data.unit !== undefined
+  onMount(() => {
+    focusManager.setFocusPos(1)
+  })
 </script>
 
-<Card
-  label={kra.string.EditKpi}
-  okAction={save}
-  okLabel={kra.string.Save}
-  {canSave}
-  width="medium"
-  on:close={() => {
-    dispatch('close')
-  }}
->
-  <FocusHandler manager={focusManager} />
+<FocusHandler manager={focusManager} />
 
-  <div class="m-4">
-    <EditBox
-      kind="large-style"
-      fullSize
-      bind:value={data.name}
-      placeholder={kra.string.AddNamePlaceholder}
-      focusIndex={1}
-    />
-  </div>
+<div class="m-1">
+  <EditBox
+    label={kra.string.Name}
+    kind="default"
+    fullSize
+    bind:value={data.name}
+    placeholder={kra.string.AddNamePlaceholder}
+    focusIndex={1}
+  />
+</div>
 
-  <div class="m-4">
-    <EditBox
-      kind="large-style"
-      fullSize
-      bind:value={data.description}
-      placeholder={kra.string.IssueDescriptionPlaceholder}
-      focusIndex={2}
-    />
-  </div>
+<div class="m-1">
+  <EditBox
+    label={kra.string.Description}
+    kind="default"
+    fullSize
+    bind:value={data.description}
+    placeholder={kra.string.IssueDescriptionPlaceholder}
+    focusIndex={2}
+  />
+</div>
 
-  <div class="m-4 target-unit">
-    <EditBox
-      kind="large-style"
-      format="number"
-      maxWidth="18rem"
-      bind:value={data.target}
-      placeholder={kra.string.Target}
-      focusIndex={3}
-    />
-    <UnitBox space={kpi.space} bind:value={data.unit} focusIndex={4} />
-  </div>
-</Card>
-
-<style>
-  .target-unit {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-</style>
+<div class="m-1 flex-row-baseline items-end justify-between">
+  <EditBox
+    label={kra.string.Target}
+    kind="default"
+    format="number"
+    maxWidth="15rem"
+    bind:value={data.target}
+    placeholder={kra.string.AddTargetPlaceholder}
+    focusIndex={3}
+  />
+  {#if space !== undefined}
+    <UnitBox size="medium" {space} bind:value={data.unit} focusIndex={4} />
+  {/if}
+</div>

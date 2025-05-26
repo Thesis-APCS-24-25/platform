@@ -303,7 +303,13 @@
     "AddSymbolPlaceholder": "Add symbol\u2026",
     "Report": "Report",
     "Date": "Date",
-    "Comment": "Comment"
+    "Comment": "Comment",
+    "EditKpi": "Edit KPI",
+    "EditRatingScale": "Edit rating scale",
+    "RemoveGoalDialogTitle": "Do you want to remove the goal?",
+    "RemoveGoalDialogMessage": "Remove goal will remove all related reports and cannot be undone",
+    "ChooseGoal": "Choose goal",
+    "AddTargetPlaceholder": "Add target\u2026"
   },
   "status": {}
 }

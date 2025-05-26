@@ -332,7 +332,8 @@ export default mergeIds(kraId, tracker, {
     RemoveGoalDialogMessage: '' as IntlString,
     RemoveGoalDialogTitle: '' as IntlString,
     EditRatingScale: '' as IntlString,
-    EditKpi: '' as IntlString
+    EditKpi: '' as IntlString,
+    AddTargetPlaceholder: '' as IntlString
   },
   component: {
     GoalObjectPresenter: '' as AnyComponent,

@@ -3,8 +3,8 @@
   import kra from '../../../plugin'
   import { Ref } from '@hcengineering/core'
   import { Goal, Kpi, RatingScale } from '@hcengineering/kra'
-  import KpiEditor from './kpi/EditKpi.svelte'
-  import RatingScaleEditor from './ratingscale/EditRatingScale.svelte'
+  import KpiEditorPopup from './kpi/EditKpiPopup.svelte'
+  import RatingScaleEditorPopup from './ratingscale/EditRatingScalePopup.svelte'
 
   export let goal: Ref<Goal>
 
@@ -35,9 +35,9 @@
 
 {#await goalData then { kpi, ratingScale }}
   {#if kpi !== undefined}
-    <KpiEditor {kpi} on:close/>
+    <KpiEditorPopup {kpi} on:close/>
   {:else if ratingScale !== undefined}
-    <RatingScaleEditor {ratingScale} on:close/>
+    <RatingScaleEditorPopup {ratingScale} on:close/>
   {:else}
     Unsupported goal type
   {/if}
