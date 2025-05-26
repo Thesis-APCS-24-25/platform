@@ -56,19 +56,6 @@
       id = await ratingScaleForm.save()
     }
   }
-
-  // async function firstIssueWithoutGoal (): Promise<Issue | undefined> {
-  //   if (issue !== undefined) {
-  //     const client = getClient()
-  //     const found: Issue | undefined = await client.findOne(kra.class.Issue, {
-  //       _id: issue
-  //     })
-  //     if (found !== undefined && found.goal === undefined) {
-  //       return found
-  //     }
-  //   }
-  //   return undefined
-  // }
 </script>
 
 <Card
