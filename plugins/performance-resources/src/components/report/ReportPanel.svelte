@@ -81,7 +81,9 @@
         {viewlet}
         {viewOptions}
         query={{
-          assignee: person?._id
+          _id: {
+            $in: value.tasks
+          }
         }}
       />
     {/if}

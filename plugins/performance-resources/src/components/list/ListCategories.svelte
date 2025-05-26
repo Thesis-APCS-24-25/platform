@@ -153,7 +153,6 @@
   ): Promise<void> {
     const newItemModels = new Map<Ref<Class<Doc>>, AttributeModel[]>()
     const entries = Object.entries(configurations ?? [])
-    console.log(entries)
     for (const [k, v] of entries) {
       const _cl = k as Ref<Class<Doc>>
       const res = await buildModel({ client, _class: _cl, keys: v, lookup })

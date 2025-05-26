@@ -37,8 +37,7 @@
     }
     const value: Data<PerformanceReport> = {
       reviewee: selectedAccount as Ref<PersonAccount>,
-      reviewSession: reviewSession as Ref<ReviewSession>,
-      reviewComments: []
+      reviewSession: reviewSession as Ref<ReviewSession>
     }
     await client.createDoc(performance.class.PerformanceReport, reviewSession as Ref<Space>, value)
     dispatch('close')

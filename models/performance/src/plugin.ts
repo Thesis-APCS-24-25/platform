@@ -37,7 +37,8 @@ export default mergeIds(performanceId, performance, {
     ReviewSession: '' as IntlString,
     ReviewComments: '' as IntlString,
     PerformanceReports: '' as IntlString,
-    CreateReportLabel: '' as IntlString
+    CreateReportLabel: '' as IntlString,
+    Tasks: '' as IntlString
   },
   component: {
     MyKRAs: '' as AnyComponent,

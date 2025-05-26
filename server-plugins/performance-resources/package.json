@@ -48,6 +48,8 @@
     "@hcengineering/login": "^0.6.12",
     "@hcengineering/workbench": "^0.6.16",
     "@hcengineering/notification": "^0.6.23",
-    "@hcengineering/contact": "^0.6.24"
+    "@hcengineering/contact": "^0.6.24",
+    "@hcengineering/kra": "^0.6.0",
+    "@hcengineering/task": "^0.6.20"
   }
 }
