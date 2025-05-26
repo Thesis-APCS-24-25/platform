@@ -102,7 +102,7 @@
   class:mListGridSelected={selected}
   class:last
   class:lastCat
-  draggable={true}
+  draggable={false}
   on:contextmenu
   on:focus
   on:mouseenter

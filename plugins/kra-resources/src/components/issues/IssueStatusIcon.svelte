@@ -25,6 +25,7 @@
   export let space: Ref<Project> | undefined = undefined
   export let projectType: Ref<ProjectType> | undefined = undefined
   export let taskType: Ref<TaskType> | undefined = undefined
+  export let disabled: boolean | undefined = false
 
   $: _space = space !== undefined ? ($activeProjects.get(space) as Project) : undefined
 </script>
@@ -35,6 +36,7 @@
   {taskType}
   {value}
   {size}
+  {disabled}
   shouldShowName={false}
   on:accent-color
 />

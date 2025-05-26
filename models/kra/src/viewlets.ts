@@ -408,6 +408,28 @@ export function defineViewlets (builder: Builder): void {
     {
       attachTo: performance.mixin.WithKRA,
       descriptor: performance.viewlet.TaskList,
+      configOptions: {
+        strict: true,
+        hiddenKeys: [
+          'title',
+          'blockedBy',
+          'relations',
+          'description',
+          'number',
+          'reportedTime',
+          'reports',
+          'priority',
+          'estimation',
+          'remainingTime',
+          'status',
+          'dueDate',
+          'attachedTo',
+          'createdBy',
+          'modifiedBy',
+          'goal',
+          'kra'
+        ]
+      },
       config: [
         ...issueConfig(undefined, undefined, false)
       ],
