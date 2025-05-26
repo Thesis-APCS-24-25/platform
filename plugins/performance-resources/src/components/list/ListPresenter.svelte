@@ -26,6 +26,9 @@
   export let props: Record<string, any>
   export let hideDivider: boolean = false
   export let compactMode: boolean = false
+  export let disabled: boolean | undefined = true
+  export let isEditable: boolean | undefined = false
+  export let readonly: boolean | undefined = true
 
   const dispatch = createEventDispatcher()
 
@@ -57,6 +60,9 @@
       {compactMode}
       {...joinProps(attributeModel, docObject, props)}
       on:resize={translateSize}
+      {disabled}
+      {isEditable}
+      {readonly}
     />
   </FixedColumn>
 {:else}
@@ -66,6 +72,9 @@
     {onChange}
     kind={'list'}
     {compactMode}
+    {disabled}
+    {isEditable}
+    {readonly}
     {...joinProps(attributeModel, docObject, props)}
     on:resize={translateSize}
   />
