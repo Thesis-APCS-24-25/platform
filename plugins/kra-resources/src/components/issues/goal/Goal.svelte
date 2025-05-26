@@ -1,6 +1,16 @@
 <script lang="ts">
   import { Goal, Issue, Kpi, RatingScale } from '@hcengineering/kra'
-  import { IconAdd, Label, showPopup, ButtonIcon, IconDetails, IconDelete, IconEdit } from '@hcengineering/ui'
+  import {
+    IconAdd,
+    Label,
+    showPopup,
+    ButtonIcon,
+    IconDetails,
+    IconDelete,
+    IconEdit,
+    IconMoreV,
+    eventToHTMLElement
+  } from '@hcengineering/ui'
   import Icon from '@hcengineering/ui/src/components/Icon.svelte'
   import RatingScaleEditor from './ratingscale/RatingScale.svelte'
   import KpiEditor from './kpi/Kpi.svelte'
@@ -10,7 +20,9 @@
   import kra from '../../../plugin'
   import { Ref, WithLookup } from '@hcengineering/core'
   import { createEventDispatcher } from 'svelte'
-  import { removeGoal } from '../../../utils/goal'
+  import { calculateResult, removeGoal } from '../../../utils/goal'
+  import KpiReportsPopup from './kpi/KpiReportsPopup.svelte'
+  import RatingScaleEditPopup from './ratingscale/RatingScaleEditPopup.svelte'
 
   export let issue: Issue
 
@@ -97,6 +109,20 @@
       goal: issue.goal
     })
   }
+
+  async function handleEdit (type: 'rating-scale' | 'kpi'): Promise<void> {
+    if (type === 'rating-scale' && ratingScale !== null) {
+      const value = await calculateResult(ratingScale)
+      showPopup(RatingScaleEditPopup, {
+        issue,
+        ratingScale,
+        value
+      })
+    } else if (type === 'kpi' && kpi !== null) {
+      const value = await calculateResult(kpi)
+      showPopup(KpiReportsPopup, { sum: value, kpi, issue }, 'center')
+    }
+  }
 </script>
 
 <div class="goal-section">
@@ -105,19 +131,26 @@
     <Label label={kra.string.Goal} />
     {#if goal}
       <div>
-        <ButtonIcon icon={IconEdit} kind="tertiary" size="small" on:click={handleEditGoal} inheritColor/>
-        <ButtonIcon icon={IconDelete} kind="tertiary" size="small" on:click={handleRemoveGoal} inheritColor/>
+        <ButtonIcon
+          icon={kra.icon.WriteReport}
+          kind="tertiary"
+          size="small"
+          on:click={handleEdit.bind(null, kpi !== null ? 'kpi' : 'rating-scale')}
+          inheritColor
+        />
+        <ButtonIcon icon={IconEdit} kind="tertiary" size="small" on:click={handleEditGoal} inheritColor />
+        <ButtonIcon icon={IconDelete} kind="tertiary" size="small" on:click={handleRemoveGoal} inheritColor />
       </div>
     {:else}
-      <ButtonIcon icon={IconAdd} kind="tertiary" size="small" on:click={handleCreateGoal} inheritColor/>
+      <ButtonIcon icon={IconAdd} kind="tertiary" size="small" on:click={handleCreateGoal} inheritColor />
     {/if}
   </div>
   <div class="content">
     {#if goal}
       {#if kpi}
-        <KpiEditor {issue} {kpi} />
+        <KpiEditor {kpi} />
       {:else if ratingScale}
-        <RatingScaleEditor {issue} {ratingScale} />
+        <RatingScaleEditor {ratingScale} />
       {/if}
     {:else}
       <div class="empty-state">

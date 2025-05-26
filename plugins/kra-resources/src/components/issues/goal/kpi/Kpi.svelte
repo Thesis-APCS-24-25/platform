@@ -10,22 +10,15 @@ distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRAN
 // See the License for the specific language governing permissions and limitations under the License.
 -->
 <script lang="ts">
-  import { Issue, Kpi } from '@hcengineering/kra'
-  import { EditBox, eventToHTMLElement, showPopup } from '@hcengineering/ui'
+  import { Kpi } from '@hcengineering/kra'
+  import { EditBox } from '@hcengineering/ui'
   import { calculateResult } from '../../../../utils/goal'
   import KpiProgressBar from './KpiProgressBar.svelte'
   import { WithLookup } from '@hcengineering/core'
-  import KpiReportsPopup from './KpiReportsPopup.svelte'
 
-  export let issue: Issue
   export let kpi: WithLookup<Kpi>
-  export let focusIndex: number | undefined = undefined
 
   $: sum = calculateResult(kpi, undefined)
-
-  function handleEdit (sum: number, e: MouseEvent): void {
-    showPopup(KpiReportsPopup, { sum, kpi, issue }, eventToHTMLElement(e))
-  }
 </script>
 
 {#await sum then sum}
@@ -35,14 +28,14 @@ distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRAN
       <EditBox kind="small-style" disabled={true} value={kpi.description} />
     </div>
 
-    <button class="kpi-box" on:click={handleEdit.bind(null, sum ?? 0)} tabindex={focusIndex}>
+    <div class="kpi-box">
       <div class="value">
         <span class="value-value">{sum}</span>
         <span class="value-target"> / {kpi.target}</span>
       </div>
       <span class="unit"> {kpi.$lookup?.unit?.name}</span>
         <KpiProgressBar value={sum ?? 0} max={kpi.target} />
-    </button>
+    </div>
   </div>
 {/await}
 
@@ -77,9 +70,5 @@ distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRAN
     border-radius: 0.25rem;
     gap: 0.5rem;
     color: var(--theme-content-color, #333);
-
-    &:hover {
-      border: 1px solid var(--theme-border-color, #e0e0e0);
-    }
   }
 </style>

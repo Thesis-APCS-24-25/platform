@@ -1,11 +1,9 @@
 <script lang="ts">
-  import { Issue, RatingScale } from '@hcengineering/kra'
-  import { EditBox, showPopup } from '@hcengineering/ui'
+  import { RatingScale } from '@hcengineering/kra'
+  import { EditBox } from '@hcengineering/ui'
   import RatingScaleBoxes from './RatingScaleBoxes.svelte'
-  import RatingScaleEditPopup from '../ratingscale/RatingScaleEditPopup.svelte'
   import { calculateGoalCallback } from '../../../../utils/goal'
 
-  export let issue: Issue
   export let ratingScale: RatingScale
 
   let rating: number | undefined = undefined
@@ -15,29 +13,20 @@
     undefined,
     (error: Error | null, result?: number | undefined) => {
       if (error !== null) {
-        alert(error)
+        throw error
       }
-      rating = result
+      rating = result !== undefined ? result * 5 : undefined
     }
   )
-
-  function handleBoxClick (value: number): void {
-    showPopup(RatingScaleEditPopup, {
-      issue,
-      ratingScale,
-      value
-    })
-  }
 </script>
 
 <div class="container">
   <div class="header">
     <EditBox kind="large-style" disabled={true} value={ratingScale.name} />
-
     <EditBox kind="small-style" disabled={true} value={ratingScale.description} />
   </div>
 
-  <RatingScaleBoxes value={rating} onBoxClick={handleBoxClick}/>
+  <RatingScaleBoxes value={rating} editable={false}/>
 
 </div>
 
