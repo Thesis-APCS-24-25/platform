@@ -13,12 +13,12 @@
 // limitations under the License.
 //
 
-import { Account, PullArray, Ref, Tx, TxCreateDoc, TxUpdateDoc } from '@hcengineering/core'
+import core, { Account, PullArray, Ref, Tx, TxCreateDoc, TxUpdateDoc } from '@hcengineering/core'
 import { TriggerControl } from '@hcengineering/server-core'
-import performance, { PerformanceReport, ReviewSession, WithKRA } from '@hcengineering/performance'
+import performance, { PerformanceReport, ReviewSession, ReviewSessionStatus, WithKRA } from '@hcengineering/performance'
 import { Member, Team } from '@hcengineering/kra-team'
 import kra from '@hcengineering/kra'
-import contact from '@hcengineering/contact'
+import contact, { PersonAccount } from '@hcengineering/contact'
 
 function addUpdates (control: TriggerControl, member: Ref<Account>, reviewSessions: ReviewSession[]): Tx[] {
   const result: Tx[] = []
@@ -93,10 +93,37 @@ export async function OnCreateReport (txes: Tx[], control: TriggerControl): Prom
   return result
 }
 
+export async function OnReviewSessionConclusion (txes: Tx[], control: TriggerControl): Promise<Tx[]> {
+  const result: Tx[] = []
+
+  for (const tx of txes) {
+    const updateTx = tx as TxUpdateDoc<ReviewSession>
+    if (updateTx.operations.status !== ReviewSessionStatus.Concluded) continue
+
+    const rs = (await control.findAll(control.ctx, performance.class.ReviewSession, {
+      _id: updateTx.objectId
+    }))[0]
+    for (const member of rs.members) {
+      const report = control.txFactory.createTxCreateDoc(
+        performance.class.PerformanceReport,
+        rs._id,
+        {
+          reviewee: member as Ref<PersonAccount>,
+          reviewSession: rs._id
+        }
+      )
+      result.push(report)
+    }
+  }
+
+  return result
+}
+
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export default async () => ({
   trigger: {
     OnTeamMemberUpdate,
-    OnCreateReport
+    OnCreateReport,
+    OnReviewSessionConclusion
   }
 })
