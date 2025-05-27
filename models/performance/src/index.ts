@@ -10,7 +10,7 @@ import { type Ref, type StatusCategory } from '@hcengineering/core'
 import core from '@hcengineering/model-core'
 import workbench from '@hcengineering/model-workbench'
 import view from '@hcengineering/model-view'
-import { DOMAIN_PERFORMANCE, TDefaultKRAData, TDefaultReviewSessionData, TEmployeeKRA, TKRA, TKRAStatus, TReviewSession, TMeasureProgress, TPerformanceReport } from './types'
+import { DOMAIN_PERFORMANCE, TDefaultKRAData, TDefaultReviewSessionData, TEmployeeKRA, TKRA, TKRAStatus, TReviewSession, TMeasureProgress, TPerformanceReport, TTypeReviewSessionStatus } from './types'
 import { defineViewlets } from './viewlets'
 
 export { performanceId } from '@hcengineering/performance'
@@ -24,7 +24,7 @@ function defineTeam (builder: Builder): void {
 }
 
 function defineReviewSession (builder: Builder): void {
-  builder.createModel(TReviewSession, TDefaultReviewSessionData)
+  builder.createModel(TReviewSession, TDefaultReviewSessionData, TTypeReviewSessionStatus)
 
   builder.createDoc(
     core.class.SpaceTypeDescriptor,
@@ -61,12 +61,22 @@ function defineReviewSession (builder: Builder): void {
     {
       attachTo: performance.class.ReviewSession,
       descriptor: view.viewlet.Table,
+      configOptions: {
+        hiddenKeys: [
+          'modifiedOn',
+          'modifiedBy',
+          'createdOn',
+          'createdBy',
+          'type'
+        ]
+      },
       config: [
         'name',
         'description',
         'reviewSessionStart',
         'reviewSessionEnd',
-        'members'
+        'members',
+        'status'
       ],
       viewOptions: {
         groupBy: [],
@@ -89,17 +99,17 @@ function defineReviewSession (builder: Builder): void {
     actions: [tracker.action.EditRelatedTargets, tracker.action.NewRelatedIssue]
   })
 
-  // builder.mixin(performance.class.ReviewSessionStatus, core.class.Class, view.mixin.AttributeEditor, {
-  //   inlineEditor: performance.component.ReviewSessionStateEditor
-  // })
+  builder.mixin(performance.class.TypeReviewSessionStatus, core.class.Class, view.mixin.AttributePresenter, {
+    presenter: performance.component.ReviewSessionStatusPresenter
+  })
 
-  // builder.mixin(performance.class.ReviewSessionStatus, core.class.Class, view.mixin.ObjectPresenter, {
-  //   presenter: performance.component.ReviewSessionStatusPresenter
-  // })
+  builder.mixin(performance.class.TypeReviewSessionStatus, core.class.Class, view.mixin.AttributeEditor, {
+    inlineEditor: performance.component.ReviewSessionStatusEditor
+  })
 
-  // builder.mixin(performance.class.ReviewSessionStatus, core.class.Class, view.mixin.AttributePresenter, {
-  //   presenter: performance.component.ReviewSessionStatusRefPresenter
-  // })
+  builder.mixin(performance.class.TypeReviewSessionStatus, core.class.Class, view.mixin.AttributeFilter, {
+    component: view.component.ValueFilter
+  })
 }
 
 function defineKRA (builder: Builder): void {
@@ -159,7 +169,7 @@ function defineKRA (builder: Builder): void {
     core.space.Model,
     {
       name: 'Drafting',
-      ofAttribute: performance.attribute.KRAStatusAttribute
+      ofAttribute: performance.attribute.KRAStatus
     },
     performance.kraStatus.Drafting
   )
@@ -169,7 +179,7 @@ function defineKRA (builder: Builder): void {
     core.space.Model,
     {
       name: 'Need Changes',
-      ofAttribute: performance.attribute.KRAStatusAttribute
+      ofAttribute: performance.attribute.KRAStatus
     },
     performance.kraStatus.NeedChanges
   )
@@ -179,7 +189,7 @@ function defineKRA (builder: Builder): void {
     core.space.Model,
     {
       name: 'Approved',
-      ofAttribute: performance.attribute.KRAStatusAttribute
+      ofAttribute: performance.attribute.KRAStatus
     },
     performance.kraStatus.Approved
   )
@@ -189,7 +199,7 @@ function defineKRA (builder: Builder): void {
     core.space.Model,
     {
       name: 'In Progress',
-      ofAttribute: performance.attribute.KRAStatusAttribute
+      ofAttribute: performance.attribute.KRAStatus
     },
     performance.kraStatus.InProgress
   )
@@ -199,7 +209,7 @@ function defineKRA (builder: Builder): void {
     core.space.Model,
     {
       name: 'Archived',
-      ofAttribute: performance.attribute.KRAStatusAttribute
+      ofAttribute: performance.attribute.KRAStatus
     },
     performance.kraStatus.Archived
   )

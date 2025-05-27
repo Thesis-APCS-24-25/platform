@@ -38,6 +38,10 @@
     "PerformanceReports": "Performance Reports",
     "NoKRA": "No KRA",
     "CreateReport": "Create Report",
-    "Reviewee": "Reviewee"
+    "Reviewee": "Reviewee",
+    "SetStatus": "Set Status",
+    "Drafting": "Drafting",
+    "InProgress": "In Progress",
+    "Concluded": "Concluded"
   }
 }

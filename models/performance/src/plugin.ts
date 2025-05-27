@@ -58,7 +58,9 @@ export default mergeIds(performanceId, performance, {
     ReportPresenter: '' as AnyComponent,
     CreateReport: '' as AnyComponent,
     CreateReportButton: '' as AnyComponent,
-    ListView: '' as AnyComponent
+    ListView: '' as AnyComponent,
+    ReviewSessionStatusPresenter: '' as AnyComponent,
+    ReviewSessionStatusEditor: '' as AnyComponent
   },
   function: {
     GetAllKRAStates: '' as GetAllValuesFunc,

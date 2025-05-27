@@ -39,7 +39,11 @@ export default mergeIds(performanceId, performance, {
     SelectReviewSession: '' as IntlString,
     NoTeam: '' as IntlString,
     AssignKRA: '' as IntlString,
-    CreateReport: '' as IntlString
+    CreateReport: '' as IntlString,
+    Drafting: '' as IntlString,
+    InProgress: '' as IntlString,
+    Concluded: '' as IntlString,
+    SetStatus: '' as IntlString
   },
   category: {
     ReviewSessionType: '' as IntlString
