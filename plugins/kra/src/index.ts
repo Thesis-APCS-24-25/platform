@@ -54,7 +54,7 @@ export interface Goal extends Doc {
   name: string
   description: string
   reports: CollectionSize<Report>
-  progress: number
+  progress?: number
   unit: Ref<Unit>
 }
 

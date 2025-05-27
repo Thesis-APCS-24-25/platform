@@ -6,8 +6,8 @@
   import ReportsPopup from '../ReportsPopup.svelte'
 
   export let issue: Issue
-  export let sum: number
   export let kpi: WithLookup<Kpi>
+  const sum: number | undefined = kpi.progress
 
   function addReport (event: MouseEvent): void {
     showPopup(

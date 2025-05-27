@@ -130,7 +130,6 @@ import Report from './components/issues/goal/Report.svelte'
 import UnitPresenter from './components/issues/goal/unit/UnitPresenter.svelte'
 import GoalObjectPresenter from './components/issues/goal/GoalObjectPresenter.svelte'
 import './styles/_colors.scss'
-import { calculateGoal, calculateKpiResult, calculateRatingScaleResult } from './utils/goal'
 import task, { type Task } from '@hcengineering/task'
 import KRAEditor from './components/kra/KRAEditor.svelte'
 
@@ -249,7 +248,9 @@ async function deleteProject (project: Project | undefined): Promise<void> {
         }
       })
     } else {
-      const anyIssue = await client.findOne(kra.class.Issue, { space: project._id })
+      const anyIssue = await client.findOne(kra.class.Issue, {
+        space: project._id
+      })
       showPopup(MessageBox, {
         label: kra.string.ArchiveProjectName,
         labelProps: { name: project.name },
@@ -361,8 +362,6 @@ export default async (): Promise<Resources> => ({
     IssueChatTitleProvider: getIssueChatTitle,
     IsProjectJoined: async (project: Project) => project.members.includes(getCurrentAccount()._id),
     GetIssueStatusCategories: getIssueStatusCategories,
-    KpiAggregator: calculateKpiResult,
-    RatingScaleAggregator: calculateRatingScaleResult,
     CalculateGoal: async (taskId: Ref<Task>): Promise<number | undefined> => {
       const client = getClient()
       const res = await client.findOne(task.class.Task, { _id: taskId })
@@ -371,7 +370,7 @@ export default async (): Promise<Resources> => ({
       if (goal === undefined) {
         return issue.status === kra.status.Done ? 1 : undefined
       }
-      return await calculateGoal(goal)
+      return goal.progress
     }
   },
   actionImpl: {
