@@ -171,7 +171,8 @@ function defineKRA (builder: Builder): void {
     core.space.Model,
     {
       name: 'Drafting',
-      ofAttribute: performance.attribute.KRAStatus
+      ofAttribute: performance.attribute.KRAStatus,
+      category: task.statusCategory.UnStarted
     },
     performance.kraStatus.Drafting
   )
@@ -181,7 +182,8 @@ function defineKRA (builder: Builder): void {
     core.space.Model,
     {
       name: 'Need Changes',
-      ofAttribute: performance.attribute.KRAStatus
+      ofAttribute: performance.attribute.KRAStatus,
+      category: task.statusCategory.Active
     },
     performance.kraStatus.NeedChanges
   )
@@ -191,7 +193,8 @@ function defineKRA (builder: Builder): void {
     core.space.Model,
     {
       name: 'Approved',
-      ofAttribute: performance.attribute.KRAStatus
+      ofAttribute: performance.attribute.KRAStatus,
+      category: task.statusCategory.Won
     },
     performance.kraStatus.Approved
   )
@@ -200,20 +203,11 @@ function defineKRA (builder: Builder): void {
     performance.class.KRAStatus,
     core.space.Model,
     {
-      name: 'In Progress',
-      ofAttribute: performance.attribute.KRAStatus
+      name: 'Cancelled',
+      ofAttribute: performance.attribute.KRAStatus,
+      category: task.statusCategory.Lost
     },
-    performance.kraStatus.InProgress
-  )
-
-  builder.createDoc(
-    performance.class.KRAStatus,
-    core.space.Model,
-    {
-      name: 'Archived',
-      ofAttribute: performance.attribute.KRAStatus
-    },
-    performance.kraStatus.Archived
+    performance.kraStatus.Cancelled
   )
 }
 
