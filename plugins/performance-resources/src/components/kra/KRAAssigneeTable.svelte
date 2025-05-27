@@ -7,4 +7,18 @@
   export let query: DocumentQuery<EmployeeKRA> = {}
 </script>
 
-<TableBrowser _class={performance.class.EmployeeKRA} {query} config={['employee', 'weight']} />
+<TableBrowser
+  _class={performance.class.EmployeeKRA}
+  {query}
+  config={[
+    'employee',
+    {
+      key: '',
+      label: performance.string.Weight,
+      props: {
+        kind: 'button'
+      },
+      presenter: performance.component.KRAWeightEditorWithPopup
+    }
+  ]}
+/>

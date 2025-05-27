@@ -61,6 +61,7 @@ export default mergeIds(performanceId, performance, {
     ReviewSessionType: '' as IntlString
   },
   component: {
+    KRAWeightEditorWithPopup: '' as AnyComponent,
     PerformanceApplication: '' as AnyComponent,
     MyKRAs: '' as AnyComponent,
     KRAAssigneesEditor: '' as AnyComponent,

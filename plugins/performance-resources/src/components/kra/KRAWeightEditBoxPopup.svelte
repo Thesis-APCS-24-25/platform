@@ -5,13 +5,12 @@
   import type { EditStyle } from '@hcengineering/ui'
   import FixedColumn from '../../../../view-resources/src/components/FixedColumn.svelte'
   import KraWeightPresenter from './KRAWeightPresenter.svelte'
-  
+
   export let value: string | number | undefined
   export let otherWeights: {
     value: number
     label: string
   }[] = []
-  export let format: 'text' | 'password' | 'number'
   export let placeholder: IntlString
   export let kind: EditStyle = 'editbox'
 
@@ -33,7 +32,7 @@
 <div class="selectPopup" use:resizeObserver={() => dispatch('changeContent')}>
   <div class="flex-row-center justify-stretch p-2">
     <div class="overflow-label flex-grow">
-      <EditBox bind:value {placeholder} {format} {kind} select on:keypress={_onkeypress} maxWidth={'12rem'} />
+      <EditBox bind:value {placeholder} format='number' {kind} select on:keypress={_onkeypress} maxWidth={'12rem'} />
     </div>
     <div class="ml-2">
       <Button icon={IconCheck} size={'small'} on:click={() => dispatch('close', value)} />
