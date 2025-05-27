@@ -5,16 +5,17 @@
   import performance from '../../plugin'
   import KraWeightEditBoxPopup from './KRAWeightEditBoxPopup.svelte'
   import { PersonAccount } from '@hcengineering/contact'
-  import { Ref } from '@hcengineering/core'
-  import { createQuery } from '@hcengineering/presentation'
+  import { Ref, WithLookup } from '@hcengineering/core'
+  import { createQuery, getClient } from '@hcengineering/presentation'
   import { EmployeeKRA } from '@hcengineering/performance'
 
-  export let employee: Ref<PersonAccount> | undefined
-  export let _id: Ref<EmployeeKRA> | undefined
+  export let value: WithLookup<EmployeeKRA>
+  const employee: Ref<PersonAccount> = value.employee
+
+  const client = getClient()
+  const _id: Ref<EmployeeKRA> = value._id
   export let placeholder: IntlString
-  export let value: number | undefined
   export let autoFocus: boolean = false
-  export let onChange: (value: number | undefined) => void
   export let kind: 'no-border' | 'link' | 'button' = 'no-border'
   export let readonly = false
   export let size: ButtonSize = 'small'
@@ -22,13 +23,19 @@
   export let width: string | undefined = 'fit-content'
   export let validateFunction: (value: number | undefined) => boolean = () => true
 
+  async function updateWeight (newWeight: number): Promise<void> {
+    if (Number.isFinite(newWeight) && validateFunction(newWeight)) {
+      await client.update(value, {
+        weight: newWeight
+      })
+    }
+  }
+
   let shown: boolean = false
 
-  function _onchange (ev: Event): void {
-    const value = (ev.target as HTMLInputElement).valueAsNumber
-    if (Number.isFinite(value) && validateFunction(value)) {
-      onChange(value)
-    }
+  async function onchange (ev: Event): Promise<void> {
+    const newWeight = (ev.target as HTMLInputElement).valueAsNumber
+    await updateWeight(newWeight)
   }
 
   let otherWeights: { value: number, label: string }[] = []
@@ -70,14 +77,12 @@
           {
             otherWeights,
             employee,
-            value,
-            format: 'number'
+            value: value.weight
           },
           eventToHTMLElement(ev),
-          (res) => {
-            if (Number.isFinite(res)) {
-              value = res
-              onChange(value)
+          async (res) => {
+            if (res !== undefined) {
+              await updateWeight(res)
             }
             shown = false
           }
@@ -87,7 +92,7 @@
   >
     <svelte:fragment slot="content">
       {#if value}
-        <span class="caption-color overflow-label pointer-events-none"><NumberPresenter {value} /></span>
+        <span class="caption-color overflow-label pointer-events-none"><NumberPresenter value={value.weight} /></span>
       {:else}
         <span class="content-dark-color pointer-events-none"><Label label={placeholder} /></span>
       {/if}
@@ -95,10 +100,10 @@
   </Button>
 {:else if readonly}
   {#if value != null}
-    <span class="caption-color overflow-label"><NumberPresenter {value} /></span>
+    <span class="caption-color overflow-label"><NumberPresenter value={value.weight} /></span>
   {:else}
     <span class="content-dark-color"><Label label={placeholder} /></span>
   {/if}
 {:else}
-  <EditBox {placeholder} bind:value format={'number'} {autoFocus} on:change={_onchange} />
+  <EditBox {placeholder} bind:value={value.weight} format={'number'} {autoFocus} on:change={onchange} />
 {/if}
