@@ -18,7 +18,7 @@ import { type Builder } from '@hcengineering/model'
 import kraTeam from '@hcengineering/kra-team'
 import serverCore from '@hcengineering/server-core'
 import serverPerformance from '@hcengineering/server-performance'
-import performance from '@hcengineering/performance'
+import performance, { ReviewSessionStatus } from '@hcengineering/performance'
 
 export { serverPerformanceId } from '@hcengineering/server-performance'
 
@@ -35,8 +35,17 @@ export function createModel (builder: Builder): void {
     trigger: serverPerformance.trigger.OnCreateReport,
     txMatch: {
       objectClass: performance.class.PerformanceReport,
-      _class: core.class.TxCreateDoc,
-      space: core.space.Tx
+      _class: core.class.TxCreateDoc
     }
+  })
+
+  builder.createDoc(serverCore.class.Trigger, core.space.Model, {
+    trigger: serverPerformance.trigger.OnReviewSessionConclusion,
+    txMatch: {
+      objectClass: performance.class.ReviewSession,
+      _class: core.class.TxUpdateDoc,
+      'operations.status': ReviewSessionStatus.Concluded
+    },
+    isAsync: true
   })
 }

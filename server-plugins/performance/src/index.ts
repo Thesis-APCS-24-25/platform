@@ -28,6 +28,7 @@ export const serverPerformanceId = 'server-performance' as Plugin
 export default plugin(serverPerformanceId, {
   trigger: {
     OnTeamMemberUpdate: '' as Resource<TriggerFunc>,
-    OnCreateReport: '' as Resource<TriggerFunc>
+    OnCreateReport: '' as Resource<TriggerFunc>,
+    OnReviewSessionConclusion: '' as Resource<TriggerFunc>
   }
 })
