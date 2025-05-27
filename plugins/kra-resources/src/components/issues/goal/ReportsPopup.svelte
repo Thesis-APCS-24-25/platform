@@ -47,12 +47,12 @@
 
   <slot name="summary" />
 
-  <div class="h-50">
+  <div class="h-60">
     <Scroller fade={tableSP}>
       <TableBrowser
         _class={kra.class.Report}
         query={{ attachedTo: issue.goal }}
-        config={['$lookup.attachedTo', '', 'employee', 'date', 'note']}
+        config={['$lookup.attachedTo', '', 'employee', 'value', 'date', 'note']}
         {options}
       />
     </Scroller>
