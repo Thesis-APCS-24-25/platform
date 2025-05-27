@@ -309,7 +309,8 @@
     "RemoveGoalDialogTitle": "Do you want to remove the goal?",
     "RemoveGoalDialogMessage": "Remove goal will remove all related reports and cannot be undone",
     "ChooseGoal": "Choose goal",
-    "AddTargetPlaceholder": "Add target\u2026"
+    "AddTargetPlaceholder": "Add target\u2026",
+    "EditGoal": "Edit goal"
   },
   "status": {}
 }
