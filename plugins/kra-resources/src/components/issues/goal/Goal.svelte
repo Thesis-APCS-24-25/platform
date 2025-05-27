@@ -9,7 +9,8 @@
     IconDelete,
     IconEdit,
     IconMoreV,
-    eventToHTMLElement
+    eventToHTMLElement,
+    tooltip
   } from '@hcengineering/ui'
   import Icon from '@hcengineering/ui/src/components/Icon.svelte'
   import RatingScaleEditor from './ratingscale/RatingScale.svelte'
@@ -137,12 +138,32 @@
           size="small"
           on:click={handleEdit.bind(null, kpi !== null ? 'kpi' : 'rating-scale')}
           inheritColor
+          tooltip={{
+            label: kra.string.Report
+          }}
         />
-        <ButtonIcon icon={IconEdit} kind="tertiary" size="small" on:click={handleEditGoal} inheritColor />
-        <ButtonIcon icon={IconDelete} kind="tertiary" size="small" on:click={handleRemoveGoal} inheritColor />
+        <ButtonIcon
+          icon={IconEdit}
+          kind="tertiary"
+          size="small"
+          on:click={handleEditGoal}
+          inheritColor
+          tooltip={{
+            label: kra.string.EditGoal
+          }}
+        />
+        <ButtonIcon icon={IconDelete} kind="tertiary" size="small" on:click={handleRemoveGoal} inheritColor
+          tooltip={{
+            label: kra.string.RemoveGoal
+          }}
+        />
       </div>
     {:else}
-      <ButtonIcon icon={IconAdd} kind="tertiary" size="small" on:click={handleCreateGoal} inheritColor />
+      <ButtonIcon icon={IconAdd} kind="tertiary" size="small" on:click={handleCreateGoal} inheritColor
+        tooltip={{
+          label: kra.string.AddGoal
+        }}
+      />
     {/if}
   </div>
   <div class="content">

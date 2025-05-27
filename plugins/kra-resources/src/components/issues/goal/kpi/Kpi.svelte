@@ -11,7 +11,6 @@ distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRAN
 -->
 <script lang="ts">
   import { Kpi } from '@hcengineering/kra'
-  import { EditBox } from '@hcengineering/ui'
   import { calculateResult } from '../../../../utils/goal'
   import KpiProgressBar from './KpiProgressBar.svelte'
   import { WithLookup } from '@hcengineering/core'
@@ -22,19 +21,21 @@ distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRAN
 </script>
 
 {#await sum then sum}
-  <div class="container">
-    <div class="header">
-      <EditBox kind="large-style" disabled={true} value={kpi.name} />
-      <EditBox kind="small-style" disabled={true} value={kpi.description} />
+  <div class="flex-row-center p-4 gap-4">
+    <div class="flex-col header">
+      <div class="fs-title text-xl">
+        {kpi.name}
+      </div>
+      <div class="description">{kpi.description}</div>
     </div>
 
-    <div class="kpi-box">
+    <div class="kpi-box flex-col">
       <div class="value">
         <span class="value-value">{sum}</span>
         <span class="value-target"> / {kpi.target}</span>
+        <span class="unit"> {kpi.$lookup?.unit?.name}</span>
       </div>
-      <span class="unit"> {kpi.$lookup?.unit?.name}</span>
-        <KpiProgressBar value={sum ?? 0} max={kpi.target} />
+      <KpiProgressBar value={sum ?? 0} max={kpi.target} />
     </div>
   </div>
 {/await}
@@ -52,23 +53,24 @@ distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRAN
   }
 
   .header {
-    flex-grow: 2;
+    flex-grow: 3;
   }
 
   .value-value {
     color: var(--theme-primary-color, #4c6ef5);
   }
 
+  .description {
+    text-wrap: balance;
+  }
+
   .kpi-box {
     flex-grow: 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
     border: 1px solid transparent;
     padding: 0.25rem;
     border-radius: 0.25rem;
     gap: 0.5rem;
+    min-width: 10rem;
     color: var(--theme-content-color, #333);
   }
 </style>

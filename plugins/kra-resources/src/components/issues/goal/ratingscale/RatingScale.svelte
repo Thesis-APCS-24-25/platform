@@ -8,36 +8,30 @@
 
   let rating: number | undefined = undefined
 
-  $: calculateGoalCallback(
-    ratingScale,
-    undefined,
-    (error: Error | null, result?: number | undefined) => {
-      if (error !== null) {
-        throw error
-      }
-      rating = result !== undefined ? result * 5 : undefined
+  $: calculateGoalCallback(ratingScale, undefined, (error: Error | null, result?: number | undefined) => {
+    if (error !== null) {
+      throw error
     }
-  )
+    rating = result !== undefined ? result * 5 : undefined
+  })
 </script>
 
-<div class="container">
-  <div class="header">
-    <EditBox kind="large-style" disabled={true} value={ratingScale.name} />
-    <EditBox kind="small-style" disabled={true} value={ratingScale.description} />
+<div class="flex-row-center p-4 gap-4">
+  <div class="flex-col header">
+    <div class="fs-title text-xl">
+      {ratingScale.name}
+    </div>
+    <div class="description">{ratingScale.description}</div>
   </div>
-
-  <RatingScaleBoxes value={rating} editable={false}/>
-
+  <RatingScaleBoxes value={rating} editable={false} />
 </div>
 
 <style>
-  .container {
-    display: flex;
-    padding: 1rem;
-    border-radius: 0.25rem;
+  .header {
+    flex-grow: 3;
   }
 
-  .header {
-    flex-grow: 2;
+  .description {
+    text-wrap: balance;
   }
 </style>
