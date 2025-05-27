@@ -13,7 +13,7 @@
 // limitations under the License.
 //
 
-import core, { Account, PullArray, Ref, Tx, TxCreateDoc, TxUpdateDoc } from '@hcengineering/core'
+import { Account, PullArray, Ref, Tx, TxCreateDoc, TxUpdateDoc } from '@hcengineering/core'
 import { TriggerControl } from '@hcengineering/server-core'
 import performance, { PerformanceReport, ReviewSession, ReviewSessionStatus, WithKRA } from '@hcengineering/performance'
 import { Member, Team } from '@hcengineering/kra-team'
