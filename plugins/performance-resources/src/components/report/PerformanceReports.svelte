@@ -2,7 +2,7 @@
   import { Team } from '@hcengineering/kra-team'
   import TeamAndReviewSessionSelector from '../TeamAndReviewSessionSelector.svelte'
   import { ReviewSession } from '@hcengineering/performance'
-  import { Doc, DocumentQuery, Ref } from '@hcengineering/core'
+  import { Doc, DocumentQuery, Ref, Space } from '@hcengineering/core'
   import performance from '../../plugin'
   import { SpecialView } from '@hcengineering/workbench-resources'
   import { Asset, IntlString } from '@hcengineering/platform'
@@ -10,7 +10,7 @@
   import { ViewletDescriptor } from '@hcengineering/view'
   import { ParentsNavigationModel } from '@hcengineering/workbench'
 
-  // export let space: Ref<Space> | undefined = undefined
+  export let currentSpace: Ref<Space> | undefined = undefined
   export let icon: Asset
   export let label: IntlString
   export let createEvent: string | undefined = undefined
@@ -46,7 +46,10 @@
   {createButton}
   {isCreationDisabled}
   {descriptors}
-  {baseQuery}
+  baseQuery={{
+    ...baseQuery,
+    space: reviewSession
+  }}
   {modes}
   {navigationModel}
 />
