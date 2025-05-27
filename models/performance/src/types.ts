@@ -1,11 +1,11 @@
 import { ArrOf, Index, Mixin, Model, Prop, TypeBoolean, TypeDate, TypeNumber, TypeRef, TypeString } from '@hcengineering/model'
 
 import performance from './plugin'
-import core, { TClass, TDoc, TStatus } from '@hcengineering/model-core'
-import type { EmployeeKRA, KRA, KRAStatus, MeasureProgress, PerformanceReport, ReviewSession, WithKRA } from '@hcengineering/performance'
+import core, { TClass, TDoc, TStatus, TType } from '@hcengineering/model-core'
+import type { EmployeeKRA, KRA, KRAStatus, MeasureProgress, PerformanceReport, ReviewSession, ReviewSessionStatus, WithKRA } from '@hcengineering/performance'
 import { TProject, TTask } from '@hcengineering/model-task'
 import task, { type Task } from '@hcengineering/task'
-import { Account, type Arr, type Domain, IndexKind, Ref, type Role, type RolesAssignment, type Timestamp } from '@hcengineering/core'
+import { Account, type Arr, type Domain, IndexKind, Ref, type Role, type RolesAssignment, type Timestamp, type Type } from '@hcengineering/core'
 import contact, { type PersonAccount } from '@hcengineering/contact'
 import { type Resource } from '@hcengineering/platform'
 
@@ -13,6 +13,12 @@ export const DOMAIN_PERFORMANCE = 'performance' as Domain
 
 // @Model(performance.class.ReviewSessionStatus, core.class.Status)
 // export class TReviewSessionStatus extends TStatus implements ReviewSessionStatus {}
+export function TypeReviewSessionStatus (): Type<ReviewSessionStatus> {
+  return { _class: performance.class.TypeReviewSessionStatus, label: performance.string.ReviewSessionStatus }
+}
+
+@Model(performance.class.TypeReviewSessionStatus, core.class.Type, DOMAIN_PERFORMANCE)
+export class TTypeReviewSessionStatus extends TType {}
 
 @Model(performance.class.KRAStatus, core.class.Status)
 export class TKRAStatus extends TStatus implements KRAStatus {}
@@ -34,6 +40,9 @@ export class TReviewSession extends TProject implements ReviewSession {
 
   @Prop(TypeDate(), performance.string.ReviewSessionEnd)
     reviewSessionEnd!: Timestamp
+
+  @Prop(TypeReviewSessionStatus(), performance.string.ReviewSessionStatus)
+    status?: ReviewSessionStatus
 }
 
 @Model(performance.class.KRA, task.class.Task)

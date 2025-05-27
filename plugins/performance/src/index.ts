@@ -15,10 +15,16 @@
 //
 
 import { type PersonAccount } from '@hcengineering/contact'
-import type { Arr, Attribute, Class, Doc, Mixin, Ref, SpaceType, SpaceTypeDescriptor, Status, Timestamp } from '@hcengineering/core'
+import type { Arr, Attribute, Class, Doc, Mixin, Ref, SpaceType, SpaceTypeDescriptor, Status, Timestamp, Type } from '@hcengineering/core'
 import { Asset, IntlString, plugin, Plugin, Resource } from '@hcengineering/platform'
 import type { Project, ProjectType, Task, TaskType, TaskTypeDescriptor } from '@hcengineering/task'
 import { Viewlet, ViewletDescriptor } from '@hcengineering/view'
+
+export enum ReviewSessionStatus {
+  Drafting,
+  InProgress,
+  Concluded
+}
 
 export interface KRAStatus extends Status {}
 
@@ -26,6 +32,7 @@ export interface ReviewSession extends Project {
   active: boolean
   reviewSessionStart: Timestamp
   reviewSessionEnd: Timestamp
+  status?: ReviewSessionStatus
 }
 
 export interface KRA extends Task {
@@ -62,14 +69,15 @@ export const performanceId = 'performance' as Plugin
 
 export default plugin(performanceId, {
   attribute: {
-    KRAStatusAttribute: '' as Ref<Attribute<KRAStatus>>
+    KRAStatus: '' as Ref<Attribute<KRAStatus>>
   },
   class: {
     KRAStatus: '' as Ref<Class<KRAStatus>>,
     ReviewSession: '' as Ref<Class<ReviewSession>>,
     KRA: '' as Ref<Class<KRA>>,
     EmployeeKRA: '' as Ref<Class<EmployeeKRA>>,
-    PerformanceReport: '' as Ref<Class<PerformanceReport>>
+    PerformanceReport: '' as Ref<Class<PerformanceReport>>,
+    TypeReviewSessionStatus: '' as Ref<Class<Type<ReviewSessionStatus>>>
   },
   string: {
     KRA: '' as IntlString,
@@ -86,7 +94,8 @@ export default plugin(performanceId, {
     AttachedEmployee: '' as IntlString,
     KRAWeight: '' as IntlString,
     NoKRA: '' as IntlString,
-    Active: '' as IntlString
+    Active: '' as IntlString,
+    ReviewSessionStatus: '' as IntlString
   },
   kraStatus: {
     Drafting: '' as Ref<KRAStatus>,
@@ -117,7 +126,8 @@ export default plugin(performanceId, {
     Weight: '' as Asset,
     AssignKRA: '' as Asset,
     ReviewSession: '' as Asset,
-    KRA: '' as Asset
+    KRA: '' as Asset,
+    StatusInProgress: '' as Asset
   },
   descriptor: {
     KRAType: '' as Ref<TaskTypeDescriptor>,

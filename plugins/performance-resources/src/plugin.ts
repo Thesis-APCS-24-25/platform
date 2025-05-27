@@ -62,7 +62,11 @@ export default mergeIds(performanceId, performance, {
     SelectReviewSession: '' as IntlString,
     NoTeam: '' as IntlString,
     AssignKRA: '' as IntlString,
-    CreateReport: '' as IntlString
+    CreateReport: '' as IntlString,
+    Drafting: '' as IntlString,
+    InProgress: '' as IntlString,
+    Concluded: '' as IntlString,
+    SetStatus: '' as IntlString
   },
   category: {
     ReviewSessionType: '' as IntlString
@@ -91,10 +95,10 @@ export default mergeIds(performanceId, performance, {
     ListView: '' as AnyComponent,
     AllReviewSessions: '' as AnyComponent,
     AllKRAs: '' as AnyComponent,
-    TeamSwitchHeader: '' as AnyComponent
-    // ReviewSessionStatusPresenter: '' as AnyComponent,
+    TeamSwitchHeader: '' as AnyComponent,
+    ReviewSessionStatusPresenter: '' as AnyComponent,
     // ReviewSessionStatusRefPresenter: '' as AnyComponent,
-    // ReviewSessionStateEditor: '' as AnyComponent
+    ReviewSessionStatusEditor: '' as AnyComponent
   },
   function: {
     IsReviewSessionOfCurrentTeam: '' as Resource<(space: Space) => Promise<boolean>>,

@@ -37,6 +37,8 @@ import TeamSwitchHeader from './components/navigator/TeamSwitchHeader.svelte'
 import ListView from './components/list/ListView.svelte'
 import KRAAssigneesPresenter from './components/kra/KRAAssigneesPresenter.svelte'
 import KRAWeightEditorWithPopup from './components/kra/KRAWeightEditorWithPopup.svelte'
+import ReviewSessionStatusPresenter from './components/review-session/ReviewSessionStatusPresenter.svelte'
+import ReviewSessionStatusEditor from './components/review-session/ReviewSessionStatusEditor.svelte'
 // import ReviewSessionStatusPresenter from './components/review-session/ReviewSessionStatusPresenter.svelte'
 // import ReviewSessionStatusRefPresenter from './components/review-session/ReviewSessionStatusRefPresenter.svelte'
 // import ReviewSessionStateEditor from './components/review-session/ReviewSessionStateEditor.svelte'
@@ -67,10 +69,9 @@ export default async (): Promise<Resources> => ({
     KRAWeightEditorWithPopup,
     AllReviewSessions,
     AllKRAs,
-    ListView
-    // ReviewSessionStatusPresenter,
-    // ReviewSessionStatusRefPresenter,
-    // ReviewSessionStateEditor
+    ListView,
+    ReviewSessionStatusPresenter,
+    ReviewSessionStatusEditor
   },
   function: {
     KRAStatusSort: kraStatusSort,
