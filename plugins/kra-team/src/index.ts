@@ -1,4 +1,4 @@
-import { Asset, type Plugin, plugin } from '@hcengineering/platform'
+import { Asset, IntlString, type Plugin, plugin } from '@hcengineering/platform'
 import { Class, Mixin, Permission, Ref, Role, SpaceType, SpaceTypeDescriptor, TypedSpace } from '@hcengineering/core'
 import { IconProps } from '@hcengineering/view'
 import { Person } from '@hcengineering/contact'
@@ -16,6 +16,9 @@ export interface TeamType extends SpaceType { }
 export type Weight = number
 
 export default plugin(kraTeamId, {
+  string: {
+    NoMembers: '' as IntlString
+  },
   class: {
     Team: '' as Ref<Class<Team>>,
     TeamType: '' as Ref<Class<TeamType>>,

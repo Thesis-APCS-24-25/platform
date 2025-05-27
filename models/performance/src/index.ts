@@ -148,7 +148,7 @@ function defineKRA (builder: Builder): void {
         {
           key: '',
           label: performance.string.Assignee,
-          presenter: performance.component.KRAAssigneesEditor,
+          presenter: performance.component.KRAAssigneesPresenter,
           props: {
             readonly: true
           }

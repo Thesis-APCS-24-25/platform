@@ -64,6 +64,7 @@ export default mergeIds(performanceId, performance, {
     PerformanceApplication: '' as AnyComponent,
     MyKRAs: '' as AnyComponent,
     KRAAssigneesEditor: '' as AnyComponent,
+    KRAAssigneesPresenter: '' as AnyComponent,
     KRAEditor: '' as AnyComponent,
     EditKRA: '' as AnyComponent,
     KRARefPresenter: '' as AnyComponent,
