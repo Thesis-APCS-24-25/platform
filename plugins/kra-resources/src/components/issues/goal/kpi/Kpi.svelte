@@ -26,7 +26,7 @@ distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRAN
     <div class="description">{kpi.description}</div>
   </div>
 
-  <div class="kpi-box flex-col">
+  <div class="kpi-box flex-col items-end">
     <div class="value">
       <span class="value-value">{sum}</span>
       <span class="value-target"> / {kpi.target}</span>
