@@ -8,6 +8,7 @@
   import { Ref, WithLookup } from '@hcengineering/core'
   import { createQuery, getClient } from '@hcengineering/presentation'
   import { EmployeeKRA } from '@hcengineering/performance'
+  import KraWeightPresenter from './KRAWeightPresenter.svelte'
 
   export let value: WithLookup<EmployeeKRA>
   const employee: Ref<PersonAccount> = value.employee
@@ -64,7 +65,6 @@
 
 {#if kind === 'button' || kind === 'link'}
   <Button
-    icon={performance.icon.Weight}
     kind={kind === 'button' ? 'regular' : kind}
     {size}
     {justify}
@@ -92,7 +92,7 @@
   >
     <svelte:fragment slot="content">
       {#if value}
-        <span class="caption-color overflow-label pointer-events-none"><NumberPresenter value={value.weight} /></span>
+        <span class="caption-color overflow-label pointer-events-none"><KraWeightPresenter showPercent value={value.weight} /></span>
       {:else}
         <span class="content-dark-color pointer-events-none"><Label label={placeholder} /></span>
       {/if}

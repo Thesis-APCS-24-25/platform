@@ -5,8 +5,9 @@
   import type { EditStyle } from '@hcengineering/ui'
   import FixedColumn from '../../../../view-resources/src/components/FixedColumn.svelte'
   import KraWeightPresenter from './KRAWeightPresenter.svelte'
+  import performance from '../../plugin'
 
-  export let value: string | number | undefined
+  export let value: number | undefined
   export let otherWeights: {
     value: number
     label: string
@@ -26,13 +27,26 @@
     return result < 0 ? 0 : result
   }
 
+  let valueInPercent = value !== undefined ? value * 100 : undefined
+  const round = (num: number): number => Math.round(num * 100) / 100
+  $: value = valueInPercent !== undefined ? round(valueInPercent / 100) : undefined
   $: remaining = calculateRemaining(typeof value === 'number' ? value : 0)
 </script>
 
 <div class="selectPopup" use:resizeObserver={() => dispatch('changeContent')}>
   <div class="flex-row-center justify-stretch p-2">
     <div class="overflow-label flex-grow">
-      <EditBox bind:value {placeholder} format='number' {kind} select on:keypress={_onkeypress} maxWidth={'12rem'} />
+      <EditBox
+        label={performance.string.Weight}
+        maxDigitsAfterPoint={0}
+        bind:value={valueInPercent}
+        {placeholder}
+        format="number"
+        {kind}
+        select
+        on:keypress={_onkeypress}
+        maxWidth={'10rem'}
+      />
     </div>
     <div class="ml-2">
       <Button icon={IconCheck} size={'small'} on:click={() => dispatch('close', value)} />
