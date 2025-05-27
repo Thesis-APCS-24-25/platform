@@ -52,7 +52,9 @@ function defineReviewSession (builder: Builder): void {
       availablePermissions: [
         core.permission.UpdateSpace,
         core.permission.ArchiveSpace,
-        core.permission.ForbidDeleteObject
+        core.permission.ForbidDeleteObject,
+        core.permission.CreateObject,
+        core.permission.UpdateObject
       ]
     },
     performance.descriptor.ReviewSessionType
