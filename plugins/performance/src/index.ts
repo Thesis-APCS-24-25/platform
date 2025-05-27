@@ -101,8 +101,7 @@ export default plugin(performanceId, {
     Drafting: '' as Ref<KRAStatus>,
     NeedChanges: '' as Ref<KRAStatus>,
     Approved: '' as Ref<KRAStatus>,
-    InProgress: '' as Ref<KRAStatus>,
-    Archived: '' as Ref<KRAStatus>
+    Cancelled: '' as Ref<KRAStatus>
   },
   viewlet: {
     TaskList: '' as Ref<ViewletDescriptor>,
