@@ -1,6 +1,17 @@
 <script lang="ts">
   import { Goal, Issue, Kpi, RatingScale } from '@hcengineering/kra'
-  import { IconAdd, Label, showPopup, ButtonIcon, IconDetails, IconDelete, IconEdit } from '@hcengineering/ui'
+  import {
+    IconAdd,
+    Label,
+    showPopup,
+    ButtonIcon,
+    IconDetails,
+    IconDelete,
+    IconEdit,
+    IconMoreV,
+    eventToHTMLElement,
+    tooltip
+  } from '@hcengineering/ui'
   import Icon from '@hcengineering/ui/src/components/Icon.svelte'
   import RatingScaleEditor from './ratingscale/RatingScale.svelte'
   import KpiEditor from './kpi/Kpi.svelte'
@@ -10,7 +21,9 @@
   import kra from '../../../plugin'
   import { Ref, WithLookup } from '@hcengineering/core'
   import { createEventDispatcher } from 'svelte'
-  import { removeGoal } from '../../../utils/goal'
+  import { calculateResult, removeGoal } from '../../../utils/goal'
+  import KpiReportsPopup from './kpi/KpiReportsPopup.svelte'
+  import RatingScaleEditPopup from './ratingscale/RatingScaleEditPopup.svelte'
 
   export let issue: Issue
 
@@ -97,27 +110,68 @@
       goal: issue.goal
     })
   }
+
+  async function handleEdit (type: 'rating-scale' | 'kpi'): Promise<void> {
+    if (type === 'rating-scale' && ratingScale !== null) {
+      const value = await calculateResult(ratingScale)
+      showPopup(RatingScaleEditPopup, {
+        issue,
+        ratingScale,
+        value
+      })
+    } else if (type === 'kpi' && kpi !== null) {
+      const value = await calculateResult(kpi)
+      showPopup(KpiReportsPopup, { sum: value, kpi, issue }, 'center')
+    }
+  }
 </script>
 
 <div class="goal-section">
   <div class="header" class:collapsed={isCollapsed}>
-    <Icon icon={IconDetails} size="medium" fill={'var(--caption-color)'} />
+    <Icon icon={kra.icon.Goal} size="medium" />
     <Label label={kra.string.Goal} />
     {#if goal}
       <div>
-        <ButtonIcon icon={IconEdit} kind="tertiary" size="small" on:click={handleEditGoal} />
-        <ButtonIcon icon={IconDelete} kind="tertiary" size="small" on:click={handleRemoveGoal} />
+        <ButtonIcon
+          icon={kra.icon.WriteReport}
+          kind="tertiary"
+          size="small"
+          on:click={handleEdit.bind(null, kpi !== null ? 'kpi' : 'rating-scale')}
+          inheritColor
+          tooltip={{
+            label: kra.string.Report
+          }}
+        />
+        <ButtonIcon
+          icon={IconEdit}
+          kind="tertiary"
+          size="small"
+          on:click={handleEditGoal}
+          inheritColor
+          tooltip={{
+            label: kra.string.EditGoal
+          }}
+        />
+        <ButtonIcon icon={IconDelete} kind="tertiary" size="small" on:click={handleRemoveGoal} inheritColor
+          tooltip={{
+            label: kra.string.RemoveGoal
+          }}
+        />
       </div>
     {:else}
-      <ButtonIcon icon={IconAdd} kind="tertiary" size="small" on:click={handleCreateGoal} />
+      <ButtonIcon icon={IconAdd} kind="tertiary" size="small" on:click={handleCreateGoal} inheritColor
+        tooltip={{
+          label: kra.string.AddGoal
+        }}
+      />
     {/if}
   </div>
   <div class="content">
     {#if goal}
       {#if kpi}
-        <KpiEditor {issue} {kpi} />
+        <KpiEditor {kpi} />
       {:else if ratingScale}
-        <RatingScaleEditor {issue} {ratingScale} />
+        <RatingScaleEditor {ratingScale} />
       {/if}
     {:else}
       <div class="empty-state">
@@ -130,14 +184,14 @@
 <style lang="scss">
   .goal-section {
     margin-bottom: 1rem;
-    border: 1px solid var(--theme-divider-color, #e0e0e0);
+    border: 1px solid var(--button-border-color);
     border-radius: 0.25rem;
   }
   .header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background: linear-gradient(to right, var(--theme-primary-color, #4c6ef5), var(--theme-secondary-color, #7048e8));
+    background: var(--theme-goal-panel-header);
     padding: 0.5rem;
     border-radius: 0.25rem 0.25rem 0 0;
     color: white;

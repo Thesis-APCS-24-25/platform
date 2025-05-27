@@ -55,5 +55,6 @@ loadMetadata(kra.icon, {
   TimeReport: `${icons}#timeReport`,
   Estimation: `${icons}#estimation`,
 
-  Goal: `${icons}#goal`
+  Goal: `${icons}#goal`,
+  WriteReport: `${icons}#write-report`
 })

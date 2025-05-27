@@ -10,39 +10,33 @@ distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRAN
 // See the License for the specific language governing permissions and limitations under the License.
 -->
 <script lang="ts">
-  import { Issue, Kpi } from '@hcengineering/kra'
-  import { EditBox, eventToHTMLElement, showPopup } from '@hcengineering/ui'
+  import { Kpi } from '@hcengineering/kra'
   import { calculateResult } from '../../../../utils/goal'
   import KpiProgressBar from './KpiProgressBar.svelte'
   import { WithLookup } from '@hcengineering/core'
-  import KpiReportsPopup from './KpiReportsPopup.svelte'
 
-  export let issue: Issue
   export let kpi: WithLookup<Kpi>
-  export let focusIndex: number | undefined = undefined
 
   $: sum = calculateResult(kpi, undefined)
-
-  function handleEdit (sum: number, e: MouseEvent): void {
-    showPopup(KpiReportsPopup, { sum, kpi, issue }, eventToHTMLElement(e))
-  }
 </script>
 
 {#await sum then sum}
-  <div class="container">
-    <div class="header">
-      <EditBox kind="large-style" disabled={true} value={kpi.name} />
-      <EditBox kind="small-style" disabled={true} value={kpi.description} />
+  <div class="flex-row-center p-4 gap-4">
+    <div class="flex-col header">
+      <div class="fs-title text-xl">
+        {kpi.name}
+      </div>
+      <div class="description">{kpi.description}</div>
     </div>
 
-    <button class="kpi-box" on:click={handleEdit.bind(null, sum ?? 0)} tabindex={focusIndex}>
+    <div class="kpi-box flex-col">
       <div class="value">
         <span class="value-value">{sum}</span>
         <span class="value-target"> / {kpi.target}</span>
+        <span class="unit"> {kpi.$lookup?.unit?.name}</span>
       </div>
-      <span class="unit"> {kpi.$lookup?.unit?.name}</span>
-        <KpiProgressBar value={sum ?? 0} max={kpi.target} />
-    </button>
+      <KpiProgressBar value={sum ?? 0} max={kpi.target} />
+    </div>
   </div>
 {/await}
 
@@ -59,27 +53,24 @@ distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRAN
   }
 
   .header {
-    flex-grow: 2;
+    flex-grow: 3;
   }
 
   .value-value {
     color: var(--theme-primary-color, #4c6ef5);
   }
 
+  .description {
+    text-wrap: balance;
+  }
+
   .kpi-box {
     flex-grow: 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
     border: 1px solid transparent;
     padding: 0.25rem;
     border-radius: 0.25rem;
     gap: 0.5rem;
+    min-width: 10rem;
     color: var(--theme-content-color, #333);
-
-    &:hover {
-      border: 1px solid var(--theme-border-color, #e0e0e0);
-    }
   }
 </style>

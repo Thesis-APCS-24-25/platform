@@ -85,9 +85,9 @@
       <div class="content">
         {#if goal}
           {#if kpi}
-            <KpiEditor {issue} {kpi} />
+            <KpiEditor {kpi} />
           {:else if ratingScale}
-            <RatingScaleEditor {issue} {ratingScale} />
+            <RatingScaleEditor {ratingScale} />
           {/if}
         {:else}
           <div class="empty-state">

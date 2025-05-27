@@ -468,7 +468,8 @@ const pluginState = plugin(kraId, {
     Home: '' as Asset,
     RedCircle: '' as Asset,
 
-    Goal: '' as Asset
+    Goal: '' as Asset,
+    WriteReport: '' as Asset
   },
   category: {
     Other: '' as Ref<TagCategory>,
