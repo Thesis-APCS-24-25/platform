@@ -1,5 +1,5 @@
 import { Asset, type Plugin, plugin } from '@hcengineering/platform'
-import { Class, Mixin, Ref, Role, SpaceType, SpaceTypeDescriptor, TypedSpace } from '@hcengineering/core'
+import { Class, Mixin, Permission, Ref, Role, SpaceType, SpaceTypeDescriptor, TypedSpace } from '@hcengineering/core'
 import { IconProps } from '@hcengineering/view'
 import { Person } from '@hcengineering/contact'
 
@@ -41,6 +41,10 @@ export default plugin(kraTeamId, {
   },
   descriptor: {
     TeamType: '' as Ref<SpaceTypeDescriptor>
+  },
+  permission: {
+    ApproveKra: '' as Ref<Permission>,
+    CreateKra: '' as Ref<Permission>
   },
   spaceType: {
     TeamType: '' as Ref<SpaceType>

@@ -17,8 +17,9 @@
   import CreateReviewSession from './review-session/CreateReviewSession.svelte'
   import kraTeam, { Member, Team } from '@hcengineering/kra-team'
   import { ReviewSession } from '@hcengineering/performance'
+  import { currentMemberId } from '../utils/team'
 
-  export let currentSpace: Ref<Space> | undefined
+  export let currentSpace: Ref<ReviewSession> | undefined
   // export let currentFragment: string | undefined
 
   // const client = getClient()
@@ -46,13 +47,14 @@
       }
     },
     {
-      limit: 1, projection: { _id: 1 }
+      limit: 1,
+      projection: { _id: 1 }
     }
   )
 
   queryTeam.query(
     kraTeam.class.Team,
-    { archived: false, members: me._id as Ref<Member> },
+    { archived: false, members: me._id },
     (res) => {
       if (res !== undefined) {
         hasTeam = res.length > 0
@@ -62,7 +64,8 @@
       }
     },
     {
-      limit: 1, projection: { _id: 1 }
+      limit: 1,
+      projection: { _id: 1 }
     }
   )
 
@@ -76,7 +79,8 @@
       loading = false
     },
     {
-      limit: 1, projection: { _id: 1 }
+      limit: 1,
+      projection: { _id: 1 }
     }
   )
 
@@ -85,11 +89,7 @@
   }
 
   async function newReviewSession (): Promise<void> {
-    showPopup(
-      CreateReviewSession,
-      { team: currentTeam },
-      'top'
-    )
+    showPopup(CreateReviewSession, { team: currentTeam }, 'top')
   }
 
   async function dropdownItemSelected (res?: SelectPopupValueType['id']): Promise<void> {
@@ -140,9 +140,7 @@
         />
       {/if}
     {:else}
-      <Label
-        label={performance.string.NoTeam}
-      />
+      <Label label={performance.string.NoTeam} />
     {/if}
   </div>
 {/if}

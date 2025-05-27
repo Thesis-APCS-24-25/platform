@@ -1,5 +1,4 @@
 import { type Member } from '@hcengineering/contact'
-import { type Permission, type Ref, type Role } from '@hcengineering/core'
 import { kraTeamId } from '@hcengineering/kra-team'
 import kraTeam from '@hcengineering/kra-team-resources/src/plugins'
 import { type IntlString, mergeIds, type Resource } from '@hcengineering/platform'
@@ -29,10 +28,6 @@ export default mergeIds(kraTeamId, kraTeam, {
     Members: '' as AnyComponent,
     KraTemplates: '' as AnyComponent,
     TeamSpacePresenter: '' as AnyComponent
-  },
-  permission: {
-    ApproveKra: '' as Ref<Permission>,
-    CreateKra: '' as Ref<Permission>
   },
   function: {
     ShouldDisplayRemoveMemberAction: '' as Resource<ViewActionAvailabilityFunction<Member>>

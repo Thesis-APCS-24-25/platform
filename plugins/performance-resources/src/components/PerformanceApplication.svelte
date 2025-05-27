@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Ref } from '@hcengineering/core'
+  import { checkPermission, Ref } from '@hcengineering/core'
   import { NavLink } from '@hcengineering/view-resources'
   import {
     defineSeparators,
@@ -13,48 +13,93 @@
   } from '@hcengineering/ui'
   import workbench, { SpecialNavModel } from '@hcengineering/workbench'
   import { onDestroy } from 'svelte'
-  import { Team } from '@hcengineering/kra-team'
+  import team, { Team } from '@hcengineering/kra-team'
   import { TreeSeparator } from '@hcengineering/workbench-resources'
   import performance from '../plugin'
   import TeamSwitchHeader from './TeamSwitchHeader.svelte'
+  import { ReviewSession } from '@hcengineering/performance'
+  import { getClient } from '@hcengineering/presentation'
   let currentSpecial: SpecialNavModel | undefined
 
-  let currentSpace: Ref<Team> | undefined = undefined
+  let currentTeam: Ref<Team> | undefined = undefined
+  let currentReviewSession: Ref<ReviewSession> | undefined = undefined
   let replacedPanel: HTMLElement
 
-  const specials: SpecialNavModel[] = [
-    {
-      id: 'dashboard',
-      component: performance.component.PerformanceDashboard,
-      label: performance.string.PerformanceDashboard,
-      position: 'top'
-    },
-    {
-      id: 'review-sessions',
-      component: workbench.component.SpecialView,
-      label: performance.string.AllReviewSessions,
-      spaceClass: performance.class.ReviewSession,
-      position: 'bottom'
-    },
-    {
-      id: 'my-kras',
-      component: performance.component.MyKRAs,
-      label: performance.string.MyKRAs,
-      spaceClass: performance.class.KRA,
-      position: 'bottom'
-    },
-    {
-      id: 'report',
-      component: performance.component.PerformanceReports,
-      componentProps: {
-        createComponent: performance.component.CreateReport,
-        createButton: performance.component.CreateReportButton
+  let specials: SpecialNavModel[] | undefined = undefined
+
+  let canManageKra: boolean = false
+  $: if (currentTeam !== undefined) {
+    void checkPermission(getClient(), team.permission.ApproveKra, currentTeam).then((ok) => {
+      canManageKra = ok
+    })
+  }
+  function updateSpecial (
+    currentTeam: Ref<Team> | undefined,
+    currentReviewSession: Ref<ReviewSession> | undefined
+  ): void {
+    const specialIdx = specials?.findIndex((s) => s.id === currentSpecial?.id)
+    specials = [
+      {
+        id: 'dashboard',
+        component: performance.component.PerformanceDashboard,
+        label: performance.string.PerformanceDashboard,
+        position: 'top'
       },
-      label: performance.string.PerformanceReports,
-      spaceClass: performance.class.PerformanceReport,
-      position: 'bottom'
+      {
+        id: 'review-sessions',
+        component: workbench.component.SpecialView,
+        label: performance.string.AllReviewSessions,
+        spaceClass: performance.class.ReviewSession,
+        componentProps: {
+          space: currentTeam,
+          _class: performance.class.ReviewSession
+        },
+        position: 'bottom'
+      },
+      ...(canManageKra
+        ? [
+            {
+              id: 'all-kras',
+              component: workbench.component.SpecialView,
+              label: performance.string.KRA,
+              spaceClass: performance.class.KRA,
+              componentProps: {
+                space: currentReviewSession,
+                _class: performance.class.KRA
+              },
+              position: 'bottom'
+            }
+          ]
+        : []),
+      {
+        id: 'my-kras',
+        component: performance.component.MyKRAs,
+        label: performance.string.MyKRAs,
+        spaceClass: performance.class.KRA,
+        componentProps: {
+          space: currentReviewSession
+        },
+        position: 'bottom'
+      },
+      {
+        id: 'report',
+        component: performance.component.PerformanceReports,
+        componentProps: {
+          createComponent: performance.component.CreateReport,
+          createButton: performance.component.CreateReportButton,
+          space: currentReviewSession
+        },
+        label: performance.string.PerformanceReports,
+        spaceClass: performance.class.PerformanceReport,
+        position: 'bottom'
+      }
+    ]
+    if (specialIdx !== undefined) {
+      currentSpecial = specials[specialIdx]
     }
-  ]
+  }
+
+  $: updateSpecial(currentTeam, currentReviewSession)
 
   const unsubcribe = location.subscribe((loc) => {
     syncLocation(loc)
@@ -68,7 +113,7 @@
       return
     }
 
-    const special = specials.find((s) => s.id === loc.path[3])
+    const special = specials?.find((s) => s.id === loc.path[3])
     currentSpecial = special
   }
 
@@ -99,7 +144,7 @@
             <Label label={performance.string.PerformanceApplication} />
           </span>
         </div>
-        <TeamSwitchHeader bind:currentSpace />
+        <TeamSwitchHeader bind:currentTeam bind:currentReviewSession />
         {#if specials}
           {#each specials as special, row}
             {#if row > 0 && specials[row].position !== specials[row - 1].position}
@@ -131,13 +176,7 @@
       <Component
         is={currentSpecial.component}
         props={{
-          ...currentSpecial.componentProps,
-          baseQuery: {
-            space: currentSpace
-          },
-          space: currentSpace,
-          _class: currentSpecial.spaceClass,
-          navigationModel: currentSpecial.navigationModel
+          ...currentSpecial.componentProps
         }}
       />
     {/if}

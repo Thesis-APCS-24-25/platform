@@ -1,30 +1,32 @@
 <script lang="ts">
   import kraTeam, { Team } from '@hcengineering/kra-team'
-  import { getOrInitCurrentTeam, switchCurrentTeam } from '../utils/team'
   import SpaceSelector from '@hcengineering/presentation/src/components/SpaceSelector.svelte'
   import performance from '../plugin'
-  import { Ref } from '@hcengineering/core'
+  import { getCurrentAccount, Ref } from '@hcengineering/core'
+  import { getClient } from '@hcengineering/presentation'
 
-  const currentTeam = getOrInitCurrentTeam()
-  async function handleSpaceChanged (e: CustomEvent<Ref<Team> | undefined>): Promise<void> {
-    const team = e.detail
-    if (team !== undefined) {
-      await switchCurrentTeam(team)
-    }
+  export let currentTeam: Ref<Team> | undefined = undefined
+
+  const me = getCurrentAccount()._id
+  async function findDefaultSpace (): Promise<Team | undefined> {
+    const client = getClient()
+    return await client.findOne(kraTeam.class.Team, {
+      members: me
+    })
   }
 </script>
 
-{#await currentTeam then currentTeam}
-  <SpaceSelector
-    space={currentTeam?._id}
-    size="large"
-    kind="contrast"
-    width="100%"
-    shape="round2"
-    justify="left"
-    label={performance.string.SelectTeam}
-    _class={kraTeam.class.Team}
-    findDefaultSpace={getOrInitCurrentTeam}
-    on:change={handleSpaceChanged}
-  />
-{/await}
+<SpaceSelector
+  bind:space={currentTeam}
+  size="large"
+  kind="contrast"
+  width="100%"
+  shape="round2"
+  justify="left"
+  label={performance.string.SelectTeam}
+  _class={kraTeam.class.Team}
+  query={{
+    members: me
+  }}
+  {findDefaultSpace}
+/>
