@@ -7,7 +7,6 @@
   import { TreeNode } from '@hcengineering/view-resources'
   import TreeElement from '@hcengineering/view-resources/src/components/navigator/TreeElement.svelte'
   import { getReviewSessionLink } from '../../navigation'
-  import { team } from '../../store'
   import { onDestroy } from 'svelte'
 
   export let space: Team
