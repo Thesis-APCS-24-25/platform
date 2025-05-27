@@ -76,6 +76,7 @@ export function createModel (builder: Builder): void {
   builder.createDoc(serverCore.class.Trigger, core.space.Model, {
     trigger: serverKra.trigger.OnGoalRemove,
     txMatch: {
+      _class: core.class.TxRemoveDoc,
       objectClass: kra.class.Goal
     }
   })
