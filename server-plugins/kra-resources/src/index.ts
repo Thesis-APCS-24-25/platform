@@ -22,6 +22,7 @@ import core, {
   Doc,
   DocumentUpdate,
   Ref,
+  SortingOrder,
   Space,
   Tx,
   TxCreateDoc,
@@ -36,15 +37,17 @@ import { getMetadata, IntlString } from '@hcengineering/platform'
 import serverCore, { TriggerControl } from '@hcengineering/server-core'
 import { NOTIFICATION_BODY_SIZE } from '@hcengineering/server-notification'
 import { stripTags } from '@hcengineering/text-core'
-import kra, { Goal, Issue, IssueParentInfo, Project, TimeSpendReport, kraId } from '@hcengineering/kra'
+import kra, { Goal, Issue, IssueParentInfo, Project, Report, TimeSpendReport, kraId } from '@hcengineering/kra'
 import { workbenchId } from '@hcengineering/workbench'
 
-async function updateSubIssues (
+async function updateSubIssues(
   updateTx: TxUpdateDoc<Issue>,
   control: TriggerControl,
   update: DocumentUpdate<Issue> | ((node: Issue) => DocumentUpdate<Issue>)
 ): Promise<TxUpdateDoc<Issue>[]> {
-  const subIssues = await control.findAll(control.ctx, kra.class.Issue, { 'parents.parentId': updateTx.objectId })
+  const subIssues = await control.findAll(control.ctx, kra.class.Issue, {
+    'parents.parentId': updateTx.objectId
+  })
 
   return subIssues.map((issue) => {
     const docUpdate = typeof update === 'function' ? update(issue) : update
@@ -55,7 +58,7 @@ async function updateSubIssues (
 /**
  * @public
  */
-export async function issueHTMLPresenter (doc: Doc, control: TriggerControl): Promise<string> {
+export async function issueHTMLPresenter(doc: Doc, control: TriggerControl): Promise<string> {
   const issue = doc as Issue
   const front = control.branding?.front ?? getMetadata(serverCore.metadata.FrontUrl) ?? ''
   const path = `${workbenchId}/${control.workspace.workspaceUrl}/${kraId}/${issue.identifier}`
@@ -66,7 +69,7 @@ export async function issueHTMLPresenter (doc: Doc, control: TriggerControl): Pr
 /**
  * @public
  */
-export async function getIssueId (doc: Issue, control: TriggerControl): Promise<string> {
+export async function getIssueId(doc: Issue, control: TriggerControl): Promise<string> {
   const issue = doc
   const project = (await control.findAll(control.ctx, kra.class.Project, { _id: issue.space }))[0]
   return `${project?.identifier ?? '?'}-${issue.number}`
@@ -75,12 +78,12 @@ export async function getIssueId (doc: Issue, control: TriggerControl): Promise<
 /**
  * @public
  */
-export async function issueTextPresenter (doc: Doc): Promise<string> {
+export async function issueTextPresenter(doc: Doc): Promise<string> {
   const issue = doc as Issue
   return `${issue.identifier} ${issue.title}`
 }
 
-function isSamePerson (control: TriggerControl, assignee: Ref<Person>, target: Ref<Account>): boolean {
+function isSamePerson(control: TriggerControl, assignee: Ref<Person>, target: Ref<Account>): boolean {
   const targetAccount = control.modelDb.getObject(target) as PersonAccount
   return assignee === targetAccount?.person
 }
@@ -88,7 +91,7 @@ function isSamePerson (control: TriggerControl, assignee: Ref<Person>, target: R
 /**
  * @public
  */
-export async function getIssueNotificationContent (
+export async function getIssueNotificationContent(
   doc: Doc,
   tx: TxCUD<Doc>,
   target: Ref<Account>,
@@ -154,13 +157,15 @@ export async function getIssueNotificationContent (
 /**
  * @public
  */
-export async function OnProjectRemove (txes: Tx[], control: TriggerControl): Promise<Tx[]> {
+export async function OnProjectRemove(txes: Tx[], control: TriggerControl): Promise<Tx[]> {
   const result: Tx[] = []
   for (const tx of txes) {
     const ctx = tx as TxRemoveDoc<Project>
     const classes = [kra.class.Issue, kra.class.IssueTemplate]
     for (const cls of classes) {
-      const docs = await control.findAll(control.ctx, cls, { space: ctx.objectId })
+      const docs = await control.findAll(control.ctx, cls, {
+        space: ctx.objectId
+      })
       for (const doc of docs) {
         const tx = control.txFactory.createTxRemoveDoc(cls, doc.space, doc._id)
         result.push(tx)
@@ -173,7 +178,7 @@ export async function OnProjectRemove (txes: Tx[], control: TriggerControl): Pro
   return result
 }
 
-export async function OnGoalRemove (txes: Tx[], control: TriggerControl): Promise<Tx[]> {
+export async function OnGoalRemove(txes: Tx[], control: TriggerControl): Promise<Tx[]> {
   const result: Tx[] = []
   for (const tx of txes) {
     const ctx = tx as TxRemoveDoc<Goal>
@@ -191,7 +196,7 @@ export async function OnGoalRemove (txes: Tx[], control: TriggerControl): Promis
 /**
  * @public
  */
-export async function OnWorkspaceOwnerAdded (txes: Tx[], control: TriggerControl): Promise<Tx[]> {
+export async function OnWorkspaceOwnerAdded(txes: Tx[], control: TriggerControl): Promise<Tx[]> {
   const result: Tx[] = []
   for (const tx of txes) {
     let ownerId: Ref<PersonAccount> | undefined
@@ -238,10 +243,28 @@ export async function OnWorkspaceOwnerAdded (txes: Tx[], control: TriggerControl
   return result
 }
 
+export async function OnGoalUpdate(txes: Tx[], control: TriggerControl): Promise<Tx[]> {
+  const result: Tx[] = []
+  for (const actualTx of txes) {
+    // Check TimeReport operations
+    if (
+      actualTx._class === core.class.TxCreateDoc ||
+      actualTx._class === core.class.TxUpdateDoc ||
+      actualTx._class === core.class.TxRemoveDoc
+    ) {
+      const cud = actualTx as TxCUD<Report>
+      if (cud.objectClass === kra.class.Report) {
+        result.push(...(await doGoalReportUpdate(cud, control)))
+      }
+    }
+  }
+  return result
+}
+
 /**
  * @public
  */
-export async function OnIssueUpdate (txes: Tx[], control: TriggerControl): Promise<Tx[]> {
+export async function OnIssueUpdate(txes: Tx[], control: TriggerControl): Promise<Tx[]> {
   const result: Tx[] = []
   for (const actualTx of txes) {
     // Check TimeReport operations
@@ -302,7 +325,121 @@ export async function OnIssueUpdate (txes: Tx[], control: TriggerControl): Promi
   return result
 }
 
-async function doTimeReportUpdate (cud: TxCUD<TimeSpendReport>, control: TriggerControl): Promise<Tx[]> {
+async function doGoalReportUpdate(cud: TxCUD<Report>, control: TriggerControl): Promise<Tx[]> {
+  const { attachedTo: attachedToId, attachedToClass } = cud
+  if (attachedToClass === undefined || attachedToId === undefined) {
+    return []
+  }
+  const attachedTo = attachedToId as Ref<Goal>
+  switch (cud._class) {
+    case core.class.TxCreateDoc: {
+      const ccud = cud as TxCreateDoc<Report>
+      const [currentGoal] = await control.findAll(control.ctx, kra.class.Goal, { _id: attachedTo }, { limit: 1 })
+      const res: Tx[] = []
+      if (currentGoal._class === kra.class.Kpi) {
+        res.push(
+          control.txFactory.createTxUpdateDoc<Goal>(
+            attachedToClass,
+            cud.objectSpace,
+            attachedTo,
+            {
+              $inc: { progress: ccud.attributes.value }
+            },
+            false,
+            currentGoal.modifiedOn
+          )
+        )
+        currentGoal.progress += ccud.attributes.value
+      } else if (currentGoal._class === kra.class.RatingScale) {
+        res.push(
+          control.txFactory.createTxUpdateDoc<Goal>(
+            attachedToClass,
+            cud.objectSpace,
+            attachedTo,
+            {
+              progress: ccud.attributes.value
+            },
+            false,
+            currentGoal.modifiedOn
+          )
+        )
+        currentGoal.progress = ccud.attributes.value
+      }
+      return res
+    }
+    case core.class.TxUpdateDoc: {
+      const upd = cud as TxUpdateDoc<Report>
+      if (upd.operations.value !== undefined) {
+        const logTxes = Array.from(
+          await control.findAll(control.ctx, core.class.TxCUD, {
+            objectId: cud.objectId
+          })
+        ).filter((it) => it._id !== cud._id)
+        const doc: Report | undefined = TxProcessor.buildDoc2Doc(logTxes)
+
+        const res: Tx[] = []
+        const [currentGoal] = await control.findAll(control.ctx, kra.class.Goal, { _id: attachedTo }, { limit: 1 })
+        if (doc !== undefined) {
+          if (currentGoal._class === kra.class.Kpi) {
+            res.push(
+              control.txFactory.createTxUpdateDoc<Goal>(
+                attachedToClass,
+                cud.objectSpace,
+                attachedTo,
+                {
+                  $inc: { progress: upd.operations.value - doc.value }
+                },
+                false,
+                currentGoal.modifiedOn
+              )
+            )
+            currentGoal.progress -= doc.value
+            currentGoal.progress += upd.operations.value
+          } else if (currentGoal._class === kra.class.RatingScale) {
+            // Does not support yet, or should we?
+          }
+        }
+        return res
+      }
+      break
+    }
+    case core.class.TxRemoveDoc: {
+      if (!control.removedMap.has(attachedTo)) {
+        const logTxes = Array.from(
+          await control.findAll(control.ctx, core.class.TxCUD, {
+            objectId: cud.objectId
+          })
+        ).filter((it) => it._id !== cud._id)
+        const doc: Report | undefined = TxProcessor.buildDoc2Doc(logTxes)
+        if (doc !== undefined) {
+          const [currentGoal] = await control.findAll(control.ctx, kra.class.Goal, { _id: attachedTo }, { limit: 1 })
+          const res: Tx[] = []
+          if (currentGoal._class === kra.class.Kpi) {
+            res.push(
+              control.txFactory.createTxUpdateDoc<Goal>(
+                attachedToClass,
+                cud.objectSpace,
+                attachedTo,
+                {
+                  $inc: { progress: -1 * doc.value }
+                },
+                false,
+                currentGoal.modifiedOn
+              )
+            )
+            currentGoal.progress -= doc.value
+          } else if (currentGoal._class === kra.class.RatingScale) {
+            // Does not support yet, or should we?
+          }
+          return res
+        }
+      }
+    }
+  }
+  return []
+}
+
+async function doTimeReportUpdate(cud: TxCUD<TimeSpendReport>, control: TriggerControl): Promise<Tx[]> {
   const { attachedTo: attachedToId, attachedToClass } = cud
   if (attachedToClass === undefined || attachedToId === undefined) {
     return []
@@ -340,12 +477,7 @@ async function doTimeReportUpdate (cud: TxCUD<TimeSpendReport>, control: Trigger
         const doc: TimeSpendReport | undefined = TxProcessor.buildDoc2Doc(logTxes)
 
         const res: Tx[] = []
-        const [currentIssue] = await control.findAll(
-          control.ctx,
-          kra.class.Issue,
-          { _id: attachedTo },
-          { limit: 1 }
-        )
+        const [currentIssue] = await control.findAll(control.ctx, kra.class.Issue, { _id: attachedTo }, { limit: 1 })
         if (doc !== undefined) {
           res.push(
             control.txFactory.createTxUpdateDoc<Issue>(
@@ -378,12 +510,7 @@ async function doTimeReportUpdate (cud: TxCUD<TimeSpendReport>, control: Trigger
         ).filter((it) => it._id !== cud._id)
         const doc: TimeSpendReport | undefined = TxProcessor.buildDoc2Doc(logTxes)
         if (doc !== undefined) {
-          const [currentIssue] = await control.findAll(
-            control.ctx,
-            kra.class.Issue,
-            { _id: attachedTo },
-            { limit: 1 }
-          )
+          const [currentIssue] = await control.findAll(control.ctx, kra.class.Issue, { _id: attachedTo }, { limit: 1 })
           const res = [
             control.txFactory.createTxUpdateDoc<Issue>(
               attachedToClass,
@@ -407,12 +534,12 @@ async function doTimeReportUpdate (cud: TxCUD<TimeSpendReport>, control: Trigger
   return []
 }
 
-async function doIssueUpdate (updateTx: TxUpdateDoc<Issue>, control: TriggerControl): Promise<Tx[]> {
+async function doIssueUpdate(updateTx: TxUpdateDoc<Issue>, control: TriggerControl): Promise<Tx[]> {
   const res: Tx[] = []
 
   let currentIssue: WithLookup<Issue> | undefined
 
-  async function getCurrentIssue (): Promise<WithLookup<Issue>> {
+  async function getCurrentIssue(): Promise<WithLookup<Issue>> {
     if (currentIssue !== undefined) {
       return currentIssue
     }
@@ -432,22 +559,24 @@ async function doIssueUpdate (updateTx: TxUpdateDoc<Issue>, control: TriggerCont
     const updatedParents: IssueParentInfo[] =
       newParent !== undefined
         ? [
-            {
-              parentId: newParent._id,
-              parentTitle: newParent.title,
-              space: newParent.space,
-              identifier: newParent.identifier
-            },
-            ...newParent.parents
-          ]
+          {
+            parentId: newParent._id,
+            parentTitle: newParent.title,
+            space: newParent.space,
+            identifier: newParent.identifier
+          },
+          ...newParent.parents
+        ]
         : []
 
-    function update (issue: Issue): DocumentUpdate<Issue> {
+    function update(issue: Issue): DocumentUpdate<Issue> {
       const parentInfoIndex = issue.parents.findIndex(({ parentId }) => parentId === updateTx.objectId)
       const parentsUpdate =
         parentInfoIndex === -1
           ? {}
-          : { parents: [...issue.parents].slice(0, parentInfoIndex + 1).concat(updatedParents) }
+          : {
+            parents: [...issue.parents].slice(0, parentInfoIndex + 1).concat(updatedParents)
+          }
 
       return { ...parentsUpdate }
     }
@@ -486,9 +615,12 @@ async function doIssueUpdate (updateTx: TxUpdateDoc<Issue>, control: TriggerCont
   }
 
   if (Object.prototype.hasOwnProperty.call(updateTx.operations, 'title')) {
-    function update (issue: Issue): DocumentUpdate<Issue> {
+    function update(issue: Issue): DocumentUpdate<Issue> {
       const parentInfoIndex = issue.parents.findIndex(({ parentId }) => parentId === updateTx.objectId)
-      const updatedParentInfo = { ...issue.parents[parentInfoIndex], parentTitle: updateTx.operations.title as string }
+      const updatedParentInfo = {
+        ...issue.parents[parentInfoIndex],
+        parentTitle: updateTx.operations.title as string
+      }
       const updatedParents = [...issue.parents]
 
       updatedParents[parentInfoIndex] = updatedParentInfo
@@ -501,7 +633,7 @@ async function doIssueUpdate (updateTx: TxUpdateDoc<Issue>, control: TriggerCont
 
   return res
 }
-function updateIssueParentEstimations (
+function updateIssueParentEstimations(
   issue: {
     _id: Ref<Issue>
     space: Ref<Space>
@@ -537,7 +669,7 @@ function updateIssueParentEstimations (
   }
 }
 
-async function issueLinkIdProvider (issue: Issue): Promise<string> {
+async function issueLinkIdProvider(issue: Issue): Promise<string> {
   return issue.identifier
 }
 
@@ -553,6 +685,7 @@ export default async () => ({
     OnIssueUpdate,
     OnProjectRemove,
     OnGoalRemove,
+    OnGoalUpdate,
     OnWorkspaceOwnerAdded
   }
 })
