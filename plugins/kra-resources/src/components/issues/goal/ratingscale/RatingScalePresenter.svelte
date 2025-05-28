@@ -9,7 +9,7 @@
   export let issue: Issue
   export let size: ButtonSize = 'small'
   export let kind: ButtonKind = 'regular'
-  export let disabled: boolean | undefined = false
+  export let readonly: boolean | undefined = false
 
   $: rating = value.progress
 
@@ -27,7 +27,7 @@
   }
 </script>
 
-<GoalPresenterContainer {disabled} {size} {kind} onClick={handleOpen.bind(null, rating ?? 0)}>
+<GoalPresenterContainer disabled={readonly} {size} {kind} onClick={handleOpen.bind(null, rating ?? 0)}>
   <RatingScaleCircle value={rating ?? 0} />
   <div class="separator"></div>
   <div class="label">
