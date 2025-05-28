@@ -47,7 +47,6 @@ import {
   TRatingScale,
   TRelatedIssueTarget,
   TReport,
-  TReportAggregator,
   TTimeSpendReport,
   TTypeEstimation,
   TTypeIssuePriority,
@@ -220,18 +219,6 @@ function defineFilters (builder: Builder): void {
 
   builder.mixin(kra.class.TypeIssuePriority, core.class.Class, view.mixin.AttributeFilter, {
     component: view.component.ValueFilter
-  })
-}
-
-function defineGoalMixin (builder: Builder): void {
-  builder.createModel(TReportAggregator)
-
-  builder.mixin(kra.class.Kpi, core.class.Class, kra.mixin.ReportAggregator, {
-    aggregator: kra.function.KpiAggregator
-  })
-
-  builder.mixin(kra.class.RatingScale, core.class.Class, kra.mixin.ReportAggregator, {
-    aggregator: kra.function.RatingScaleAggregator
   })
 }
 
@@ -498,8 +485,6 @@ export function createModel (builder: Builder): void {
   )
 
   defineApplication(builder, { myIssuesId, allIssuesId, issuesId, templatesId, labelsId })
-
-  defineGoalMixin(builder)
 
   defineActions(builder, issuesId, myIssuesId)
 
