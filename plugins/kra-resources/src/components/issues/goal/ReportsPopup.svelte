@@ -8,6 +8,8 @@
   import kra from '../../../plugin'
   import IssuePresenter from '../IssuePresenter.svelte'
   import { createEventDispatcher } from 'svelte'
+  import ReportValueEditor from './ReportValueEditor.svelte'
+  import performance from '../../../plugin'
 
   export let issue: Issue
   export let addReport: (event: MouseEvent) => void = () => {}
@@ -34,11 +36,9 @@
   }}
   okLabel={presentation.string.Ok}
   gap={'gapV-4'}
-  on:close={
-  () => {
+  on:close={() => {
     dispatch('close')
-  }
-  }
+  }}
   on:changeContent
 >
   <svelte:fragment slot="header">
@@ -52,7 +52,22 @@
       <TableBrowser
         _class={kra.class.Report}
         query={{ attachedTo: issue.goal }}
-        config={['$lookup.attachedTo', '', 'employee', 'value', 'date', 'note']}
+        config={[
+          '$lookup.attachedTo',
+          {
+            key: '',
+            label: performance.string.Report,
+            props: {
+              kind: 'link',
+              justify: 'left'
+
+            },
+            presenter: ReportValueEditor
+          },
+          'employee',
+          'date',
+          'note'
+        ]}
         {options}
       />
     </Scroller>
