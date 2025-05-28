@@ -15,7 +15,7 @@
 <script lang="ts">
   import { Doc, getObjectValue, Space } from '@hcengineering/core'
   import notification from '@hcengineering/notification'
-  import { CheckBox, Component, IconCircles, tooltip, deviceOptionsStore as deviceInfo } from '@hcengineering/ui'
+  import { Component, IconCircles, tooltip, deviceOptionsStore as deviceInfo } from '@hcengineering/ui'
   import { AttributeModel } from '@hcengineering/view'
   import { createEventDispatcher, onMount } from 'svelte'
   import view from '@hcengineering/view-resources/src/plugin'
@@ -61,7 +61,6 @@
     return {
       ...props,
       readonly: true,
-      disabled: true,
       editable: false,
       isEditable: false
     }
@@ -97,15 +96,6 @@
 >
   <div class="flex-center relative mr-1" use:tooltip={{ label: view.string.Select, direction: 'bottom' }}>
     <div class="antiList-cells__notifyCell">
-      <div class="antiList-cells__checkCell">
-        <CheckBox
-          {checked}
-          size={'medium'}
-          on:value={(event) => {
-            dispatch('check', { docs: [docObject], value: event.detail })
-          }}
-        />
-      </div>
       <Component
         is={notification.component.NotificationPresenter}
         showLoading={false}
@@ -125,7 +115,6 @@
               props={getProps(props, $restrictionStore.readonly)}
               {compactMode}
               value={getObjectValue(attrModel.key, docObject)}
-              onChange={getOnChange(docObject, attrModel)}
             />
           {/each}
         {/if}
@@ -138,7 +127,6 @@
                 attributeModel={attrModel}
                 props={getProps(props, $restrictionStore.readonly)}
                 value={getObjectValue(attrModel.key, docObject)}
-                onChange={getOnChange(docObject, attrModel)}
                 on:resize={(e) => {
                   if (e.detail == null) return
                   sizes.set(index, e.detail)
@@ -153,7 +141,6 @@
               attributeModel={attrModel}
               props={getProps(props, $restrictionStore.readonly)}
               value={getObjectValue(attrModel.key, docObject)}
-              onChange={getOnChange(docObject, attrModel)}
             />
           {/each}
         {/if}
@@ -163,7 +150,6 @@
           {attributeModel}
           props={getProps(props, $restrictionStore.readonly)}
           value={getObjectValue(attributeModel.key, docObject)}
-          onChange={getOnChange(docObject, attributeModel)}
           hideDivider={i === 0}
           {compactMode}
         />
@@ -193,7 +179,6 @@
               props={getProps(props, $restrictionStore.readonly)}
               {compactMode}
               value={getObjectValue(attrModel.key, docObject)}
-              onChange={getOnChange(docObject, attrModel)}
             />
           {/each}
         {/if}
@@ -207,7 +192,6 @@
                 {attributeModel}
                 props={getProps(props, $restrictionStore.readonly)}
                 value={getObjectValue(attributeModel.key, docObject)}
-                onChange={getOnChange(docObject, attributeModel)}
                 hideDivider={j === 0}
               />
             {/if}
@@ -225,7 +209,6 @@
               {attributeModel}
               props={getProps(props, $restrictionStore.readonly)}
               value={getObjectValue(attributeModel.key, docObject)}
-              onChange={getOnChange(docObject, attributeModel)}
             />
           {/if}
         {/each}

@@ -11,7 +11,7 @@
   export let issue: WithLookup<Issue>
   export let kind: ButtonKind = 'regular'
   export let size: ButtonSize = 'small'
-  export let disabled: boolean | undefined = false
+  export let readonly: boolean | undefined = false
 
   $: sum = calculateResult(value, undefined)
 
@@ -30,7 +30,7 @@
 </script>
 
 {#await sum then sum}
-  <GoalPresenterContainer {disabled} {kind} {size} onClick={handleOpenEditor.bind(null, sum ?? 0)}>
+  <GoalPresenterContainer disabled={readonly} {kind} {size} onClick={handleOpenEditor.bind(null, sum ?? 0)}>
     {#if value.target > 0}
       <KpiProgressCircle value={sum ?? 0} max={value.target} />
     {/if}

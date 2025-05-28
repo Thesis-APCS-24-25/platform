@@ -51,7 +51,6 @@
   export let level: number
   export let listProvider: SelectionFocusProvider
 
-  // Remove create-related properties
   export let extraHeaders: AnyComponent[] | undefined
   export let props: Record<string, any> = {}
   // export let newObjectProps: (doc: Doc | undefined) => Record<string, any> | undefined
@@ -124,7 +123,6 @@
         kind={'list-header'}
         colorInherit={!$themeStore.dark && level === 0}
         accent={level === 0}
-        disabled
         on:accent-color={(evt) => {
           accentColor = evt.detail
         }}

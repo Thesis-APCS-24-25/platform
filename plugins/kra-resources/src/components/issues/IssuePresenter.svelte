@@ -37,6 +37,12 @@
   export let icon: Asset | AnySvelteComponent | undefined = undefined
 
   $: taskType = value !== undefined ? $taskTypeStore.get(value.kind) : undefined
+
+  $: {
+    console.log(onClick)
+    console.log(type)
+    console.log(kind)
+  }
 </script>
 
 {#if inline && value}

@@ -21,7 +21,6 @@
 
   export let docObject: Doc
   export let attributeModel: AttributeModel
-  export let onChange: ((value: any) => void) | undefined = undefined // Always undefined to disable editing
   export let value: any
   export let props: Record<string, any>
   export let hideDivider: boolean = false
@@ -39,14 +38,12 @@
     if (attribute.attribute?.type._class === core.class.EnumOf) {
       return { ...clearAttributeProps, type: attribute.attribute.type, ...props }
     }
-    // Add readonly and disabled to all props
     return {
       object,
       ...clearAttributeProps,
       space: object.space,
       ...props,
       readonly: true,
-      disabled: true,
       isEditable: false
     }
   }
@@ -64,12 +61,10 @@
     <svelte:component
       this={attributeModel.presenter}
       {value}
-      {onChange}
       kind={'list'}
       {compactMode}
       {...joinProps(attributeModel, docObject, props)}
       on:resize={translateSize}
-      disabled={true}
       isEditable={false}
       readonly={true}
     />
@@ -78,10 +73,8 @@
   <svelte:component
     this={attributeModel.presenter}
     {value}
-    {onChange}
     kind={'list'}
     {compactMode}
-    disabled={true}
     isEditable={false}
     readonly={true}
     {...joinProps(attributeModel, docObject, props)}
