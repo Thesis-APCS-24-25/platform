@@ -21,7 +21,7 @@
 </script>
 
 {#if kind === 'list'}
-  <FixedColumn key="kra-editor-total">
+  <FixedColumn key="kra-editor">
     <ObjectBox
       _class={performance.class.KRA}
       searchField={'title'}

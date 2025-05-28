@@ -95,7 +95,8 @@ export default plugin(performanceId, {
     KRAWeight: '' as IntlString,
     NoKRA: '' as IntlString,
     Active: '' as IntlString,
-    ReviewSessionStatus: '' as IntlString
+    ReviewSessionStatus: '' as IntlString,
+    KRACompletionLevel: '' as IntlString
   },
   kraStatus: {
     Drafting: '' as Ref<KRAStatus>,

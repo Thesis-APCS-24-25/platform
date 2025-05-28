@@ -97,6 +97,7 @@ import EditIssueTemplate from './components/templates/EditIssueTemplate.svelte'
 import TemplateEstimationEditor from './components/templates/EstimationEditor.svelte'
 import {
   activeProjects,
+  calculateCompletionLevel,
   getAllPriority,
   getIssueChatTitle,
   getIssueStatusCategories,
@@ -132,6 +133,7 @@ import GoalObjectPresenter from './components/issues/goal/GoalObjectPresenter.sv
 import './styles/_colors.scss'
 import task, { type Task } from '@hcengineering/task'
 import KRAEditor from './components/kra/KRAEditor.svelte'
+import KRAStatistics from './components/kra/KRAStatistics.svelte'
 
 export { default as AssigneeEditor } from './components/issues/AssigneeEditor.svelte'
 export { default as SubIssueList } from './components/issues/edit/SubIssueList.svelte'
@@ -334,7 +336,8 @@ export default async (): Promise<Resources> => ({
     AddUnitPopup,
     UnitPresenter,
     GoalObjectPresenter,
-    KRAEditor
+    KRAEditor,
+    KRAStatistics
   },
   completion: {
     IssueQuery: async (client: Client, query: string, filter?: { in?: RelatedDocument[], nin?: RelatedDocument[] }) =>

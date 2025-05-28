@@ -2,7 +2,7 @@
   import performance, { PerformanceReport, ReviewSession } from '@hcengineering/performance'
   import { ViewletContentView, ViewletSettingButton } from '@hcengineering/view-resources'
   // import { DatePresenter, ListView } from '@hcengineering/ui'
-  import { personAccountByIdStore, personAccountPersonByIdStore } from '@hcengineering/contact-resources'
+  import { personAccountByIdStore, personAccountPersonByIdStore, UserInfo } from '@hcengineering/contact-resources'
   import { Class, Ref, WithLookup } from '@hcengineering/core'
   import { Person, PersonAccount } from '@hcengineering/contact'
   import { getClient } from '@hcengineering/presentation'
@@ -72,7 +72,15 @@
         viewletQuery={{ attachTo: performance.mixin.WithKRA }}
       />
       <ViewletSettingButton bind:viewOptions bind:viewlet />
-      <div class="title not-active">{person?.name}'s {reviewSession?.name} Report</div>
+      {#if person !== undefined}
+      <div class="title not-active report-title">
+        <UserInfo
+          value={person}
+          size={'small'}
+          />
+          <span>'s {reviewSession?.name} Report</span>
+      </div>
+      {/if}
     </svelte:fragment>
     {#if viewlet !== undefined && viewOptions}
       <ViewletContentView
@@ -89,3 +97,15 @@
     {/if}
   </Panel>
 {/if}
+
+<style lang="scss">
+  .report-title {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+
+    span {
+      align-content: center;
+    }
+  }
+</style>
