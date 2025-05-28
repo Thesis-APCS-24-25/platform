@@ -96,7 +96,8 @@ export default plugin(performanceId, {
     AttachedEmployee: '' as IntlString,
     KRAWeight: '' as IntlString,
     NoKRA: '' as IntlString,
-    ReviewSessionStatus: '' as IntlString
+    ReviewSessionStatus: '' as IntlString,
+    KRACompletionLevel: '' as IntlString
   },
   kraStatus: {
     Drafting: '' as Ref<KRAStatus>,

@@ -42,6 +42,7 @@
     "SetStatus": "Set Status",
     "Drafting": "Drafting",
     "InProgress": "In Progress",
-    "Concluded": "Concluded"
+    "Concluded": "Concluded",
+    "KRACompletionLevel": "% KRA Completed"
   }
 }

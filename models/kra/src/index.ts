@@ -377,6 +377,10 @@ export function createModel (builder: Builder): void {
     TProjectTargetPreference
   )
 
+  builder.mixin(kra.class.Issue, core.class.Class, view.mixin.ListHeaderExtra, {
+    presenters: [kra.component.KRAStatistics]
+  })
+
   builder.mixin(kra.class.Issue, core.class.Class, performance.mixin.MeasureProgress, {
     calculate: kra.function.CalculateGoal
   })
