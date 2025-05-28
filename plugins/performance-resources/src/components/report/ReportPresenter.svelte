@@ -4,8 +4,7 @@
   import { DocNavLink, ObjectMention } from '@hcengineering/view-resources'
 
   import performance from '../../plugin'
-  import { ObjectPresenterType } from '@hcengineering/view'
-  import { personAccountByIdStore, personAccountPersonByIdStore } from '@hcengineering/contact-resources'
+  import { personAccountByIdStore, personAccountPersonByIdStore, UserInfo } from '@hcengineering/contact-resources'
   import { Person, PersonAccount } from '@hcengineering/contact'
 
   export let value: WithLookup<PerformanceReport> | undefined
@@ -13,9 +12,7 @@
   export let onClick: (() => void) | undefined = undefined
   export let noUnderline: boolean = disabled
   export let colorInherit: boolean = false
-  export let noSelect: boolean = false
   export let inline = false
-  export let type: ObjectPresenterType = 'link'
 
   const personAccount: PersonAccount | undefined = value !== undefined
     ? $personAccountByIdStore.get(value?.reviewee)
@@ -28,7 +25,7 @@
 {#if inline && value}
   <ObjectMention object={value} {disabled} {noUnderline} {onClick} component={performance.component.ReportPanel} />
 {:else if value}
-  {#if type === 'link' && person !== undefined}
+  {#if person !== undefined}
     <div class="flex-row-center">
       <DocNavLink
         object={value}
@@ -40,15 +37,12 @@
         component={performance.component.ReportPanel}
         shrink={0}
       >
-        <span class="overflow-label" class:select-text={!noSelect}>
-          {person.name}
-        </span>
+        <UserInfo
+          value={person}
+          size={'small'}
+        />
       </DocNavLink>
     </div>
-  {:else if type === 'text' && person !== undefined}
-    <span class="overflow-label" class:select-text={!noSelect}>
-      {person.name}
-    </span>
   {/if}
 {/if}
 
