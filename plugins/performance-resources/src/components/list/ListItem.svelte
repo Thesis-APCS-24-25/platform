@@ -26,8 +26,6 @@
   export let docObject: Doc
   export let model: AttributeModel[]
   export let groupByKey: string | undefined
-  export let checked: boolean
-  export let selected: boolean
   export let last: boolean = false
   export let lastCat: boolean = false
   export let props: Record<string, any> = {}
@@ -47,12 +45,6 @@
 
   export function getElement (): HTMLDivElement {
     return elem
-  }
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  function getOnChange (_docObject: Doc, _attribute: AttributeModel): ((value: any) => void) | undefined {
-    // Return undefined to disable editing
-    return undefined
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -85,8 +77,6 @@
   bind:this={elem}
   class="listGrid antiList__row row gap-2 flex-grow"
   class:compactMode
-  class:checking={checked}
-  class:mListGridSelected={selected}
   class:last
   class:lastCat
   on:contextmenu
@@ -248,46 +238,6 @@
     &.compactMode {
       padding: 0 1.125rem 0 0.25rem;
     }
-    &.mListGridSelected {
-      background-color: var(--highlight-hover);
-    }
-
-    &.checking {
-      background-color: var(--highlight-select);
-      // border-bottom-color: var(--highlight-select);
-
-      &:hover,
-      &.mListGridSelected {
-        background-color: var(--highlight-select-hover);
-        // border-bottom-color: var(--highlight-select-hover);
-      }
-    }
-
-    // .draggable-container {
-    //   position: absolute;
-    //   left: 0;
-    //   display: flex;
-    //   align-items: center;
-    //   height: 100%;
-    //   width: 1rem;
-    //   cursor: grabbing;
-
-    //   .draggable-mark {
-    //     display: flex;
-    //     flex-direction: column;
-    //     justify-content: center;
-    //     align-items: center;
-    //     margin-left: 0.125rem;
-    //     width: 0.375rem;
-    //     height: 100%;
-    //     opacity: 0;
-    //   }
-    // }
-    // &:hover {
-    //   .draggable-mark {
-    //     opacity: 0.1;
-    //   }
-    // }
 
     .hidden-panel,
     .panel-trigger {

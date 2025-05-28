@@ -41,13 +41,11 @@
   export let baseMenuClass: Ref<Class<Doc>> | undefined = undefined
   export let config: Array<string | BuildModelKey>
   export let configurations: Record<Ref<Class<Doc>>, Viewlet['config']> | undefined
-  export let selectedObjectIds: Doc[] = []
   export let viewOptionsConfig: ViewOptionModel[] | undefined = undefined
   export let viewOptions: ViewOptions
   export let flatHeaders = false
   export let disableHeader = false
   export let props: Record<string, any> = {}
-  export let selection: number | undefined = undefined
   export let compactMode: boolean = false
   export let listProvider: SelectionFocusProvider
 
@@ -172,17 +170,6 @@
 
   $: dispatch('content', docs)
 
-  function uncheckAll (): void {
-    dispatch('check', { docs, value: false })
-    selectedObjectIds = []
-  }
-
-  export function select (offset: 2 | -2 | 1 | -1 | 0, of?: Doc, noScroll?: boolean): void {
-    if (of !== undefined || offset !== 0) {
-      listCategories?.select(offset, of, undefined, noScroll)
-    }
-  }
-
   let listDiv: HTMLDivElement
   let listCategories: ListCategories
 </script>
@@ -194,7 +181,6 @@
     {docs}
     {_class}
     {space}
-    {selection}
     query={resultQuery}
     {lookup}
     {baseMenuClass}
@@ -202,28 +188,16 @@
     {configurations}
     {viewOptions}
     {viewOptionsConfig}
-    {selectedObjectIds}
     {limiter}
     {listProvider}
     level={0}
     groupPersistKey={''}
-    on:check
-    on:uncheckAll={uncheckAll}
     on:row-focus
     {flatHeaders}
     {disableHeader}
     {props}
     {listDiv}
     {compactMode}
-    on:select={(evt) => {
-      select(0, evt.detail)
-    }}
-    on:select-next={(evt) => {
-      select(2, evt.detail)
-    }}
-    on:select-prev={(evt) => {
-      select(-2, evt.detail)
-    }}
     on:collapsed
     {resultQuery}
     {resultOptions}
