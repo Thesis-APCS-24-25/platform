@@ -13,28 +13,12 @@
 // limitations under the License.
 -->
 <script lang="ts">
-  import { Class, Doc, DocumentQuery, FindOptions, FindResult, Ref, SortingOrder } from '@hcengineering/core'
+  import { Class, Doc, DocumentQuery, FindOptions, FindResult, Ref } from '@hcengineering/core'
   import { Asset, getResource, IntlString } from '@hcengineering/platform'
-  import presentation, { createQuery, getClient } from '@hcengineering/presentation'
-  import { DocWithRank, makeRank } from '@hcengineering/task'
-  import { Button, Component, Icon, IconAdd, IconSize, Label, Loading } from '@hcengineering/ui'
-  import view, { ObjectFactory } from '@hcengineering/view'
-  import { flip } from 'svelte/animate'
+  import { createQuery, getClient } from '@hcengineering/presentation'
+  import { Icon, IconSize, Label, Loading } from '@hcengineering/ui'
   import { getListItemPresenter, getObjectPresenter } from '@hcengineering/view-resources'
   import { SvelteComponent } from 'svelte'
-
-  /*
-  How to use:
-
-  We must add presenter for the "_class" via "ListItemPresenter" / "AttributePresenter"
-  mixins or render the "object" slot to be able display the rows list.
-
-  To create a new items, we should add "ObjectFactory" mixin also.
-
-  We can create a custom list items or editor based on "SortableListItem"
-
-  Important: the "ObjectFactory" component must emit the "close" event
-*/
 
   export let _class: Ref<Class<Doc>>
   export let label: IntlString | undefined = undefined
@@ -42,30 +26,21 @@
   export let queryOptions: FindOptions<Doc> | undefined = undefined
   export let presenterProps: Record<string, any> = {}
   export let direction: 'row' | 'column' = 'column'
-  export let flipDuration = 200
-  export let isAddButtonHidden = false
-  export let isAddButtonDisabled = false
+  // export let flipDuration = 200
+  // export let isAddButtonHidden = true // Force hide add button
+  // export let isAddButtonDisabled = true // Force disable add button
   export let itemsCount = 0
   export let icon: Asset | undefined = undefined
   export let iconSize: IconSize = 'small'
 
-  const SORTING_ORDER = SortingOrder.Ascending
   const client = getClient()
-  const hierarchy = client.getHierarchy()
   const itemsQuery = createQuery()
 
   let isPresenterLoading = false
   let areItemsloading = true
-  let areItemsSorting = false
 
   let presenter: typeof SvelteComponent | undefined
-  let objectFactory: ObjectFactory | undefined
   let items: FindResult<Doc> | undefined
-
-  let draggingIndex: number | null = null
-  let hoveringIndex: number | null = null
-
-  let isCreating = false
 
   async function updatePresenter (classRef: Ref<Class<Doc>>): Promise<void> {
     try {
@@ -86,89 +61,23 @@
     }
   }
 
-  function updateObjectFactory (objectFactoryClassRef: Ref<Class<Doc>>): void {
-    const objectFactoryClass = hierarchy.getClass(objectFactoryClassRef)
-
-    if (hierarchy.hasMixin(objectFactoryClass, view.mixin.ObjectFactory)) {
-      objectFactory = hierarchy.as(objectFactoryClass, view.mixin.ObjectFactory)
-    }
-  }
-
   function updateItems (newItems: FindResult<Doc>): void {
     items = newItems
     areItemsloading = false
   }
 
-  function handleDragStart (ev: DragEvent, itemIndex: number): void {
-    if (ev.dataTransfer !== null && ev.dataTransfer !== undefined) {
-      ev.dataTransfer.effectAllowed = 'move'
-      ev.dataTransfer.dropEffect = 'move'
-    }
-
-    draggingIndex = itemIndex
-  }
-
-  function handleDragOver (ev: DragEvent, itemIndex: number): void {
-    ev.preventDefault()
-
-    hoveringIndex = itemIndex
-  }
-
-  async function handleDrop (itemIndex: number): Promise<void> {
-    // eslint-disable-next-line no-use-before-define, @typescript-eslint/no-use-before-define
-    if (isSortable && items !== undefined && draggingIndex !== null && draggingIndex !== itemIndex) {
-      const item = items[draggingIndex] as DocWithRank
-      const [prev, next] = [
-        items[draggingIndex < itemIndex ? itemIndex : itemIndex - 1] as DocWithRank,
-        items[draggingIndex < itemIndex ? itemIndex + 1 : itemIndex] as DocWithRank
-      ]
-
-      const sortingOrder = queryOptions?.sort?.rank ?? SORTING_ORDER
-      const rank =
-        sortingOrder === SortingOrder.Ascending ? makeRank(prev?.rank, next?.rank) : makeRank(next?.rank, prev?.rank)
-
-      try {
-        areItemsSorting = true
-        await client.update(item, { rank })
-      } finally {
-        areItemsSorting = false
-      }
-    }
-
-    resetDrag()
-  }
-
-  async function create (): Promise<void> {
-    if (objectFactory?.create !== undefined) {
-      const createFn = await getResource(objectFactory.create)
-      await createFn(query)
-      return
-    }
-
-    isCreating = true
-  }
-
-  function resetDrag (): void {
-    draggingIndex = null
-    hoveringIndex = null
-  }
-
   $: void (!$$slots.object && updatePresenter(_class))
-  $: updateObjectFactory(_class)
   $: itemsQuery.query(_class, query, updateItems, {
-    // eslint-disable-next-line no-use-before-define, @typescript-eslint/no-use-before-define
-    ...(isSortable ? { sort: { rank: SORTING_ORDER } } : {}),
     ...(queryOptions ?? {}),
     limit: Math.max(queryOptions?.limit ?? 0, 200)
   })
 
   $: isLoading = isPresenterLoading || areItemsloading
-  $: isSortable = hierarchy.getAllAttributes(_class).has('rank')
   $: itemsCount = items?.length ?? 0
 </script>
 
 <div class="flex-col">
-  {#if label !== undefined || !isAddButtonHidden}
+  {#if label !== undefined}
     <div class="flex mb-4">
       {#if icon}
         <div class="mr-2 flex-center">
@@ -182,19 +91,6 @@
           </span>
         </div>
       {/if}
-      {#if !isAddButtonHidden}
-        <div class="ml-auto">
-          <Button
-            showTooltip={{ label: presentation.string.Add }}
-            disabled={isAddButtonDisabled || isLoading || objectFactory === undefined}
-            width="min-content"
-            icon={IconAdd}
-            size="small"
-            kind="ghost"
-            on:click={create}
-          />
-        </div>
-      {/if}
     </div>
   {/if}
 
@@ -203,40 +99,15 @@
   {:else if ($$slots.object ?? presenter) && items}
     {@const isVertical = direction === 'column'}
     <div class="flex-gap-1" class:flex-col={isVertical} class:flex={!isVertical} class:flex-wrap={!isVertical}>
-      {#each items as item, index (item._id)}
-        {@const isDraggable = isSortable && items.length > 1 && !areItemsSorting}
-        <!-- svelte-ignore a11y-no-static-element-interactions -->
-        <div
-          class="item"
-          class:column={isVertical}
-          class:row={!isVertical}
-          class:is-dragged-over-before={draggingIndex !== null && index === hoveringIndex && index < draggingIndex}
-          class:is-dragged-over-after={draggingIndex !== null && index === hoveringIndex && index > draggingIndex}
-          draggable={isDraggable}
-          animate:flip={{ duration: flipDuration }}
-          on:dragstart={(ev) => {
-            handleDragStart(ev, index)
-          }}
-          on:dragover={(ev) => {
-            handleDragOver(ev, index)
-          }}
-          on:drop={async () => {
-            await handleDrop(index)
-          }}
-          on:dragend={resetDrag}
-        >
+      {#each items as item (item._id) }
+        <div class="item" class:column={isVertical} class:row={!isVertical}>
           {#if $$slots.object}
-            <slot name="object" value={item} {isDraggable} />
+            <slot name="object" value={item} isDraggable={false} />
           {:else if presenter}
-            <svelte:component this={presenter} {isDraggable} {...presenterProps} value={item} />
+            <svelte:component this={presenter} isDraggable={false} {...presenterProps} value={item} />
           {/if}
         </div>
       {/each}
-
-      {#if objectFactory?.component !== undefined && isCreating}
-        <!-- Important: the "close" event must be specified -->
-        <Component is={objectFactory.component} props={query} showLoading on:close={() => (isCreating = false)} />
-      {/if}
     </div>
   {/if}
 </div>
@@ -244,25 +115,5 @@
 <style lang="scss">
   .item {
     position: relative;
-
-    &.is-dragged-over-before::before,
-    &.is-dragged-over-after::before {
-      position: absolute;
-      content: '';
-      inset: 0;
-    }
-
-    &.column.is-dragged-over-before::before {
-      border-top: 1px solid var(--theme-caret-color);
-    }
-    &.column.is-dragged-over-after::before {
-      border-bottom: 1px solid var(--theme-caret-color);
-    }
-    &.row.is-dragged-over-before::before {
-      border-left: 1px solid var(--theme-caret-color);
-    }
-    &.row.is-dragged-over-after::before {
-      border-right: 1px solid var(--theme-caret-color);
-    }
   }
 </style>

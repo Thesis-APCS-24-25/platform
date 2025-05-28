@@ -14,29 +14,22 @@
 -->
 <script lang="ts">
   import { AggregateValue, Doc, PrimitiveType, Ref, Space } from '@hcengineering/core'
-  import { IntlString } from '@hcengineering/platform'
   import ui, {
     ActionIcon,
     AnyComponent,
-    AnySvelteComponent,
     Button,
     ColorDefinition,
     Component,
-    IconAdd,
-    IconBack,
     IconCheck,
     IconCollapseArrow,
     IconMoreH,
     Label,
     Loading,
     defaultBackground,
-    eventToHTMLElement,
-    showPopup,
     themeStore
   } from '@hcengineering/ui'
   import { AttributeModel, ViewOptions } from '@hcengineering/view'
   import { createEventDispatcher } from 'svelte'
-  // import { Analytics } from '@hcengineering/analytics'
 
   import view from '@hcengineering/view-resources/src/plugin'
   import {
@@ -58,12 +51,10 @@
   export let level: number
   export let listProvider: SelectionFocusProvider
 
-  export let createItemDialog: AnyComponent | AnySvelteComponent | undefined
-  export let createItemDialogProps: Record<string, any> | undefined
-  export let createItemLabel: IntlString | undefined
+  // Remove create-related properties
   export let extraHeaders: AnyComponent[] | undefined
   export let props: Record<string, any> = {}
-  export let newObjectProps: (doc: Doc | undefined) => Record<string, any> | undefined
+  // export let newObjectProps: (doc: Doc | undefined) => Record<string, any> | undefined
 
   export let viewOptions: ViewOptions
   export let loading: boolean = false
@@ -80,17 +71,6 @@
 
   $: headerTextColor = accentColor?.title ?? 'var(--theme-caption-color)'
 
-  const handleCreateItem = (event: MouseEvent): void => {
-    if (createItemDialog === undefined) return
-    // if (createItemEvent) {
-    //   Analytics.handleEvent(createItemEvent)
-    // }
-    showPopup(
-      createItemDialog,
-      { ...(createItemDialogProps ?? {}), ...newObjectProps(items[0]) },
-      eventToHTMLElement(event)
-    )
-  }
   let mouseOver = false
 
   const selection = listProvider.selection
@@ -99,129 +79,122 @@
   $: selected = items.filter((it) => selectionIds.has(it._id))
 </script>
 
-{#if headerComponent !== undefined || groupByKey === noCategory}
-  <!-- svelte-ignore a11y-click-events-have-key-events -->
-  <!-- svelte-ignore a11y-no-static-element-interactions -->
-  <div
-    style:z-index={10 - level}
-    style:--header-bg-color={headerBGColor}
-    class="flex-between categoryHeader row"
-    class:flat
-    class:noDivide={showColors}
-    class:collapsed
-    class:subLevel={level !== 0}
-    class:lastCat
-    class:cursor-pointer={items.length > 0}
-    on:focus={() => {
-      mouseOver = true
-    }}
-    on:mouseenter={() => {
-      mouseOver = true
-    }}
-    on:mouseover={() => {
-      mouseOver = true
-    }}
-    on:mouseleave={() => {
-      mouseOver = false
-    }}
-    on:click={() => dispatch('collapse')}
-  >
-    <div class="flex-row-center flex-grow" style:color={headerComponent !== undefined ? headerTextColor : 'inherit'}>
-      <!-- {#if level === 0} -->
-      <div class="chevron"><IconCollapseArrow size={level === 0 ? 'small' : 'tiny'} /></div>
-      <!-- {/if} -->
-      {#if groupByKey === noCategory}
-        <span class="text-base fs-bold overflow-label pointer-events-none">
-          <Label label={view.string.NoGrouping} />
-        </span>
-      {:else if category === undefined}
-        <span class="overflow-label pointer-events-none">
-          <Label label={view.string.NotSpecified} />
-        </span>
-      {:else if headerComponent}
-        <svelte:component
-          this={headerComponent.presenter}
-          value={category}
-          space={space ?? (items.every((i) => i?.space === items[0]?.space) ? items[0]?.space : undefined)}
-          size={'small'}
-          kind={'list-header'}
-          colorInherit={!$themeStore.dark && level === 0}
-          accent={level === 0}
-          disabled
-          on:accent-color={(evt) => {
-            accentColor = evt.detail
-          }}
-        />
-      {/if}
+<!-- svelte-ignore a11y-click-events-have-key-events -->
+<!-- svelte-ignore a11y-no-static-element-interactions -->
+<div
+  style:z-index={10 - level}
+  style:--header-bg-color={headerBGColor}
+  class="flex-between categoryHeader row"
+  class:flat
+  class:noDivide={showColors}
+  class:collapsed
+  class:subLevel={level !== 0}
+  class:lastCat
+  class:cursor-pointer={items.length > 0}
+  on:focus={() => {
+    mouseOver = true
+  }}
+  on:mouseenter={() => {
+    mouseOver = true
+  }}
+  on:mouseover={() => {
+    mouseOver = true
+  }}
+  on:mouseleave={() => {
+    mouseOver = false
+  }}
+  on:click={() => dispatch('collapse')}
+>
+  <div class="flex-row-center flex-grow" style:color={headerComponent !== undefined ? headerTextColor : 'inherit'}>
+    <div class="chevron"><IconCollapseArrow size={level === 0 ? 'small' : 'tiny'} /></div>
+    {#if groupByKey === noCategory}
+      <span class="text-base fs-bold overflow-label pointer-events-none">
+        <Label label={view.string.NoGrouping} />
+      </span>
+    {:else if category === undefined}
+      <span class="overflow-label pointer-events-none">
+        <Label label={view.string.NotSpecified} />
+      </span>
+    {:else if headerComponent}
+      <svelte:component
+        this={headerComponent.presenter}
+        value={category}
+        space={space ?? (items.every((i) => i?.space === items[0]?.space) ? items[0]?.space : undefined)}
+        size={'small'}
+        kind={'list-header'}
+        colorInherit={!$themeStore.dark && level === 0}
+        accent={level === 0}
+        disabled
+        on:accent-color={(evt) => {
+          accentColor = evt.detail
+        }}
+      />
+    {/if}
 
-      {#if loading && items.length === 0}
-        <div class="p-1">
-          <Loading shrink size={'small'} />
-        </div>
-      {:else}
-        {#if selected.length > 0}
-          <span class="antiSection-header__counter ml-2">
-            <span class="caption-color">
-              ({selected.length})
-            </span>
+    {#if loading && items.length === 0}
+      <div class="p-1">
+        <Loading shrink size={'small'} />
+      </div>
+    {:else}
+      {#if selected.length > 0}
+        <span class="antiSection-header__counter ml-2">
+          <span class="caption-color">
+            ({selected.length})
           </span>
-        {/if}
-        {#if limited < itemsProj.length}
-          <div class="antiSection-header__counter flex-row-center mx-2">
-            <span class="caption-color">{limited}</span>
-            <span class="text-xs mx-0-5">/</span>
-            {itemsProj.length}
-          </div>
-          {#if loading}
-            <div class="p-1">
-              <Loading shrink size={'small'} />
-            </div>
-          {:else}
-            <ActionIcon
-              size={'small'}
-              icon={IconMoreH}
-              label={ui.string.ShowMore}
-              action={() => {
-                dispatch('more')
-              }}
-            />
-          {/if}
-        {:else}
-          <span class="antiSection-header__counter ml-2">{itemsProj.length}</span>
-        {/if}
-        <div class="flex-row-center flex-reverse flex-grow mr-2 gap-2 reverse">
-          {#each extraHeaders ?? [] as extra}
-            <Component is={extra} props={{ ...props, value: category, category: groupByKey, docs: items }} />
-          {/each}
-        </div>
+        </span>
       {/if}
-    </div>
-    {#if createItemDialog !== undefined && createItemLabel !== undefined}
-      <div class:on-hover={!mouseOver} class="flex-row-center">
-        <Button icon={IconAdd} kind={'ghost'} showTooltip={{ label: createItemLabel }} on:click={handleCreateItem} />
-        <Button
-          icon={selected.length > 0 ? IconBack : IconCheck}
-          kind={'ghost'}
-          showTooltip={{ label: view.string.Select }}
-          on:click={() => {
-            let newSelection = [...$selection]
-            if (selected.length > 0) {
-              const smap = new Map(selected.map((it) => [it._id, it]))
-              newSelection = newSelection.filter((it) => !smap.has(it._id))
-            } else {
-              for (const s of items.slice(0, selectionLimit)) {
-                if (!selectionIds.has(s._id)) {
-                  newSelection.push(s)
-                }
-              }
-            }
-            listProvider.selection.set(newSelection)
-          }}
-        />
+      {#if limited < itemsProj.length}
+        <div class="antiSection-header__counter flex-row-center mx-2">
+          <span class="caption-color">{limited}</span>
+          <span class="text-xs mx-0-5">/</span>
+          {itemsProj.length}
+        </div>
+        {#if loading}
+          <div class="p-1">
+            <Loading shrink size={'small'} />
+          </div>
+        {:else}
+          <ActionIcon
+            size={'small'}
+            icon={IconMoreH}
+            label={ui.string.ShowMore}
+            action={() => {
+              dispatch('more')
+            }}
+          />
+        {/if}
+      {:else}
+        <span class="antiSection-header__counter ml-2">{itemsProj.length}</span>
+      {/if}
+      <div class="flex-row-center flex-reverse flex-grow mr-2 gap-2 reverse">
+        {#each extraHeaders ?? [] as extra}
+          <Component is={extra} props={{ ...props, value: category, category: groupByKey, docs: items }} />
+        {/each}
       </div>
     {/if}
   </div>
-{/if}
+  <div class:on-hover={!mouseOver} class="flex-row-center">
+    <Button
+      icon={IconCheck}
+      kind={'ghost'}
+      showTooltip={{ label: view.string.Select }}
+      on:click={() => {
+        let newSelection = [...$selection]
+        if (selected.length > 0) {
+          const smap = new Map(selected.map((it) => [it._id, it]))
+          newSelection = newSelection.filter((it) => !smap.has(it._id))
+        } else {
+          for (const s of items.slice(0, selectionLimit)) {
+            if (!selectionIds.has(s._id)) {
+              newSelection.push(s)
+            }
+          }
+        }
+        listProvider.selection.set(newSelection)
+      }}
+    />
+  </div>
+</div>
 
 <style lang="scss">
   .categoryHeader {

@@ -13,9 +13,8 @@
 // limitations under the License.
 -->
 <script lang="ts">
-  import { AnyAttribute, Doc, getObjectValue, Space } from '@hcengineering/core'
+  import { Doc, getObjectValue, Space } from '@hcengineering/core'
   import notification from '@hcengineering/notification'
-  import { getClient, updateAttribute } from '@hcengineering/presentation'
   import { CheckBox, Component, IconCircles, tooltip, deviceOptionsStore as deviceInfo } from '@hcengineering/ui'
   import { AttributeModel } from '@hcengineering/view'
   import { createEventDispatcher, onMount } from 'svelte'
@@ -50,33 +49,22 @@
     return elem
   }
 
-  const client = getClient()
-
-  function onChange (value: any, doc: Doc, key: string, attribute: AnyAttribute): void {
-    void updateAttribute(client, doc, doc._class, { key, attr: attribute }, value)
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  function getOnChange (_docObject: Doc, _attribute: AttributeModel): ((value: any) => void) | undefined {
+    // Return undefined to disable editing
+    return undefined
   }
 
-  function getOnChange (docObject: Doc, attribute: AttributeModel): ((value: any) => void) | undefined {
-    const attr = attribute.attribute
-    if (attr === undefined) return
-    if (attribute.collectionAttr) return
-    if (attribute.isLookup) return
-    return (value: any) => {
-      onChange(value, docObject, attribute.key, attr)
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  function getProps (props: Record<string, any>, _readonly: boolean): Record<string, any> {
+    // Always set readonly to true
+    return {
+      ...props,
+      readonly: true,
+      disabled: true,
+      editable: false,
+      isEditable: false
     }
-  }
-
-  function getProps (props: Record<string, any>, readonly: boolean): Record<string, any> {
-    if (readonly) {
-      return {
-        ...props,
-        readonly: true,
-        disabled: true,
-        editable: false,
-        isEditable: false
-      }
-    }
-    return props
   }
 
   $: mobile = $deviceInfo.isMobile
@@ -102,22 +90,11 @@
   class:mListGridSelected={selected}
   class:last
   class:lastCat
-  draggable={false}
   on:contextmenu
   on:focus
   on:mouseenter
   on:mouseover
-  on:dragover
-  on:dragenter
-  on:dragleave
-  on:drop
-  on:dragstart
 >
-  <div class="draggable-container">
-    <div class="draggable-mark">
-      <IconCircles size={'small'} />
-    </div>
-  </div>
   <div class="flex-center relative mr-1" use:tooltip={{ label: view.string.Select, direction: 'bottom' }}>
     <div class="antiList-cells__notifyCell">
       <div class="antiList-cells__checkCell">
@@ -303,31 +280,31 @@
       }
     }
 
-    .draggable-container {
-      position: absolute;
-      left: 0;
-      display: flex;
-      align-items: center;
-      height: 100%;
-      width: 1rem;
-      cursor: grabbing;
+    // .draggable-container {
+    //   position: absolute;
+    //   left: 0;
+    //   display: flex;
+    //   align-items: center;
+    //   height: 100%;
+    //   width: 1rem;
+    //   cursor: grabbing;
 
-      .draggable-mark {
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        margin-left: 0.125rem;
-        width: 0.375rem;
-        height: 100%;
-        opacity: 0;
-      }
-    }
-    &:hover {
-      .draggable-mark {
-        opacity: 0.1;
-      }
-    }
+    //   .draggable-mark {
+    //     display: flex;
+    //     flex-direction: column;
+    //     justify-content: center;
+    //     align-items: center;
+    //     margin-left: 0.125rem;
+    //     width: 0.375rem;
+    //     height: 100%;
+    //     opacity: 0;
+    //   }
+    // }
+    // &:hover {
+    //   .draggable-mark {
+    //     opacity: 0.1;
+    //   }
+    // }
 
     .hidden-panel,
     .panel-trigger {
