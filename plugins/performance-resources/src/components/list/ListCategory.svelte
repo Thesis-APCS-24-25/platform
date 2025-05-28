@@ -31,7 +31,7 @@
   import { AttributeModel, BuildModelKey, ViewOptionModel, ViewOptions, Viewlet } from '@hcengineering/view'
   import { createEventDispatcher } from 'svelte'
   import { fade } from 'svelte/transition'
-  import { showMenu, FocusSelection, SelectionFocusProvider, focusStore } from '@hcengineering/view-resources'
+  import { showMenu, focusStore } from '@hcengineering/view-resources'
   import ListHeader from './ListHeader.svelte'
   import ListItem from './ListItem.svelte'
 
@@ -45,7 +45,6 @@
   export let baseMenuClass: Ref<Class<Doc>> | undefined
   export let itemProj: Doc[]
   export let docKeys: Partial<DocumentQuery<Doc>> = {}
-  export let selectedObjectIds: Doc[]
   export let itemModels: Map<Ref<Class<Doc>>, AttributeModel[]>
   export let extraHeaders: AnyComponent[] | undefined
   export let flatHeaders = false
@@ -67,7 +66,6 @@
   export let resultOptions: FindOptions<Doc>
   export let parentCategories: number = 0
   export let limiter: RateLimiter
-  export let listProvider: SelectionFocusProvider
 
   $: lastLevel = level + 1 >= viewOptions.groupBy.length
 
@@ -168,21 +166,10 @@
 
   $: limited = limitGroup(items, limit)
 
-  $: selectedObjectIdsSet = new Set<Ref<Doc>>(selectedObjectIds.map((it) => it._id))
-
   const handleMenuOpened = async (event: MouseEvent, object: Doc): Promise<void> => {
     handleRowFocused(object)
 
-    if (!selectedObjectIdsSet.has(object._id)) {
-      dispatch('uncheckAll')
-    }
-
-    const items = selectedObjectIds.length > 0 ? selectedObjectIds : object
     showMenu(event, { object: items, baseMenuClass })
-  }
-
-  function isSelected (doc: Doc, focusStore: FocusSelection): boolean {
-    return focusStore.focus?._id === doc._id
   }
 
   // $: byRank = viewOptions.orderBy?.[0] === 'rank'
@@ -253,7 +240,6 @@
       limited={lastLevel ? limited.length : itemProj.length}
       itemsProj={itemProj}
       items={limited}
-      {listProvider}
       {headerComponent}
       {extraHeaders}
       flat={flatHeaders}
@@ -291,7 +277,6 @@
         {baseMenuClass}
         {config}
         {configurations}
-        {selectedObjectIds}
         {viewOptions}
         {docKeys}
         newObjectProps={newObjectProps}
@@ -311,11 +296,8 @@
               {docObject}
               model={getDocItemModel(Hierarchy.mixinOrClass(docObject))}
               {groupByKey}
-              selected={isSelected(docObject, $focusStore)}
-              checked={selectedObjectIdsSet.has(docObject._id)}
               last={i === limited.length - 1}
               lastCat={i === limited.length - 1 && (oneCat || lastCat)}
-              on:check={(ev) => dispatch('check', { docs: ev.detail.docs, value: ev.detail.value })}
               on:contextmenu={async (event) => {
                 await handleMenuOpened(event, docObject)
               }}

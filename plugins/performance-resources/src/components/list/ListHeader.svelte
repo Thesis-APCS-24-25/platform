@@ -17,10 +17,8 @@
   import ui, {
     ActionIcon,
     AnyComponent,
-    Button,
     ColorDefinition,
     Component,
-    IconCheck,
     IconCollapseArrow,
     IconMoreH,
     Label,
@@ -33,8 +31,6 @@
 
   import view from '@hcengineering/view-resources/src/plugin'
   import {
-    SelectionFocusProvider,
-    selectionLimit,
     noCategory
   } from '@hcengineering/view-resources'
 
@@ -49,7 +45,6 @@
   export let collapsed = false
   export let lastCat = false
   export let level: number
-  export let listProvider: SelectionFocusProvider
 
   export let extraHeaders: AnyComponent[] | undefined
   export let props: Record<string, any> = {}
@@ -70,12 +65,6 @@
 
   $: headerTextColor = accentColor?.title ?? 'var(--theme-caption-color)'
 
-  let mouseOver = false
-
-  const selection = listProvider.selection
-
-  $: selectionIds = new Set($selection.map((it) => it._id))
-  $: selected = items.filter((it) => selectionIds.has(it._id))
 </script>
 
 <!-- svelte-ignore a11y-click-events-have-key-events -->
@@ -90,18 +79,6 @@
   class:subLevel={level !== 0}
   class:lastCat
   class:cursor-pointer={items.length > 0}
-  on:focus={() => {
-    mouseOver = true
-  }}
-  on:mouseenter={() => {
-    mouseOver = true
-  }}
-  on:mouseover={() => {
-    mouseOver = true
-  }}
-  on:mouseleave={() => {
-    mouseOver = false
-  }}
   on:click={() => dispatch('collapse')}
 >
   <div class="flex-row-center flex-grow" style:color={headerComponent !== undefined ? headerTextColor : 'inherit'}>
@@ -134,13 +111,6 @@
         <Loading shrink size={'small'} />
       </div>
     {:else}
-      {#if selected.length > 0}
-        <span class="antiSection-header__counter ml-2">
-          <span class="caption-color">
-            ({selected.length})
-          </span>
-        </span>
-      {/if}
       {#if limited < itemsProj.length}
         <div class="antiSection-header__counter flex-row-center mx-2">
           <span class="caption-color">{limited}</span>
@@ -171,27 +141,6 @@
       </div>
     {/if}
   </div>
-  <div class:on-hover={!mouseOver} class="flex-row-center">
-    <Button
-      icon={IconCheck}
-      kind={'ghost'}
-      showTooltip={{ label: view.string.Select }}
-      on:click={() => {
-        let newSelection = [...$selection]
-        if (selected.length > 0) {
-          const smap = new Map(selected.map((it) => [it._id, it]))
-          newSelection = newSelection.filter((it) => !smap.has(it._id))
-        } else {
-          for (const s of items.slice(0, selectionLimit)) {
-            if (!selectionIds.has(s._id)) {
-              newSelection.push(s)
-            }
-          }
-        }
-        listProvider.selection.set(newSelection)
-      }}
-    />
-  </div>
 </div>
 
 <style lang="scss">
@@ -204,10 +153,6 @@
     min-width: 0;
     background: var(--theme-bg-color);
     border-radius: 0.25rem 0.25rem 0 0;
-
-    .on-hover {
-      visibility: hidden;
-    }
 
     .chevron {
       flex-shrink: 0;
