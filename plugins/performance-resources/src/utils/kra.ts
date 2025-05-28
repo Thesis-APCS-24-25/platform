@@ -11,11 +11,10 @@ import hcTask from '@hcengineering/task'
 import { getResource } from '@hcengineering/platform'
 
 export const listKRAStatusOrder = [
-  performance.kraStatus.InProgress,
   performance.kraStatus.Approved,
   performance.kraStatus.NeedChanges,
   performance.kraStatus.Drafting,
-  performance.kraStatus.Archived
+  performance.kraStatus.Cancelled
 ] as const
 
 export async function kraStatusSort (
