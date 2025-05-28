@@ -20,7 +20,7 @@ import task from '@hcengineering/model-task'
 import view, { actionTemplates, createAction } from '@hcengineering/model-view'
 import workbench, { createNavigateAction } from '@hcengineering/model-workbench'
 import { type IntlString } from '@hcengineering/platform'
-import { TrackerEvents, kraId } from '@hcengineering/kra'
+import { kraId } from '@hcengineering/kra'
 import { type KeyBinding } from '@hcengineering/view'
 import kra from './plugin'
 
@@ -123,7 +123,6 @@ export function createActions (builder: Builder, issuesId: string, myIssuesId: s
         mode: ['context', 'browser'],
         group: 'edit'
       },
-      analyticsEvent: TrackerEvents.ProjectArchived,
       override: [view.action.Archive, view.action.Delete]
     },
     kra.action.DeleteProject
@@ -145,7 +144,6 @@ export function createActions (builder: Builder, issuesId: string, myIssuesId: s
         mode: ['context', 'browser'],
         group: 'edit'
       },
-      analyticsEvent: TrackerEvents.ProjectDeleted,
       override: [view.action.Archive, view.action.Delete]
     },
     kra.action.DeleteProjectClean
@@ -165,8 +163,7 @@ export function createActions (builder: Builder, issuesId: string, myIssuesId: s
         group: 'remove'
       },
       visibilityTester: view.function.CanDeleteObject,
-      override: [view.action.Delete],
-      analyticsEvent: TrackerEvents.IssueDeleted
+      override: [view.action.Delete]
     },
     kra.action.DeleteIssue
   )
@@ -197,8 +194,7 @@ export function createActions (builder: Builder, issuesId: string, myIssuesId: s
         application: kra.app.Tracker,
         group: 'create'
       },
-      override: [kra.action.NewIssueGlobal],
-      analyticsEvent: TrackerEvents.NewIssueBindingCalled
+      override: [kra.action.NewIssueGlobal]
     },
     kra.action.NewIssue
   )
@@ -219,8 +215,7 @@ export function createActions (builder: Builder, issuesId: string, myIssuesId: s
       context: {
         mode: [],
         group: 'create'
-      },
-      analyticsEvent: TrackerEvents.IssueCreateFromGlobalActionCalled
+      }
     },
     kra.action.NewIssueGlobal
   )

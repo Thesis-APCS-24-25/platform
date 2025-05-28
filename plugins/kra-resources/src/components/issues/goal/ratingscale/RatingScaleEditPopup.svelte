@@ -10,7 +10,7 @@
 
   export let issue: Issue
   export let ratingScale: RatingScale
-  export let value: number | undefined = undefined
+  let value: number | undefined = ratingScale.progress
   export let note: string = ''
 
   let assignee: Ref<Employee> | null | undefined = issue.assignee as Ref<Employee>

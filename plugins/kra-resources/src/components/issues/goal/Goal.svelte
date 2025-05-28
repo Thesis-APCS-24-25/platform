@@ -1,17 +1,6 @@
 <script lang="ts">
   import { Goal, Issue, Kpi, RatingScale } from '@hcengineering/kra'
-  import {
-    IconAdd,
-    Label,
-    showPopup,
-    ButtonIcon,
-    IconDetails,
-    IconDelete,
-    IconEdit,
-    IconMoreV,
-    eventToHTMLElement,
-    tooltip
-  } from '@hcengineering/ui'
+  import { IconAdd, Label, showPopup, ButtonIcon, IconDelete, IconEdit } from '@hcengineering/ui'
   import Icon from '@hcengineering/ui/src/components/Icon.svelte'
   import RatingScaleEditor from './ratingscale/RatingScale.svelte'
   import KpiEditor from './kpi/Kpi.svelte'
@@ -21,7 +10,7 @@
   import kra from '../../../plugin'
   import { Ref, WithLookup } from '@hcengineering/core'
   import { createEventDispatcher } from 'svelte'
-  import { calculateResult, removeGoal } from '../../../utils/goal'
+  import { removeGoal } from '../../../utils/goal'
   import KpiReportsPopup from './kpi/KpiReportsPopup.svelte'
   import RatingScaleEditPopup from './ratingscale/RatingScaleEditPopup.svelte'
 
@@ -113,15 +102,12 @@
 
   async function handleEdit (type: 'rating-scale' | 'kpi'): Promise<void> {
     if (type === 'rating-scale' && ratingScale !== null) {
-      const value = await calculateResult(ratingScale)
       showPopup(RatingScaleEditPopup, {
         issue,
-        ratingScale,
-        value
+        ratingScale
       })
     } else if (type === 'kpi' && kpi !== null) {
-      const value = await calculateResult(kpi)
-      showPopup(KpiReportsPopup, { sum: value, kpi, issue }, 'center')
+      showPopup(KpiReportsPopup, { kpi, issue }, 'center')
     }
   }
 </script>
@@ -152,14 +138,24 @@
             label: kra.string.EditGoal
           }}
         />
-        <ButtonIcon icon={IconDelete} kind="tertiary" size="small" on:click={handleRemoveGoal} inheritColor
+        <ButtonIcon
+          icon={IconDelete}
+          kind="tertiary"
+          size="small"
+          on:click={handleRemoveGoal}
+          inheritColor
           tooltip={{
             label: kra.string.RemoveGoal
           }}
         />
       </div>
     {:else}
-      <ButtonIcon icon={IconAdd} kind="tertiary" size="small" on:click={handleCreateGoal} inheritColor
+      <ButtonIcon
+        icon={IconAdd}
+        kind="tertiary"
+        size="small"
+        on:click={handleCreateGoal}
+        inheritColor
         tooltip={{
           label: kra.string.AddGoal
         }}

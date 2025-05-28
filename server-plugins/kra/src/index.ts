@@ -38,6 +38,7 @@ export default plugin(serverKraId, {
     OnIssueUpdate: '' as Resource<TriggerFunc>,
     OnProjectRemove: '' as Resource<TriggerFunc>,
     OnGoalRemove: '' as Resource<TriggerFunc>,
+    OnGoalUpdate: '' as Resource<TriggerFunc>,
     OnWorkspaceOwnerAdded: '' as Resource<TriggerFunc>
   }
 })

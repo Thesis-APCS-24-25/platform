@@ -11,42 +11,32 @@ distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRAN
 -->
 <script lang="ts">
   import { Kpi } from '@hcengineering/kra'
-  import { calculateResult } from '../../../../utils/goal'
   import KpiProgressBar from './KpiProgressBar.svelte'
   import { WithLookup } from '@hcengineering/core'
 
   export let kpi: WithLookup<Kpi>
-
-  $: sum = calculateResult(kpi, undefined)
+  $: sum = kpi.progress
 </script>
 
-{#await sum then sum}
-  <div class="flex-row-center p-4 gap-4">
-    <div class="flex-col header">
-      <div class="fs-title text-xl">
-        {kpi.name}
-      </div>
-      <div class="description">{kpi.description}</div>
+<div class="flex-row-center p-4 gap-4">
+  <div class="flex-col header">
+    <div class="fs-title text-xl">
+      {kpi.name}
     </div>
-
-    <div class="kpi-box flex-col">
-      <div class="value">
-        <span class="value-value">{sum}</span>
-        <span class="value-target"> / {kpi.target}</span>
-        <span class="unit"> {kpi.$lookup?.unit?.name}</span>
-      </div>
-      <KpiProgressBar value={sum ?? 0} max={kpi.target} />
-    </div>
+    <div class="description">{kpi.description}</div>
   </div>
-{/await}
+
+  <div class="kpi-box flex-col items-end">
+    <div class="value">
+      <span class="value-value">{sum}</span>
+      <span class="value-target"> / {kpi.target}</span>
+      <span class="unit"> {kpi.$lookup?.unit?.name}</span>
+    </div>
+    <KpiProgressBar value={sum ?? 0} max={kpi.target} />
+  </div>
+</div>
 
 <style>
-  .container {
-    display: flex;
-    padding: 1rem;
-    border-radius: 0.25rem;
-  }
-
   .value {
     font-size: 1.25rem;
     font-weight: 500;

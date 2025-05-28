@@ -100,6 +100,9 @@ export class TGoal extends TDoc implements Goal {
 
   @Prop(TypeRef(kra.class.Unit), kra.string.Unit)
     unit!: Ref<Unit>
+
+  @Prop(TypeNumber(), kra.string.Progress)
+    progress!: number
 }
 
 @Model(kra.class.Unit, core.class.Type, DOMAIN_KRA)
