@@ -40,7 +40,7 @@ import { stripTags } from '@hcengineering/text-core'
 import kra, { Goal, Issue, IssueParentInfo, Project, Report, TimeSpendReport, kraId } from '@hcengineering/kra'
 import { workbenchId } from '@hcengineering/workbench'
 
-async function updateSubIssues(
+async function updateSubIssues (
   updateTx: TxUpdateDoc<Issue>,
   control: TriggerControl,
   update: DocumentUpdate<Issue> | ((node: Issue) => DocumentUpdate<Issue>)
@@ -58,7 +58,7 @@ async function updateSubIssues(
 /**
  * @public
  */
-export async function issueHTMLPresenter(doc: Doc, control: TriggerControl): Promise<string> {
+export async function issueHTMLPresenter (doc: Doc, control: TriggerControl): Promise<string> {
   const issue = doc as Issue
   const front = control.branding?.front ?? getMetadata(serverCore.metadata.FrontUrl) ?? ''
   const path = `${workbenchId}/${control.workspace.workspaceUrl}/${kraId}/${issue.identifier}`
@@ -69,7 +69,7 @@ export async function issueHTMLPresenter(doc: Doc, control: TriggerControl): Pro
 /**
  * @public
  */
-export async function getIssueId(doc: Issue, control: TriggerControl): Promise<string> {
+export async function getIssueId (doc: Issue, control: TriggerControl): Promise<string> {
   const issue = doc
   const project = (await control.findAll(control.ctx, kra.class.Project, { _id: issue.space }))[0]
   return `${project?.identifier ?? '?'}-${issue.number}`
@@ -78,12 +78,12 @@ export async function getIssueId(doc: Issue, control: TriggerControl): Promise<s
 /**
  * @public
  */
-export async function issueTextPresenter(doc: Doc): Promise<string> {
+export async function issueTextPresenter (doc: Doc): Promise<string> {
   const issue = doc as Issue
   return `${issue.identifier} ${issue.title}`
 }
 
-function isSamePerson(control: TriggerControl, assignee: Ref<Person>, target: Ref<Account>): boolean {
+function isSamePerson (control: TriggerControl, assignee: Ref<Person>, target: Ref<Account>): boolean {
   const targetAccount = control.modelDb.getObject(target) as PersonAccount
   return assignee === targetAccount?.person
 }
@@ -91,7 +91,7 @@ function isSamePerson(control: TriggerControl, assignee: Ref<Person>, target: Re
 /**
  * @public
  */
-export async function getIssueNotificationContent(
+export async function getIssueNotificationContent (
   doc: Doc,
   tx: TxCUD<Doc>,
   target: Ref<Account>,
@@ -157,7 +157,7 @@ export async function getIssueNotificationContent(
 /**
  * @public
  */
-export async function OnProjectRemove(txes: Tx[], control: TriggerControl): Promise<Tx[]> {
+export async function OnProjectRemove (txes: Tx[], control: TriggerControl): Promise<Tx[]> {
   const result: Tx[] = []
   for (const tx of txes) {
     const ctx = tx as TxRemoveDoc<Project>
@@ -178,7 +178,7 @@ export async function OnProjectRemove(txes: Tx[], control: TriggerControl): Prom
   return result
 }
 
-export async function OnGoalRemove(txes: Tx[], control: TriggerControl): Promise<Tx[]> {
+export async function OnGoalRemove (txes: Tx[], control: TriggerControl): Promise<Tx[]> {
   const result: Tx[] = []
   for (const tx of txes) {
     const ctx = tx as TxRemoveDoc<Goal>
@@ -196,7 +196,7 @@ export async function OnGoalRemove(txes: Tx[], control: TriggerControl): Promise
 /**
  * @public
  */
-export async function OnWorkspaceOwnerAdded(txes: Tx[], control: TriggerControl): Promise<Tx[]> {
+export async function OnWorkspaceOwnerAdded (txes: Tx[], control: TriggerControl): Promise<Tx[]> {
   const result: Tx[] = []
   for (const tx of txes) {
     let ownerId: Ref<PersonAccount> | undefined
@@ -243,7 +243,7 @@ export async function OnWorkspaceOwnerAdded(txes: Tx[], control: TriggerControl)
   return result
 }
 
-export async function OnGoalUpdate(txes: Tx[], control: TriggerControl): Promise<Tx[]> {
+export async function OnGoalUpdate (txes: Tx[], control: TriggerControl): Promise<Tx[]> {
   const result: Tx[] = []
   for (const actualTx of txes) {
     // Check TimeReport operations
@@ -257,6 +257,24 @@ export async function OnGoalUpdate(txes: Tx[], control: TriggerControl): Promise
         result.push(...(await doGoalReportUpdate(cud, control)))
       }
     }
+
+    if (actualTx._class === core.class.TxCreateDoc) {
+      const createTx = actualTx as TxCreateDoc<Goal>
+      if (control.hierarchy.isDerived(createTx.objectClass, kra.class.Kpi)) {
+        const tx = control.txFactory.createTxUpdateDoc(
+          createTx.objectClass,
+          createTx.objectSpace,
+          createTx.objectId,
+          {
+            progress: 0
+          },
+          false,
+          createTx.createdOn
+        )
+        result.push(tx)
+        continue
+      }
+    }
   }
   return result
 }
@@ -264,7 +282,7 @@ export async function OnGoalUpdate(txes: Tx[], control: TriggerControl): Promise
 /**
  * @public
  */
-export async function OnIssueUpdate(txes: Tx[], control: TriggerControl): Promise<Tx[]> {
+export async function OnIssueUpdate (txes: Tx[], control: TriggerControl): Promise<Tx[]> {
   const result: Tx[] = []
   for (const actualTx of txes) {
     // Check TimeReport operations
@@ -325,121 +343,101 @@ export async function OnIssueUpdate(txes: Tx[], control: TriggerControl): Promis
   return result
 }
 
-async function doGoalReportUpdate(cud: TxCUD<Report>, control: TriggerControl): Promise<Tx[]> {
+async function doGoalReportUpdate (cud: TxCUD<Report>, control: TriggerControl): Promise<Tx[]> {
   const { attachedTo: attachedToId, attachedToClass } = cud
+
   if (attachedToClass === undefined || attachedToId === undefined) {
     return []
   }
+
   const attachedTo = attachedToId as Ref<Goal>
+
+  async function getCurrentGoal (): Promise<Goal | undefined> {
+    const [currentGoal] = await control.findAll(control.ctx, kra.class.Goal, { _id: attachedTo }, { limit: 1 })
+    return currentGoal
+  }
+
+  function createUpdateTx (currentGoal: Goal, progressUpdate: number, isIncrement: boolean): Tx {
+    const update = isIncrement ? { $inc: { progress: progressUpdate } } : { progress: progressUpdate }
+    if (attachedToClass === undefined) {
+      throw new Error('Attached-to class is undefined, which is unexpected')
+    }
+    return control.txFactory.createTxUpdateDoc<Goal>(
+      attachedToClass,
+      cud.objectSpace,
+      attachedTo,
+      update,
+      false,
+      currentGoal.modifiedOn
+    )
+  }
+
   switch (cud._class) {
     case core.class.TxCreateDoc: {
       const ccud = cud as TxCreateDoc<Report>
-      const [currentGoal] = await control.findAll(control.ctx, kra.class.Goal, { _id: attachedTo }, { limit: 1 })
+      const currentGoal = await getCurrentGoal()
+      if (currentGoal === undefined) return []
+
       const res: Tx[] = []
       if (currentGoal._class === kra.class.Kpi) {
-        res.push(
-          control.txFactory.createTxUpdateDoc<Goal>(
-            attachedToClass,
-            cud.objectSpace,
-            attachedTo,
-            {
-              $inc: { progress: ccud.attributes.value }
-            },
-            false,
-            currentGoal.modifiedOn
-          )
-        )
-        currentGoal.progress += ccud.attributes.value
+        res.push(createUpdateTx(currentGoal, ccud.attributes.value, true))
       } else if (currentGoal._class === kra.class.RatingScale) {
-        res.push(
-          control.txFactory.createTxUpdateDoc<Goal>(
-            attachedToClass,
-            cud.objectSpace,
-            attachedTo,
-            {
-              progress: ccud.attributes.value
-            },
-            false,
-            currentGoal.modifiedOn
-          )
-        )
-        currentGoal.progress = ccud.attributes.value
+        res.push(createUpdateTx(currentGoal, ccud.attributes.value, false))
       }
       return res
     }
+
     case core.class.TxUpdateDoc: {
       const upd = cud as TxUpdateDoc<Report>
-      if (upd.operations.value !== undefined) {
-        const logTxes = Array.from(
-          await control.findAll(control.ctx, core.class.TxCUD, {
-            objectId: cud.objectId
-          })
-        ).filter((it) => it._id !== cud._id)
-        const doc: Report | undefined = TxProcessor.buildDoc2Doc(logTxes)
+      if (upd.operations.value === undefined) return []
 
-        const res: Tx[] = []
-        const [currentGoal] = await control.findAll(control.ctx, kra.class.Goal, { _id: attachedTo }, { limit: 1 })
-        if (doc !== undefined) {
-          if (currentGoal._class === kra.class.Kpi) {
-            res.push(
-              control.txFactory.createTxUpdateDoc<Goal>(
-                attachedToClass,
-                cud.objectSpace,
-                attachedTo,
-                {
-                  $inc: { progress: upd.operations.value - doc.value }
-                },
-                false,
-                currentGoal.modifiedOn
-              )
-            )
-            currentGoal.progress -= doc.value
-            currentGoal.progress += upd.operations.value
-          } else if (currentGoal._class === kra.class.RatingScale) {
-            // Does not support yet, or should we?
-          }
-        }
-        return res
+      const logTxes = Array.from(
+        await control.findAll(control.ctx, core.class.TxCUD, { objectId: cud.objectId })
+      ).filter((it) => it._id !== cud._id)
+
+      const doc: Report | undefined = TxProcessor.buildDoc2Doc(logTxes)
+      if (doc === undefined) return []
+
+      const currentGoal = await getCurrentGoal()
+      if (currentGoal === undefined) return []
+
+      const res: Tx[] = []
+      if (currentGoal._class === kra.class.Kpi) {
+        res.push(createUpdateTx(currentGoal, upd.operations.value - doc.value, true))
+      } else if (currentGoal._class === kra.class.RatingScale) {
+        // Add support for RatingScale if needed
       }
-      break
+      return res
     }
+
     case core.class.TxRemoveDoc: {
-      if (!control.removedMap.has(attachedTo)) {
-        const logTxes = Array.from(
-          await control.findAll(control.ctx, core.class.TxCUD, {
-            objectId: cud.objectId
-          })
-        ).filter((it) => it._id !== cud._id)
-        const doc: Report | undefined = TxProcessor.buildDoc2Doc(logTxes)
-        if (doc !== undefined) {
-          const [currentGoal] = await control.findAll(control.ctx, kra.class.Goal, { _id: attachedTo }, { limit: 1 })
-          const res: Tx[] = []
-          if (currentGoal._class === kra.class.Kpi) {
-            res.push(
-              control.txFactory.createTxUpdateDoc<Goal>(
-                attachedToClass,
-                cud.objectSpace,
-                attachedTo,
-                {
-                  $inc: { progress: -1 * doc.value }
-                },
-                false,
-                currentGoal.modifiedOn
-              )
-            )
-            currentGoal.progress -= doc.value
-          } else if (currentGoal._class === kra.class.RatingScale) {
-            // Does not support yet, or should we?
-          }
-          return res
-        }
+      if (control.removedMap.has(attachedTo)) return []
+
+      const logTxes = Array.from(
+        await control.findAll(control.ctx, core.class.TxCUD, { objectId: cud.objectId })
+      ).filter((it) => it._id !== cud._id)
+
+      const doc: Report | undefined = TxProcessor.buildDoc2Doc(logTxes)
+      if (doc === undefined) return []
+
+      const currentGoal = await getCurrentGoal()
+      if (currentGoal === undefined) return []
+
+      const res: Tx[] = []
+      if (currentGoal._class === kra.class.Kpi) {
+        res.push(createUpdateTx(currentGoal, -1 * doc.value, true))
+      } else if (currentGoal._class === kra.class.RatingScale) {
+        // Add support for RatingScale if needed
       }
+      return res
     }
+
+    default:
+      return []
   }
-  return []
 }
 
-async function doTimeReportUpdate(cud: TxCUD<TimeSpendReport>, control: TriggerControl): Promise<Tx[]> {
+async function doTimeReportUpdate (cud: TxCUD<TimeSpendReport>, control: TriggerControl): Promise<Tx[]> {
   const { attachedTo: attachedToId, attachedToClass } = cud
   if (attachedToClass === undefined || attachedToId === undefined) {
     return []
@@ -534,12 +532,12 @@ async function doTimeReportUpdate(cud: TxCUD<TimeSpendReport>, control: TriggerC
   return []
 }
 
-async function doIssueUpdate(updateTx: TxUpdateDoc<Issue>, control: TriggerControl): Promise<Tx[]> {
+async function doIssueUpdate (updateTx: TxUpdateDoc<Issue>, control: TriggerControl): Promise<Tx[]> {
   const res: Tx[] = []
 
   let currentIssue: WithLookup<Issue> | undefined
 
-  async function getCurrentIssue(): Promise<WithLookup<Issue>> {
+  async function getCurrentIssue (): Promise<WithLookup<Issue>> {
     if (currentIssue !== undefined) {
       return currentIssue
     }
@@ -559,24 +557,24 @@ async function doIssueUpdate(updateTx: TxUpdateDoc<Issue>, control: TriggerContr
     const updatedParents: IssueParentInfo[] =
       newParent !== undefined
         ? [
-          {
-            parentId: newParent._id,
-            parentTitle: newParent.title,
-            space: newParent.space,
-            identifier: newParent.identifier
-          },
-          ...newParent.parents
-        ]
+            {
+              parentId: newParent._id,
+              parentTitle: newParent.title,
+              space: newParent.space,
+              identifier: newParent.identifier
+            },
+            ...newParent.parents
+          ]
         : []
 
-    function update(issue: Issue): DocumentUpdate<Issue> {
+    function update (issue: Issue): DocumentUpdate<Issue> {
       const parentInfoIndex = issue.parents.findIndex(({ parentId }) => parentId === updateTx.objectId)
       const parentsUpdate =
         parentInfoIndex === -1
           ? {}
           : {
-            parents: [...issue.parents].slice(0, parentInfoIndex + 1).concat(updatedParents)
-          }
+              parents: [...issue.parents].slice(0, parentInfoIndex + 1).concat(updatedParents)
+            }
 
       return { ...parentsUpdate }
     }
@@ -615,7 +613,7 @@ async function doIssueUpdate(updateTx: TxUpdateDoc<Issue>, control: TriggerContr
   }
 
   if (Object.prototype.hasOwnProperty.call(updateTx.operations, 'title')) {
-    function update(issue: Issue): DocumentUpdate<Issue> {
+    function update (issue: Issue): DocumentUpdate<Issue> {
       const parentInfoIndex = issue.parents.findIndex(({ parentId }) => parentId === updateTx.objectId)
       const updatedParentInfo = {
         ...issue.parents[parentInfoIndex],
@@ -633,7 +631,7 @@ async function doIssueUpdate(updateTx: TxUpdateDoc<Issue>, control: TriggerContr
 
   return res
 }
-function updateIssueParentEstimations(
+function updateIssueParentEstimations (
   issue: {
     _id: Ref<Issue>
     space: Ref<Space>
@@ -669,7 +667,7 @@ function updateIssueParentEstimations(
   }
 }
 
-async function issueLinkIdProvider(issue: Issue): Promise<string> {
+async function issueLinkIdProvider (issue: Issue): Promise<string> {
   return issue.identifier
 }
 
