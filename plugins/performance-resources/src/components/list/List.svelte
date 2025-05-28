@@ -23,9 +23,7 @@
     Space,
     mergeQueries
   } from '@hcengineering/core'
-  import { IntlString } from '@hcengineering/platform'
   import { createQuery, getClient, reduceCalls } from '@hcengineering/presentation'
-  import { AnyComponent, AnySvelteComponent } from '@hcengineering/ui'
   import { BuildModelKey, ViewOptionModel, ViewOptions, Viewlet } from '@hcengineering/view'
   import { createEventDispatcher } from 'svelte'
   import {
@@ -44,9 +42,6 @@
   export let config: Array<string | BuildModelKey>
   export let configurations: Record<Ref<Class<Doc>>, Viewlet['config']> | undefined
   export let selectedObjectIds: Doc[] = []
-  export let createItemDialog: AnyComponent | AnySvelteComponent | undefined = undefined
-  export let createItemDialogProps: Record<string, any> | undefined = undefined
-  export let createItemLabel: IntlString | undefined = undefined
   export let viewOptionsConfig: ViewOptionModel[] | undefined = undefined
   export let viewOptions: ViewOptions
   export let flatHeaders = false
@@ -188,11 +183,6 @@
     }
   }
 
-  let dragItem: {
-    doc?: Doc
-    revert?: () => void
-  } = {}
-
   let listDiv: HTMLDivElement
   let listCategories: ListCategories
 </script>
@@ -217,9 +207,6 @@
     {listProvider}
     level={0}
     groupPersistKey={''}
-    {createItemDialog}
-    {createItemDialogProps}
-    {createItemLabel}
     on:check
     on:uncheckAll={uncheckAll}
     on:row-focus
@@ -228,7 +215,6 @@
     {props}
     {listDiv}
     {compactMode}
-    bind:dragItem
     on:select={(evt) => {
       select(0, evt.detail)
     }}

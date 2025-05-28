@@ -25,9 +25,8 @@
     Ref,
     Space
   } from '@hcengineering/core'
-  import { getResource, IntlString } from '@hcengineering/platform'
+  import { getResource } from '@hcengineering/platform'
   import { getClient, reduceCalls } from '@hcengineering/presentation'
-  import { AnyComponent, AnySvelteComponent } from '@hcengineering/ui'
   import {
     AttributeModel,
     BuildModelKey,
@@ -60,9 +59,6 @@
   export let config: Array<string | BuildModelKey>
   export let configurations: Record<Ref<Class<Doc>>, Viewlet['config']> | undefined
   export let selectedObjectIds: Doc[] = []
-  export let createItemDialog: AnyComponent | AnySvelteComponent | undefined
-  export let createItemDialogProps: Record<string, any> | undefined
-  export let createItemLabel: IntlString | undefined
   export let viewOptions: ViewOptions
   export let flatHeaders = false
   export let disableHeader = false
@@ -71,10 +67,6 @@
   export let initIndex = 0
   export let newObjectProps: (doc: Doc | undefined) => Record<string, any> | undefined
   export let viewOptionsConfig: ViewOptionModel[] | undefined = undefined
-  export let dragItem: {
-    doc?: Doc
-    revert?: () => void
-  }
   export let listDiv: HTMLDivElement
   export let selection: number | undefined
   export let groupPersistKey: string
@@ -181,14 +173,14 @@
 
   $: void buildModels(_class, config, configurations)
 
-  function getInitIndex (categories: any, i: number): number {
-    let res = initIndex
-    for (let index = 0; index < i; index++) {
-      const cat = categories[index]
-      res += groupByDocs[cat]?.length ?? 0
-    }
-    return res
-  }
+  // function getInitIndex (categories: any, i: number): number {
+  //   let res = initIndex
+  //   for (let index = 0; index < i; index++) {
+  //     const cat = categories[index]
+  //     res += groupByDocs[cat]?.length ?? 0
+  //   }
+  //   return res
+  // }
 
   $: extraHeaders = getAdditionalHeader(client, _class)
 
@@ -409,9 +401,6 @@
     itemProj={items}
     docKeys={categoryDocKeys}
     {newObjectProps}
-    {createItemDialog}
-    {createItemDialogProps}
-    {createItemLabel}
     {viewOptionsConfig}
     {compactMode}
     {resultQuery}
@@ -421,18 +410,11 @@
     on:check
     on:uncheckAll
     on:row-focus
-    on:dragstart={(e) => {
-      dispatch('dragstart', {
-        target: e.detail.target,
-        index: e.detail.index + getInitIndex(categories, i)
-      })
-    }}
     on:collapsed
     {flatHeaders}
     {disableHeader}
     {props}
     {listDiv}
-    bind:dragItem
   >
     <svelte:fragment
       slot="category"
@@ -443,8 +425,6 @@
       let:baseMenuClass
       let:config
       let:selectedObjectIds
-      let:createItemDialog
-      let:createItemLabel
       let:viewOptions
       let:newObjectProps
       let:flatHeaders
@@ -452,7 +432,6 @@
       let:level
       let:viewOptionsConfig
       let:listDiv
-      let:dragstart
     >
       <svelte:self
         {docs}
@@ -463,8 +442,6 @@
         {baseMenuClass}
         {config}
         {selectedObjectIds}
-        {createItemDialog}
-        {createItemLabel}
         {viewOptions}
         {newObjectProps}
         {flatHeaders}
@@ -479,12 +456,9 @@
         {resultOptions}
         {limiter}
         {listProvider}
-        bind:dragItem
-        on:dragItem
         on:check
         on:uncheckAll
         on:row-focus
-        on:dragstart={dragstart}
         on:select={(evt) => {
           select(0, evt.detail)
         }}

@@ -21,14 +21,14 @@
 
   export let docObject: Doc
   export let attributeModel: AttributeModel
-  export let onChange: ((value: any) => void) | undefined
+  export let onChange: ((value: any) => void) | undefined = undefined // Always undefined to disable editing
   export let value: any
   export let props: Record<string, any>
   export let hideDivider: boolean = false
   export let compactMode: boolean = false
-  export let disabled: boolean | undefined = true
-  export let isEditable: boolean | undefined = false
-  export let readonly: boolean | undefined = true
+  // export let disabled: boolean | undefined = true
+  // export let isEditable: boolean | undefined = false
+  // export let readonly: boolean | undefined = true
 
   const dispatch = createEventDispatcher()
 
@@ -39,7 +39,16 @@
     if (attribute.attribute?.type._class === core.class.EnumOf) {
       return { ...clearAttributeProps, type: attribute.attribute.type, ...props }
     }
-    return { object, ...clearAttributeProps, space: object.space, ...props }
+    // Add readonly and disabled to all props
+    return {
+      object,
+      ...clearAttributeProps,
+      space: object.space,
+      ...props,
+      readonly: true,
+      disabled: true,
+      isEditable: false
+    }
   }
   const translateSize = (e: CustomEvent): void => {
     if (e.detail === undefined) return
@@ -60,9 +69,9 @@
       {compactMode}
       {...joinProps(attributeModel, docObject, props)}
       on:resize={translateSize}
-      {disabled}
-      {isEditable}
-      {readonly}
+      disabled={true}
+      isEditable={false}
+      readonly={true}
     />
   </FixedColumn>
 {:else}
@@ -72,9 +81,9 @@
     {onChange}
     kind={'list'}
     {compactMode}
-    {disabled}
-    {isEditable}
-    {readonly}
+    disabled={true}
+    isEditable={false}
+    readonly={true}
     {...joinProps(attributeModel, docObject, props)}
     on:resize={translateSize}
   />
