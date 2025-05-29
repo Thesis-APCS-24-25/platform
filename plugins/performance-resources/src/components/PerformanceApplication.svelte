@@ -1,6 +1,6 @@
 <script lang="ts">
   import { checkPermission, Ref } from '@hcengineering/core'
-  import { NavLink } from '@hcengineering/view-resources'
+  import { NavLink, SpacePresenter } from '@hcengineering/view-resources'
   import {
     defineSeparators,
     location,
@@ -18,11 +18,19 @@
   import performance from '../plugin'
   import TeamSwitchHeader from './TeamSwitchHeader.svelte'
   import { ReviewSession } from '@hcengineering/performance'
-  import { getClient } from '@hcengineering/presentation'
+  import { createQuery, getClient } from '@hcengineering/presentation'
+  import ReviewSessionSpacePresenter from './review-session/ReviewSessionSpacePresenter.svelte'
   let currentSpecial: SpecialNavModel | undefined
 
   let currentTeam: Ref<Team> | undefined = undefined
   let currentReviewSession: Ref<ReviewSession> | undefined = undefined
+  let reviewSessions: ReviewSession[] = []
+  const reviewSessionQ = createQuery()
+  $: reviewSessionQ.query(performance.class.ReviewSession, {
+    space: currentTeam
+  }, (res) => {
+    reviewSessions = res
+  })
   let replacedPanel: HTMLElement
 
   let specials: SpecialNavModel[] | undefined = undefined
@@ -160,6 +168,12 @@
             </NavLink>
           {/each}
         {/if}
+
+        <div class="antiVSpacer" />
+
+        {#each reviewSessions as rv}
+          <ReviewSessionSpacePresenter space={rv} currentSpace={currentReviewSession}/>
+        {/each}
       </div>
     </div>
     <Separator

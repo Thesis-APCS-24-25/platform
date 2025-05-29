@@ -14,6 +14,8 @@ import {
   SeagullColor
 } from '@hcengineering/ui'
 import { getClient } from '@hcengineering/presentation'
+import { currentTeam } from './team'
+import { get } from 'svelte/store'
 
 export async function createReviewSession (
   client: TxOperations,
@@ -104,4 +106,12 @@ export const getActiveReviewSession = async (team: Ref<Space>): Promise<Ref<Revi
   }
 
   return null
+}
+
+export async function IsReviewSessionOfCurrentTeam (space: Space): Promise<boolean> {
+  const team = get(currentTeam)
+  if (space.space !== team) {
+    return false
+  }
+  return true
 }

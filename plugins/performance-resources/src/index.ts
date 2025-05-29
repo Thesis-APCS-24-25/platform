@@ -16,7 +16,7 @@
 import { type Status, type Resources } from '@hcengineering/platform'
 import NewReviewSessionHeader from './components/NewReviewSessionHeader.svelte'
 import CreateReviewSession from './components/review-session/CreateReviewSession.svelte'
-import ReviewSessionSpacePresenter from './components/navigator/ReviewSessionSpacePresenter.svelte'
+import ReviewSessionSpacePresenter from './components/review-session/ReviewSessionSpacePresenter.svelte'
 import CreateKRA from './components/kra/CreateKRA.svelte'
 import EditKRA from './components/kra/EditKRA.svelte'
 import KRAPresenter from './components/kra/KRAPresenter.svelte'
@@ -42,6 +42,9 @@ import KRAWeightEditorWithPopup from './components/kra/KRAWeightEditorWithPopup.
 // import ReviewSessionStatusPresenter from './components/review-session/ReviewSessionStatusPresenter.svelte'
 // import ReviewSessionStatusRefPresenter from './components/review-session/ReviewSessionStatusRefPresenter.svelte'
 // import ReviewSessionStateEditor from './components/review-session/ReviewSessionStateEditor.svelte'
+import { IsReviewSessionOfCurrentTeam } from './utils/review-session'
+import AllKRAs from './components/kra/AllKRAs.svelte'
+import AllReviewSessions from './components/review-session/AllReviewSessions.svelte'
 
 export default async (): Promise<Resources> => ({
   component: {
@@ -66,6 +69,8 @@ export default async (): Promise<Resources> => ({
     PerformanceApplication,
     TeamSwitchHeader,
     KRAWeightEditorWithPopup,
+    AllReviewSessions,
+    AllKRAs,
     ListView
     // ReviewSessionStatusPresenter,
     // ReviewSessionStatusRefPresenter,
@@ -78,6 +83,7 @@ export default async (): Promise<Resources> => ({
       onUpdate: () => void,
       queryId: Ref<Doc<Space>>,
       attr: Attribute<Status>
-    ) => await getAllStates(query, onUpdate, queryId, attr, false)
+    ) => await getAllStates(query, onUpdate, queryId, attr, false),
+    IsReviewSessionOfCurrentTeam
   }
 })

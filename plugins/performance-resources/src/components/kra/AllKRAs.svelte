@@ -1,14 +1,11 @@
 <script lang="ts">
-  import { Ref, Doc, Space, DocumentQuery, getCurrentAccount } from '@hcengineering/core'
+  import { Ref, Doc, Space, DocumentQuery } from '@hcengineering/core'
   import { Asset, IntlString } from '@hcengineering/platform'
   import { AnyComponent, IModeSelector } from '@hcengineering/ui'
   import { ViewletDescriptor } from '@hcengineering/view'
   import { SpecialView } from '@hcengineering/workbench-resources'
   import { ParentsNavigationModel } from '@hcengineering/workbench'
-  import { createQuery } from '@hcengineering/presentation'
   import performance from '../../plugin'
-  import { PersonAccount } from '@hcengineering/contact'
-  import AllKRAs from './AllKRAs.svelte'
 
   export let space: Ref<Space> | undefined = undefined
   export let icon: Asset
@@ -24,31 +21,14 @@
   export let modes: IModeSelector<any> | undefined = undefined
   export let navigationModel: ParentsNavigationModel | undefined = undefined
 
-  const userId = getCurrentAccount()._id as Ref<PersonAccount>
-  const employeeKRAQuery = createQuery()
-  employeeKRAQuery.query(
-    performance.class.EmployeeKRA,
-    {
-      employee: userId
-    },
-    (res) => {
-      if (res !== undefined) {
-        const kras = res.map((item) => {
-          return item.kra
-        })
-
-        baseQuery = {
-          ...baseQuery,
-          _id: {
-            $in: kras
-          }
-        }
-      }
-    }
-  )
+  $: baseQuery = {
+    ...baseQuery,
+    space
+  }
 </script>
 
-<AllKRAs
+<SpecialView
+  _class={performance.class.KRA}
   {space}
   {icon}
   {label}
