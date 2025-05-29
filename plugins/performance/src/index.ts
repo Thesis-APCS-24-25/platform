@@ -114,6 +114,7 @@ export default plugin(performanceId, {
     NoKRARef: '' as Ref<KRA>
   },
   icon: {
+    Active: '' as Asset,
     Weight: '' as Asset,
     AssignKRA: '' as Asset,
     ReviewSession: '' as Asset,

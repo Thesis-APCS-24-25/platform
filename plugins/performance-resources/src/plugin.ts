@@ -13,14 +13,15 @@
 // limitations under the License.
 //
 
-import { Space } from '@hcengineering/core'
+import { type Space } from '@hcengineering/core'
 import performance, { performanceId, type ReviewSession } from '@hcengineering/performance'
-import { type IntlString, mergeIds, Resource } from '@hcengineering/platform'
+import { type IntlString, mergeIds, type Resource } from '@hcengineering/platform'
 import { type AnyComponent } from '@hcengineering/ui'
 import { type GetAllValuesFunc, type SortFunc } from '@hcengineering/view'
 
 export default mergeIds(performanceId, performance, {
   string: {
+    ActiveReviewSessions: '' as IntlString,
     PerformanceApplication: '' as IntlString,
     MyReviewSessions: '' as IntlString,
     CreateReviewSessionLabel: '' as IntlString,
