@@ -6,5 +6,6 @@ loadMetadata(performance.icon, {
   Weight: `${icons}#weight`,
   AssignKRA: `${icons}#assign-kra`,
   ReviewSession: `${icons}#review-session`,
+  Active: `${icons}#active`,
   KRA: `${icons}#kra`
 })

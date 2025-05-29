@@ -46,7 +46,7 @@
 
 {#if specials}
   <TreeNode
-    icon={performance.icon.ReviewSession}
+    icon={model.icon ?? performance.icon.ReviewSession}
     title={space.name}
     type={'nested'}
     highlighted={space._id === currentSpace}

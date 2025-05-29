@@ -332,6 +332,34 @@ function defineApplication (builder: Builder): void {
       navigatorModel: {
         spaces: [
           {
+            id: 'active-review-session',
+            visibleIf: performance.function.IsReviewSessionOfCurrentTeam,
+            icon: performance.icon.Active,
+            label: performance.string.ActiveReviewSessions,
+            spaceClass: performance.class.ReviewSession,
+            specials: [
+              {
+                id: 'kras',
+                label: performance.string.KRA,
+                component: performance.component.AllKRAs
+              },
+              {
+                id: 'my-kras',
+                label: performance.string.MyKRAs,
+                component: performance.component.MyKRAs
+              },
+              {
+                id: 'my-reports',
+                position: 'bottom',
+                label: performance.string.PerformanceReports,
+                component: workbench.component.SpecialView,
+                componentProps: {
+                  _class: performance.class.PerformanceReport
+                }
+              }
+            ]
+          },
+          {
             id: 'review-session',
             visibleIf: performance.function.IsReviewSessionOfCurrentTeam,
             label: performance.string.ReviewSessions,

@@ -38,6 +38,8 @@
     "PerformanceReports": "Performance Reports",
     "NoKRA": "No KRA",
     "CreateReport": "Create Report",
-    "Reviewee": "Reviewee"
+    "Reviewee": "Reviewee",
+    "ActiveReviewSessions": "Active Review Sessions",
+    "ReviewSessions": "Review Sessions"
   }
 }
