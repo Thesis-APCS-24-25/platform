@@ -13,8 +13,9 @@
 // limitations under the License.
 //
 
-import performance, { performanceId } from '@hcengineering/performance'
-import { type IntlString, mergeIds } from '@hcengineering/platform'
+import { Space } from '@hcengineering/core'
+import performance, { performanceId, type ReviewSession } from '@hcengineering/performance'
+import { type IntlString, mergeIds, Resource } from '@hcengineering/platform'
 import { type AnyComponent } from '@hcengineering/ui'
 import { type GetAllValuesFunc, type SortFunc } from '@hcengineering/view'
 
@@ -82,12 +83,15 @@ export default mergeIds(performanceId, performance, {
     CreateReport: '' as AnyComponent,
     CreateReportButton: '' as AnyComponent,
     ListView: '' as AnyComponent,
+    AllReviewSessions: '' as AnyComponent,
+    AllKRAs: '' as AnyComponent,
     TeamSwitchHeader: '' as AnyComponent
     // ReviewSessionStatusPresenter: '' as AnyComponent,
     // ReviewSessionStatusRefPresenter: '' as AnyComponent,
     // ReviewSessionStateEditor: '' as AnyComponent
   },
   function: {
+    IsReviewSessionOfCurrentTeam: '' as Resource<(space: Space) => Promise<boolean>>,
     GetAllKRAStates: '' as GetAllValuesFunc,
     KRAStatusSort: '' as SortFunc
   }

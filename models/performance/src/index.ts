@@ -8,7 +8,7 @@ import performance from './plugin'
 import task from '@hcengineering/task'
 import { type Ref, type StatusCategory } from '@hcengineering/core'
 import core from '@hcengineering/model-core'
-import workbench, { Application } from '@hcengineering/model-workbench'
+import workbench, { type Application } from '@hcengineering/model-workbench'
 import view from '@hcengineering/model-view'
 import { DOMAIN_PERFORMANCE, TDefaultKRAData, TDefaultReviewSessionData, TEmployeeKRA, TKRA, TKRAStatus, TReviewSession, TMeasureProgress, TReviewComment, TPerformanceReport } from './types'
 import { defineViewlets } from './viewlets'
@@ -25,6 +25,10 @@ function defineTeam (builder: Builder): void {
 
 function defineReviewSession (builder: Builder): void {
   builder.createModel(TReviewSession, TDefaultReviewSessionData)
+
+  builder.mixin(performance.class.ReviewSession, core.class.Class, view.mixin.SpacePresenter, {
+    presenter: performance.component.ReviewSessionSpacePresenter
+  })
 
   builder.createDoc(
     core.class.SpaceTypeDescriptor,
@@ -321,9 +325,56 @@ function defineApplication (builder: Builder): void {
     {
       label: performance.string.PerformanceApplication,
       alias: performanceId,
+      navHeaderComponent: performance.component.TeamSwitchHeader,
       icon: performance.icon.ReviewSession,
-      component: performance.component.PerformanceApplication,
-      hidden: false
+      // component: performance.component.PerformanceApplication,
+      hidden: false,
+      navigatorModel: {
+        spaces: [
+          {
+            id: 'review-session',
+            visibleIf: performance.function.IsReviewSessionOfCurrentTeam,
+            label: performance.string.ReviewSessions,
+            spaceClass: performance.class.ReviewSession,
+            specials: [
+              {
+                id: 'dashboard',
+                label: performance.string.PerformanceDashboard,
+                component: performance.component.PerformanceDashboard
+              },
+              {
+                id: 'kras',
+                label: performance.string.KRA,
+                component: performance.component.AllKRAs
+              },
+              {
+                id: 'my-kras',
+                label: performance.string.MyKRAs,
+                component: performance.component.MyKRAs
+              },
+              {
+                id: 'my-reports',
+                position: 'bottom',
+                label: performance.string.PerformanceReports,
+                component: workbench.component.SpecialView,
+                componentProps: {
+                  _class: performance.class.PerformanceReport
+                }
+              }
+            ]
+          }
+        ],
+        specials: [
+          {
+            id: 'all-review-sessions',
+            label: performance.string.AllReviewSessions,
+            component: performance.component.AllReviewSessions,
+            componentProps: {
+              _class: performance.class.ReviewSession
+            }
+          }
+        ]
+      }
     },
     performance.app.Performance
   )
