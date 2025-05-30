@@ -10,20 +10,31 @@ import { type Ref, type StatusCategory } from '@hcengineering/core'
 import core from '@hcengineering/model-core'
 import workbench, { type Application } from '@hcengineering/model-workbench'
 import view from '@hcengineering/model-view'
-import { DOMAIN_PERFORMANCE, TDefaultKRAData, TDefaultReviewSessionData, TEmployeeKRA, TKRA, TKRAStatus, TReviewSession, TMeasureProgress, TReviewComment, TPerformanceReport } from './types'
+import {
+  DOMAIN_PERFORMANCE,
+  TDefaultKRAData,
+  TDefaultReviewSessionData,
+  TEmployeeKRA,
+  TKRA,
+  TKRAStatus,
+  TReviewSession,
+  TMeasureProgress,
+  TReviewComment,
+  TPerformanceReport
+} from './types'
 import { defineViewlets } from './viewlets'
 
 export { performanceId } from '@hcengineering/performance'
 export { performance as default }
 export { performanceOperation } from './migration'
 
-function defineTeam (builder: Builder): void {
+function defineTeam(builder: Builder): void {
   builder.mixin(kraTeam.class.Team, core.class.Class, view.mixin.SpacePresenter, {
     presenter: performance.component.TeamSpacePresenter
   })
 }
 
-function defineReviewSession (builder: Builder): void {
+function defineReviewSession(builder: Builder): void {
   builder.createModel(TReviewSession, TDefaultReviewSessionData)
 
   builder.mixin(performance.class.ReviewSession, core.class.Class, view.mixin.SpacePresenter, {
@@ -59,35 +70,25 @@ function defineReviewSession (builder: Builder): void {
     performance.spaceType.ReviewSessionType
   )
 
-  builder.createDoc(
-    view.class.Viewlet,
-    core.space.Model,
-    {
-      attachTo: performance.class.ReviewSession,
-      descriptor: view.viewlet.Table,
-      config: [
-        'name',
-        'description',
-        'reviewSessionStart',
-        'reviewSessionEnd',
-        'members'
-      ],
-      viewOptions: {
-        groupBy: [],
-        orderBy: [],
-        other: [
-          {
-            key: 'hideArchived',
-            type: 'toggle',
-            defaultValue: true,
-            actionTarget: 'options',
-            action: view.function.HideArchived,
-            label: view.string.HideArchived
-          }
-        ]
-      }
+  builder.createDoc(view.class.Viewlet, core.space.Model, {
+    attachTo: performance.class.ReviewSession,
+    descriptor: view.viewlet.Table,
+    config: ['name', 'description', 'reviewSessionStart', 'reviewSessionEnd', 'members'],
+    viewOptions: {
+      groupBy: [],
+      orderBy: [],
+      other: [
+        {
+          key: 'hideArchived',
+          type: 'toggle',
+          defaultValue: true,
+          actionTarget: 'options',
+          action: view.function.HideArchived,
+          label: view.string.HideArchived
+        }
+      ]
     }
-  )
+  })
 
   builder.mixin(performance.class.ReviewSession, core.class.Class, view.mixin.IgnoreActions, {
     actions: [tracker.action.EditRelatedTargets, tracker.action.NewRelatedIssue]
@@ -106,7 +107,7 @@ function defineReviewSession (builder: Builder): void {
   // })
 }
 
-function defineKRA (builder: Builder): void {
+function defineKRA(builder: Builder): void {
   builder.createModel(TKRA, TEmployeeKRA, TKRAStatus, TDefaultKRAData)
 
   builder.mixin(performance.class.KRA, core.class.Class, view.mixin.AttributePresenter, {
@@ -137,29 +138,56 @@ function defineKRA (builder: Builder): void {
     presenter: performance.component.KRAPresenter
   })
 
-  builder.createDoc(
-    view.class.Viewlet,
-    core.space.Model,
-    {
-      attachTo: performance.class.KRA,
-      descriptor: view.viewlet.Table,
-      config: [
-        {
-          key: '',
-          label: performance.string.Title,
-          presenter: performance.component.KRAPresenter
+  builder.createDoc(view.class.Viewlet, core.space.Model, {
+    attachTo: performance.class.KRA,
+    descriptor: view.viewlet.Table,
+    config: [
+      {
+        key: '',
+        label: performance.string.Title,
+        presenter: performance.component.KRAPresenter
+      },
+      {
+        key: '',
+        label: performance.string.AssignedTo,
+        presenter: performance.component.KRAWeightEditorWithPopup,
+        props: {
+          readonly: true
+        }
+      },
+      'description',
+      'kraStatus'
+    ]
+  })
+
+  builder.createDoc(view.class.Viewlet, core.space.Model, {
+    attachTo: performance.class.EmployeeKRA,
+    descriptor: view.viewlet.List,
+    config: [
+      {
+        key: '$lookup.kra',
+        label: performance.string.Title,
+        presenter: performance.component.KRAPresenter
+      },
+      {
+        key: '',
+        label: performance.string.AssignedTo,
+        presenter: performance.component.KRAWeightEditorWithPopup,
+        props: {
+          readonly: true
+        }
+      },
+      {
+        key: 'weight',
+        displayProps: {
+          fixed: 'left'
         },
-        {
-          key: '',
-          label: performance.string.Assignee,
-          presenter: performance.component.KRAWeightEditorWithPopup,
-          props: {
-            readonly: true
-          }
-        },
-        'description', 'kraStatus']
-    }
-  )
+        props: {
+          readonly: true
+        }
+      }
+    ]
+  })
 
   builder.createDoc(
     performance.class.KRAStatus,
@@ -212,7 +240,7 @@ function defineKRA (builder: Builder): void {
   )
 }
 
-function defineReport (builder: Builder): void {
+function defineReport(builder: Builder): void {
   builder.createModel(TReviewComment, TPerformanceReport)
 
   builder.mixin(performance.class.PerformanceReport, core.class.Class, view.mixin.ObjectPresenter, {
@@ -241,7 +269,7 @@ function defineReport (builder: Builder): void {
   })
 }
 
-function defineSpaceType (builder: Builder): void {
+function defineSpaceType(builder: Builder): void {
   const kraStatuses: Ref<KRAStatus>[] = []
   for (const statusId of Object.values(performance.kraStatus)) {
     kraStatuses.push(statusId)
@@ -318,7 +346,7 @@ function defineSpaceType (builder: Builder): void {
   // )
 }
 
-function defineApplication (builder: Builder): void {
+function defineApplication(builder: Builder): void {
   builder.createDoc<Application>(
     workbench.class.Application,
     core.space.Model,
@@ -408,7 +436,7 @@ function defineApplication (builder: Builder): void {
   )
 }
 
-function defineActivity (builder: Builder): void {
+function defineActivity(builder: Builder): void {
   builder.mixin(performance.class.ReviewSession, core.class.Class, activity.mixin.ActivityDoc, {})
   builder.mixin(performance.class.KRA, core.class.Class, activity.mixin.ActivityDoc, {})
 
@@ -422,29 +450,21 @@ function defineActivity (builder: Builder): void {
     components: { input: { component: chunter.component.ChatMessageInput } }
   })
 
-  builder.createDoc(
-    activity.class.DocUpdateMessageViewlet,
-    core.space.Model,
-    {
-      objectClass: performance.class.KRA,
-      action: 'create',
-      icon: performance.icon.KRA,
-      valueAttr: 'title'
-    }
-  )
+  builder.createDoc(activity.class.DocUpdateMessageViewlet, core.space.Model, {
+    objectClass: performance.class.KRA,
+    action: 'create',
+    icon: performance.icon.KRA,
+    valueAttr: 'title'
+  })
 
-  builder.createDoc(
-    activity.class.DocUpdateMessageViewlet,
-    core.space.Model,
-    {
-      objectClass: performance.class.KRA,
-      action: 'update',
-      icon: tracker.icon.Issue
-    }
-  )
+  builder.createDoc(activity.class.DocUpdateMessageViewlet, core.space.Model, {
+    objectClass: performance.class.KRA,
+    action: 'update',
+    icon: tracker.icon.Issue
+  })
 }
 
-function defineSortAndGrouping (builder: Builder): void {
+function defineSortAndGrouping(builder: Builder): void {
   builder.mixin(performance.class.KRAStatus, core.class.Class, view.mixin.SortFuncs, {
     func: performance.function.KRAStatusSort
   })
@@ -454,7 +474,7 @@ function defineSortAndGrouping (builder: Builder): void {
   })
 }
 
-export function createModel (builder: Builder): void {
+export function createModel(builder: Builder): void {
   builder.createModel(TMeasureProgress)
   defineTeam(builder)
   defineReviewSession(builder)
