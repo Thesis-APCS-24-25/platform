@@ -9,6 +9,7 @@
   import { createQuery, getClient } from '@hcengineering/presentation'
   import { EmployeeKRA } from '@hcengineering/performance'
   import KraWeightPresenter from './KRAWeightPresenter.svelte'
+  import performance from '../../plugin'
 
   export let value: WithLookup<EmployeeKRA>
   const employee: Ref<PersonAccount> = value.employee
@@ -17,7 +18,7 @@
   const _id: Ref<EmployeeKRA> = value._id
   export let placeholder: IntlString
   export let autoFocus: boolean = false
-  export let kind: 'no-border' | 'link' | 'button' = 'no-border'
+  export let kind: 'no-border' | 'link' | 'button' | 'list' = 'link'
   export let readonly = false
   export let size: ButtonSize = 'small'
   export let justify: 'left' | 'center' = 'center'
@@ -62,9 +63,9 @@
     }
   )
 </script>
-
-{#if kind === 'button' || kind === 'link'}
+{#if kind === 'button' || kind === 'link' || kind === 'list'}
   <Button
+    icon={kind === 'list' ? performance.icon.Weight : undefined}
     kind={kind === 'button' ? 'regular' : kind}
     {size}
     {justify}

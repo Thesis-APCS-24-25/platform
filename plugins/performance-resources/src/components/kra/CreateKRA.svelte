@@ -1,16 +1,16 @@
 <script lang="ts">
   import core, { AttachedData, Ref, SortingOrder, Space, generateId } from '@hcengineering/core'
-  import { Card, getClient } from '@hcengineering/presentation'
+  import { Card, getClient, SpaceSelector } from '@hcengineering/presentation'
   import { TaskType, makeRank } from '@hcengineering/task'
   import { createFocusManager, EditBox, FocusHandler, Label } from '@hcengineering/ui'
   import { createEventDispatcher } from 'svelte'
   import performance from '../../plugin'
   import { KRA, ReviewSession } from '@hcengineering/performance'
-  import TeamAndReviewSessionSelector from '../TeamAndReviewSessionSelector.svelte'
-  import { Team } from '@hcengineering/kra-team'
+  import { currentTeam } from '../../utils/team'
 
-  export let team: Ref<Team>
-  let reviewSession: Ref<ReviewSession> | undefined
+  $: team = $currentTeam
+  export let space: Ref<ReviewSession> | undefined
+  let reviewSession: Ref<ReviewSession> | undefined = space
 
   let title: string = ''
   let description: string = ''
@@ -99,9 +99,17 @@
   on:changeContent
 >
   <svelte:fragment slot="header">
-    <TeamAndReviewSessionSelector
-      bind:team={team}
-      bind:reviewSession={reviewSession}
+    <!-- <TeamAndReviewSessionSelector -->
+    <!--   bind:team={team} -->
+    <!--   bind:reviewSession={reviewSession} -->
+    <!-- /> -->
+    <SpaceSelector
+      kind='regular'
+      defaultIcon={performance.icon.ReviewSession}
+      bind:space={reviewSession}
+      label={performance.string.ReviewSession}
+      _class={performance.class.ReviewSession}
+      query={{ space: team }}
     />
   </svelte:fragment>
   {#if reviewSession !== undefined}

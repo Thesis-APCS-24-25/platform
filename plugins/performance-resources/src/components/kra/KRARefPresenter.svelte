@@ -4,6 +4,7 @@
   import ObjectPresenter from '@hcengineering/view-resources/src/components/ObjectPresenter.svelte'
   import performance from '../../plugin'
   import { Label } from '@hcengineering/ui'
+  import { ObjectPresenterType } from '@hcengineering/view'
 
   export let value: Ref<KRA>
   export let inline: boolean = false
@@ -13,12 +14,18 @@
   export let disabled: boolean = false
   export let shouldShowName: boolean = true
   export let shrink: number = 0
+  export let kind: 'list-header' | 'list' = 'list'
+  export let type: ObjectPresenterType = 'link'
 </script>
 
 {#if value !== undefined && value !== performance.ids.NoKRARef}
   <ObjectPresenter
     objectId={value}
     _class={performance.class.KRA}
+    props={{
+      kind,
+      type
+    }}
     {shouldShowAvatar}
     {shouldShowName}
     {disabled}
