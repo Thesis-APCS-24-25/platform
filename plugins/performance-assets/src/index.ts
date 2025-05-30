@@ -8,5 +8,6 @@ loadMetadata(performance.icon, {
   ReviewSession: `${icons}#review-session`,
   Active: `${icons}#active`,
   KRA: `${icons}#kra`,
-  StatusInProgress: `${icons}#status-in-progress`
+  StatusInProgress: `${icons}#status-in-progress`,
+  StatusConcluded: `${icons}#status-concluded  `
 })

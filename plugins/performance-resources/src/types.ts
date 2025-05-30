@@ -19,7 +19,7 @@ export const reviewSessionStatusAssets: Record<ReviewSessionStatus, { icon: Asse
     label: performance.string.InProgress
   },
   [ReviewSessionStatus.Concluded]: {
-    icon: view.icon.CheckCircle,
+    icon: performance.icon.StatusConcluded,
     label: performance.string.Concluded
   }
 }

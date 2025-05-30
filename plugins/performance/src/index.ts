@@ -121,7 +121,8 @@ export default plugin(performanceId, {
     AssignKRA: '' as Asset,
     ReviewSession: '' as Asset,
     KRA: '' as Asset,
-    StatusInProgress: '' as Asset
+    StatusInProgress: '' as Asset,
+    StatusConcluded: '' as Asset
   },
   descriptor: {
     KRAType: '' as Ref<TaskTypeDescriptor>,
