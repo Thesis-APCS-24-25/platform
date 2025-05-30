@@ -5,9 +5,14 @@ import core from '@hcengineering/core'
 import roles from './roles'
 import { getRoleAttributeProps } from '@hcengineering/setting'
 
-const permissions = [kraTeam.permission.CreateKra, kraTeam.permission.ApproveKra]
+const permissions = [
+  kraTeam.permission.CreateKra,
+  kraTeam.permission.ApproveKra,
+  kraTeam.permission.CreateReviewSession,
+  kraTeam.permission.AssignWeightForAll
+]
 
-export function defineSpaceTypes(builder: Builder): void {
+export function defineSpaceTypes (builder: Builder): void {
   for (const role of roles) {
     const { label, roleType } = getRoleAttributeProps(role.name)
 

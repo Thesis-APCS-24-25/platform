@@ -46,6 +46,8 @@ export default plugin(kraTeamId, {
     TeamType: '' as Ref<SpaceTypeDescriptor>
   },
   permission: {
+    CreateReviewSession: '' as Ref<Permission>,
+    AssignWeightForAll: '' as Ref<Permission>,
     ApproveKra: '' as Ref<Permission>,
     CreateKra: '' as Ref<Permission>
   },

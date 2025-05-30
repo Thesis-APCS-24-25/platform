@@ -17,6 +17,10 @@ export default mergeIds(kraTeamId, kraTeam, {
     ApproveKraDescription: '' as IntlString,
     CreateKra: '' as IntlString,
     CreateKraDescription: '' as IntlString,
+    CreateReviewSession: '' as IntlString,
+    CreateReviewSessionDescription: '' as IntlString,
+    AssignWeightForAll: '' as IntlString,
+    AssignWeightForAllDescription: '' as IntlString,
     RemoveMember: '' as IntlString
   },
   component: {

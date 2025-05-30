@@ -21,4 +21,22 @@ export function definePermissions (builder: Builder): void {
     },
     kraTeam.permission.CreateKra
   )
+  builder.createDoc(
+    core.class.Permission,
+    core.space.Model,
+    {
+      label: kraTeam.string.CreateReviewSession,
+      description: kraTeam.string.CreateReviewSessionDescription
+    },
+    kraTeam.permission.CreateReviewSession
+  )
+  builder.createDoc(
+    core.class.Permission,
+    core.space.Model,
+    {
+      label: kraTeam.string.AssignWeightForAll,
+      description: kraTeam.string.AssignWeightForAllDescription
+    },
+    kraTeam.permission.AssignWeightForAll
+  )
 }
