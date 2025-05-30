@@ -48,6 +48,8 @@
   onMount(() => {
     ;(document.activeElement as HTMLElement)?.blur()
   })
+
+  $: console.log(viewlet.props)
 </script>
 
 <ActionContext
@@ -78,7 +80,10 @@
       {configurations}
       {options}
       {viewOptions}
-      {props}
+      props={{
+        ...viewlet.props,
+        ...props
+      }}
       {listProvider}
       compactMode={listWidth <= 800}
       viewOptionsConfig={viewOptionsConfig ?? viewlet.viewOptions?.other}

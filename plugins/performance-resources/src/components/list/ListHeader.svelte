@@ -33,6 +33,7 @@
   import {
     noCategory
   } from '@hcengineering/view-resources'
+  import performance from '../../plugin'
 
   export let groupByKey: string
   export let category: PrimitiveType | AggregateValue
@@ -138,6 +139,7 @@
         {#each extraHeaders ?? [] as extra}
           <Component is={extra} props={{ ...props, value: category, category: groupByKey, docs: items }} />
         {/each}
+        <Component is={performance.component.KRAStatistics} props={{ ...props, category: groupByKey, docs: items }} />
       </div>
     {/if}
   </div>

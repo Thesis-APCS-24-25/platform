@@ -30,12 +30,8 @@ export default mergeIds(performanceId, performance, {
     PerformanceDashboard: '' as IntlString,
     AssignedTo: '' as IntlString,
     AllReviewSessions: '' as IntlString,
-    ReviewCommentAuthor: '' as IntlString,
-    ReviewerComment: '' as IntlString,
-    ReviewerScore: '' as IntlString,
     Reviewee: '' as IntlString,
     ReviewSession: '' as IntlString,
-    ReviewComments: '' as IntlString,
     PerformanceReports: '' as IntlString,
     CreateReportLabel: '' as IntlString,
     Tasks: '' as IntlString

@@ -53,7 +53,8 @@ export default mergeIds(performanceId, performance, {
     KRARefPresenter: '' as AnyComponent,
     PerformanceDashboard: '' as AnyComponent,
     ReportPanel: '' as AnyComponent,
-    ReportPresenter: '' as AnyComponent
+    ReportPresenter: '' as AnyComponent,
+    KRAStatistics: '' as AnyComponent
     // ReviewSessionStatusPresenter: '' as AnyComponent,
     // ReviewSessionStatusRefPresenter: '' as AnyComponent,
     // ReviewSessionStateEditor: '' as AnyComponent

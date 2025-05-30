@@ -37,6 +37,7 @@ import CreateReportButton from './components/report/CreateReportButton.svelte'
 import ListView from './components/list/ListView.svelte'
 import ReviewSessionStatusPresenter from './components/review-session/ReviewSessionStatusPresenter.svelte'
 import ReviewSessionStatusEditor from './components/review-session/ReviewSessionStatusEditor.svelte'
+import KRAStatistics from './components/kra/KRAStatistics.svelte'
 // import ReviewSessionStatusPresenter from './components/review-session/ReviewSessionStatusPresenter.svelte'
 // import ReviewSessionStatusRefPresenter from './components/review-session/ReviewSessionStatusRefPresenter.svelte'
 // import ReviewSessionStateEditor from './components/review-session/ReviewSessionStateEditor.svelte'
@@ -62,7 +63,8 @@ export default async (): Promise<Resources> => ({
     CreateReportButton,
     ListView,
     ReviewSessionStatusPresenter,
-    ReviewSessionStatusEditor
+    ReviewSessionStatusEditor,
+    KRAStatistics
   },
   function: {
     KRAStatusSort: kraStatusSort,

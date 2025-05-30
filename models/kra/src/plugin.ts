@@ -60,8 +60,7 @@ export default mergeIds(kraId, kra, {
     IssueSearchIcon: '' as AnyComponent,
     MembersArrayEditor: '' as AnyComponent,
     IssueExtra: '' as AnyComponent,
-    KRAEditor: '' as AnyComponent,
-    KRAStatistics: '' as AnyComponent
+    KRAEditor: '' as AnyComponent
   },
   app: {
     Tracker: '' as Ref<Application>
