@@ -339,6 +339,11 @@ function defineApplication (builder: Builder): void {
             spaceClass: performance.class.ReviewSession,
             specials: [
               {
+                id: 'dashboard',
+                label: performance.string.PerformanceDashboard,
+                component: performance.component.PerformanceDashboard
+              },
+              {
                 id: 'kras',
                 label: performance.string.KRA,
                 component: performance.component.AllKRAs
@@ -365,11 +370,6 @@ function defineApplication (builder: Builder): void {
             label: performance.string.ReviewSessions,
             spaceClass: performance.class.ReviewSession,
             specials: [
-              {
-                id: 'dashboard',
-                label: performance.string.PerformanceDashboard,
-                component: performance.component.PerformanceDashboard
-              },
               {
                 id: 'kras',
                 label: performance.string.KRA,
