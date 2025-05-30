@@ -53,12 +53,6 @@ export interface MeasureProgress extends Class<Task> {
 
 export interface WithKRA extends Task { }
 
-// export interface ReviewComment extends Doc {
-//   author: Ref<PersonAccount>
-//   comment: string
-//   score?: number
-// }
-
 export interface PerformanceReport extends Doc {
   reviewee: Ref<PersonAccount>
   reviewSession: Ref<ReviewSession>

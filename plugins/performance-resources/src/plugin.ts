@@ -97,6 +97,8 @@ export default mergeIds(performanceId, performance, {
     AllKRAs: '' as AnyComponent,
     TeamSwitchHeader: '' as AnyComponent,
     ReviewSessionStatusPresenter: '' as AnyComponent,
+    KRAStatistics: '' as AnyComponent,
+    // ReviewSessionStatusPresenter: '' as AnyComponent,
     // ReviewSessionStatusRefPresenter: '' as AnyComponent,
     ReviewSessionStatusEditor: '' as AnyComponent
   },

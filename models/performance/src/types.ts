@@ -70,18 +70,6 @@ export class TEmployeeKRA extends TDoc implements EmployeeKRA {
     weight!: number
 }
 
-// @Model(performance.class.ReviewComment, core.class.Doc, DOMAIN_PERFORMANCE)
-// export class TReviewComment extends TDoc implements ReviewComment {
-//   @Prop(TypeRef(contact.class.PersonAccount), performance.string.ReviewCommentAuthor)
-//     author!: Ref<PersonAccount>
-
-//   @Prop(TypeString(), performance.string.ReviewerComment)
-//     comment!: string
-
-//   @Prop(TypeNumber(), performance.string.ReviewerScore)
-//     score?: number
-// }
-
 @Model(performance.class.PerformanceReport, core.class.Doc, DOMAIN_PERFORMANCE)
 export class TPerformanceReport extends TDoc implements PerformanceReport {
   @Prop(TypeRef(contact.class.PersonAccount), performance.string.Reviewee)
@@ -92,8 +80,6 @@ export class TPerformanceReport extends TDoc implements PerformanceReport {
 
   @Prop(ArrOf(TypeRef(performance.mixin.WithKRA)), performance.string.Tasks)
     tasks?: Arr<Ref<WithKRA>>
-  // @Prop(ArrOf(TypeRef(performance.class.ReviewComment)), performance.string.ReviewComments)
-  //   reviewComments!: Arr<Ref<ReviewComment>>
 }
 
 @Mixin(performance.mixin.DefaultReviewSessionData, performance.class.ReviewSession)

@@ -31,7 +31,7 @@ import type { TaskStatusFactory } from '@hcengineering/task'
 import { PaletteColorIndexes } from '@hcengineering/ui/src/colors'
 import { createActions as defineActions } from './actions'
 import kra from './plugin'
-import performance from '@hcengineering/performance'
+import performance from '@hcengineering/model-performance'
 import { definePresenters } from './presenters'
 import {
   DOMAIN_KRA,
@@ -376,10 +376,6 @@ export function createModel (builder: Builder): void {
     TTypeRemainingTime,
     TProjectTargetPreference
   )
-
-  builder.mixin(kra.class.Issue, core.class.Class, view.mixin.ListHeaderExtra, {
-    presenters: [kra.component.KRAStatistics]
-  })
 
   builder.mixin(kra.class.Issue, core.class.Class, performance.mixin.MeasureProgress, {
     calculate: kra.function.CalculateGoal

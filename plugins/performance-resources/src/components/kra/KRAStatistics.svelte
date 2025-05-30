@@ -13,14 +13,13 @@
 // limitations under the License.
 -->
 <script lang="ts">
-  import { Issue } from '@hcengineering/kra'
   import { floorFractionDigits, tooltip } from '@hcengineering/ui'
   import { FixedColumn } from '@hcengineering/view-resources'
-  import { calculateCompletionLevel } from '../../utils'
+  import { calculateCompletionLevel } from '../../utils/kra'
   import { Task } from '@hcengineering/task'
   import performance from '@hcengineering/performance'
 
-  export let docs: Issue[] | undefined = undefined
+  export let docs: Task[] | undefined = undefined
   export let category: string | undefined = undefined
 
   let completionLevel: number | undefined
@@ -35,13 +34,13 @@
     })
 </script>
 
-{#if docs !== undefined && (category === 'kra')}
-  <FixedColumn key="kra-editor">
-    <div
-      class="flex-row-center flex-no-shrink h-6"
-      use:tooltip={{ label: performance.string.KRACompletionLevel }}
-    >
-      {completionLevel}%
-    </div>
-  </FixedColumn>
+{#if docs !== undefined && category === 'kra'}
+  <!-- <FixedColumn key="kra-completion-total"> -->
+  <div
+    class="flex-row-center flex-no-shrink h-6"
+    use:tooltip={{ label: performance.string.KRACompletionLevel }}
+  >
+    {completionLevel}%
+  </div>
+  <!-- </FixedColumn> -->
 {/if}
