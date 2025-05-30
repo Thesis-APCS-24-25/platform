@@ -1,5 +1,7 @@
 <script lang="ts">
-  import { Ref, WithLookup } from '@hcengineering/core'
+  import { PersonAccount } from '@hcengineering/contact'
+  import { personAccountByPersonId } from '@hcengineering/contact-resources'
+  import { DocumentQuery, Ref, WithLookup } from '@hcengineering/core'
   import { Issue } from '@hcengineering/kra'
   import performance, { KRA } from '@hcengineering/performance'
   import { getClient } from '@hcengineering/presentation'
@@ -17,6 +19,29 @@
   async function handleChange (ev: CustomEvent<Ref<KRA>>): Promise<void> {
     await client.update(value, { kra: ev.detail })
   }
+
+  let kraDocQuery: DocumentQuery<KRA> = { _id: { $in: [performance.ids.NoKRARef] } }
+
+  const personAccount = value.assignee != null
+    ? ($personAccountByPersonId.get(value.assignee) ?? [{ _id: '' as Ref<PersonAccount> }])[0]._id
+    : '' as Ref<PersonAccount>
+
+  void client.findAll(
+    performance.class.EmployeeKRA,
+    {
+      employee: personAccount
+    }
+  ).then((result) => {
+    console.log(result)
+    if (result !== undefined && result.length > 0) {
+      const krasOfAssignee: Ref<KRA>[] | undefined = result.map(it => it.kra)
+      kraDocQuery = {
+        _id: { $in: krasOfAssignee }
+      }
+    } else {
+      kraDocQuery = { _id: { $in: [performance.ids.NoKRARef] } }
+    }
+  })
 </script>
 
 {#if kind === 'list'}
@@ -32,8 +57,9 @@
       {width}
       allowDeselect
       showNavigate={false}
+      docQuery={kraDocQuery}
       on:change={handleChange}
-      />
+    />
   </FixedColumn>
 {:else}
   <ObjectBox
@@ -46,6 +72,7 @@
     {size}
     {width}
     allowDeselect
+    docQuery={kraDocQuery}
     on:change={handleChange}
   />
 {/if}

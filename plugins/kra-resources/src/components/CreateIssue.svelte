@@ -17,12 +17,13 @@
   import { Analytics } from '@hcengineering/analytics'
   import { Attachment } from '@hcengineering/attachment'
   import { AttachmentPresenter, AttachmentStyledBox } from '@hcengineering/attachment-resources'
-  import { Employee } from '@hcengineering/contact'
+  import { Employee, Person, PersonAccount } from '@hcengineering/contact'
   import core, {
     Account,
     Class,
     Doc,
     DocData,
+    DocumentQuery,
     Ref,
     SortingOrder,
     fillDefaults,
@@ -81,7 +82,7 @@
 
   import { generateIssueShortLink, updateIssueRelation } from '../issues'
   import tracker from '../plugin'
-  import performance, { WithKRA } from '@hcengineering/performance'
+  import performance, { KRA, WithKRA } from '@hcengineering/performance'
   import SetParentIssueActionPopup from './SetParentIssueActionPopup.svelte'
   import SubIssues from './SubIssues.svelte'
   import AssigneeEditor from './issues/AssigneeEditor.svelte'
@@ -93,6 +94,7 @@
   import ProjectPresenter from './projects/ProjectPresenter.svelte'
   import AddGoalPopup from './issues/goal/AddGoalPopup.svelte'
   import CreateIssueGoalDisplay from './issues/goal/CreateIssueGoalDisplay.svelte'
+  import { personAccountByPersonId } from '@hcengineering/contact-resources'
 
   export let space: Ref<Project> | undefined
   export let status: Ref<IssueStatus> | undefined = undefined
@@ -756,6 +758,29 @@
     await client.removeDoc(tracker.class.Goal, object.space, object.goal)
     object.goal = undefined
   }
+
+  let krasOfAssignee: Ref<KRA>[] | undefined
+  let kraDocQuery: DocumentQuery<KRA> = { _id: { $in: [performance.ids.NoKRARef] } }
+
+  function updateKRAs (assignee: Ref<Person>): void {
+    const personAccount = ($personAccountByPersonId.get(assignee) ?? [{ _id: '' as Ref<PersonAccount> }])[0]._id
+    void client.findAll(
+      performance.class.EmployeeKRA,
+      {
+        employee: personAccount
+      }
+    ).then((result) => {
+      console.log(result)
+      if (result !== undefined && result.length > 0) {
+        krasOfAssignee = result.map(it => it.kra)
+        kraDocQuery = {
+          _id: { $in: krasOfAssignee }
+        }
+      } else {
+        kraDocQuery = { _id: { $in: [performance.ids.NoKRARef] } }
+      }
+    })
+  }
 </script>
 
 <FocusHandler {manager} />
@@ -945,6 +970,7 @@
         on:change={({ detail }) => {
           isAssigneeTouched = true
           object.assignee = detail
+          updateKRAs(detail)
           manager.setFocusPos(5)
         }}
       />
@@ -1018,6 +1044,7 @@
         bind:value={object.kra}
         _class={performance.class.KRA}
         placeholderIcon={performance.icon.KRA}
+        docQuery={kraDocQuery}
       />
     </div>
   </svelte:fragment>
