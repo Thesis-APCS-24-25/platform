@@ -2,7 +2,6 @@
   import { IntlString } from '@hcengineering/platform'
   import { Button, ButtonSize, EditBox, eventToHTMLElement, Label, showPopup } from '@hcengineering/ui'
   import { NumberPresenter } from '@hcengineering/view-resources'
-  import performance from '../../plugin'
   import KraWeightEditBoxPopup from './KRAWeightEditBoxPopup.svelte'
   import { PersonAccount } from '@hcengineering/contact'
   import { Ref, WithLookup } from '@hcengineering/core'
@@ -16,7 +15,6 @@
 
   const client = getClient()
   const _id: Ref<EmployeeKRA> = value._id
-  export let placeholder: IntlString
   export let autoFocus: boolean = false
   export let kind: 'no-border' | 'link' | 'button' | 'list' = 'link'
   export let readonly = false
@@ -25,7 +23,7 @@
   export let width: string | undefined = 'fit-content'
   export let validateFunction: (value: number | undefined) => boolean = () => true
 
-  async function updateWeight (newWeight: number): Promise<void> {
+  async function updateWeight(newWeight: number): Promise<void> {
     if (Number.isFinite(newWeight) && validateFunction(newWeight)) {
       await client.update(value, {
         weight: newWeight
@@ -35,12 +33,12 @@
 
   let shown: boolean = false
 
-  async function onchange (ev: Event): Promise<void> {
+  async function onchange(ev: Event): Promise<void> {
     const newWeight = (ev.target as HTMLInputElement).valueAsNumber
     await updateWeight(newWeight)
   }
 
-  let otherWeights: { value: number, label: string }[] = []
+  let otherWeights: { value: number; label: string }[] = []
   const weightQ = createQuery()
   weightQ.query(
     performance.class.EmployeeKRA,
@@ -63,6 +61,7 @@
     }
   )
 </script>
+
 {#if kind === 'button' || kind === 'link' || kind === 'list'}
   <Button
     icon={kind === 'list' ? performance.icon.Weight : undefined}
@@ -92,19 +91,13 @@
     }}
   >
     <svelte:fragment slot="content">
-      {#if value}
-        <span class="caption-color overflow-label pointer-events-none"><KraWeightPresenter showPercent value={value.weight} /></span>
-      {:else}
-        <span class="content-dark-color pointer-events-none"><Label label={placeholder} /></span>
-      {/if}
+      <span class="caption-color overflow-label pointer-events-none"
+        ><KraWeightPresenter showPercent value={value.weight} /></span
+      >
     </svelte:fragment>
   </Button>
 {:else if readonly}
-  {#if value != null}
-    <span class="caption-color overflow-label"><NumberPresenter value={value.weight} /></span>
-  {:else}
-    <span class="content-dark-color"><Label label={placeholder} /></span>
-  {/if}
+  <span class="caption-color overflow-label"><NumberPresenter value={value.weight} /></span>
 {:else}
-  <EditBox {placeholder} bind:value={value.weight} format={'number'} {autoFocus} on:change={onchange} />
+  <EditBox bind:value={value.weight} format={'number'} {autoFocus} on:change={onchange} />
 {/if}
