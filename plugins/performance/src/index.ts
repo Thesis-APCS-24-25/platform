@@ -79,7 +79,7 @@ export default plugin(performanceId, {
     KRA: '' as IntlString,
     ReviewSessionStart: '' as IntlString,
     ReviewSessionEnd: '' as IntlString,
-    ReviewSessionKRAs: '' as IntlString,
+    SetKRA: '' as IntlString,
     Title: '' as IntlString,
     Description: '' as IntlString,
     KRAStatus: '' as IntlString,

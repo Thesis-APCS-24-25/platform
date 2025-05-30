@@ -1004,20 +1004,20 @@
       <DocCreateExtComponent manager={docCreateManager} kind={'pool'} space={currentProject} props={extraProps} />
     </div>
     <div id="kra-editor" class="new-line">
-      <!-- TODO: Add support for KRA intlstring -->
       <ObjectBox
         searchField={'title'}
         focusIndex={13}
         kind={'regular'}
         size={'large'}
         groupBy={'space'}
-        label={performance.string.ReviewSessionKRAs}
+        label={performance.string.SetKRA}
         icon={performance.icon.KRA}
         placeholder={performance.string.KRA}
         allowDeselect
         showNavigate={false}
         bind:value={object.kra}
         _class={performance.class.KRA}
+        placeholderIcon={performance.icon.KRA}
       />
     </div>
   </svelte:fragment>
