@@ -9,6 +9,11 @@ export default [
   {
     _id: kraTeam.role.TeamManager,
     name: 'Team Manager',
-    permissions: [kraTeam.permission.CreateKra, kraTeam.permission.ApproveKra]
+    permissions: [
+      kraTeam.permission.CreateKra,
+      kraTeam.permission.ApproveKra,
+      kraTeam.permission.AssignWeightForAll,
+      kraTeam.permission.CreateReviewSession
+    ]
   }
 ]
