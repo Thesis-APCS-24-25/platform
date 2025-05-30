@@ -57,7 +57,23 @@
       </DocNavLink>
     </div>
   {:else if type === 'text'}
-    <span class="overflow-label" class:select-text={!noSelect} use:tooltip={{ label: getEmbeddedLabel(value.title) }}>
+    {#if shouldShowAvatar}
+      <div
+        class="icon"
+        class:header-icon={!noSelect && kind === 'list-header'}
+        use:tooltip={{ label: performance.string.KRA }}
+      >
+        <Icon icon={icon ?? performance.icon.KRA} size={'medium'} />
+      </div>
+    {/if}
+    <span
+      class:header={!noSelect && kind === 'list-header'}
+      class:uppercase={kind === 'list-header'}
+      class:font-bold-12={kind === 'list-header'}
+      class="overflow-label"
+      class:select-text={!noSelect}
+      use:tooltip={{ label: getEmbeddedLabel(value.title) }}
+    >
       {value.title}
     </span>
   {/if}
@@ -87,6 +103,12 @@
     border: 1px solid transparent;
     border-radius: 0.25rem;
     padding: 0.25rem 0.5rem;
-    background-color: var(--theme-bg-color);
+    background-color: var(--secondary-button-default);
+  }
+
+  .header-icon {
+    padding: 0.25rem;
+    border-radius: 0.25rem;
+    background-color: var(--secondary-button-hovered);
   }
 </style>

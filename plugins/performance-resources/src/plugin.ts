@@ -21,6 +21,8 @@ import { type GetAllValuesFunc, type SortFunc } from '@hcengineering/view'
 
 export default mergeIds(performanceId, performance, {
   string: {
+    PerKRA: '' as IntlString,
+    PerMember: '' as IntlString,
     ActiveReviewSessions: '' as IntlString,
     PerformanceApplication: '' as IntlString,
     MyReviewSessions: '' as IntlString,
