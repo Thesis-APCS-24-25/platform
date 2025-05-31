@@ -55,6 +55,7 @@
   $: persons = filter(items.map((i) => $personIdByAccountId.get(i.employee)))
     .map((p) => $personByIdStore.get(p))
     .filter((p) => p !== undefined)
+    .map((p) => p as Person)
 
   async function saveKRAAssignment (
     add: DocData<EmployeeKRA>[],

@@ -1,11 +1,10 @@
 <script lang="ts">
   import kraTeam, { Team } from '@hcengineering/kra-team'
   import SpaceSelector from '@hcengineering/presentation/src/components/SpaceSelector.svelte'
-  import performance from '../plugin'
+  import performance from '../../plugin'
   import { getCurrentAccount, Ref } from '@hcengineering/core'
   import { getClient } from '@hcengineering/presentation'
-  import { currentTeam as selectedTeam } from '../utils/team'
-  import { getCurrentLocation, navigate, setResolvedLocation } from '@hcengineering/ui'
+  import { currentTeam as selectedTeam } from '../../utils/team'
 
   export let currentTeam: Ref<Team> | undefined = undefined
 
@@ -27,19 +26,6 @@
       _id: $selectedTeam
     })
   }
-
-  function onChange (event: CustomEvent<Ref<Team> | undefined>): void {
-    if ($selectedTeam === event.detail) {
-      return
-    }
-    $selectedTeam = event.detail
-    localStorage.setItem(performance.string.SelectTeam, event.detail ?? '')
-    const cur = getCurrentLocation()
-    navigate(cur)
-    // NOTE: This is a workaround for the fact that the team selector does not update the current team in the store
-    // should be considered fixing in the future
-    window.location.reload()
-  }
 </script>
 
 <SpaceSelector
@@ -55,5 +41,5 @@
     members: me
   }}
   {findDefaultSpace}
-  on:change={onChange}
+  on:change
 />

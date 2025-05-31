@@ -14,7 +14,6 @@
 // limitations under the License.
 //
 import { type Status, type Resources } from '@hcengineering/platform'
-import NewReviewSessionHeader from './components/NewReviewSessionHeader.svelte'
 import CreateReviewSession from './components/review-session/CreateReviewSession.svelte'
 import ReviewSessionSpacePresenter from './components/review-session/ReviewSessionSpacePresenter.svelte'
 import CreateKRA from './components/kra/CreateKRA.svelte'
@@ -34,8 +33,7 @@ import ReportPanel from './components/report/ReportPanel.svelte'
 import ReportPresenter from './components/report/ReportPresenter.svelte'
 import CreateReport from './components/report/CreateReport.svelte'
 import CreateReportButton from './components/report/CreateReportButton.svelte'
-import TeamSwitchHeader from './components/TeamSwitchHeader.svelte'
-import PerformanceApplication from './components/PerformanceApplication.svelte'
+import TeamSwitchHeader from './components/navigator/TeamSwitchHeader.svelte'
 import ListView from './components/list/ListView.svelte'
 import KRAAssigneesPresenter from './components/kra/KRAAssigneesPresenter.svelte'
 import KRAWeightEditorWithPopup from './components/kra/KRAWeightEditorWithPopup.svelte'
@@ -51,7 +49,6 @@ export default async (): Promise<Resources> => ({
     MyKRAs,
     KRAAssigneesEditor,
     KRAAssigneesPresenter,
-    NewReviewSessionHeader,
     CreateReviewSession,
     ReviewSessionSpacePresenter,
     CreateKRA,
@@ -66,7 +63,6 @@ export default async (): Promise<Resources> => ({
     ReportPresenter,
     CreateReport,
     CreateReportButton,
-    PerformanceApplication,
     TeamSwitchHeader,
     KRAWeightEditorWithPopup,
     AllReviewSessions,

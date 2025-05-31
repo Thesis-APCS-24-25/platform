@@ -7,7 +7,6 @@
   import { TreeNode } from '@hcengineering/view-resources'
   import TreeElement from '@hcengineering/view-resources/src/components/navigator/TreeElement.svelte'
   import { getReviewSessionLink } from '../../navigation'
-  import { onDestroy } from 'svelte'
 
   export let space: Team
   export let currentSpace: Ref<Space> | undefined
@@ -31,12 +30,8 @@
   ).then((result) => {
     if (result !== undefined) {
       currentTeam = result.space as Ref<Team>
-      team.set(currentTeam)
     }
   })
-  const unsubscribe = team.subscribe((value) => { currentTeam = value })
-
-  onDestroy(unsubscribe)
 
   query.query(
     performance.class.ReviewSession,
@@ -54,7 +49,6 @@
 
   function handleReviewSessionSelected (_id: Ref<ReviewSession>): void {
     selected = _id
-    team.set(space._id)
     navigate(getReviewSessionLink(_id))
   }
 
