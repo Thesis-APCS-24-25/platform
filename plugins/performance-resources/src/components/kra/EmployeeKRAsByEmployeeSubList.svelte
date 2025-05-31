@@ -2,12 +2,14 @@
   import { PersonAccountRefPresenter } from '@hcengineering/contact-resources'
   import { Ref, WithLookup } from '@hcengineering/core'
   import { EmployeeKRA, KRA } from '@hcengineering/performance'
-  import { ExpandCollapse, ListView, Separator } from '@hcengineering/ui'
+  import { Button, ExpandCollapse, ListView, Separator, showPopup } from '@hcengineering/ui'
   import { FixedColumn, ListSelectionProvider, showMenu } from '@hcengineering/view-resources'
   import KraWeightEditorWithPopup from './KRAWeightEditorWithPopup.svelte'
   import ListHeader from './ListHeader.svelte'
   import performance from '../../plugin'
   import AssignKraPopup from './AssignKRAPopup.svelte'
+  import KraRefPresenter from './KRARefPresenter.svelte'
+  import GroupedList from '../ui/GroupedList.svelte'
 
   export let kras: Ref<KRA>[]
   export let employeeKras: WithLookup<EmployeeKRA>[]
@@ -33,67 +35,42 @@
   $: focusIndexes = kras.map(() => -1)
 </script>
 
-<div class="flex-col-stretch flex-gap-2">
-  {#each kras as kra}
-    {@const idx = kras.indexOf(kra)}
-    <div>
-      <ListHeader
-        {kra}
-        count={mapping.get(kra)?.length ?? 0}
-        collapsed={collapsed[idx]}
-        headerBGColor={'var(--header-bg-color)'}
-        on:collapse={() => {
-          collapsed[idx] = !collapsed[idx]
-        }}
-        createLabel={performance.string.AssignKRA}
-        createComponent={AssignKraPopup}
-        createComponentProps={{ kra, assigns: mapping.get(kra) }}
-      />
-      <!-- svelte-ignore a11y-click-events-have-key-events -->
-      <!-- svelte-ignore a11y-no-static-element-interactions -->
-      <ExpandCollapse isExpanded={!collapsed[idx]}>
-        <div class="list-content">
-          <ListView
-            count={mapping.get(kra)?.length ?? 0}
-            addClass={'step-tb-2-accent list-content'}
-            kind="full-size"
-            selection={focusIndexes[idx] !== -1 ? focusIndexes[idx] : -1}
-          >
-            <svelte:fragment slot="item" let:item>
-              {@const employeeKra = mapping.get(kra)?.[item]}
-              {#if employeeKra}
-                <div
-                  class="m-1 flex-row-center p-text-2 clear-mins flex-gap-4"
-                  on:contextmenu={(ev) => {
-                    showMenu(ev, { object: employeeKra })
-                  }}
-                  on:mouseenter={() => {
-                    focusIndexes = focusIndexes.map((_, i) => (i === idx ? item : -1))
-                    listProvider.updateFocus(employeeKra)
-                  }}
-                  on:focus={() => {
-                    listProvider.updateFocus(employeeKra)
-                  }}
-                  on:mouseleave={() => {
-                    focusIndexes = focusIndexes.map(() => -1)
-                  }}
-                  on:click={(evt) => {}}
-                >
-                  <FixedColumn key="person" justify="left">
-                    <PersonAccountRefPresenter value={employeeKra.employee} />
-                  </FixedColumn>
-                  <FixedColumn key="kra" justify="left">
-                    <KraWeightEditorWithPopup value={employeeKra} kind="list" readonly />
-                  </FixedColumn>
-                </div>
-              {/if}
-            </svelte:fragment>
-          </ListView>
-        </div>
-      </ExpandCollapse>
+<GroupedList categories={kras} items={employeeKras} key="kra">
+  <svelte:fragment slot="header" let:category let:count>
+    <div class="flex-row-center flex-grow" style:color={'inherit'}>
+      <KraRefPresenter value={category} kind="list-header" type="text" />
+      <span class="ml-2 font-medium-12">{count}</span>
     </div>
-  {/each}
-</div>
+  </svelte:fragment>
+  <svelte:fragment slot="action" let:category>
+    <Button
+      size="small"
+      kind="primary"
+      label={performance.string.AssignKRA}
+      on:click={() => {
+        const assigns = mapping.get(category) ?? []
+        showPopup(
+          AssignKraPopup,
+          {
+            kra: category,
+            assigns
+          },
+          'top'
+        )
+      }}
+    />
+  </svelte:fragment>
+  <svelte:fragment slot="item" let:item>
+    <div class="m-1 flex-row-center p-text-2 clear-mins flex-gap-4">
+      <FixedColumn key="person" justify="left">
+        <PersonAccountRefPresenter value={item.employee} />
+      </FixedColumn>
+      <FixedColumn key="kra" justify="left">
+        <KraWeightEditorWithPopup value={item} kind="list" readonly />
+      </FixedColumn>
+    </div>
+  </svelte:fragment>
+</GroupedList>
 
 <style lang="scss">
   .divider {
