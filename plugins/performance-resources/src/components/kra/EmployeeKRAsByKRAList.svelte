@@ -3,7 +3,7 @@
   import { Ref, WithLookup } from '@hcengineering/core'
   import { EmployeeKRA, KRA } from '@hcengineering/performance'
   import { Button, showPopup } from '@hcengineering/ui'
-  import { FixedColumn, ListSelectionProvider } from '@hcengineering/view-resources'
+  import { FixedColumn } from '@hcengineering/view-resources'
   import KraWeightEditorWithPopup from './KRAWeightEditorWithPopup.svelte'
   import performance from '../../plugin'
   import AssignKraPopup from './AssignKRAPopup.svelte'
