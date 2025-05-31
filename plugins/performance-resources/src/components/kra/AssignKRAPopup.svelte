@@ -1,16 +1,14 @@
 <script lang="ts">
   import presentation, { Card, createQuery, getClient, MessageBox } from '@hcengineering/presentation'
   import performance from '../../plugin'
-  import { ObjectBox, ObjectBoxPopup, ObjectPresenter } from '@hcengineering/view-resources'
-  import { createClient, Data, Ref, Space } from '@hcengineering/core'
-  import { EmployeeKRA, KRA, ReviewSession } from '@hcengineering/performance'
+  import { ObjectBox, ObjectBoxPopup } from '@hcengineering/view-resources'
+  import { Data, Ref, Space } from '@hcengineering/core'
+  import { EmployeeKRA, KRA } from '@hcengineering/performance'
   import {
     personAccountByPersonId,
-    PersonAccountRefPresenter,
-    SelectUsersPopup
-  } from '@hcengineering/contact-resources'
+    PersonAccountRefPresenter  } from '@hcengineering/contact-resources'
   import KraWeightEditorWithPopup from './KRAWeightEditorWithPopup.svelte'
-  import { Button, Dialog, eventToHTMLElement, IconAdd, IconClose, IconDelete, showPopup } from '@hcengineering/ui'
+  import { Button, eventToHTMLElement, IconAdd, IconClose, showPopup } from '@hcengineering/ui'
   import kraTeam, { Member } from '@hcengineering/kra-team'
   import { createEventDispatcher } from 'svelte'
 
