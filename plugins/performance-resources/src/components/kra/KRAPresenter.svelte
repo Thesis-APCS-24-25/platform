@@ -100,15 +100,15 @@
   }
 
   .header {
-    border: 1px solid transparent;
-    border-radius: 0.25rem;
+    // border: 1px solid transparent;
+    // border-radius: 0.25rem;
     padding: 0.25rem 0.5rem;
-    background-color: var(--secondary-button-default);
+    // background-color: var(--secondary-button-default);
   }
 
   .header-icon {
     padding: 0.25rem;
     border-radius: 0.25rem;
-    background-color: var(--secondary-button-hovered);
+    background-color: var(--secondary-button-default);
   }
 </style>

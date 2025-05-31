@@ -1,15 +1,19 @@
 <script lang="ts">
-  import { IconCollapseArrow } from '@hcengineering/ui'
+  import { AnyComponent, AnySvelteComponent, Button, IconCollapseArrow, showPopup } from '@hcengineering/ui'
 
   import { createEventDispatcher } from 'svelte'
   import KraRefPresenter from './KRARefPresenter.svelte'
   import { Ref } from '@hcengineering/core'
   import { KRA } from '@hcengineering/performance'
+  import { IntlString } from '@hcengineering/platform'
 
   export let kra: Ref<KRA>
   export let collapsed: boolean = false
   export let headerBGColor: string = 'var(--hc-color-bg-header)'
   export let count: number | undefined = 0
+  export let createComponent: AnySvelteComponent | AnyComponent | undefined = undefined
+  export let createComponentProps: Record<string, any> | undefined = undefined
+  export let createLabel: IntlString | undefined = undefined
 
   const dispatch = createEventDispatcher()
 </script>
@@ -23,15 +27,23 @@
   on:click={() => dispatch('collapse')}
 >
   <div class="flex-row-center flex-grow" style:color={'inherit'}>
-    <!-- {#if level === 0} -->
-    <div class="chevron"><IconCollapseArrow size={'small'} /></div>
-    <!-- {/if} -->
+    {#if count !== 0}
+      <div class="chevron"><IconCollapseArrow size={'small'} /></div>
+    {/if}
     <KraRefPresenter value={kra} kind="list-header" type="text" />
-    <!-- header component here -->
     <span class="ml-2 font-medium-12">{count}</span>
-    <div class="flex-row-center">
-      <!-- create component here -->
-    </div>
+  </div>
+  <div class="flex-row-center">
+    {#if createComponent}
+      <Button
+        size="small"
+        kind="primary"
+        label={createLabel}
+        on:click={() => {
+          showPopup(createComponent, createComponentProps, 'top')
+        }}
+      />
+    {/if}
   </div>
 </div>
 
