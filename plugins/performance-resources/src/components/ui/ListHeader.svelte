@@ -1,12 +1,12 @@
 <script lang="ts">
-  import { AnyComponent, AnySvelteComponent, Button, IconCollapseArrow, showPopup } from '@hcengineering/ui'
+  import { IconCollapseArrow } from '@hcengineering/ui'
 
   import { createEventDispatcher } from 'svelte'
-  import { IntlString } from '@hcengineering/platform'
 
   export let collapsed: boolean = false
   export let headerBGColor: string = 'var(--hc-color-bg-header)'
-  export let count: number | undefined = 0
+  export let flat: boolean = false
+  export let count: number | undefined = undefined
 
   const dispatch = createEventDispatcher()
 
@@ -18,14 +18,19 @@
 <div
   style:--header-bg-color={headerBGColor}
   class="flex-between categoryHeader row"
-  class:collapsed
+  class:collapsed={collapsed || count === 0}
+  class:flat
   on:mouseover={() => {
     hovered = true
   }}
   on:mouseout={() => {
     hovered = false
   }}
-  on:click={() => dispatch('collapse')}
+  on:click={() => {
+    if (count !== 0) {
+      dispatch('collapse')
+    }
+  }}
   on:focus={() => {
     hovered = true
   }}
@@ -34,9 +39,7 @@
   }}
 >
   <div class="flex-row-center flex-grow" style:color={'inherit'}>
-    {#if count !== 0}
-      <div class="chevron"><IconCollapseArrow size={'small'} /></div>
-    {/if}
+    <div class="chevron" class:hidden={count === 0}><IconCollapseArrow size={'small'} /></div>
     <slot name="header" {count} />
   </div>
   <div class:on-hover={!hovered}>

@@ -47,19 +47,3 @@
     }
   )
 </script>
-
-<AllKRAs
-  {space}
-  {icon}
-  {label}
-  {createEvent}
-  {createLabel}
-  {createComponent}
-  {createComponentProps}
-  {createButton}
-  {isCreationDisabled}
-  {descriptors}
-  {baseQuery}
-  {modes}
-  {navigationModel}
-/>
