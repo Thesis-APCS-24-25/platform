@@ -13,7 +13,6 @@
 
   export let employees: Ref<PersonAccount>[]
   export let employeeKras: WithLookup<EmployeeKRA>[]
-  console.log('employeeKras', employeeKras)
   let sums = new Map<Ref<PersonAccount>, number>()
   $: {
     sums = employeeKras.reduce((acc, employeeKra) => {
