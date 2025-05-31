@@ -24,10 +24,8 @@
       }
       mapping.get(attr)?.push(item)
     })
-    console.log('mapping', mapping)
   }
   $: focusIndexes = items.map(() => -1)
-  $: console.log('focusIndexes', focusIndexes)
 </script>
 
 <div class="flex-col-stretch flex-gap-2">

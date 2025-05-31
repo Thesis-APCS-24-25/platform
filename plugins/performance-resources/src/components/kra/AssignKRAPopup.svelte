@@ -4,9 +4,7 @@
   import { ObjectBox, ObjectBoxPopup } from '@hcengineering/view-resources'
   import { Data, Ref, Space } from '@hcengineering/core'
   import { EmployeeKRA, KRA } from '@hcengineering/performance'
-  import {
-    personAccountByPersonId,
-    PersonAccountRefPresenter  } from '@hcengineering/contact-resources'
+  import { personAccountByPersonId, PersonAccountRefPresenter } from '@hcengineering/contact-resources'
   import KraWeightEditorWithPopup from './KRAWeightEditorWithPopup.svelte'
   import { Button, eventToHTMLElement, IconAdd, IconClose, showPopup } from '@hcengineering/ui'
   import kraTeam, { Member } from '@hcengineering/kra-team'
@@ -97,6 +95,7 @@
   okAction={handleSave}
   okLabel={presentation.string.Save}
   width="small"
+  on:close
   {canSave}
 >
   <svelte:fragment slot="header">

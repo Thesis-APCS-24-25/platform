@@ -69,7 +69,7 @@
     <span
       class:header={!noSelect && kind === 'list-header'}
       class:uppercase={kind === 'list-header'}
-      class:font-bold-12={kind === 'list-header'}
+      class:font-medium-12={kind === 'list-header'}
       class="overflow-label"
       class:select-text={!noSelect}
       use:tooltip={{ label: getEmbeddedLabel(value.title) }}

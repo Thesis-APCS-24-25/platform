@@ -2,10 +2,9 @@
   import { PersonAccountRefPresenter } from '@hcengineering/contact-resources'
   import { Ref, WithLookup } from '@hcengineering/core'
   import { EmployeeKRA, KRA } from '@hcengineering/performance'
-  import { Button, ExpandCollapse, ListView, Separator, showPopup } from '@hcengineering/ui'
-  import { FixedColumn, ListSelectionProvider, showMenu } from '@hcengineering/view-resources'
+  import { Button, showPopup } from '@hcengineering/ui'
+  import { FixedColumn, ListSelectionProvider } from '@hcengineering/view-resources'
   import KraWeightEditorWithPopup from './KRAWeightEditorWithPopup.svelte'
-  import ListHeader from './ListHeader.svelte'
   import performance from '../../plugin'
   import AssignKraPopup from './AssignKRAPopup.svelte'
   import KraRefPresenter from './KRARefPresenter.svelte'
@@ -13,8 +12,6 @@
 
   export let kras: Ref<KRA>[]
   export let employeeKras: WithLookup<EmployeeKRA>[]
-
-  const collapsed: boolean[] = Array(kras.length).fill(true)
 
   let mapping = new Map<Ref<KRA>, WithLookup<EmployeeKRA>[]>()
   $: {
@@ -29,10 +26,6 @@
     }
     console.log('mapping', mapping)
   }
-
-  const listProvider = new ListSelectionProvider(() => {})
-
-  $: focusIndexes = kras.map(() => -1)
 </script>
 
 <GroupedList categories={kras} items={employeeKras} key="kra">
@@ -44,9 +37,11 @@
   </svelte:fragment>
   <svelte:fragment slot="action" let:category>
     <Button
-      size="small"
-      kind="primary"
-      label={performance.string.AssignKRA}
+      kind="ghost"
+      icon={performance.icon.AssignKRA}
+      showTooltip={{
+        label: performance.string.AssignKRA
+      }}
       on:click={() => {
         const assigns = mapping.get(category) ?? []
         showPopup(
@@ -71,18 +66,3 @@
     </div>
   </svelte:fragment>
 </GroupedList>
-
-<style lang="scss">
-  .divider {
-    width: 1px;
-    height: 100%;
-    background-color: var(--hc-color-bg-divider);
-  }
-
-  .list-content {
-    background-color: var(--theme-list-row-color);
-    border-radius: 0rem 0rem 0.25rem 0.25rem;
-    border: 1px solid var(--theme-list-border-color);
-    border-top: none;
-  }
-</style>
