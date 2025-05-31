@@ -49,33 +49,33 @@
       <!-- svelte-ignore a11y-click-events-have-key-events -->
       <!-- svelte-ignore a11y-no-static-element-interactions -->
       <ExpandCollapse isExpanded={!collapsed[idx]}>
-        <div class="list-content">
+        <div class="list-content" class:collapsed={collapsed[idx]}>
           <ListView
             count={mapping.get(category)?.length ?? 0}
             addClass={'step-tb-2-accent list-content'}
             kind="full-size"
             selection={focusIndexes[idx] !== -1 ? focusIndexes[idx] : -1}
           >
-            <div
-              on:contextmenu={(ev) => {
-                // showMenu(ev, { object: employeeKra })
-              }}
-              on:mouseenter={() => {
-                focusIndexes = focusIndexes.map((_, i) => (i === idx ? item : -1))
-              }}
-              on:focus={() => {}}
-              on:mouseleave={() => {
-                focusIndexes = focusIndexes.map(() => -1)
-              }}
-              on:click={(evt) => {}}
-              slot="item"
-              let:item
-            >
+            <svelte:fragment slot="item" let:item>
               {@const itemData = mapping.get(category)?.[item]}
-              {#if itemData}
-                <slot name="item" item={itemData} {category} />
-              {/if}
-            </div>
+              <div
+                class="list-item"
+                on:contextmenu={(ev) => {
+                  showMenu(ev, { object: mapping.get(category)?.[item] })
+                }}
+                on:mouseenter={() => {
+                  focusIndexes = focusIndexes.map((_, i) => (i === idx ? item : -1))
+                }}
+                on:focus={() => {}}
+                on:mouseleave={() => {
+                  focusIndexes = focusIndexes.map(() => -1)
+                }}
+              >
+                {#if itemData}
+                  <slot name="item" item={itemData} {category} />
+                {/if}
+              </div>
+            </svelte:fragment>
           </ListView>
         </div>
       </ExpandCollapse>
@@ -84,16 +84,23 @@
 </div>
 
 <style lang="scss">
-  .divider {
-    width: 1px;
-    height: 100%;
-    background-color: var(--hc-color-bg-divider);
-  }
-
   .list-content {
     background-color: var(--theme-list-row-color);
     border-radius: 0rem 0rem 0.25rem 0.25rem;
     border: 1px solid var(--theme-list-border-color);
     border-top: none;
+
+    &.collapsed {
+      visibility: hidden;
+    }
+  }
+
+  .list-item {
+    padding-left: 2rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    color: var(--hc-color-text);
   }
 </style>
