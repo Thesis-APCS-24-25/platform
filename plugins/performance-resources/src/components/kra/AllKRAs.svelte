@@ -119,9 +119,9 @@
   <Scroller bind:this={scroll} bind:divScroll padding={'0 1rem'} noFade checkForHeaders>
     <div class="flex-col-stretch flex-gap-2">
       {#if currentMode === 'per-kra'}
-        <EmployeeKRAsByEmployeeList {employees} {employeeKras} />
-      {:else if currentMode === 'per-employee'}
         <EmployeeKrAsByKraList {kras} {employeeKras} />
+      {:else if currentMode === 'per-employee'}
+        <EmployeeKRAsByEmployeeList {employees} {employeeKras} />
       {/if}
     </div>
   </Scroller>
