@@ -4,41 +4,46 @@
   import { NumberPresenter } from '@hcengineering/view-resources'
   import KraWeightEditBoxPopup from './KRAWeightEditBoxPopup.svelte'
   import { PersonAccount } from '@hcengineering/contact'
-  import { Ref, WithLookup } from '@hcengineering/core'
+  import { Data, Ref, WithLookup } from '@hcengineering/core'
   import { createQuery, getClient } from '@hcengineering/presentation'
   import { EmployeeKRA } from '@hcengineering/performance'
   import KraWeightPresenter from './KRAWeightPresenter.svelte'
   import performance from '../../plugin'
 
-  export let value: WithLookup<EmployeeKRA>
+  export let value: EmployeeKRA | Data<EmployeeKRA> | WithLookup<EmployeeKRA>
   const employee: Ref<PersonAccount> = value.employee
 
   const client = getClient()
-  const _id: Ref<EmployeeKRA> = value._id
+  const _id: Ref<EmployeeKRA> | undefined = '_id' in value ? value._id : undefined
   export let autoFocus: boolean = false
   export let kind: 'no-border' | 'link' | 'button' | 'list' = 'link'
   export let readonly = false
   export let size: ButtonSize = 'small'
   export let justify: 'left' | 'center' = 'center'
   export let width: string | undefined = 'fit-content'
+  export let doUpdate: boolean = true
   export let validateFunction: (value: number | undefined) => boolean = () => true
+  export let onUpdate: (value: number) => void = () => {}
 
-  async function updateWeight(newWeight: number): Promise<void> {
+  async function updateWeight (newWeight: number): Promise<void> {
     if (Number.isFinite(newWeight) && validateFunction(newWeight)) {
-      await client.update(value, {
-        weight: newWeight
-      })
+      onUpdate(newWeight)
+      if ('_id' in value && doUpdate) {
+        await client.update(value, {
+          weight: newWeight
+        })
+      }
     }
   }
 
   let shown: boolean = false
 
-  async function onchange(ev: Event): Promise<void> {
+  async function onchange (ev: Event): Promise<void> {
     const newWeight = (ev.target as HTMLInputElement).valueAsNumber
     await updateWeight(newWeight)
   }
 
-  let otherWeights: { value: number; label: string }[] = []
+  let otherWeights: { value: number, label: string }[] = []
   const weightQ = createQuery()
   weightQ.query(
     performance.class.EmployeeKRA,
