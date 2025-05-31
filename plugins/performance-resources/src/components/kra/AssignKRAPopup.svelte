@@ -9,6 +9,7 @@
   import { Button, eventToHTMLElement, IconAdd, IconClose, showPopup } from '@hcengineering/ui'
   import kraTeam, { Member } from '@hcengineering/kra-team'
   import { createEventDispatcher } from 'svelte'
+  import { PersonAccount } from '@hcengineering/contact'
 
   export let kra: Ref<KRA> | undefined = undefined
   export let space: Ref<Space> | undefined = undefined
@@ -55,7 +56,7 @@
         .map((it) => {
           return {
             kra: v,
-            employee: it._id,
+            employee: (it as PersonAccount)._id,
             weight: 0
           }
         })
