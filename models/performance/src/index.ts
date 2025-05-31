@@ -28,13 +28,13 @@ export { performanceId } from '@hcengineering/performance'
 export { performance as default }
 export { performanceOperation } from './migration'
 
-function defineTeam(builder: Builder): void {
+function defineTeam (builder: Builder): void {
   builder.mixin(kraTeam.class.Team, core.class.Class, view.mixin.SpacePresenter, {
     presenter: performance.component.TeamSpacePresenter
   })
 }
 
-function defineReviewSession(builder: Builder): void {
+function defineReviewSession (builder: Builder): void {
   builder.createModel(TReviewSession, TDefaultReviewSessionData)
 
   builder.mixin(performance.class.ReviewSession, core.class.Class, view.mixin.SpacePresenter, {
@@ -107,7 +107,7 @@ function defineReviewSession(builder: Builder): void {
   // })
 }
 
-function defineKRA(builder: Builder): void {
+function defineKRA (builder: Builder): void {
   builder.createModel(TKRA, TEmployeeKRA, TKRAStatus, TDefaultKRAData)
 
   builder.mixin(performance.class.KRA, core.class.Class, view.mixin.AttributePresenter, {
@@ -240,7 +240,7 @@ function defineKRA(builder: Builder): void {
   )
 }
 
-function defineReport(builder: Builder): void {
+function defineReport (builder: Builder): void {
   builder.createModel(TReviewComment, TPerformanceReport)
 
   builder.mixin(performance.class.PerformanceReport, core.class.Class, view.mixin.ObjectPresenter, {
@@ -269,7 +269,7 @@ function defineReport(builder: Builder): void {
   })
 }
 
-function defineSpaceType(builder: Builder): void {
+function defineSpaceType (builder: Builder): void {
   const kraStatuses: Ref<KRAStatus>[] = []
   for (const statusId of Object.values(performance.kraStatus)) {
     kraStatuses.push(statusId)
@@ -346,7 +346,7 @@ function defineSpaceType(builder: Builder): void {
   // )
 }
 
-function defineApplication(builder: Builder): void {
+function defineApplication (builder: Builder): void {
   builder.createDoc<Application>(
     workbench.class.Application,
     core.space.Model,
@@ -436,7 +436,7 @@ function defineApplication(builder: Builder): void {
   )
 }
 
-function defineActivity(builder: Builder): void {
+function defineActivity (builder: Builder): void {
   builder.mixin(performance.class.ReviewSession, core.class.Class, activity.mixin.ActivityDoc, {})
   builder.mixin(performance.class.KRA, core.class.Class, activity.mixin.ActivityDoc, {})
 
@@ -464,7 +464,7 @@ function defineActivity(builder: Builder): void {
   })
 }
 
-function defineSortAndGrouping(builder: Builder): void {
+function defineSortAndGrouping (builder: Builder): void {
   builder.mixin(performance.class.KRAStatus, core.class.Class, view.mixin.SortFuncs, {
     func: performance.function.KRAStatusSort
   })
@@ -474,7 +474,7 @@ function defineSortAndGrouping(builder: Builder): void {
   })
 }
 
-export function createModel(builder: Builder): void {
+export function createModel (builder: Builder): void {
   builder.createModel(TMeasureProgress)
   defineTeam(builder)
   defineReviewSession(builder)
