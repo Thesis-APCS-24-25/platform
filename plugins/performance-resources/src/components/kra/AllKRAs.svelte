@@ -1,50 +1,28 @@
 <script lang="ts">
-  import { Ref, Doc, Space, DocumentQuery, SortingOrder, WithLookup } from '@hcengineering/core'
+  import { Ref, Doc, Space, DocumentQuery, WithLookup } from '@hcengineering/core'
   import { Asset, IntlString } from '@hcengineering/platform'
   import {
-    AnyComponent,
     Breadcrumb,
     Button,
     Header,
     IconAdd,
     IModeSelector,
-    Label,
     ModeSelector,
-    resizeObserver,
     Scroller,
     showPopup
   } from '@hcengineering/ui'
-  import view, { BuildModelKey, Viewlet, ViewletDescriptor, ViewOptions } from '@hcengineering/view'
-  import { SpecialView } from '@hcengineering/workbench-resources'
-  import { ParentsNavigationModel, ViewConfiguration } from '@hcengineering/workbench'
   import performance from '../../plugin'
-  import { List, ListSelectionProvider, ListView, SelectDirection } from '@hcengineering/view-resources'
-  import { getClient, createQuery } from '@hcengineering/presentation'
+  import { createQuery } from '@hcengineering/presentation'
   import CreateKra from './CreateKRA.svelte'
-  import ListCategories from '../list/ListCategories.svelte'
-  import EmployeeKRAsByEmployeeSubList from './EmployeeKRAsByEmployeeSubList.svelte'
-  import { EmployeeKRA, KRA } from '@hcengineering/performance'
+  import EmployeeKRAsByEmployeeList from './EmployeeKRAsByEmployeeList.svelte'
+  import { EmployeeKRA, KRA, ReviewSession } from '@hcengineering/performance'
+  import { PersonAccount } from '@hcengineering/contact'
+  import EmployeeKrAsByKraList from './EmployeeKRAsByKRAList.svelte'
 
   export let space: Ref<Space> | undefined = undefined
   export let icon: Asset
   export let label: IntlString = performance.string.KRA
   export let baseQuery: DocumentQuery<Doc> | undefined = undefined
-
-  let viewOptions: ViewOptions = {
-    groupBy: ['kra'],
-    orderBy: ['employee', SortingOrder.Ascending]
-  }
-
-  let viewlet: Viewlet | undefined = undefined
-  void getClient()
-    .findOne(view.class.Viewlet, {
-      attachTo: performance.class.EmployeeKRA
-    })
-    .then((res) => {
-      if (res !== undefined) {
-        viewlet = res
-      }
-    })
 
   $: baseQuery = {
     ...baseQuery,
@@ -54,58 +32,6 @@
     space
   }
 
-  const groupByEmployeeViewOptions: ViewOptions = {
-    groupBy: ['employee'],
-    orderBy: ['kra', SortingOrder.Ascending]
-  }
-
-  const groupByKRAViewOptions: ViewOptions = {
-    groupBy: ['kra'],
-    orderBy: ['employee', SortingOrder.Ascending]
-  }
-
-  const perKRAConfig: (string | BuildModelKey)[] = [
-    {
-      key: 'employee',
-      displayProps: {
-        fixed: 'left'
-      }
-    },
-    {
-      key: '',
-      presenter: performance.component.KRAWeightEditorWithPopup,
-      props: {
-        readonly: true
-      },
-      displayProps: {
-        fixed: 'right',
-        dividerBefore: true
-      }
-    }
-  ]
-
-  const perEmployeeConfig: (string | BuildModelKey)[] = [
-    {
-      key: 'kra',
-      displayProps: {
-        fixed: 'left'
-      }
-    },
-    {
-      key: '',
-      presenter: performance.component.KRAWeightEditorWithPopup,
-      props: {
-        readonly: true
-      },
-      displayProps: {
-        fixed: 'right',
-        dividerBefore: true
-      }
-    }
-  ]
-
-  let config = perKRAConfig
-
   const modes: IModeSelector = {
     mode: 'per-kra',
     config: [
@@ -113,35 +39,33 @@
       ['per-employee', performance.string.PerMember, {}]
     ],
     onChange (mode) {
-      if (mode === 'per-kra') {
-        viewOptions = groupByKRAViewOptions
-        config = perKRAConfig
-      } else if (mode === 'per-employee') {
-        viewOptions = groupByEmployeeViewOptions
-        config = perEmployeeConfig
-      }
+      modes.mode = mode
+      currentMode = mode
     }
   }
 
-  // let list: List
-  // let listWidth: number = 0
+  let currentMode = modes.mode
+
   let scroll: Scroller
   let divScroll: HTMLDivElement
-  //
-  // const listProvider = new ListSelectionProvider(
-  //   (offset: 1 | -1 | 0, of?: Doc, dir?: SelectDirection, noScroll?: boolean) => {
-  //     if (dir === 'vertical') {
-  //       // Select next
-  //       list?.select(offset, of, noScroll)
-  //     }
-  //   }
-  // )
-  // const selection = listProvider.selection
 
   let kras: Ref<KRA>[] = []
+  let employees: Ref<PersonAccount>[] = []
   let employeeKras: WithLookup<EmployeeKRA>[] = []
   const kraQuery = createQuery()
   const employeeKraQuery = createQuery()
+  const spaceQuery = createQuery()
+  $: spaceQuery.query(
+    performance.class.ReviewSession,
+    {
+      _id: space as Ref<ReviewSession>
+    },
+    (res) => {
+      if (res.length > 0) {
+        employees = (res[0].members ?? []).map((member) => member as Ref<PersonAccount>)
+      }
+    }
+  )
   $: kraQuery.query(
     performance.class.KRA,
     {
@@ -192,16 +116,13 @@
 </Header>
 
 <div class="w-full h-full py-4 clear-mins">
-  <Scroller
-    bind:this={scroll}
-    bind:divScroll
-    fade={{ multipler: { top: 2.75 * viewOptions.groupBy.length, bottom: 0 } }}
-    padding={'0 1rem'}
-    noFade
-    checkForHeaders
-  >
+  <Scroller bind:this={scroll} bind:divScroll padding={'0 1rem'} noFade checkForHeaders>
     <div class="flex-col-stretch flex-gap-2">
-      <EmployeeKRAsByEmployeeSubList {kras} {employeeKras} />
+      {#if currentMode === 'per-kra'}
+        <EmployeeKRAsByEmployeeList {employees} {employeeKras} />
+      {:else if currentMode === 'per-employee'}
+        <EmployeeKrAsByKraList {kras} {employeeKras} />
+      {/if}
     </div>
   </Scroller>
 </div>

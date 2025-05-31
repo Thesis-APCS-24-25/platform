@@ -9,10 +9,10 @@
   export let onChange: ((value: number | undefined) => void) | undefined = undefined
 </script>
 
-{#if onChange !== undefined && !readonly}
-  <NumberEditor {onChange} {value} {placeholder} {kind} />
-{:else}
-  {#if showPercent}
+<div>
+  {#if onChange !== undefined && !readonly}
+    <NumberEditor {onChange} {value} {placeholder} {kind} />
+  {:else if showPercent}
     <span class="fs-bold text-md">
       {value !== undefined ? (value * 100.0).toFixed(0) : 0}
     </span>
@@ -22,4 +22,4 @@
       {value?.toFixed(2)}
     </span>
   {/if}
-{/if}
+</div>

@@ -9,6 +9,8 @@
   export let count: number | undefined = 0
 
   const dispatch = createEventDispatcher()
+
+  let hovered: boolean = false
 </script>
 
 <!-- svelte-ignore a11y-click-events-have-key-events -->
@@ -17,15 +19,29 @@
   style:--header-bg-color={headerBGColor}
   class="flex-between categoryHeader row"
   class:collapsed
+  on:mouseover={() => {
+    hovered = true
+  }}
+  on:mouseout={() => {
+    hovered = false
+  }}
   on:click={() => dispatch('collapse')}
+  on:focus={() => {
+    hovered = true
+  }}
+  on:blur={() => {
+    hovered = false
+  }}
 >
   <div class="flex-row-center flex-grow" style:color={'inherit'}>
     {#if count !== 0}
       <div class="chevron"><IconCollapseArrow size={'small'} /></div>
     {/if}
-    <slot name="header" {count}/>
+    <slot name="header" {count} />
   </div>
-  <slot name="action" {count}/>
+  <div class:on-hover={!hovered}>
+    <slot name="action" {count} />
+  </div>
 </div>
 
 <style lang="scss">
