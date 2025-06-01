@@ -6,8 +6,6 @@
   import performance from '../../plugin'
   import { getCurrentLocation, Location, navigate } from '@hcengineering/ui'
 
-  export let currentTeam: Ref<Team> | undefined = undefined
-
   function onChange (event: CustomEvent<Ref<Team> | undefined>): void {
     if ($selectedTeam === event.detail) {
       return
@@ -27,7 +25,7 @@
 </script>
 
 <div class="antiNav-subheader subheader">
-  <TeamSelector bind:currentTeam on:change={onChange} />
+  <TeamSelector on:change={onChange} />
 </div>
 
 <style lang="scss">
