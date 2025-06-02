@@ -54,6 +54,7 @@ export interface Goal extends Doc {
   name: string
   description: string
   reports: CollectionSize<Report>
+  progress?: number
   unit: Ref<Unit>
 }
 
@@ -468,7 +469,8 @@ const pluginState = plugin(kraId, {
     Home: '' as Asset,
     RedCircle: '' as Asset,
 
-    Goal: '' as Asset
+    Goal: '' as Asset,
+    WriteReport: '' as Asset
   },
   category: {
     Other: '' as Ref<TagCategory>,

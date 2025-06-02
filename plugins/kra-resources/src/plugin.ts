@@ -43,6 +43,7 @@ export default mergeIds(kraId, tracker, {
     IssueCategory: '' as Ref<ObjectSearchCategory>
   },
   string: {
+    EditGoal: '' as IntlString,
     SetGoal: '' as IntlString,
     RemoveGoal: '' as IntlString,
     AddDescriptionPlaceholder: '' as IntlString,
@@ -327,7 +328,13 @@ export default mergeIds(kraId, tracker, {
     PreviousAssigned: '' as IntlString,
     EditRelatedTargets: '' as IntlString,
     RelatedIssueTargetDescription: '' as IntlString,
-    RoleLabel: '' as IntlString
+    RoleLabel: '' as IntlString,
+
+    RemoveGoalDialogMessage: '' as IntlString,
+    RemoveGoalDialogTitle: '' as IntlString,
+    EditRatingScale: '' as IntlString,
+    EditKpi: '' as IntlString,
+    AddTargetPlaceholder: '' as IntlString
   },
   component: {
     GoalObjectPresenter: '' as AnyComponent,

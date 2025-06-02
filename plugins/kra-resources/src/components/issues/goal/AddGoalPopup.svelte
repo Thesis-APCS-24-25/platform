@@ -4,8 +4,8 @@
   import { ObjectBox } from '@hcengineering/view-resources'
   import { Goal, Issue, Project } from '@hcengineering/kra'
   import { DropdownIntlItem, DropdownLabelsIntl } from '@hcengineering/ui'
-  import AddKpi from './kpi/AddKpi.svelte'
-  import AddRatingScale from './ratingscale/AddRatingScale.svelte'
+  import EditKpi from './kpi/EditKpi.svelte'
+  import EditRatingScale from './ratingscale/EditRatingScale.svelte'
   import { Ref } from '@hcengineering/core'
   import { createEventDispatcher } from 'svelte'
 
@@ -13,8 +13,8 @@
   export let space: Ref<Project>
   export let canEditIssue: boolean = true
 
-  let kpiForm: AddKpi | undefined
-  let ratingScaleForm: AddRatingScale | undefined
+  let kpiForm: EditKpi | undefined
+  let ratingScaleForm: EditRatingScale | undefined
 
   const items: DropdownIntlItem[] = [
     {
@@ -56,26 +56,13 @@
       id = await ratingScaleForm.save()
     }
   }
-
-  // async function firstIssueWithoutGoal (): Promise<Issue | undefined> {
-  //   if (issue !== undefined) {
-  //     const client = getClient()
-  //     const found: Issue | undefined = await client.findOne(kra.class.Issue, {
-  //       _id: issue
-  //     })
-  //     if (found !== undefined && found.goal === undefined) {
-  //       return found
-  //     }
-  //   }
-  //   return undefined
-  // }
 </script>
 
 <Card
   label={kra.string.AddGoal}
   okAction={save}
   {canSave}
-  width="medium"
+  width="small"
   on:close={() => {
     dispatch('close', id)
   }}
@@ -104,8 +91,8 @@
   </svelte:fragment>
 
   {#if selected === 'kpi'}
-    <AddKpi {space} bind:canSave={canSaveKpi} bind:this={kpiForm} {issue} />
+    <EditKpi {space} bind:canSave={canSaveKpi} bind:this={kpiForm} {issue} />
   {:else if selected === 'rating-scale'}
-    <AddRatingScale {space} bind:canSave={canSaveRatingScale} bind:this={ratingScaleForm} {issue} />
+    <EditRatingScale {space} bind:canSave={canSaveRatingScale} bind:this={ratingScaleForm} {issue} />
   {/if}
 </Card>

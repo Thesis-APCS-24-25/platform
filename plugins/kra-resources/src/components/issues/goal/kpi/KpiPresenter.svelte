@@ -5,7 +5,6 @@
   import { ButtonKind, ButtonSize, eventToHTMLElement, showPopup } from '@hcengineering/ui'
   import KpiReportsPopup from './KpiReportsPopup.svelte'
   import { WithLookup } from '@hcengineering/core'
-  import { calculateResult } from '../../../../utils/goal'
 
   export let value: WithLookup<Kpi>
   export let issue: WithLookup<Issue>
@@ -13,7 +12,7 @@
   export let size: ButtonSize = 'small'
   export let readonly: boolean | undefined = false
 
-  $: sum = calculateResult(value, undefined)
+  $: sum = value.progress
 
   function handleOpenEditor (sum: number, e: MouseEvent): void {
     e.stopPropagation()
@@ -29,26 +28,24 @@
   }
 </script>
 
-{#await sum then sum}
-  <GoalPresenterContainer disabled={readonly} {kind} {size} onClick={handleOpenEditor.bind(null, sum ?? 0)}>
-    {#if value.target > 0}
-      <KpiProgressCircle value={sum ?? 0} max={value.target} />
-    {/if}
+<GoalPresenterContainer disabled={readonly} {kind} {size} onClick={handleOpenEditor.bind(null, sum ?? 0)}>
+  {#if value.target > 0}
+    <KpiProgressCircle value={sum ?? 0} max={value.target} />
+  {/if}
+  <div class="separator"></div>
 
-    <div class="separator"></div>
+  {#if value.$lookup?.unit?.prefix === true}
+    <span class="unit-symbol">{value.$lookup.unit.symbol}</span>
+  {/if}
+  <strong class="kpi-num">{sum}</strong>
+  {#if value.$lookup?.unit?.prefix === false}
+    <span class="unit-symbol">{value.$lookup.unit.symbol}</span>
+  {/if}
+  {#if value.target > 0}
+    <span class="kpi-num"> / {value.target}</span>
+  {/if}
+</GoalPresenterContainer>
 
-    {#if value.$lookup?.unit?.prefix === true}
-      <span class="unit-symbol">{value.$lookup.unit.symbol}</span>
-    {/if}
-    <strong class="kpi-num">{sum}</strong>
-    {#if value.$lookup?.unit?.prefix === false}
-      <span class="unit-symbol">{value.$lookup.unit.symbol}</span>
-    {/if}
-    {#if value.target > 0}
-      <span class="kpi-num"> / {value.target}</span>
-    {/if}
-  </GoalPresenterContainer>
-{/await}
 <style lang="scss">
   .separator {
     width: 1px;

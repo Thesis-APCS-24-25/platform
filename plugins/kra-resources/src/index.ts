@@ -131,7 +131,6 @@ import Report from './components/issues/goal/Report.svelte'
 import UnitPresenter from './components/issues/goal/unit/UnitPresenter.svelte'
 import GoalObjectPresenter from './components/issues/goal/GoalObjectPresenter.svelte'
 import './styles/_colors.scss'
-import { calculateKpiResult, calculateRatingScaleResult } from './utils/goal'
 import KRAEditor from './components/kra/KRAEditor.svelte'
 
 export { default as AssigneeEditor } from './components/issues/AssigneeEditor.svelte'
@@ -249,7 +248,9 @@ async function deleteProject (project: Project | undefined): Promise<void> {
         }
       })
     } else {
-      const anyIssue = await client.findOne(kra.class.Issue, { space: project._id })
+      const anyIssue = await client.findOne(kra.class.Issue, {
+        space: project._id
+      })
       showPopup(MessageBox, {
         label: kra.string.ArchiveProjectName,
         labelProps: { name: project.name },
@@ -361,8 +362,6 @@ export default async (): Promise<Resources> => ({
     IssueChatTitleProvider: getIssueChatTitle,
     IsProjectJoined: async (project: Project) => project.members.includes(getCurrentAccount()._id),
     GetIssueStatusCategories: getIssueStatusCategories,
-    KpiAggregator: calculateKpiResult,
-    RatingScaleAggregator: calculateRatingScaleResult,
     CalculateGoal: calculateCompletionLevel
   },
   actionImpl: {

@@ -45,6 +45,7 @@ export async function createNewTeam (
     },
     teamId
   )
+  console.log('rolesAssignment', rolesAssignment)
   await client.createMixin(teamId, kraTeam.class.Team, core.space.Space, spaceType.targetClass, rolesAssignment)
 }
 
