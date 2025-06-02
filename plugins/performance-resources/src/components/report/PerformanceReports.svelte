@@ -1,7 +1,4 @@
 <script lang='ts'>
-  import { Team } from '@hcengineering/kra-team'
-  import TeamAndReviewSessionSelector from '../TeamAndReviewSessionSelector.svelte'
-  import { ReviewSession } from '@hcengineering/performance'
   import { Doc, DocumentQuery, Ref, Space } from '@hcengineering/core'
   import performance from '../../plugin'
   import { SpecialView } from '@hcengineering/workbench-resources'
@@ -23,20 +20,11 @@
   export let baseQuery: DocumentQuery<Doc> | undefined = undefined
   export let modes: IModeSelector<any> | undefined = undefined
   export let navigationModel: ParentsNavigationModel | undefined = undefined
-
-  let team: Ref<Team> | undefined
-  let reviewSession: Ref<ReviewSession> | undefined
-
 </script>
 
-<div class={'reports-header'}>
-  <TeamAndReviewSessionSelector
-    bind:team
-    bind:reviewSession
-  />
-</div>
 <SpecialView
   _class={performance.class.PerformanceReport}
+  space={currentSpace}
   {icon}
   {label}
   {createEvent}
@@ -48,15 +36,8 @@
   {descriptors}
   baseQuery={{
     ...baseQuery,
-    space: reviewSession
+    space: currentSpace
   }}
   {modes}
   {navigationModel}
 />
-
-<style lang="scss">
-  .reports-header {
-    padding: 1rem;
-    align-items: center;
-  }
-</style>

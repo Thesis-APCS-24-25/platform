@@ -384,7 +384,7 @@ function defineApplication (builder: Builder): void {
                 id: 'my-reports',
                 position: 'bottom',
                 label: performance.string.PerformanceReports,
-                component: workbench.component.SpecialView,
+                component: performance.component.PerformanceReports,
                 componentProps: {
                   _class: performance.class.PerformanceReport
                 }
@@ -411,7 +411,7 @@ function defineApplication (builder: Builder): void {
                 id: 'my-reports',
                 position: 'bottom',
                 label: performance.string.PerformanceReports,
-                component: workbench.component.SpecialView,
+                component: performance.component.PerformanceReports,
                 componentProps: {
                   _class: performance.class.PerformanceReport
                 }
