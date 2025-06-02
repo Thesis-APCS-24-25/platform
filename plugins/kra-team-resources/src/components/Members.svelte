@@ -1,16 +1,14 @@
 <script lang="ts">
-  import core, { Account, Ref, WithLookup } from '@hcengineering/core'
+  import { Ref, WithLookup } from '@hcengineering/core'
   import {
     SpaceHeader,
-    Table,
-    TableBrowser,
     ViewletContentView,
     ViewletSettingButton
   } from '@hcengineering/view-resources'
   import kraTeam from '../plugins'
   import { Viewlet, ViewOptions } from '@hcengineering/view'
-  import { createQuery, getClient, ObjectPopup } from '@hcengineering/presentation'
-  import contact, { Person, PersonAccount } from '@hcengineering/contact'
+  import { createQuery } from '@hcengineering/presentation'
+  import contact, { PersonAccount } from '@hcengineering/contact'
   import { Member, Team } from '@hcengineering/kra-team'
   import { Button, showPopup, themeStore } from '@hcengineering/ui'
   import { translate } from '@hcengineering/platform'
@@ -61,7 +59,7 @@
       {
         currentSpace
       },
-      'centered'
+      'top'
     )
   }
 </script>
@@ -79,7 +77,7 @@
   </svelte:fragment>
 
   <svelte:fragment slot="actions">
-    <Button label={kraTeam.string.AddMember} kind="primary" on:click={handleAddMember} />
+    <Button label={kraTeam.string.AddMember} kind="primary" on:click={handleAddMember}/>
   </svelte:fragment>
 </SpaceHeader>
 
