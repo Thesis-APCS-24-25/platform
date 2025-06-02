@@ -266,6 +266,10 @@ function defineReport (builder: Builder): void {
       other: []
     }
   })
+
+  builder.mixin(performance.class.PerformanceReport, core.class.Class, view.mixin.IgnoreActions, {
+    actions: [view.action.Delete, tracker.action.EditRelatedTargets, tracker.action.NewRelatedIssue]
+  })
 }
 
 function defineSpaceType (builder: Builder): void {

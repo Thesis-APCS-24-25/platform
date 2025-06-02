@@ -26,6 +26,7 @@ import kra from './plugin'
 
 import tags from '@hcengineering/tags'
 import { defaultPriorities, issuePriorities } from '@hcengineering/kra-resources/src/types'
+import performance from '@hcengineering/model-performance'
 
 function createGotoSpecialAction (
   builder: Builder,
@@ -675,4 +676,11 @@ export function createActions (builder: Builder, issuesId: string, myIssuesId: s
   //   },
   //   kra.action.EditRelatedTargets
   // )
+  ignoreActions(builder)
+}
+
+function ignoreActions (builder: Builder): void {
+  builder.mixin(performance.class.PerformanceReport, core.class.Class, view.mixin.IgnoreActions, {
+    actions: [kra.action.NewRelatedIssue]
+  })
 }
