@@ -99,7 +99,7 @@ export const getActiveReviewSession = async (team: Ref<Space>): Promise<Ref<Revi
 
   const sessions = await client.findAll(performance.class.ReviewSession, {
     space: team,
-    active: true
+    status: ReviewSessionStatus.InProgress
   })
 
   if (sessions.length > 0) {
@@ -115,4 +115,29 @@ export async function IsReviewSessionOfCurrentTeam (space: Space): Promise<boole
     return false
   }
   return true
+}
+
+export async function IsActiveReviewSessionOfCurrentTeam (space: Space): Promise<boolean> {
+  const ofTeam = await IsReviewSessionOfCurrentTeam(space)
+  if (!ofTeam) {
+    return false
+  }
+  const activeSession = space as ReviewSession
+  if ('status' in activeSession && activeSession.status === ReviewSessionStatus.InProgress) {
+    return true
+  }
+  return false
+}
+
+export async function IsInactiveReviewSessionOfCurrentTeam (space: Space): Promise<boolean> {
+  const ofTeam = await IsReviewSessionOfCurrentTeam(space)
+  if (!ofTeam) {
+    return false
+  }
+  const activeSession = space as ReviewSession
+  const client = getClient()
+  return (
+    client.getHierarchy().isDerived(activeSession._class, performance.class.ReviewSession) &&
+    activeSession.status !== ReviewSessionStatus.InProgress
+  )
 }

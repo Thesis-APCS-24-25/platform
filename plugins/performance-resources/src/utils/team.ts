@@ -1,9 +1,11 @@
 import kraTeam, { type Member, type Team } from '@hcengineering/kra-team'
 import { get, writable } from 'svelte/store'
 import { getClient } from '@hcengineering/presentation'
-import { getCurrentAccount, type Ref } from '@hcengineering/core'
+import { checkPermission, getCurrentAccount, type TypedSpace, type Ref, Client } from '@hcengineering/core'
 import { personAccountByPersonId, personIdByAccountId } from '@hcengineering/contact-resources'
 import { type PersonAccount } from '@hcengineering/contact'
+import performance from '../plugin'
+import { type ReviewSession } from '@hcengineering/performance'
 
 export const currentMemberId = get(personIdByAccountId).get(getCurrentAccount()._id as Ref<PersonAccount>)
 
@@ -12,7 +14,7 @@ export const currentMemberId = get(personIdByAccountId).get(getCurrentAccount().
  * @param {Ref<Member>} memberId - The ID of the member.
  * @returns {Promise<Team[]>} A promise that resolves to an array of teams.
  */
-export async function findTeamsWithMember (memberId: Ref<Member>): Promise<Team[]> {
+export async function findTeamsWithMember(memberId: Ref<Member>): Promise<Team[]> {
   const client = getClient()
   const id = get(personAccountByPersonId).get(memberId)?.[0]._id
   if (id === undefined) {
@@ -27,3 +29,16 @@ export async function findTeamsWithMember (memberId: Ref<Member>): Promise<Team[
 }
 
 export const currentTeam = writable<Ref<Team> | undefined>(undefined)
+
+export const canAssignKRAs = async (
+  client: Client,
+  reviewSession: Ref<ReviewSession> | ReviewSession): Promise<boolean> => {
+  const reviewSS =
+    typeof reviewSession === 'string'
+      ? await client.findOne(performance.class.ReviewSession, { _id: reviewSession })
+      : reviewSession
+  if (reviewSS === undefined) {
+    return false
+  }
+  return await checkPermission(getClient(), kraTeam.permission.ApproveKra, reviewSS.space as Ref<TypedSpace>)
+}

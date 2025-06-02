@@ -20,7 +20,8 @@ import {
   TReviewSession,
   TMeasureProgress,
   TPerformanceReport,
-  TTypeReviewSessionStatus
+  TTypeReviewSessionStatus,
+  TProgressPresenter
 } from './types'
 import { defineViewlets } from './viewlets'
 
@@ -364,7 +365,7 @@ function defineApplication (builder: Builder): void {
         spaces: [
           {
             id: 'active-review-session',
-            visibleIf: performance.function.IsReviewSessionOfCurrentTeam,
+            visibleIf: performance.function.IsActiveReviewSessionOfCurrentTeam,
             icon: performance.icon.Active,
             label: performance.string.ActiveReviewSessions,
             spaceClass: performance.class.ReviewSession,
@@ -397,7 +398,7 @@ function defineApplication (builder: Builder): void {
           },
           {
             id: 'review-session',
-            visibleIf: performance.function.IsReviewSessionOfCurrentTeam,
+            visibleIf: performance.function.IsInactiveReviewSessionOfCurrentTeam,
             label: performance.string.ReviewSessions,
             spaceClass: performance.class.ReviewSession,
             specials: [
@@ -479,6 +480,7 @@ function defineSortAndGrouping (builder: Builder): void {
 
 export function createModel (builder: Builder): void {
   builder.createModel(TMeasureProgress)
+  builder.createModel(TProgressPresenter)
   defineTeam(builder)
   defineReviewSession(builder)
   defineKRA(builder)

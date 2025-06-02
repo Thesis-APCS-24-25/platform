@@ -380,6 +380,9 @@ export function createModel (builder: Builder): void {
   builder.mixin(kra.class.Issue, core.class.Class, performance.mixin.MeasureProgress, {
     calculate: kra.function.CalculateGoal
   })
+  builder.mixin(kra.class.Issue, core.class.Class, performance.mixin.ProgressPresenter, {
+    presenter: kra.component.GoalPresenter
+  })
   builder.mixin(kra.class.Project, core.class.Class, activity.mixin.ActivityDoc, {})
   builder.mixin(kra.class.Issue, core.class.Class, activity.mixin.ActivityDoc, {})
   builder.mixin(kra.class.IssueTemplate, core.class.Class, activity.mixin.ActivityDoc, {})

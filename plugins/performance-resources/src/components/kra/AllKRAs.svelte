@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Ref, Doc, Space, DocumentQuery, WithLookup } from '@hcengineering/core'
+  import { Ref, Doc, Space, DocumentQuery, WithLookup, checkPermission, TypedSpace } from '@hcengineering/core'
   import { Asset, IntlString } from '@hcengineering/platform'
   import {
     Breadcrumb,
@@ -12,14 +12,16 @@
     showPopup
   } from '@hcengineering/ui'
   import performance from '../../plugin'
-  import { createQuery } from '@hcengineering/presentation'
+  import { createQuery, getClient } from '@hcengineering/presentation'
   import CreateKra from './CreateKRA.svelte'
   import EmployeeKRAsByEmployeeList from './EmployeeKRAsByEmployeeList.svelte'
   import { EmployeeKRA, KRA, ReviewSession } from '@hcengineering/performance'
   import { PersonAccount } from '@hcengineering/contact'
   import EmployeeKrAsByKraList from './EmployeeKRAsByKRAList.svelte'
+  import kraTeam from '@hcengineering/kra-team'
+  import { canAssignKRAs } from '../../utils/team'
 
-  export let space: Ref<Space> | undefined = undefined
+  export let space: Ref<ReviewSession>
   export let icon: Asset
   export let label: IntlString = performance.string.KRA
   export let baseQuery: DocumentQuery<Doc> | undefined = undefined
@@ -58,7 +60,7 @@
   $: spaceQuery.query(
     performance.class.ReviewSession,
     {
-      _id: space as Ref<ReviewSession>
+      _id: space
     },
     (res) => {
       if (res.length > 0) {
@@ -86,6 +88,11 @@
       employeeKras = res
     }
   )
+
+  let canAssign = false
+  $: void canAssignKRAs(getClient(), space).then((result) => {
+    canAssign = result
+  })
 </script>
 
 <Header>
@@ -119,9 +126,9 @@
   <Scroller bind:this={scroll} bind:divScroll padding={'0 1rem'} noFade checkForHeaders>
     <div class="flex-col-stretch flex-gap-2">
       {#if currentMode === 'per-kra'}
-        <EmployeeKrAsByKraList {kras} {employeeKras} />
+        <EmployeeKrAsByKraList {kras} {employeeKras} {canAssign} {space} />
       {:else if currentMode === 'per-employee'}
-        <EmployeeKRAsByEmployeeList {employees} {employeeKras} />
+        <EmployeeKRAsByEmployeeList {employees} {employeeKras} {space} {canAssign} />
       {/if}
     </div>
   </Scroller>

@@ -1,16 +1,12 @@
 <script lang="ts">
   import { Doc } from '@hcengineering/core'
-  import { IntlString } from '@hcengineering/platform'
-  import { AnySvelteComponent, AnyComponent, ExpandCollapse, ListView } from '@hcengineering/ui'
+  import { ExpandCollapse, ListView } from '@hcengineering/ui'
   import ListHeader from './ListHeader.svelte'
   import { showMenu } from '@hcengineering/view-resources'
 
   export let categories: any[] = []
   export let items: Doc[] = []
   export let key: string
-  export let createComponent: AnySvelteComponent | AnyComponent | undefined = undefined
-  export let createComponentProps: Record<string, any> | undefined = undefined
-  export let createLabel: IntlString | undefined = undefined
 
   const collapsed: boolean[] = Array(items.length).fill(true)
 

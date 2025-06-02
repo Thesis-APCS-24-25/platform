@@ -16,7 +16,8 @@
       key: '',
       label: performance.string.Weight,
       props: {
-        kind: 'button'
+        kind: 'button',
+        doCheckPermission: true
       },
       presenter: performance.component.KRAWeightEditorWithPopup
     }

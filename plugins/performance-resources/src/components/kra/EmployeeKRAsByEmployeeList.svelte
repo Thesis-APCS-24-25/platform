@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Ref, WithLookup } from '@hcengineering/core'
+  import { checkPermission, getCurrentAccount, Ref, TypedSpace, WithLookup } from '@hcengineering/core'
   import { EmployeeKRA } from '@hcengineering/performance'
   import GroupedList from '../ui/GroupedList.svelte'
   import { PersonAccount } from '@hcengineering/contact'
@@ -10,8 +10,19 @@
   import KraWeightPresenter from './KRAWeightPresenter.svelte'
   import { Icon } from '@hcengineering/ui'
   import performance from '../../plugin'
+  import kraTeam from '@hcengineering/kra-team'
+  import { getClient } from '@hcengineering/presentation'
 
   export let employees: Ref<PersonAccount>[]
+  export let space: Ref<TypedSpace>
+  export let canAssign: boolean = false
+
+  $: employees = employees.sort((a, b) => {
+    const me = getCurrentAccount()
+    if (a === me._id) return -1
+    if (b === me._id) return 1
+    return 0
+  })
   export let employeeKras: WithLookup<EmployeeKRA>[]
   let sums = new Map<Ref<PersonAccount>, number>()
   $: {
@@ -45,7 +56,7 @@
         <KraRefPresenter value={item.kra} kind="list" />
       </FixedColumn>
       <FixedColumn key="kra" justify="left">
-        <KraWeightEditorWithPopup value={item} kind="list" readonly />
+        <KraWeightEditorWithPopup value={item} kind="list" readonly={!canAssign && item.employee !== getCurrentAccount()._id} />
       </FixedColumn>
     </div>
   </svelte:fragment>

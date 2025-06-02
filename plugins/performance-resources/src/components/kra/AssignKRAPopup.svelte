@@ -4,7 +4,11 @@
   import { ObjectBox, ObjectBoxPopup } from '@hcengineering/view-resources'
   import { Data, Ref, Space } from '@hcengineering/core'
   import { EmployeeKRA, KRA } from '@hcengineering/performance'
-  import { personAccountByPersonId, PersonAccountRefPresenter } from '@hcengineering/contact-resources'
+  import {
+    personAccountByPersonId,
+    PersonAccountRefPresenter,
+    personIdByAccountId
+  } from '@hcengineering/contact-resources'
   import KraWeightEditorWithPopup from './KRAWeightEditorWithPopup.svelte'
   import { Button, eventToHTMLElement, IconAdd, IconClose, showPopup } from '@hcengineering/ui'
   import kraTeam, { Member } from '@hcengineering/kra-team'
@@ -19,6 +23,10 @@
   const client = getClient()
   const query = createQuery()
   const dispatch = createEventDispatcher()
+
+  $: ignoreObjects = [...(assigns ?? []), ...(newAssigns ?? [])]
+    .map((s) => $personIdByAccountId.get(s.employee))
+    .filter((s) => s !== undefined)
   $: if (assigns === undefined && kra !== undefined) {
     query.query(
       performance.class.EmployeeKRA,
@@ -44,22 +52,24 @@
   }
 
   function handleUpdate (data: Ref<Member>[] | undefined): void {
-    console.log(data)
     if (kra !== undefined && data !== undefined) {
       const v = kra
-      newAssigns = data
-        .map((mem) => {
-          const p = $personAccountByPersonId.get(mem)
-          return p?.[0]
-        })
-        .filter((it) => it !== undefined)
-        .map((it) => {
-          return {
-            kra: v,
-            employee: (it as PersonAccount)._id,
-            weight: 0
-          }
-        })
+      newAssigns = [
+        ...(newAssigns ?? []),
+        ...data
+          .map((mem) => {
+            const p = $personAccountByPersonId.get(mem)
+            return p?.[0]
+          })
+          .filter((it) => it !== undefined)
+          .map((it) => {
+            return {
+              kra: v,
+              employee: (it as PersonAccount)._id,
+              weight: 0
+            }
+          })
+      ]
     }
   }
 
@@ -173,6 +183,7 @@
         showPopup(
           ObjectBoxPopup,
           {
+            ignoreObjects,
             _class: kraTeam.mixin.Member,
             multiSelect: true
           },
