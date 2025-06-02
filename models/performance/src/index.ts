@@ -132,14 +132,14 @@ function defineKRA (builder: Builder): void {
     component: performance.component.EditKRA
   })
 
-  builder.mixin(performance.class.ReviewSession, core.class.Class, workbench.mixin.SpaceView, {
-    view: {
-      class: performance.class.KRA,
-      createItemDialog: performance.component.CreateKRA,
-      createItemLabel: performance.string.CreateKraLabel
-    }
-  })
-
+  // builder.mixin(performance.class.ReviewSession, core.class.Class, workbench.mixin.SpaceView, {
+  //   view: {
+  //     class: performance.class.KRA,
+  //     createItemDialog: performance.component.CreateKRA,
+  //     createItemLabel: performance.string.CreateKraLabel
+  //   }
+  // })
+  //
   builder.mixin(performance.class.KRA, core.class.Class, view.mixin.ObjectPresenter, {
     presenter: performance.component.KRAPresenter
   })
