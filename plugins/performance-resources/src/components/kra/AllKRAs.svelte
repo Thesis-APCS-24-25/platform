@@ -109,7 +109,7 @@
       disabled={!canCreateKRA}
       kind="primary"
       showTooltip={{
-        label: canCreateKRA ? performance.string.CreateKRA : performance.string.NotDraftingCannotCreateKRA,
+        label: canCreateKRA ? performance.string.CreateKRA : performance.string.NotDraftingCannotCreateKRA
       }}
       on:click={() => {
         showPopup(
