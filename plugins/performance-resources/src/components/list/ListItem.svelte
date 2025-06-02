@@ -27,6 +27,7 @@
   export let model: AttributeModel[]
   export let groupByKey: string | undefined
   export let last: boolean = false
+  export let selected: boolean = false
   export let lastCat: boolean = false
   export let props: Record<string, any> = {}
   export let compactMode: boolean = false
@@ -78,6 +79,7 @@
   class="listGrid antiList__row row gap-2 flex-grow"
   class:compactMode
   class:last
+  class:mListGridSelected={selected}
   class:lastCat
   on:contextmenu
   on:focus
