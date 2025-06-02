@@ -2,7 +2,7 @@
   import { WithLookup } from '@hcengineering/core'
   import { Asset, getEmbeddedLabel } from '@hcengineering/platform'
   import type { KRA } from '@hcengineering/performance'
-  import { AnySvelteComponent, Icon, tooltip } from '@hcengineering/ui'
+  import { AnySvelteComponent, ColorDefinition, getPlatformColor, getPlatformColorDef, Icon, themeStore, tooltip } from '@hcengineering/ui'
   import { DocNavLink, ObjectMention } from '@hcengineering/view-resources'
   import { ObjectPresenterType } from '@hcengineering/view'
 
@@ -19,6 +19,8 @@
   export let kind: 'list-header' | 'list'
   export let type: ObjectPresenterType = 'link'
   export let icon: Asset | AnySvelteComponent | undefined = undefined
+
+  $: color = getPlatformColorDef(value?.color ?? 13, $themeStore.dark).background
 </script>
 
 {#if inline && value}
@@ -39,7 +41,7 @@
         <span class="kraPresenterRoot" class:list={kind === 'list'} class:cursor-pointer={!disabled}>
           {#if shouldShowAvatar}
             <div class="icon" use:tooltip={{ label: performance.string.KRA }}>
-              <Icon icon={icon ?? performance.icon.KRA} size={'medium'} />
+              <Icon icon={icon ?? performance.icon.KRA} size={'medium'} fill={color} />
             </div>
           {/if}
           <div
@@ -61,6 +63,7 @@
       <div
         class="icon"
         class:header-icon={!noSelect && kind === 'list-header'}
+        style:background-color={color}
         use:tooltip={{ label: performance.string.KRA }}
       >
         <Icon icon={icon ?? performance.icon.KRA} size={'medium'} />
@@ -95,7 +98,6 @@
 
     .icon {
       margin-right: 0.5rem;
-      color: var(--theme-dark-color);
     }
   }
 

@@ -54,6 +54,7 @@
             <span class="ml-2 font-medium-12">{count}</span>
           </div>
         </svelte:fragment>
+
         <svelte:fragment slot="item" let:item>
           <div class="m-4 flex-row-center justify-between flex-grow" style:minHeight={'3rem'}>
             <div class="flex-row-center">
