@@ -2,11 +2,23 @@
   import core, { AttachedData, Ref, SortingOrder, Space, generateId } from '@hcengineering/core'
   import { Card, getClient, SpaceSelector } from '@hcengineering/presentation'
   import { TaskType, makeRank } from '@hcengineering/task'
-  import { createFocusManager, EditBox, FocusHandler, Label } from '@hcengineering/ui'
+  import {
+    Button,
+    createFocusManager,
+    EditBox,
+    FocusHandler,
+    getColorNumberByText,
+    getPlatformColor,
+    getPlatformColorForText,
+    Label,
+    showPopup,
+    themeStore
+  } from '@hcengineering/ui'
   import { createEventDispatcher } from 'svelte'
   import performance from '../../plugin'
   import { KRA, ReviewSession } from '@hcengineering/performance'
   import { currentTeam } from '../../utils/team'
+  import { ColorsPopup } from '@hcengineering/view-resources'
 
   $: team = $currentTeam
   export let space: Ref<ReviewSession> | undefined
@@ -14,19 +26,25 @@
 
   let title: string = ''
   let description: string = ''
+  let color: number | undefined = undefined
+  let colorSelected = false
 
   const dispatch = createEventDispatcher()
   const client = getClient()
   const manager = createFocusManager()
   const kraId = generateId<KRA>()
 
-  export function canClose (): boolean {
+  export function canClose(): boolean {
     return title !== ''
   }
 
   const kind: Ref<TaskType> = performance.taskTypes.KRA
 
-  async function createKRA (): Promise<void> {
+  $: colorString = colorSelected
+    ? getPlatformColor(color ?? 0, $themeStore.dark)
+    : getPlatformColorForText(title, $themeStore.dark)
+
+  async function createKRA(): Promise<void> {
     if (reviewSession === undefined) {
       return
     }
@@ -34,11 +52,7 @@
     if (sp === undefined) {
       throw new Error('Review Session not found')
     }
-    const status = await client.findOne(
-      core.class.Status,
-      { },
-      { sort: { rank: SortingOrder.Ascending } }
-    )
+    const status = await client.findOne(core.class.Status, {}, { sort: { rank: SortingOrder.Ascending } })
     if (status === undefined) {
       throw new Error('Status not found')
     }
@@ -72,11 +86,20 @@
       rank: makeRank(lastOne?.rank, undefined),
       kraStatus: performance.kraStatus.Drafting,
       assignee: null,
+      color: getColorNumberByText(colorString),
       description,
       dueDate: null
     }
 
-    await client.addCollection(performance.class.KRA, reviewSession as Ref<Space>, reviewSession, performance.class.ReviewSession, 'kras', value, kraId)
+    await client.addCollection(
+      performance.class.KRA,
+      reviewSession as Ref<Space>,
+      reviewSession,
+      performance.class.ReviewSession,
+      'kras',
+      value,
+      kraId
+    )
     dispatch('close')
   }
 
@@ -92,10 +115,9 @@
 <Card
   label={performance.string.CreateKRA}
   okAction={createKRA}
+  width="small"
   canSave={title.trim().length > 0}
-  on:close={() => {
-    dispatch('close')
-  }}
+  on:close
   on:changeContent
 >
   <svelte:fragment slot="header">
@@ -104,7 +126,7 @@
     <!--   bind:reviewSession={reviewSession} -->
     <!-- /> -->
     <SpaceSelector
-      kind='regular'
+      kind="regular"
       defaultIcon={performance.icon.ReviewSession}
       bind:space={reviewSession}
       label={performance.string.ReviewSession}
@@ -113,28 +135,40 @@
     />
   </svelte:fragment>
   {#if reviewSession !== undefined}
-    <div class="flex-row-center m-3 clear-mins">
-      <EditBox
-        label={performance.string.KRAName}
-        bind:value={title}
-        placeholder={performance.string.KRANamePlaceholder}
-        autoFocus
-        kind={'large-style'}
-        focusIndex={1}
+    <div class="flex-row-center clear-mins flex-gap-2 items-baseline">
+      <Button
+        icon={performance.icon.KRA}
+        iconProps={{
+          fill: colorString
+        }}
+        on:click={() => {
+          showPopup(ColorsPopup, {}, 'center', (res) => {
+            color = res
+            colorSelected = true
+          })
+        }}
       />
-    </div>
-    <div class="flex-row-center m-3 clear-mins">
-      <EditBox
-        label={performance.string.KRADescription}
-        bind:value={description}
-        placeholder={performance.string.KRADescriptionPlaceholder}
-        kind={'large-style'}
-        focusIndex={2}
-      />
+      <div class="flex-col-left m-3 clear-mins flex-gap-4">
+        <div class="mb-3">
+          <EditBox
+            bind:value={title}
+            placeholder={performance.string.KRANamePlaceholder}
+            autoFocus
+            kind={'large-style'}
+            focusIndex={1}
+          />
+        </div>
+        <div>
+          <EditBox
+            bind:value={description}
+            placeholder={performance.string.KRADescriptionPlaceholder}
+            kind={'large-style'}
+            focusIndex={2}
+          />
+        </div>
+      </div>
     </div>
   {:else}
-    <Label
-      label={performance.string.NoReviewSessions}
-    />
+    <Label label={performance.string.NoReviewSessions} />
   {/if}
 </Card>

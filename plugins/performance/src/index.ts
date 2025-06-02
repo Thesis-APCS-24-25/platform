@@ -40,6 +40,7 @@ export interface KRA extends Task {
   title: string
   description: string
   kraStatus: Ref<KRAStatus>
+  color?: number
 }
 
 export interface EmployeeKRA extends Doc {
