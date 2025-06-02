@@ -16,7 +16,7 @@
 import { Account, PullArray, Ref, Tx, TxCreateDoc, TxUpdateDoc } from '@hcengineering/core'
 import { TriggerControl } from '@hcengineering/server-core'
 import performance, { PerformanceReport, ReviewSession, ReviewSessionStatus, WithKRA } from '@hcengineering/performance'
-import { Member, Team } from '@hcengineering/kra-team'
+import { Team } from '@hcengineering/kra-team'
 import kra from '@hcengineering/kra'
 import contact, { PersonAccount } from '@hcengineering/contact'
 
@@ -74,8 +74,21 @@ export async function OnCreateReport (txes: Tx[], control: TriggerControl): Prom
       { _id: createTx.attributes.reviewee },
       { limit: 1 }
     ))[0]
+    const reviewSession = (await control.findAll(
+      control.ctx,
+      performance.class.ReviewSession,
+      { _id: createTx.attributes.reviewSession },
+      { limit: 1 }
+    ))[0]
     const tasks = (await control.findAll(control.ctx, kra.class.Issue,
-      { assignee: assignee.person },
+      {
+        assignee: assignee.person,
+        createdOn: {
+          $gte: reviewSession.reviewSessionStart,
+          // Add an extra day to include tasks at the end of review session date
+          $lt: reviewSession.reviewSessionEnd + 86400
+        }
+      },
       { projection: { _id: 1 } }
     )) as WithKRA[]
     const taskRefs = tasks.map<Ref<WithKRA>>((task) => { return task._id })

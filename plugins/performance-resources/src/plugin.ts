@@ -14,7 +14,7 @@
 //
 
 import { type Space } from '@hcengineering/core'
-import performance, { performanceId, type ReviewSession } from '@hcengineering/performance'
+import performance, { performanceId } from '@hcengineering/performance'
 import { type IntlString, mergeIds, type Resource } from '@hcengineering/platform'
 import { type AnyComponent } from '@hcengineering/ui'
 import { type GetAllValuesFunc, type SortFunc } from '@hcengineering/view'
