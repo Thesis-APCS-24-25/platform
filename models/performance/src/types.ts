@@ -2,12 +2,13 @@ import { ArrOf, Index, Mixin, Model, Prop, TypeBoolean, TypeDate, TypeNumber, Ty
 
 import performance from './plugin'
 import core, { TClass, TDoc, TStatus, TType } from '@hcengineering/model-core'
-import type { EmployeeKRA, KRA, KRAStatus, MeasureProgress, PerformanceReport, ReviewSession, ReviewSessionStatus, WithKRA } from '@hcengineering/performance'
+import type { EmployeeKRA, KRA, KRAStatus, MeasureProgress, PerformanceReport, ProgressPresenter, ReviewSession, ReviewSessionStatus, WithKRA } from '@hcengineering/performance'
 import { TProject, TTask } from '@hcengineering/model-task'
 import task, { type Task } from '@hcengineering/task'
 import { Account, type Arr, type Domain, IndexKind, Ref, type Role, type RolesAssignment, type Timestamp, type Type } from '@hcengineering/core'
 import contact, { type PersonAccount } from '@hcengineering/contact'
 import { type Resource } from '@hcengineering/platform'
+import { AnyComponent } from '@hcengineering/ui'
 
 export const DOMAIN_PERFORMANCE = 'performance' as Domain
 
@@ -26,6 +27,11 @@ export class TKRAStatus extends TStatus implements KRAStatus {}
 @Mixin(performance.mixin.MeasureProgress, core.class.Class)
 export class TMeasureProgress extends TClass implements MeasureProgress {
   calculate!: Resource<(task: Ref<Task>) => Promise<number | undefined>>
+}
+
+@Mixin(performance.mixin.ProgressPresenter, core.class.Class)
+export class TProgressPresenter extends TClass implements ProgressPresenter {
+  presenter!: AnyComponent
 }
 
 @Model(performance.class.ReviewSession, task.class.Project)

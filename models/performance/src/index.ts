@@ -20,7 +20,8 @@ import {
   TReviewSession,
   TMeasureProgress,
   TPerformanceReport,
-  TTypeReviewSessionStatus
+  TTypeReviewSessionStatus,
+  TProgressPresenter
 } from './types'
 import { defineViewlets } from './viewlets'
 
@@ -475,6 +476,7 @@ function defineSortAndGrouping (builder: Builder): void {
 
 export function createModel (builder: Builder): void {
   builder.createModel(TMeasureProgress)
+  builder.createModel(TProgressPresenter)
   defineTeam(builder)
   defineReviewSession(builder)
   defineKRA(builder)
