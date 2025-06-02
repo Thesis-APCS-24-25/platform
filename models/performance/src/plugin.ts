@@ -33,6 +33,6 @@ export default mergeIds(performanceId, performance, {
     NeedChanges: '' as Ref<StatusCategory>,
     Approved: '' as Ref<StatusCategory>,
     InProgress: '' as Ref<StatusCategory>,
-    Archived: '' as Ref<StatusCategory>
+    Cancelled: '' as Ref<StatusCategory>
   }
 })

@@ -32,7 +32,7 @@
     "AttachedEmployee": "Attached Employee",
     "KRAWeight": "KRA Weight",
     "KRA": "KRA",
-    "ReviewSessionKRAs": "Review Session KRAs",
+    "SetKRA": "Set KRA",
     "SelectTeam": "Select Team",
     "SelectReviewSession": "Select Review Session",
     "PerformanceReports": "Performance Reports",
@@ -40,6 +40,11 @@
     "CreateReport": "Create Report",
     "Reviewee": "Reviewee",
     "ActiveReviewSessions": "Active Review Sessions",
-    "ReviewSessions": "Review Sessions"
+    "ReviewSessions": "Review Sessions",
+    "SetStatus": "Set Status",
+    "Drafting": "Drafting",
+    "InProgress": "In Progress",
+    "Concluded": "Concluded",
+    "KRACompletionLevel": "% KRA Completed"
   }
 }

@@ -31,7 +31,7 @@ import type { TaskStatusFactory } from '@hcengineering/task'
 import { PaletteColorIndexes } from '@hcengineering/ui/src/colors'
 import { createActions as defineActions } from './actions'
 import kra from './plugin'
-import performance from '@hcengineering/performance'
+import performance from '@hcengineering/model-performance'
 import { definePresenters } from './presenters'
 import {
   DOMAIN_KRA,

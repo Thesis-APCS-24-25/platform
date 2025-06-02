@@ -408,8 +408,108 @@ export function defineViewlets (builder: Builder): void {
     {
       attachTo: performance.mixin.WithKRA,
       descriptor: performance.viewlet.TaskList,
+      configOptions: {
+        strict: true,
+        hiddenKeys: [
+          'title',
+          'blockedBy',
+          'relations',
+          'description',
+          'number',
+          'reportedTime',
+          'reports',
+          'priority',
+          'estimation',
+          'remainingTime',
+          'status',
+          'dueDate',
+          'attachedTo',
+          'createdBy',
+          'modifiedBy',
+          'goal',
+          'kra'
+        ]
+      },
       config: [
-        ...issueConfig(undefined, undefined, false)
+        {
+          key: '',
+          label: kra.string.Priority,
+          presenter: kra.component.PriorityEditor,
+          props: { type: 'priority', kind: 'list', size: 'small' },
+          displayProps: { key: 'priority' }
+        },
+        {
+          key: '',
+          label: kra.string.Identifier,
+          presenter: kra.component.IssuePresenter,
+          displayProps: { key: 'issue', fixed: 'left' }
+        },
+        {
+          key: '',
+          label: kra.string.Status,
+          presenter: kra.component.StatusEditor,
+          props: { kind: 'list', size: 'small', justify: 'center' },
+          displayProps: { key: 'status' }
+        },
+        {
+          key: '',
+          label: kra.string.Title,
+          presenter: kra.component.TitlePresenter,
+          props: {},
+          displayProps: { key: 'title' }
+        },
+        {
+          key: '',
+          label: kra.string.SubIssues,
+          presenter: kra.component.SubIssuesSelector,
+          props: {}
+        },
+        { key: 'comments', displayProps: { key: 'comments', suffix: true } },
+        { key: 'attachments', displayProps: { key: 'attachments', suffix: true } },
+        { key: '', displayProps: { grow: true } },
+        {
+          key: 'labels',
+          presenter: tags.component.LabelsPresenter,
+          displayProps: { compression: true },
+          props: { kind: 'list', full: false }
+        },
+        {
+          key: '',
+          label: kra.string.Extensions,
+          presenter: kra.component.IssueExtra,
+          displayProps: { compression: true },
+          props: { kind: 'list', full: false }
+        },
+        {
+          key: '',
+          label: kra.string.DueDate,
+          presenter: kra.component.DueDatePresenter,
+          displayProps: { key: 'dueDate', compression: true },
+          props: { kind: 'list' }
+        },
+        {
+          key: '',
+          label: kra.string.Goal,
+          presenter: kra.component.GoalPresenter,
+          props: { kind: 'list', size: 'small' },
+          displayProps: {
+            fixed: 'right',
+            dividerBefore: true,
+            optional: true
+          }
+        },
+        {
+          key: '',
+          label: kra.string.Estimation,
+          presenter: kra.component.EstimationEditor,
+          props: { kind: 'list', size: 'small' },
+          displayProps: { key: 'estimation', fixed: 'left', dividerBefore: true, optional: true }
+        },
+        {
+          key: 'modifiedOn',
+          presenter: kra.component.ModificationDatePresenter,
+          displayProps: { key: 'modified', fixed: 'left', dividerBefore: true }
+        }
       ],
       viewOptions: {
         groupDepth: 1,

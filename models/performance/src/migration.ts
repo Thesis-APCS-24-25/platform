@@ -106,7 +106,7 @@ async function migrateKRAStatuses (client: MigrationClient): Promise<void> {
     DOMAIN_MODEL_TX,
     {
       objectClass: core.class.Status,
-      'attributes.ofAttribute': performance.attribute.KRAStatusAttribute
+      'attributes.ofAttribute': performance.attribute.KRAStatus
     },
     {
       $set: {
@@ -119,7 +119,7 @@ async function migrateKRAStatuses (client: MigrationClient): Promise<void> {
     DOMAIN_STATUS,
     {
       _class: core.class.Status,
-      ofAttribute: performance.attribute.KRAStatusAttribute
+      ofAttribute: performance.attribute.KRAStatus
     },
     {
       $set: {

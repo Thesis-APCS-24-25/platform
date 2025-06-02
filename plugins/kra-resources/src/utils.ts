@@ -13,7 +13,6 @@
 // limitations under the License.
 //
 
-import { Analytics } from '@hcengineering/analytics'
 import { type Contact } from '@hcengineering/contact'
 import core, {
   SortingOrder,
@@ -32,12 +31,11 @@ import core, {
   type StatusCategory,
   type TxCreateDoc,
   type TxOperations,
-  type TxResult,
   type TxUpdateDoc
 } from '@hcengineering/core'
 import { type IntlString } from '@hcengineering/platform'
 import { createQuery, getClient, onClient } from '@hcengineering/presentation'
-import task, { getStatusIndex, makeRank, type ProjectType } from '@hcengineering/task'
+import task, { getStatusIndex, makeRank, type Task, type ProjectType } from '@hcengineering/task'
 import { activeProjects as taskActiveProjects, taskTypeStore } from '@hcengineering/task-resources'
 import {
   IssuePriority,
@@ -52,6 +50,7 @@ import { CategoryQuery, ListSelectionProvider, statusStore, type SelectDirection
 import { derived, get, writable } from 'svelte/store'
 import tracker from './plugin'
 import { defaultPriorities } from './types'
+import { calculateGoal } from './utils/goal'
 
 export const activeProjects = derived(taskActiveProjects, (projects) => {
   const client = getClient()
@@ -205,6 +204,7 @@ export function subIssueQuery (value: boolean, query: DocumentQuery<Issue>): Doc
   return value ? query : { ...query, attachedTo: tracker.ids.NoParent }
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 async function getAllSomething (
   _class: Ref<Class<Doc>>,
   query: DocumentQuery<Doc> | undefined,
@@ -500,3 +500,14 @@ onClient(() => {
     }
   )
 })
+
+export async function calculateCompletionLevel (taskId: Ref<Task>): Promise<number | undefined> {
+  const client = getClient()
+  const res = await client.findOne(task.class.Task, { _id: taskId })
+  const issue = res as Issue
+  const goal = await client.findOne(tracker.class.Goal, { _id: issue.goal })
+  if (goal === undefined) {
+    return issue.status === tracker.status.Done ? 1 : undefined
+  }
+  return await calculateGoal(goal)
+}

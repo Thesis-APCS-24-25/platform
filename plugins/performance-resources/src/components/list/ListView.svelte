@@ -14,12 +14,11 @@
 -->
 <script lang="ts">
   import { Class, Doc, DocumentQuery, FindOptions, Ref, Space } from '@hcengineering/core'
-  import { IntlString } from '@hcengineering/platform'
   import { ActionContext } from '@hcengineering/presentation'
-  import { AnyComponent, Scroller, resizeObserver } from '@hcengineering/ui'
+  import { Scroller, resizeObserver } from '@hcengineering/ui'
   import { BuildModelKey, ViewOptionModel, ViewOptions, Viewlet } from '@hcengineering/view'
   import { onMount } from 'svelte'
-  import { ListSelectionProvider, SelectDirection, focusStore } from '@hcengineering/view-resources'
+  import { ListSelectionProvider, SelectDirection } from '@hcengineering/view-resources'
 
   import List from './List.svelte'
 
@@ -32,9 +31,6 @@
 
   // Per _class configuration, if supported.
   export let configurations: Record<Ref<Class<Doc>>, Viewlet['config']> | undefined
-  export let createItemDialog: AnyComponent | undefined
-  export let createItemDialogProps: Record<string, any> | undefined = undefined
-  export let createItemLabel: IntlString | undefined
   export let viewOptions: ViewOptions
   export let viewOptionsConfig: ViewOptionModel[] | undefined = undefined
   export let props: Record<string, any> = {}
@@ -45,18 +41,15 @@
   let listWidth: number = 0
 
   const listProvider = new ListSelectionProvider(
-    (offset: 1 | -1 | 0, of?: Doc, dir?: SelectDirection, noScroll?: boolean) => {
-      if (dir === 'vertical') {
-        // Select next
-        list?.select(offset, of, noScroll)
-      }
-    }
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    (offset: 1 | -1 | 0, of?: Doc, dir?: SelectDirection, noScroll?: boolean) => {}
   )
-  const selection = listProvider.selection
 
   onMount(() => {
     ;(document.activeElement as HTMLElement)?.blur()
   })
+
+  $: console.log(viewlet.props)
 </script>
 
 <ActionContext
@@ -86,21 +79,16 @@
       {config}
       {configurations}
       {options}
-      {createItemDialog}
-      {createItemDialogProps}
-      {createItemLabel}
       {viewOptions}
-      {props}
+      props={{
+        ...viewlet.props,
+        ...props
+      }}
       {listProvider}
       compactMode={listWidth <= 800}
       viewOptionsConfig={viewOptionsConfig ?? viewlet.viewOptions?.other}
-      selectedObjectIds={$selection ?? []}
-      selection={listProvider.current($focusStore)}
       on:row-focus={(event) => {
         listProvider.updateFocus(event.detail ?? undefined)
-      }}
-      on:check={(event) => {
-        listProvider.updateSelection(event.detail.docs, event.detail.value)
       }}
       on:content={(event) => {
         listProvider.update(event.detail)

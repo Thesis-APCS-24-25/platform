@@ -13,10 +13,9 @@
 // limitations under the License.
 -->
 <script lang="ts">
-  import { AnyAttribute, Doc, getObjectValue, Space } from '@hcengineering/core'
+  import { Doc, getObjectValue, Space } from '@hcengineering/core'
   import notification from '@hcengineering/notification'
-  import { getClient, updateAttribute } from '@hcengineering/presentation'
-  import { CheckBox, Component, IconCircles, tooltip, deviceOptionsStore as deviceInfo } from '@hcengineering/ui'
+  import { Component, IconCircles, tooltip, deviceOptionsStore as deviceInfo } from '@hcengineering/ui'
   import { AttributeModel } from '@hcengineering/view'
   import { createEventDispatcher, onMount } from 'svelte'
   import view from '@hcengineering/view-resources/src/plugin'
@@ -27,8 +26,6 @@
   export let docObject: Doc
   export let model: AttributeModel[]
   export let groupByKey: string | undefined
-  export let checked: boolean
-  export let selected: boolean
   export let last: boolean = false
   export let lastCat: boolean = false
   export let props: Record<string, any> = {}
@@ -50,33 +47,15 @@
     return elem
   }
 
-  const client = getClient()
-
-  function onChange (value: any, doc: Doc, key: string, attribute: AnyAttribute): void {
-    void updateAttribute(client, doc, doc._class, { key, attr: attribute }, value)
-  }
-
-  function getOnChange (docObject: Doc, attribute: AttributeModel): ((value: any) => void) | undefined {
-    const attr = attribute.attribute
-    if (attr === undefined) return
-    if (attribute.collectionAttr) return
-    if (attribute.isLookup) return
-    return (value: any) => {
-      onChange(value, docObject, attribute.key, attr)
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  function getProps (props: Record<string, any>, _readonly: boolean): Record<string, any> {
+    // Always set readonly to true
+    return {
+      ...props,
+      readonly: true,
+      editable: false,
+      isEditable: false
     }
-  }
-
-  function getProps (props: Record<string, any>, readonly: boolean): Record<string, any> {
-    if (readonly) {
-      return {
-        ...props,
-        readonly: true,
-        disabled: true,
-        editable: false,
-        isEditable: false
-      }
-    }
-    return props
   }
 
   $: mobile = $deviceInfo.isMobile
@@ -98,37 +77,15 @@
   bind:this={elem}
   class="listGrid antiList__row row gap-2 flex-grow"
   class:compactMode
-  class:checking={checked}
-  class:mListGridSelected={selected}
   class:last
   class:lastCat
-  draggable={true}
   on:contextmenu
   on:focus
   on:mouseenter
   on:mouseover
-  on:dragover
-  on:dragenter
-  on:dragleave
-  on:drop
-  on:dragstart
 >
-  <div class="draggable-container">
-    <div class="draggable-mark">
-      <IconCircles size={'small'} />
-    </div>
-  </div>
   <div class="flex-center relative mr-1" use:tooltip={{ label: view.string.Select, direction: 'bottom' }}>
     <div class="antiList-cells__notifyCell">
-      <div class="antiList-cells__checkCell">
-        <CheckBox
-          {checked}
-          size={'medium'}
-          on:value={(event) => {
-            dispatch('check', { docs: [docObject], value: event.detail })
-          }}
-        />
-      </div>
       <Component
         is={notification.component.NotificationPresenter}
         showLoading={false}
@@ -148,7 +105,6 @@
               props={getProps(props, $restrictionStore.readonly)}
               {compactMode}
               value={getObjectValue(attrModel.key, docObject)}
-              onChange={getOnChange(docObject, attrModel)}
             />
           {/each}
         {/if}
@@ -161,7 +117,6 @@
                 attributeModel={attrModel}
                 props={getProps(props, $restrictionStore.readonly)}
                 value={getObjectValue(attrModel.key, docObject)}
-                onChange={getOnChange(docObject, attrModel)}
                 on:resize={(e) => {
                   if (e.detail == null) return
                   sizes.set(index, e.detail)
@@ -176,7 +131,6 @@
               attributeModel={attrModel}
               props={getProps(props, $restrictionStore.readonly)}
               value={getObjectValue(attrModel.key, docObject)}
-              onChange={getOnChange(docObject, attrModel)}
             />
           {/each}
         {/if}
@@ -186,7 +140,6 @@
           {attributeModel}
           props={getProps(props, $restrictionStore.readonly)}
           value={getObjectValue(attributeModel.key, docObject)}
-          onChange={getOnChange(docObject, attributeModel)}
           hideDivider={i === 0}
           {compactMode}
         />
@@ -216,7 +169,6 @@
               props={getProps(props, $restrictionStore.readonly)}
               {compactMode}
               value={getObjectValue(attrModel.key, docObject)}
-              onChange={getOnChange(docObject, attrModel)}
             />
           {/each}
         {/if}
@@ -230,7 +182,6 @@
                 {attributeModel}
                 props={getProps(props, $restrictionStore.readonly)}
                 value={getObjectValue(attributeModel.key, docObject)}
-                onChange={getOnChange(docObject, attributeModel)}
                 hideDivider={j === 0}
               />
             {/if}
@@ -248,7 +199,6 @@
               {attributeModel}
               props={getProps(props, $restrictionStore.readonly)}
               value={getObjectValue(attributeModel.key, docObject)}
-              onChange={getOnChange(docObject, attributeModel)}
             />
           {/if}
         {/each}
@@ -287,46 +237,6 @@
 
     &.compactMode {
       padding: 0 1.125rem 0 0.25rem;
-    }
-    &.mListGridSelected {
-      background-color: var(--highlight-hover);
-    }
-
-    &.checking {
-      background-color: var(--highlight-select);
-      // border-bottom-color: var(--highlight-select);
-
-      &:hover,
-      &.mListGridSelected {
-        background-color: var(--highlight-select-hover);
-        // border-bottom-color: var(--highlight-select-hover);
-      }
-    }
-
-    .draggable-container {
-      position: absolute;
-      left: 0;
-      display: flex;
-      align-items: center;
-      height: 100%;
-      width: 1rem;
-      cursor: grabbing;
-
-      .draggable-mark {
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        margin-left: 0.125rem;
-        width: 0.375rem;
-        height: 100%;
-        opacity: 0;
-      }
-    }
-    &:hover {
-      .draggable-mark {
-        opacity: 0.1;
-      }
     }
 
     .hidden-panel,

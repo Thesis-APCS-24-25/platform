@@ -13,10 +13,12 @@
 // limitations under the License.
 //
 
-import { Account, PullArray, Ref, Tx, TxUpdateDoc } from '@hcengineering/core'
+import { Account, PullArray, Ref, Tx, TxCreateDoc, TxUpdateDoc } from '@hcengineering/core'
 import { TriggerControl } from '@hcengineering/server-core'
-import performance, { ReviewSession } from '@hcengineering/performance'
+import performance, { PerformanceReport, ReviewSession, ReviewSessionStatus, WithKRA } from '@hcengineering/performance'
 import { Member, Team } from '@hcengineering/kra-team'
+import kra from '@hcengineering/kra'
+import contact, { PersonAccount } from '@hcengineering/contact'
 
 function addUpdates (control: TriggerControl, member: Ref<Account>, reviewSessions: ReviewSession[]): Tx[] {
   const result: Tx[] = []
@@ -61,9 +63,67 @@ export async function OnTeamMemberUpdate (txes: Tx[], control: TriggerControl): 
   return result
 }
 
+export async function OnCreateReport (txes: Tx[], control: TriggerControl): Promise<Tx[]> {
+  const result: Tx[] = []
+  console.log(txes)
+  for (const tx of txes) {
+    const createTx = tx as TxCreateDoc<PerformanceReport>
+    const assignee = (await control.findAll(
+      control.ctx,
+      contact.class.PersonAccount,
+      { _id: createTx.attributes.reviewee },
+      { limit: 1 }
+    ))[0]
+    const tasks = (await control.findAll(control.ctx, kra.class.Issue,
+      { assignee: assignee.person },
+      { projection: { _id: 1 } }
+    )) as WithKRA[]
+    const taskRefs = tasks.map<Ref<WithKRA>>((task) => { return task._id })
+    const pushTx = control.txFactory.createTxUpdateDoc(
+      createTx.objectClass,
+      createTx.objectSpace,
+      createTx.objectId,
+      {
+        tasks: taskRefs
+      }
+    )
+    result.push(pushTx)
+  }
+
+  return result
+}
+
+export async function OnReviewSessionConclusion (txes: Tx[], control: TriggerControl): Promise<Tx[]> {
+  const result: Tx[] = []
+
+  for (const tx of txes) {
+    const updateTx = tx as TxUpdateDoc<ReviewSession>
+    if (updateTx.operations.status !== ReviewSessionStatus.Concluded) continue
+
+    const rs = (await control.findAll(control.ctx, performance.class.ReviewSession, {
+      _id: updateTx.objectId
+    }))[0]
+    for (const member of rs.members) {
+      const report = control.txFactory.createTxCreateDoc(
+        performance.class.PerformanceReport,
+        rs._id,
+        {
+          reviewee: member as Ref<PersonAccount>,
+          reviewSession: rs._id
+        }
+      )
+      result.push(report)
+    }
+  }
+
+  return result
+}
+
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export default async () => ({
   trigger: {
-    OnTeamMemberUpdate
+    OnTeamMemberUpdate,
+    OnCreateReport,
+    OnReviewSessionConclusion
   }
 })

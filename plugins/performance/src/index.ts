@@ -15,10 +15,16 @@
 //
 
 import { type PersonAccount } from '@hcengineering/contact'
-import type { Arr, Attribute, Class, Doc, Mixin, Ref, SpaceType, SpaceTypeDescriptor, Status, Timestamp } from '@hcengineering/core'
+import type { Arr, Attribute, Class, Doc, Mixin, Ref, SpaceType, SpaceTypeDescriptor, Status, Timestamp, Type } from '@hcengineering/core'
 import { Asset, IntlString, plugin, Plugin, Resource } from '@hcengineering/platform'
 import type { Project, ProjectType, Task, TaskType, TaskTypeDescriptor } from '@hcengineering/task'
 import { Viewlet, ViewletDescriptor } from '@hcengineering/view'
+
+export enum ReviewSessionStatus {
+  Drafting,
+  InProgress,
+  Concluded
+}
 
 export interface KRAStatus extends Status {}
 
@@ -26,6 +32,7 @@ export interface ReviewSession extends Project {
   active: boolean
   reviewSessionStart: Timestamp
   reviewSessionEnd: Timestamp
+  status?: ReviewSessionStatus
 }
 
 export interface KRA extends Task {
@@ -46,37 +53,31 @@ export interface MeasureProgress extends Class<Task> {
 
 export interface WithKRA extends Task { }
 
-export interface ReviewComment extends Doc {
-  author: Ref<PersonAccount>
-  comment: string
-  score?: number
-}
-
 export interface PerformanceReport extends Doc {
   reviewee: Ref<PersonAccount>
   reviewSession: Ref<ReviewSession>
-  reviewComments: Arr<Ref<ReviewComment>>
+  tasks?: Arr<Ref<WithKRA>>
 }
 
 export const performanceId = 'performance' as Plugin
 
 export default plugin(performanceId, {
   attribute: {
-    KRAStatusAttribute: '' as Ref<Attribute<KRAStatus>>
+    KRAStatus: '' as Ref<Attribute<KRAStatus>>
   },
   class: {
     KRAStatus: '' as Ref<Class<KRAStatus>>,
     ReviewSession: '' as Ref<Class<ReviewSession>>,
     KRA: '' as Ref<Class<KRA>>,
     EmployeeKRA: '' as Ref<Class<EmployeeKRA>>,
-    ReviewComment: '' as Ref<Class<ReviewComment>>,
-    PerformanceReport: '' as Ref<Class<PerformanceReport>>
+    PerformanceReport: '' as Ref<Class<PerformanceReport>>,
+    TypeReviewSessionStatus: '' as Ref<Class<Type<ReviewSessionStatus>>>
   },
   string: {
     KRA: '' as IntlString,
     ReviewSessionStart: '' as IntlString,
     ReviewSessionEnd: '' as IntlString,
-    ReviewSessionKRAs: '' as IntlString,
+    SetKRA: '' as IntlString,
     Title: '' as IntlString,
     Description: '' as IntlString,
     KRAStatus: '' as IntlString,
@@ -87,14 +88,15 @@ export default plugin(performanceId, {
     AttachedEmployee: '' as IntlString,
     KRAWeight: '' as IntlString,
     NoKRA: '' as IntlString,
-    Active: '' as IntlString
+    Active: '' as IntlString,
+    ReviewSessionStatus: '' as IntlString,
+    KRACompletionLevel: '' as IntlString
   },
   kraStatus: {
     Drafting: '' as Ref<KRAStatus>,
     NeedChanges: '' as Ref<KRAStatus>,
     Approved: '' as Ref<KRAStatus>,
-    InProgress: '' as Ref<KRAStatus>,
-    Archived: '' as Ref<KRAStatus>
+    Cancelled: '' as Ref<KRAStatus>
   },
   viewlet: {
     TaskList: '' as Ref<ViewletDescriptor>,
@@ -118,7 +120,9 @@ export default plugin(performanceId, {
     Weight: '' as Asset,
     AssignKRA: '' as Asset,
     ReviewSession: '' as Asset,
-    KRA: '' as Asset
+    KRA: '' as Asset,
+    StatusInProgress: '' as Asset,
+    StatusConcluded: '' as Asset
   },
   descriptor: {
     KRAType: '' as Ref<TaskTypeDescriptor>,

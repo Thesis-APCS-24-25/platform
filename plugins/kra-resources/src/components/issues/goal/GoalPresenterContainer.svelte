@@ -4,9 +4,10 @@
   export let kind: ButtonKind = 'regular'
   export let size: ButtonSize = 'small'
   export let onClick: (ev: MouseEvent) => void = () => {}
+  export let disabled: boolean | undefined = false
 </script>
 
-<button class="goal-button {kind} {size}" on:click={onClick}>
+<button {disabled} class="goal-button {kind} {size}" on:click={onClick}>
   <slot />
 </button>
 

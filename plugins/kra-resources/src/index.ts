@@ -97,6 +97,7 @@ import EditIssueTemplate from './components/templates/EditIssueTemplate.svelte'
 import TemplateEstimationEditor from './components/templates/EstimationEditor.svelte'
 import {
   activeProjects,
+  calculateCompletionLevel,
   getAllPriority,
   getIssueChatTitle,
   getIssueStatusCategories,
@@ -130,8 +131,7 @@ import Report from './components/issues/goal/Report.svelte'
 import UnitPresenter from './components/issues/goal/unit/UnitPresenter.svelte'
 import GoalObjectPresenter from './components/issues/goal/GoalObjectPresenter.svelte'
 import './styles/_colors.scss'
-import { calculateGoal, calculateKpiResult, calculateRatingScaleResult } from './utils/goal'
-import task, { type Task } from '@hcengineering/task'
+import { calculateKpiResult, calculateRatingScaleResult } from './utils/goal'
 import KRAEditor from './components/kra/KRAEditor.svelte'
 
 export { default as AssigneeEditor } from './components/issues/AssigneeEditor.svelte'
@@ -363,16 +363,7 @@ export default async (): Promise<Resources> => ({
     GetIssueStatusCategories: getIssueStatusCategories,
     KpiAggregator: calculateKpiResult,
     RatingScaleAggregator: calculateRatingScaleResult,
-    CalculateGoal: async (taskId: Ref<Task>): Promise<number | undefined> => {
-      const client = getClient()
-      const res = await client.findOne(task.class.Task, { _id: taskId })
-      const issue = res as Issue
-      const goal = await client.findOne(kra.class.Goal, { _id: issue.goal })
-      if (goal === undefined) {
-        return issue.status === kra.status.Done ? 1 : undefined
-      }
-      return await calculateGoal(goal)
-    }
+    CalculateGoal: calculateCompletionLevel
   },
   actionImpl: {
     Move: move,

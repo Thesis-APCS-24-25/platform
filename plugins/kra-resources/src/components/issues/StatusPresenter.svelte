@@ -29,6 +29,7 @@
   export let accent: boolean = false
   export let inline: boolean = false
   export let shouldShowAvatar: boolean = true
+  export let disabled: boolean | undefined = false
 
   let accentedColor: ColorDefinition | undefined
 </script>
@@ -42,8 +43,9 @@
         {space}
         {projectType}
         {taskType}
+        {disabled}
         on:accent-color={(event) => {
-          if (event.detail) accentedColor = event.detail
+          if (event.detail !== undefined) accentedColor = event.detail
         }}
       />
     </button>
@@ -56,7 +58,7 @@
   {:else}
     <div class="flex-presenter" style:color={'inherit'}>
       {#if !inline && shouldShowAvatar}
-        <IssueStatusIcon {value} {size} {space} on:accent-color {projectType} {taskType} />
+        <IssueStatusIcon {value} {size} {space} {disabled} on:accent-color {projectType} {taskType} />
       {/if}
       <span
         class="overflow-label"
