@@ -25,6 +25,8 @@ export default mergeIds(performanceId, performance, {
     RemoveKRAAssignee: '' as IntlString,
     RemoveKRAAssigneeMessage: '' as IntlString,
     PerKRA: '' as IntlString,
+    KRAWeightFull: '' as IntlString,
+    KRAWeightNotFullWarning: '' as IntlString,
     PerMember: '' as IntlString,
     ActiveReviewSessions: '' as IntlString,
     PerformanceApplication: '' as IntlString,
