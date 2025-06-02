@@ -1,6 +1,5 @@
 <script lang="ts">
   import { Ref, getCurrentAccount } from '@hcengineering/core'
-  import { Asset, IntlString } from '@hcengineering/platform'
   import { Breadcrumb, Button, Header, IconAdd, Scroller } from '@hcengineering/ui'
   import { createQuery } from '@hcengineering/presentation'
   import performance from '../../plugin'
@@ -12,9 +11,6 @@
   import TaskPresenter from '@hcengineering/task-resources/src/components/TaskPresenter.svelte'
   import StateRefPresenter from '@hcengineering/task-resources/src/components/state/StateRefPresenter.svelte'
   import ProgressPresenter from './ProgressPresenter.svelte'
-
-  export let icon: Asset
-  export let label: IntlString
 
   const userId = getCurrentAccount()._id as Ref<PersonAccount>
   const actionItemQuery = createQuery()
@@ -45,7 +41,7 @@
 </script>
 
 <Header>
-  <Breadcrumb {icon} {label} size={'large'} isCurrent />
+  <Breadcrumb icon={performance.icon.KRA} label={performance.string.MyKRAs} size={'large'} isCurrent />
   <svelte:fragment slot="actions">
     <Button icon={IconAdd} size="large" label={performance.string.CreateKRA} kind="primary" />
   </svelte:fragment>

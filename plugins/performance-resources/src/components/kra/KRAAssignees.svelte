@@ -5,12 +5,14 @@
   import KraAssigneeTable from './KRAAssigneeTable.svelte'
   import KraAssigneesPopup from './KRAAssigneesPopup.svelte'
   import { createQuery, getClient } from '@hcengineering/presentation'
-  import { Data, Ref } from '@hcengineering/core'
-  import { EmployeeKRA, KRA } from '@hcengineering/performance'
+  import { checkPermission, Data, Ref, TypedSpace } from '@hcengineering/core'
+  import { EmployeeKRA, KRA, ReviewSession } from '@hcengineering/performance'
   import { PersonAccount } from '@hcengineering/contact'
+  import kraTeam from '@hcengineering/kra-team'
 
   export let hasAssignees = true
   export let kra: Ref<KRA>
+  export let space: Ref<ReviewSession>
 
   let isCollapsed = true
 
