@@ -50,7 +50,6 @@ import { CategoryQuery, ListSelectionProvider, statusStore, type SelectDirection
 import { derived, get, writable } from 'svelte/store'
 import tracker from './plugin'
 import { defaultPriorities } from './types'
-import { calculateGoal } from './utils/goal'
 
 export const activeProjects = derived(taskActiveProjects, (projects) => {
   const client = getClient()
@@ -509,5 +508,5 @@ export async function calculateCompletionLevel (taskId: Ref<Task>): Promise<numb
   if (goal === undefined) {
     return issue.status === tracker.status.Done ? 1 : undefined
   }
-  return await calculateGoal(goal)
+  return goal.progress
 }
