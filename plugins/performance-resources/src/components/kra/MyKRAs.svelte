@@ -1,6 +1,6 @@
 <script lang="ts">
   import { Ref, getCurrentAccount } from '@hcengineering/core'
-  import { Breadcrumb, Button, Header, IconAdd, Scroller } from '@hcengineering/ui'
+  import { Breadcrumb, Header, Scroller } from '@hcengineering/ui'
   import { createQuery } from '@hcengineering/presentation'
   import performance from '../../plugin'
   import { PersonAccount } from '@hcengineering/contact'
@@ -42,9 +42,6 @@
 
 <Header>
   <Breadcrumb icon={performance.icon.KRA} label={performance.string.MyKRAs} size={'large'} isCurrent />
-  <svelte:fragment slot="actions">
-    <Button icon={IconAdd} size="large" label={performance.string.CreateKRA} kind="primary" />
-  </svelte:fragment>
 </Header>
 
 <div class="w-full h-full py-4 clear-mins">

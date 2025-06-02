@@ -15,10 +15,9 @@
   import { createQuery, getClient } from '@hcengineering/presentation'
   import CreateKra from './CreateKRA.svelte'
   import EmployeeKRAsByEmployeeList from './EmployeeKRAsByEmployeeList.svelte'
-  import { EmployeeKRA, KRA, ReviewSession } from '@hcengineering/performance'
+  import { EmployeeKRA, KRA, ReviewSession, ReviewSessionStatus } from '@hcengineering/performance'
   import { PersonAccount } from '@hcengineering/contact'
   import EmployeeKrAsByKraList from './EmployeeKRAsByKRAList.svelte'
-  import kraTeam from '@hcengineering/kra-team'
   import { canAssignKRAs } from '../../utils/team'
 
   export let space: Ref<ReviewSession>
@@ -57,12 +56,14 @@
   const kraQuery = createQuery()
   const employeeKraQuery = createQuery()
   const spaceQuery = createQuery()
+  let reviewSession: ReviewSession | undefined = undefined
   $: spaceQuery.query(
     performance.class.ReviewSession,
     {
       _id: space
     },
     (res) => {
+      reviewSession = res[0]
       if (res.length > 0) {
         employees = (res[0].members ?? []).map((member) => member as Ref<PersonAccount>)
       }
@@ -102,6 +103,7 @@
       icon={IconAdd}
       size="large"
       label={performance.string.CreateKRA}
+      disabled={reviewSession?.status !== ReviewSessionStatus.Drafting}
       kind="primary"
       on:click={() => {
         showPopup(
