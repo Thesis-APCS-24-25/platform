@@ -5,6 +5,7 @@
     Breadcrumb,
     Button,
     Header,
+    Icon,
     IconAdd,
     IModeSelector,
     ModeSelector,
@@ -21,7 +22,7 @@
   import { canAssignKRAs } from '../../utils/team'
 
   export let space: Ref<ReviewSession>
-  export let icon: Asset
+  export let icon: Asset = performance.icon.Active
   export let label: IntlString = performance.string.KRA
   export let baseQuery: DocumentQuery<Doc> | undefined = undefined
 
@@ -94,6 +95,8 @@
   $: void canAssignKRAs(getClient(), space).then((result) => {
     canAssign = result
   })
+
+  $: canCreateKRA = reviewSession?.status === ReviewSessionStatus.Drafting
 </script>
 
 <Header>
@@ -103,8 +106,11 @@
       icon={IconAdd}
       size="large"
       label={performance.string.CreateKRA}
-      disabled={reviewSession?.status !== ReviewSessionStatus.Drafting}
+      disabled={!canCreateKRA}
       kind="primary"
+      showTooltip={{
+        label: canCreateKRA ? performance.string.CreateKRA : performance.string.NotDraftingCannotCreateKRA,
+      }}
       on:click={() => {
         showPopup(
           CreateKra,
