@@ -361,7 +361,7 @@ function defineApplication (builder: Builder): void {
         spaces: [
           {
             id: 'active-review-session',
-            visibleIf: performance.function.IsReviewSessionOfCurrentTeam,
+            visibleIf: performance.function.IsActiveReviewSessionOfCurrentTeam,
             icon: performance.icon.Active,
             label: performance.string.ActiveReviewSessions,
             spaceClass: performance.class.ReviewSession,
@@ -394,7 +394,7 @@ function defineApplication (builder: Builder): void {
           },
           {
             id: 'review-session',
-            visibleIf: performance.function.IsReviewSessionOfCurrentTeam,
+            visibleIf: performance.function.IsInactiveReviewSessionOfCurrentTeam,
             label: performance.string.ReviewSessions,
             spaceClass: performance.class.ReviewSession,
             specials: [
