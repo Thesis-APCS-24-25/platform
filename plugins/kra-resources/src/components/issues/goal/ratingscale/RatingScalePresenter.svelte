@@ -31,7 +31,7 @@
   <RatingScaleCircle value={rating ?? 0} />
   <div class="separator"></div>
   <div class="label">
-    <strong class="current-value">{rating}</strong> <span class="divider">/</span> <span class="target-value">5</span>
+    <strong class="current-value">{rating ?? 0}</strong> <span class="divider">/</span> <span class="target-value">5</span>
   </div>
 </GoalPresenterContainer>
 
