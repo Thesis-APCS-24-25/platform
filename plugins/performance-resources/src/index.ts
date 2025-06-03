@@ -40,6 +40,7 @@ import KRAWeightEditorWithPopup from './components/kra/KRAWeightEditorWithPopup.
 import ReviewSessionStatusPresenter from './components/review-session/ReviewSessionStatusPresenter.svelte'
 import ReviewSessionStatusEditor from './components/review-session/ReviewSessionStatusEditor.svelte'
 import KRAStatistics from './components/kra/KRAStatistics.svelte'
+import Performance from './components/application/Performance.svelte'
 // import ReviewSessionStatusPresenter from './components/review-session/ReviewSessionStatusPresenter.svelte'
 // import ReviewSessionStatusRefPresenter from './components/review-session/ReviewSessionStatusRefPresenter.svelte'
 // import ReviewSessionStateEditor from './components/review-session/ReviewSessionStateEditor.svelte'
@@ -73,6 +74,7 @@ export default async (): Promise<Resources> => ({
     ListView,
     ReviewSessionStatusPresenter,
     ReviewSessionStatusEditor,
+    PerformanceApplication: Performance,
     KRAStatistics
   },
   function: {

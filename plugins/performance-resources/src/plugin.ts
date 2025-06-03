@@ -21,6 +21,9 @@ import { type GetAllValuesFunc, type SortFunc } from '@hcengineering/view'
 
 export default mergeIds(performanceId, performance, {
   string: {
+    DraftingReviewSessions: '' as IntlString,
+    ConcludedReviewSessions: '' as IntlString,
+    NoActiveReviewSession: '' as IntlString,
     Tasks: '' as IntlString,
     NotDraftingCannotCreateKRA: '' as IntlString,
     RemoveKRAAssignee: '' as IntlString,
@@ -88,6 +91,7 @@ export default mergeIds(performanceId, performance, {
     CreateReviewSession: '' as AnyComponent,
     CreateKRA: '' as AnyComponent,
     KRAPresenter: '' as AnyComponent,
+    Performance: '' as AnyComponent,
     TeamSpacePresenter: '' as AnyComponent,
     PerformanceDashboard: '' as AnyComponent,
     PerformanceReports: '' as AnyComponent,

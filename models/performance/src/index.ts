@@ -359,82 +359,8 @@ function defineApplication (builder: Builder): void {
       alias: performanceId,
       navHeaderComponent: performance.component.TeamSwitchHeader,
       icon: performance.icon.ReviewSession,
-      // component: performance.component.PerformanceApplication,
-      hidden: false,
-      navigatorModel: {
-        spaces: [
-          {
-            id: 'active-review-session',
-            visibleIf: performance.function.IsActiveReviewSessionOfCurrentTeam,
-            icon: performance.icon.Active,
-            label: performance.string.ActiveReviewSessions,
-            spaceClass: performance.class.ReviewSession,
-            specials: [
-              {
-                id: 'dashboard',
-                label: performance.string.PerformanceDashboard,
-                component: performance.component.PerformanceDashboard
-              },
-              {
-                id: 'kras',
-                label: performance.string.KRA,
-                component: performance.component.AllKRAs
-              },
-              {
-                id: 'my-kras',
-                label: performance.string.MyKRAs,
-                component: performance.component.MyKRAs
-              },
-              {
-                id: 'my-reports',
-                position: 'bottom',
-                label: performance.string.PerformanceReports,
-                component: performance.component.PerformanceReports,
-                componentProps: {
-                  _class: performance.class.PerformanceReport
-                }
-              }
-            ]
-          },
-          {
-            id: 'review-session',
-            visibleIf: performance.function.IsInactiveReviewSessionOfCurrentTeam,
-            label: performance.string.ReviewSessions,
-            spaceClass: performance.class.ReviewSession,
-            specials: [
-              {
-                id: 'kras',
-                label: performance.string.KRA,
-                component: performance.component.AllKRAs
-              },
-              {
-                id: 'my-kras',
-                label: performance.string.MyKRAs,
-                component: performance.component.MyKRAs
-              },
-              {
-                id: 'my-reports',
-                position: 'bottom',
-                label: performance.string.PerformanceReports,
-                component: performance.component.PerformanceReports,
-                componentProps: {
-                  _class: performance.class.PerformanceReport
-                }
-              }
-            ]
-          }
-        ],
-        specials: [
-          {
-            id: 'all-review-sessions',
-            label: performance.string.AllReviewSessions,
-            component: performance.component.AllReviewSessions,
-            componentProps: {
-              _class: performance.class.ReviewSession
-            }
-          }
-        ]
-      }
+      component: performance.component.PerformanceApplication,
+      hidden: false
     },
     performance.app.Performance
   )

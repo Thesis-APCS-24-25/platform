@@ -18,9 +18,6 @@
       fragment: cur.fragment
     }
     navigate(loc)
-    // NOTE: This is a workaround for the fact that the team selector does not update the current team in the store
-    // should be considered fixing in the future
-    window.location.reload()
   }
 </script>
 

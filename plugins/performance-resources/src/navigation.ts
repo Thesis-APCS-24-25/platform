@@ -3,6 +3,7 @@ import { type KRA, performanceId, type ReviewSession } from '@hcengineering/perf
 import { getCurrentResolvedLocation, type Location } from '@hcengineering/ui'
 import performance from './plugin'
 import { getClient } from '@hcengineering/presentation'
+import { type NavigatorModel } from '@hcengineering/workbench'
 
 export function getReviewSessionLink (_id: Ref<ReviewSession>): Location {
   const loc = getCurrentResolvedLocation()
@@ -46,4 +47,105 @@ export function getKRAIdFromFragment (fragment: string): Ref<KRA> | undefined {
   }
 
   return (parseKRAId(id) ?? id) as Ref<KRA>
+}
+
+export const navigatorModel: NavigatorModel = {
+  specials: [
+    {
+      id: 'all-review-sessions',
+      label: performance.string.AllReviewSessions,
+      component: performance.component.AllReviewSessions,
+      icon: performance.icon.ReviewSession,
+      componentProps: {
+        _class: performance.class.ReviewSession
+      }
+    }
+  ],
+
+  spaces: [
+    {
+      id: 'active-review-sessions',
+      icon: performance.icon.Active,
+      label: performance.string.ActiveReviewSessions,
+      spaceClass: performance.class.ReviewSession,
+      specials: [
+        {
+          id: 'dashboard',
+          label: performance.string.PerformanceDashboard,
+          component: performance.component.PerformanceDashboard
+        },
+        {
+          id: 'kras',
+          label: performance.string.KRA,
+          component: performance.component.AllKRAs
+        },
+        {
+          id: 'my-kras',
+          label: performance.string.MyKRAs,
+          component: performance.component.MyKRAs
+        },
+        {
+          id: 'my-reports',
+          position: 'bottom',
+          label: performance.string.PerformanceReports,
+          component: performance.component.PerformanceReports,
+          componentProps: {
+            _class: performance.class.PerformanceReport
+          }
+        }
+      ]
+    },
+    {
+      id: 'drafting-review-sessions',
+      label: performance.string.DraftingReviewSessions,
+      spaceClass: performance.class.ReviewSession,
+      specials: [
+        {
+          id: 'kras',
+          label: performance.string.KRA,
+          component: performance.component.AllKRAs
+        },
+        {
+          id: 'my-kras',
+          label: performance.string.MyKRAs,
+          component: performance.component.MyKRAs
+        },
+        {
+          id: 'my-reports',
+          position: 'bottom',
+          label: performance.string.PerformanceReports,
+          component: performance.component.PerformanceReports,
+          componentProps: {
+            _class: performance.class.PerformanceReport
+          }
+        }
+      ]
+    },
+    {
+      id: 'concluded-review-sessions',
+      label: performance.string.ConcludedReviewSessions,
+      spaceClass: performance.class.ReviewSession,
+      specials: [
+        {
+          id: 'kras',
+          label: performance.string.KRA,
+          component: performance.component.AllKRAs
+        },
+        {
+          id: 'my-kras',
+          label: performance.string.MyKRAs,
+          component: performance.component.MyKRAs
+        },
+        {
+          id: 'my-reports',
+          position: 'bottom',
+          label: performance.string.PerformanceReports,
+          component: performance.component.PerformanceReports,
+          componentProps: {
+            _class: performance.class.PerformanceReport
+          }
+        }
+      ]
+    }
+  ]
 }
