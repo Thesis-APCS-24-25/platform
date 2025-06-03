@@ -1,7 +1,7 @@
 import kraTeam, { type Member, type Team } from '@hcengineering/kra-team'
 import { get, writable } from 'svelte/store'
 import { getClient } from '@hcengineering/presentation'
-import { checkPermission, getCurrentAccount, type TypedSpace, type Ref, Client } from '@hcengineering/core'
+import { checkPermission, getCurrentAccount, type TypedSpace, type Ref, type Client } from '@hcengineering/core'
 import { personAccountByPersonId, personIdByAccountId } from '@hcengineering/contact-resources'
 import { type PersonAccount } from '@hcengineering/contact'
 import performance from '../plugin'
