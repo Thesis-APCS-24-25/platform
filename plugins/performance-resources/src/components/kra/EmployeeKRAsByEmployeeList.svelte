@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Ref, WithLookup } from '@hcengineering/core'
+  import { checkPermission, getCurrentAccount, Ref, TypedSpace, WithLookup } from '@hcengineering/core'
   import { EmployeeKRA } from '@hcengineering/performance'
   import GroupedList from '../ui/GroupedList.svelte'
   import { PersonAccount } from '@hcengineering/contact'
@@ -8,10 +8,23 @@
   import KraWeightEditorWithPopup from './KRAWeightEditorWithPopup.svelte'
   import KraRefPresenter from './KRARefPresenter.svelte'
   import KraWeightPresenter from './KRAWeightPresenter.svelte'
-  import { Icon } from '@hcengineering/ui'
+  import { Icon, tooltip } from '@hcengineering/ui'
   import performance from '../../plugin'
 
   export let employees: Ref<PersonAccount>[]
+  export let space: Ref<TypedSpace>
+  export let canAssign: boolean = false
+
+  const shouldWarn = (value: number | undefined): boolean => {
+    return value === undefined || Math.abs(value - 1) > 0.0001
+  }
+
+  $: employees = employees.sort((a, b) => {
+    const me = getCurrentAccount()
+    if (a === me._id) return -1
+    if (b === me._id) return 1
+    return 0
+  })
   export let employeeKras: WithLookup<EmployeeKRA>[]
   let sums = new Map<Ref<PersonAccount>, number>()
   $: {
@@ -32,8 +45,23 @@
         <PersonAccountRefPresenter value={category} />
       </FixedColumn>
       <FixedColumn key="total-kra" justify="left">
-        <div class="flex-row-center flex-gap-1 total-weight">
-          <Icon icon={performance.icon.KRA} size="medium" />
+        <div
+          class="flex-row-center flex-gap-1 total-weight"
+          use:tooltip={shouldWarn(sums.get(category))
+            ? { label: performance.string.KRAWeightNotFullWarning }
+            : { label: performance.string.KRAWeightFull }}
+        >
+          <Icon
+            icon={performance.icon.KRA}
+            size="medium"
+            iconProps={{
+              ...(shouldWarn(sums.get(category))
+                ? { fill: 'var(--theme-warning-color)' }
+                : {
+                    fill: 'var(--theme-won-color)'
+                  })
+            }}
+          />
           <KraWeightPresenter value={sums.get(category) ?? 0} showPercent />
         </div>
       </FixedColumn>
@@ -45,7 +73,11 @@
         <KraRefPresenter value={item.kra} kind="list" />
       </FixedColumn>
       <FixedColumn key="kra" justify="left">
-        <KraWeightEditorWithPopup value={item} kind="list" readonly />
+        <KraWeightEditorWithPopup
+          value={item}
+          kind="list"
+          readonly={!canAssign && item.employee !== getCurrentAccount()._id}
+        />
       </FixedColumn>
     </div>
   </svelte:fragment>

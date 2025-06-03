@@ -41,7 +41,7 @@ import KRAStatistics from './components/kra/KRAStatistics.svelte'
 // import ReviewSessionStatusPresenter from './components/review-session/ReviewSessionStatusPresenter.svelte'
 // import ReviewSessionStatusRefPresenter from './components/review-session/ReviewSessionStatusRefPresenter.svelte'
 // import ReviewSessionStateEditor from './components/review-session/ReviewSessionStateEditor.svelte'
-import { IsReviewSessionOfCurrentTeam } from './utils/review-session'
+import { IsActiveReviewSessionOfCurrentTeam, IsInactiveReviewSessionOfCurrentTeam, IsReviewSessionOfCurrentTeam } from './utils/review-session'
 import AllKRAs from './components/kra/AllKRAs.svelte'
 import AllReviewSessions from './components/review-session/AllReviewSessions.svelte'
 
@@ -79,6 +79,8 @@ export default async (): Promise<Resources> => ({
       queryId: Ref<Doc<Space>>,
       attr: Attribute<Status>
     ) => await getAllStates(query, onUpdate, queryId, attr, false),
-    IsReviewSessionOfCurrentTeam
+    IsReviewSessionOfCurrentTeam,
+    IsActiveReviewSessionOfCurrentTeam,
+    IsInactiveReviewSessionOfCurrentTeam
   }
 })

@@ -1,16 +1,16 @@
 <script lang="ts">
   import performance from '../../plugin'
-  import { Button, Chevron, closeTooltip, eventToHTMLElement, ExpandCollapse, showPopup } from '@hcengineering/ui'
+  import { Button, Chevron, closeTooltip, ExpandCollapse, showPopup } from '@hcengineering/ui'
   import { restrictionStore } from '@hcengineering/view-resources'
   import KraAssigneeTable from './KRAAssigneeTable.svelte'
-  import KraAssigneesPopup from './KRAAssigneesPopup.svelte'
-  import { createQuery, getClient } from '@hcengineering/presentation'
-  import { Data, Ref } from '@hcengineering/core'
-  import { EmployeeKRA, KRA } from '@hcengineering/performance'
-  import { PersonAccount } from '@hcengineering/contact'
+  import { createQuery } from '@hcengineering/presentation'
+  import { Ref } from '@hcengineering/core'
+  import { EmployeeKRA, KRA, ReviewSession } from '@hcengineering/performance'
+  import AssignKraPopup from './AssignKRAPopup.svelte'
 
   export let hasAssignees = true
   export let kra: Ref<KRA>
+  export let space: Ref<ReviewSession>
 
   let isCollapsed = true
 
@@ -29,32 +29,15 @@
     }
   )
 
-  function openNewAssigneeDialog (event: MouseEvent): void {
+  function openNewAssigneeDialog (): void {
     showPopup(
-      KraAssigneesPopup,
+      AssignKraPopup,
       {
-        items
+        assigns: items,
+        kra,
+        space
       },
-      eventToHTMLElement(event),
-      async (res: Ref<PersonAccount>[]) => {
-        if (res !== undefined) {
-          const client = getClient()
-          const space = await client
-            .findOne(performance.class.KRA, {
-              _id: kra
-            })
-            .then((kra) => kra?.space)
-          if (space === undefined) return
-          const newAssigns: Data<EmployeeKRA>[] = res.map((item) => ({
-            kra,
-            employee: item,
-            weight: 0
-          }))
-          for (const item of newAssigns) {
-            await client.createDoc(performance.class.EmployeeKRA, space, item)
-          }
-        }
-      }
+      'top'
     )
   }
 </script>

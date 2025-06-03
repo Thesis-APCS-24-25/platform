@@ -1,7 +1,7 @@
 <script lang="ts">
   import { PersonAccountRefPresenter } from '@hcengineering/contact-resources'
-  import { Ref, WithLookup } from '@hcengineering/core'
-  import { EmployeeKRA, KRA } from '@hcengineering/performance'
+  import { checkPermission, getCurrentAccount, Ref, TypedSpace, WithLookup } from '@hcengineering/core'
+  import { EmployeeKRA, KRA, ReviewSession } from '@hcengineering/performance'
   import { Button, showPopup } from '@hcengineering/ui'
   import { FixedColumn } from '@hcengineering/view-resources'
   import KraWeightEditorWithPopup from './KRAWeightEditorWithPopup.svelte'
@@ -12,6 +12,8 @@
 
   export let kras: Ref<KRA>[]
   export let employeeKras: WithLookup<EmployeeKRA>[]
+  export let space: Ref<ReviewSession>
+  export let canAssign: boolean = false
 
   let mapping = new Map<Ref<KRA>, WithLookup<EmployeeKRA>[]>()
   $: {
@@ -24,7 +26,6 @@
         mapping.get(employeeKra.kra)?.push(employeeKra)
       }
     }
-    console.log('mapping', mapping)
   }
 </script>
 
@@ -36,24 +37,26 @@
     </div>
   </svelte:fragment>
   <svelte:fragment slot="action" let:category>
-    <Button
-      kind="ghost"
-      icon={performance.icon.AssignKRA}
-      showTooltip={{
-        label: performance.string.AssignKRA
-      }}
-      on:click={() => {
-        const assigns = mapping.get(category) ?? []
-        showPopup(
-          AssignKraPopup,
-          {
-            kra: category,
-            assigns
-          },
-          'top'
-        )
-      }}
-    />
+    {#if canAssign}
+      <Button
+        kind="ghost"
+        icon={performance.icon.AssignKRA}
+        showTooltip={{
+          label: performance.string.AssignKRA
+        }}
+        on:click={() => {
+          const assigns = mapping.get(category) ?? []
+          showPopup(
+            AssignKraPopup,
+            {
+              kra: category,
+              assigns
+            },
+            'top'
+          )
+        }}
+      />
+    {/if}
   </svelte:fragment>
   <svelte:fragment slot="item" let:item>
     <div class="m-1 flex-row-center p-text-2 clear-mins flex-gap-4">
@@ -61,7 +64,7 @@
         <PersonAccountRefPresenter value={item.employee} />
       </FixedColumn>
       <FixedColumn key="kra" justify="left">
-        <KraWeightEditorWithPopup value={item} kind="list" readonly />
+        <KraWeightEditorWithPopup value={item} kind="list" readonly={!canAssign && item.employee !== getCurrentAccount()._id} />
       </FixedColumn>
     </div>
   </svelte:fragment>

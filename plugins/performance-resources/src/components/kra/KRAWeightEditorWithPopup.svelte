@@ -4,13 +4,16 @@
   import { NumberPresenter } from '@hcengineering/view-resources'
   import KraWeightEditBoxPopup from './KRAWeightEditBoxPopup.svelte'
   import { PersonAccount } from '@hcengineering/contact'
-  import { Data, Ref, WithLookup } from '@hcengineering/core'
+  import { checkPermission, Data, getCurrentAccount, Ref, TypedSpace, WithLookup } from '@hcengineering/core'
   import { createQuery, getClient } from '@hcengineering/presentation'
-  import { EmployeeKRA } from '@hcengineering/performance'
+  import { EmployeeKRA, ReviewSession } from '@hcengineering/performance'
   import KraWeightPresenter from './KRAWeightPresenter.svelte'
   import performance from '../../plugin'
+  import kraTeam from '@hcengineering/kra-team'
+  import { canAssignKRAs } from '../../utils/team'
 
   export let value: EmployeeKRA | Data<EmployeeKRA> | WithLookup<EmployeeKRA>
+  export let space: Ref<ReviewSession> | undefined = undefined
   const employee: Ref<PersonAccount> = value.employee
 
   const client = getClient()
@@ -24,6 +27,7 @@
   export let doUpdate: boolean = true
   export let validateFunction: (value: number | undefined) => boolean = () => true
   export let onUpdate: (value: number) => void = () => {}
+  export let doCheckPermission: boolean = false
 
   async function updateWeight (newWeight: number): Promise<void> {
     if (Number.isFinite(newWeight) && validateFunction(newWeight)) {
@@ -43,6 +47,13 @@
     await updateWeight(newWeight)
   }
 
+  let canAssign = false
+  $: if (space !== undefined) {
+    void canAssignKRAs(client, space).then((res) => {
+      canAssign = res
+    })
+  }
+  $: readonly = readonly || (doCheckPermission && !canAssign && value.employee !== getCurrentAccount()._id)
   let otherWeights: { value: number, label: string }[] = []
   const weightQ = createQuery()
   weightQ.query(

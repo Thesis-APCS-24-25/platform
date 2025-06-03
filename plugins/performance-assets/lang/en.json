@@ -45,6 +45,10 @@
     "Drafting": "Drafting",
     "InProgress": "In Progress",
     "Concluded": "Concluded",
+    "PerKRA": "By KRA",
+    "PerMember": "By Member",
+    "AssignKRA": "Assign KRA",
+    "NotDraftingCannotCreateKRA": "You can only create KRA when the review session is in Drafting status",
     "KRACompletionLevel": "% KRA Completed"
   }
 }

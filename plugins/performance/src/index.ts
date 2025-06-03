@@ -18,6 +18,7 @@ import { type PersonAccount } from '@hcengineering/contact'
 import type { Arr, Attribute, Class, Doc, Mixin, Ref, SpaceType, SpaceTypeDescriptor, Status, Timestamp, Type } from '@hcengineering/core'
 import { Asset, IntlString, plugin, Plugin, Resource } from '@hcengineering/platform'
 import type { Project, ProjectType, Task, TaskType, TaskTypeDescriptor } from '@hcengineering/task'
+import { AnyComponent } from '@hcengineering/ui'
 import { Viewlet, ViewletDescriptor } from '@hcengineering/view'
 
 export enum ReviewSessionStatus {
@@ -39,6 +40,7 @@ export interface KRA extends Task {
   title: string
   description: string
   kraStatus: Ref<KRAStatus>
+  color?: number
 }
 
 export interface EmployeeKRA extends Doc {
@@ -49,6 +51,10 @@ export interface EmployeeKRA extends Doc {
 
 export interface MeasureProgress extends Class<Task> {
   calculate: Resource<(task: Ref<Task>) => Promise<number | undefined>>
+}
+
+export interface ProgressPresenter extends Class<Task> {
+  presenter: AnyComponent
 }
 
 export interface WithKRA extends Task { }
@@ -106,7 +112,8 @@ export default plugin(performanceId, {
     DefaultReviewSessionData: '' as Ref<Mixin<ReviewSession>>,
     DefaultKRAData: '' as Ref<Mixin<KRA>>,
     WithKRA: '' as Ref<Mixin<WithKRA>>,
-    MeasureProgress: '' as Ref<Mixin<MeasureProgress>>
+    MeasureProgress: '' as Ref<Mixin<MeasureProgress>>,
+    ProgressPresenter: '' as Ref<Mixin<ProgressPresenter>>
   },
   taskTypes: {
     KRA: '' as Ref<TaskType>

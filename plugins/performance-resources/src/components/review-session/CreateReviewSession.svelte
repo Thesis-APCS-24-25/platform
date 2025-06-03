@@ -1,18 +1,14 @@
 <script lang="ts">
   import { getCurrentAccount, Ref, Space, Timestamp } from '@hcengineering/core'
   import { Card, getClient, SpaceSelector } from '@hcengineering/presentation'
-  import {
-    createFocusManager,
-    DatePresenter,
-    EditBox,
-    FocusHandler
-  } from '@hcengineering/ui'
+  import { createFocusManager, DatePresenter, EditBox, FocusHandler } from '@hcengineering/ui'
   import { createEventDispatcher } from 'svelte'
 
   import performance from '../../plugin'
   import { createReviewSession } from '../../utils/review-session'
-    import kraTeam, { Team } from '@hcengineering/kra-team'
+  import kraTeam, { Team } from '@hcengineering/kra-team'
   import TeamPresenter from '../team/TeamPresenter.svelte'
+  import { currentTeam as currentTeamStore } from '../../utils/team'
 
   // export function canClose (): boolean {
   //   return object.title === ''
@@ -27,13 +23,13 @@
   let description: string = ''
   let startDate: Timestamp
   let endDate: Timestamp
-  let currentTeam: Ref<Space> | undefined = undefined
+  let currentTeam: Ref<Space> | undefined = $currentTeamStore
 
   $: if (team !== undefined) {
     currentTeam = team._id as Ref<Space>
   }
 
-  $: canSave = true
+  $: canSave = name !== '' && startDate !== undefined && endDate !== undefined && currentTeam !== undefined
 
   async function create (): Promise<void> {
     if (currentTeam !== undefined) {
@@ -53,75 +49,74 @@
   const manager = createFocusManager()
 </script>
 
-  <FocusHandler {manager} />
+<FocusHandler {manager} />
 
-  <Card
-    label={performance.string.CreateReviewSession}
-    okAction={create}
-    {canSave}
-    on:close={() => {
-      dispatch('close')
-    }}
-    on:changeContent
-  >
-    <svelte:fragment slot="header">
-      <SpaceSelector
-        _class={kraTeam.class.Team}
-        label={performance.string.SelectTeam}
-        bind:space={currentTeam}
+<Card
+  label={performance.string.CreateReviewSession}
+  okAction={create}
+  {canSave}
+  on:close={() => {
+    dispatch('close')
+  }}
+  on:changeContent
+>
+  <svelte:fragment slot="header">
+    <SpaceSelector
+      _class={kraTeam.class.Team}
+      label={performance.string.SelectTeam}
+      bind:space={currentTeam}
+      readonly
+      kind={'regular'}
+      size={'small'}
+      component={TeamPresenter}
+      query={{
+        members: me._id
+      }}
+      defaultIcon={kraTeam.icon.Teams}
+    />
+  </svelte:fragment>
+
+  <div class="flex-row-center m-3 clear-mins">
+    <EditBox
+      label={performance.string.ReviewSessionName}
+      placeholder={performance.string.ReviewSessionNamePlaceholder}
+      bind:value={name}
+      kind={'large-style'}
+      autoFocus
+      focusIndex={1}
+    />
+  </div>
+  <div class="flex-row-center m-3 clear-mins">
+    <EditBox
+      label={performance.string.ReviewSessionDescription}
+      placeholder={performance.string.ReviewSessionDescriptionPlaceholder}
+      bind:value={description}
+      kind={'large-style'}
+      focusIndex={2}
+    />
+  </div>
+  <svelte:fragment slot="pool">
+    <div class="flex-row-center clear-mins">
+      <DatePresenter
         kind={'regular'}
-        size={'small'}
-        component={TeamPresenter}
-        query={
-          {
-            members: me._id
-          }
-        }
-        defaultIcon={kraTeam.icon.Teams}
-      />
-    </svelte:fragment>
-
-    <div class="flex-row-center m-3 clear-mins">
-      <EditBox
-        label={performance.string.ReviewSessionName}
-        placeholder={performance.string.ReviewSessionNamePlaceholder}
-        bind:value={name}
-        kind={'large-style'}
-        autoFocus
-        focusIndex={1}
+        size={'large'}
+        bind:value={startDate}
+        editable
+        labelNull={performance.string.ReviewSessionStart}
+        label={performance.string.ReviewSessionStart}
+        focusIndex={3}
       />
     </div>
-    <div class="flex-row-center m-3 clear-mins">
-      <EditBox
-        label={performance.string.ReviewSessionDescription}
-        placeholder={performance.string.ReviewSessionDescriptionPlaceholder}
-        bind:value={description}
-        kind={'large-style'}
-        focusIndex={2}
+    <div class="flex-row-center clear-mins">
+      <DatePresenter
+        kind={'regular'}
+        size={'large'}
+        bind:value={endDate}
+        editable
+        labelNull={performance.string.ReviewSessionEnd}
+        label={performance.string.ReviewSessionEnd}
+        focusIndex={4}
       />
     </div>
-    <svelte:fragment slot='pool'>
-      <div class="flex-row-center clear-mins">
-        <DatePresenter
-          kind={'regular'}
-          size={'large'}
-          bind:value={startDate}
-          editable
-          labelNull={performance.string.ReviewSessionStart}
-          label={performance.string.ReviewSessionStart}
-          focusIndex={3}
-        />
-      </div>
-      <div class="flex-row-center clear-mins">
-        <DatePresenter
-          kind={'regular'}
-          size={'large'}
-          bind:value={endDate}
-          editable
-          labelNull={performance.string.ReviewSessionEnd}
-          label={performance.string.ReviewSessionEnd}
-          focusIndex={4}
-        />
-      </div>
-    </svelte:fragment>
-  </Card>
+  </svelte:fragment>
+</Card>

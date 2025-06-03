@@ -28,6 +28,9 @@
     "ApproveKra": "Approve KRA",
     "ApproveKraDescription": "Approve KRA",
     "CreateKra": "Create KRA",
+    "Manager": "Manager",
+    "Member": "Member",
+    "AddMember": "Add member",
     "CreateKraDescription": "Create KRA"
   }
 }

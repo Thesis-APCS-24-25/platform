@@ -10,7 +10,7 @@
 
   import { createEventDispatcher, onDestroy } from 'svelte'
   import performance from '../../plugin'
-  import { KRA } from '@hcengineering/performance'
+  import { KRA, ReviewSession } from '@hcengineering/performance'
   import { getKRAIdByIdentifier } from '../../navigation'
 
   import KRAAssignees from './KRAAssignees.svelte'
@@ -28,6 +28,7 @@
   // const hierarchy = client.getHierarchy()
 
   let kra: WithLookup<KRA> | undefined
+  $: space = kra?.space as Ref<ReviewSession> | undefined
   let title = ''
   let description = ''
   let innerWidth: number
@@ -141,7 +142,7 @@
   />
 {/if}
 
-{#if kra !== undefined}
+{#if kra !== undefined && space !== undefined}
   <Panel
     object={kra}
     isHeader={false}
@@ -245,7 +246,7 @@
       />
     </div>
     <div class="w-full mt-6">
-      <KRAAssignees kra={kraId ?? _id}/>
+      <KRAAssignees kra={kraId ?? _id} {space} />
     </div>
 
     <RelationsEditor object={kra} {readonly} />

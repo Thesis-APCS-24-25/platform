@@ -22,9 +22,12 @@ import { type GetAllValuesFunc, type SortFunc } from '@hcengineering/view'
 export default mergeIds(performanceId, performance, {
   string: {
     Tasks: '' as IntlString,
+    NotDraftingCannotCreateKRA: '' as IntlString,
     RemoveKRAAssignee: '' as IntlString,
     RemoveKRAAssigneeMessage: '' as IntlString,
     PerKRA: '' as IntlString,
+    KRAWeightFull: '' as IntlString,
+    KRAWeightNotFullWarning: '' as IntlString,
     PerMember: '' as IntlString,
     ActiveReviewSessions: '' as IntlString,
     PerformanceApplication: '' as IntlString,
@@ -101,6 +104,8 @@ export default mergeIds(performanceId, performance, {
   },
   function: {
     IsReviewSessionOfCurrentTeam: '' as Resource<(space: Space) => Promise<boolean>>,
+    IsActiveReviewSessionOfCurrentTeam: '' as Resource<(space: Space) => Promise<boolean>>,
+    IsInactiveReviewSessionOfCurrentTeam: '' as Resource<(space: Space) => Promise<boolean>>,
     GetAllKRAStates: '' as GetAllValuesFunc,
     KRAStatusSort: '' as SortFunc
   }

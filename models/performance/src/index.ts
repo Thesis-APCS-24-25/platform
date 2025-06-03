@@ -20,7 +20,8 @@ import {
   TReviewSession,
   TMeasureProgress,
   TPerformanceReport,
-  TTypeReviewSessionStatus
+  TTypeReviewSessionStatus,
+  TProgressPresenter
 } from './types'
 import { defineViewlets } from './viewlets'
 
@@ -131,14 +132,14 @@ function defineKRA (builder: Builder): void {
     component: performance.component.EditKRA
   })
 
-  builder.mixin(performance.class.ReviewSession, core.class.Class, workbench.mixin.SpaceView, {
-    view: {
-      class: performance.class.KRA,
-      createItemDialog: performance.component.CreateKRA,
-      createItemLabel: performance.string.CreateKraLabel
-    }
-  })
-
+  // builder.mixin(performance.class.ReviewSession, core.class.Class, workbench.mixin.SpaceView, {
+  //   view: {
+  //     class: performance.class.KRA,
+  //     createItemDialog: performance.component.CreateKRA,
+  //     createItemLabel: performance.string.CreateKraLabel
+  //   }
+  // })
+  //
   builder.mixin(performance.class.KRA, core.class.Class, view.mixin.ObjectPresenter, {
     presenter: performance.component.KRAPresenter
   })
@@ -364,7 +365,7 @@ function defineApplication (builder: Builder): void {
         spaces: [
           {
             id: 'active-review-session',
-            visibleIf: performance.function.IsReviewSessionOfCurrentTeam,
+            visibleIf: performance.function.IsActiveReviewSessionOfCurrentTeam,
             icon: performance.icon.Active,
             label: performance.string.ActiveReviewSessions,
             spaceClass: performance.class.ReviewSession,
@@ -397,7 +398,7 @@ function defineApplication (builder: Builder): void {
           },
           {
             id: 'review-session',
-            visibleIf: performance.function.IsReviewSessionOfCurrentTeam,
+            visibleIf: performance.function.IsInactiveReviewSessionOfCurrentTeam,
             label: performance.string.ReviewSessions,
             spaceClass: performance.class.ReviewSession,
             specials: [
@@ -479,6 +480,7 @@ function defineSortAndGrouping (builder: Builder): void {
 
 export function createModel (builder: Builder): void {
   builder.createModel(TMeasureProgress)
+  builder.createModel(TProgressPresenter)
   defineTeam(builder)
   defineReviewSession(builder)
   defineKRA(builder)
