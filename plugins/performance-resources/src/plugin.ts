@@ -90,8 +90,6 @@ export default mergeIds(performanceId, performance, {
     PerformanceReports: '' as AnyComponent,
     ReportPanel: '' as AnyComponent,
     ReportPresenter: '' as AnyComponent,
-    CreateReport: '' as AnyComponent,
-    CreateReportButton: '' as AnyComponent,
     ListView: '' as AnyComponent,
     AllReviewSessions: '' as AnyComponent,
     AllKRAs: '' as AnyComponent,

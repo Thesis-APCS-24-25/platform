@@ -31,8 +31,6 @@ import MyKRAs from './components/kra/MyKRAs.svelte'
 import PerformanceReports from './components/report/PerformanceReports.svelte'
 import ReportPanel from './components/report/ReportPanel.svelte'
 import ReportPresenter from './components/report/ReportPresenter.svelte'
-import CreateReport from './components/report/CreateReport.svelte'
-import CreateReportButton from './components/report/CreateReportButton.svelte'
 import TeamSwitchHeader from './components/navigator/TeamSwitchHeader.svelte'
 import ListView from './components/list/ListView.svelte'
 import KRAAssigneesPresenter from './components/kra/KRAAssigneesPresenter.svelte'
@@ -64,8 +62,6 @@ export default async (): Promise<Resources> => ({
     PerformanceReports,
     ReportPanel,
     ReportPresenter,
-    CreateReport,
-    CreateReportButton,
     TeamSwitchHeader,
     KRAWeightEditorWithPopup,
     AllReviewSessions,
