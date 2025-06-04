@@ -105,6 +105,7 @@
         labelNull={performance.string.ReviewSessionStart}
         label={performance.string.ReviewSessionStart}
         focusIndex={3}
+        detail={performance.string.ReviewSessionStartDetail}
       />
     </div>
     <div class="flex-row-center clear-mins">
@@ -116,6 +117,7 @@
         labelNull={performance.string.ReviewSessionEnd}
         label={performance.string.ReviewSessionEnd}
         focusIndex={4}
+        detail={performance.string.ReviewSessionEndDetail}
       />
     </div>
   </svelte:fragment>

@@ -21,7 +21,8 @@ export default mergeIds(kraTeamId, kraTeam, {
     CreateReviewSessionDescription: '' as IntlString,
     AssignWeightForAll: '' as IntlString,
     AssignWeightForAllDescription: '' as IntlString,
-    RemoveMember: '' as IntlString
+    RemoveMember: '' as IntlString,
+    Member: '' as IntlString
   },
   component: {
     RolePresenter: '' as AnyComponent,
