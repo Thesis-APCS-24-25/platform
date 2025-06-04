@@ -26,7 +26,8 @@
   export let type: ObjectPresenterType = 'link'
   export let icon: Asset | AnySvelteComponent | undefined = undefined
 
-  $: color = value?.color !== undefined ? getPlatformColorDef(value?.color, $themeStore.dark).background : undefined
+  $: bgColor = value?.color !== undefined ? getPlatformColorDef(value?.color, $themeStore.dark).background : undefined
+  $: color = value?.color !== undefined ? getPlatformColorDef(value?.color, $themeStore.dark).color : undefined
 </script>
 
 {#if inline && value}
@@ -58,7 +59,7 @@
             class:font-bold-12={kind === 'list-header'}
             title={value?.title}
           >
-            {value.title}
+            [{value.identifier}] {value.title}
             <slot name="details" />
           </div>
         </span>
@@ -82,7 +83,7 @@
       class:select-text={!noSelect}
       use:tooltip={{ label: getEmbeddedLabel(value.title) }}
     >
-      {value.title}
+      [{value.identifier}] {value.title}
     </span>
   {/if}
 {/if}
