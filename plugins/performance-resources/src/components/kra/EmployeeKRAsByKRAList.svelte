@@ -2,18 +2,24 @@
   import { PersonAccountRefPresenter } from '@hcengineering/contact-resources'
   import { checkPermission, getCurrentAccount, Ref, TypedSpace, WithLookup } from '@hcengineering/core'
   import { EmployeeKRA, KRA, ReviewSession } from '@hcengineering/performance'
-  import { Button, showPopup } from '@hcengineering/ui'
+  import { Button, getPlatformColorDef, showPopup, themeStore } from '@hcengineering/ui'
   import { FixedColumn } from '@hcengineering/view-resources'
   import KraWeightEditorWithPopup from './KRAWeightEditorWithPopup.svelte'
   import performance from '../../plugin'
   import AssignKraPopup from './AssignKRAPopup.svelte'
   import KraRefPresenter from './KRARefPresenter.svelte'
   import GroupedList from '../ui/GroupedList.svelte'
+  import KraPresenter from './KRAPresenter.svelte'
 
-  export let kras: Ref<KRA>[]
+  export let kras: KRA[]
   export let employeeKras: WithLookup<EmployeeKRA>[]
   export let space: Ref<ReviewSession>
   export let canAssign: boolean = false
+
+  let kraById: Map<Ref<KRA>, KRA> = new Map<Ref<KRA>, KRA>()
+  $: {
+    kraById = new Map(kras.map(kra => [kra._id, kra]))
+  }
 
   let mapping = new Map<Ref<KRA>, WithLookup<EmployeeKRA>[]>()
   $: {
@@ -27,12 +33,19 @@
       }
     }
   }
+
+  function listHeaderColor (category: Ref<KRA>): string {
+    const color = kraById.get(category)?.color
+    return color !== undefined
+      ? getPlatformColorDef(color, $themeStore.dark)?.background ?? 'var(--header-bg-color)'
+      : 'var(--header-bg-color)'
+  }
 </script>
 
-<GroupedList categories={kras} items={employeeKras} key="kra">
+<GroupedList categories={kras.map(k => k._id)} items={employeeKras} key="kra" headerBGColor={listHeaderColor}>
   <svelte:fragment slot="header" let:category let:count>
     <div class="flex-row-center flex-grow" style:color={'inherit'}>
-      <KraRefPresenter value={category} kind="list-header" type="text" />
+      <KraRefPresenter value={category} kind="list-header" type="text" shouldShowAvatar />
       <span class="ml-2 font-medium-12">{count}</span>
     </div>
   </svelte:fragment>
@@ -64,7 +77,12 @@
         <PersonAccountRefPresenter value={item.employee} />
       </FixedColumn>
       <FixedColumn key="kra" justify="left">
-        <KraWeightEditorWithPopup value={item} kind="list" readonly={!canAssign && item.employee !== getCurrentAccount()._id} />
+        <KraWeightEditorWithPopup
+          value={item}
+          kind="list"
+          {space}
+          readonly={!canAssign && item.employee !== getCurrentAccount()._id}
+        />
       </FixedColumn>
     </div>
   </svelte:fragment>

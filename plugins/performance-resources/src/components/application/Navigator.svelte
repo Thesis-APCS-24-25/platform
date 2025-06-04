@@ -50,7 +50,7 @@
 </script>
 
 <ActiveReviewSessionNav
-  reviewSessions={reviewSessions}
+  {reviewSessions}
   model={activeReviewSessionModel}
   {currentSpace}
   {currentSpecial}

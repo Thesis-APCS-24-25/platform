@@ -56,18 +56,22 @@
   $: readonly = readonly || (doCheckPermission && !canAssign && value.employee !== getCurrentAccount()._id)
   let otherWeights: { value: number, label: string }[] = []
   const weightQ = createQuery()
-  weightQ.query(
+  $: weightQ.query(
     performance.class.EmployeeKRA,
     {
       employee,
+      space,
       _id: { $ne: _id }
     },
     (res) => {
       if (res !== undefined) {
-        otherWeights = res.map((item) => ({
-          value: item.weight,
-          label: item.$lookup?.kra?.title ?? ''
-        }))
+        console.log('other weights in space ', space, res)
+        otherWeights = res
+          .filter((item) => item.space === space)
+          .map((item) => ({
+            value: item.weight,
+            label: item.$lookup?.kra?.title ?? ''
+          }))
       }
     },
     {

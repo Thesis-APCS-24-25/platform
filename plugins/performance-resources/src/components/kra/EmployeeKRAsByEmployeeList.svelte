@@ -75,6 +75,7 @@
       <FixedColumn key="kra" justify="left">
         <KraWeightEditorWithPopup
           value={item}
+          {space}
           kind="list"
           readonly={!canAssign && item.employee !== getCurrentAccount()._id}
         />

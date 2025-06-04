@@ -2,7 +2,13 @@
   import { WithLookup } from '@hcengineering/core'
   import { Asset, getEmbeddedLabel } from '@hcengineering/platform'
   import type { KRA } from '@hcengineering/performance'
-  import { AnySvelteComponent, ColorDefinition, getPlatformColor, getPlatformColorDef, Icon, themeStore, tooltip } from '@hcengineering/ui'
+  import {
+    AnySvelteComponent,
+    getPlatformColorDef,
+    Icon,
+    themeStore,
+    tooltip
+  } from '@hcengineering/ui'
   import { DocNavLink, ObjectMention } from '@hcengineering/view-resources'
   import { ObjectPresenterType } from '@hcengineering/view'
 
@@ -20,7 +26,7 @@
   export let type: ObjectPresenterType = 'link'
   export let icon: Asset | AnySvelteComponent | undefined = undefined
 
-  $: color = getPlatformColorDef(value?.color ?? 13, $themeStore.dark).background
+  $: color = value?.color !== undefined ? getPlatformColorDef(value?.color, $themeStore.dark).background : undefined
 </script>
 
 {#if inline && value}
@@ -63,7 +69,6 @@
       <div
         class="icon"
         class:header-icon={!noSelect && kind === 'list-header'}
-        style:background-color={color}
         use:tooltip={{ label: performance.string.KRA }}
       >
         <Icon icon={icon ?? performance.icon.KRA} size={'medium'} />
@@ -102,15 +107,11 @@
   }
 
   .header {
-    // border: 1px solid transparent;
-    // border-radius: 0.25rem;
     padding: 0.25rem 0.5rem;
-    // background-color: var(--secondary-button-default);
   }
 
   .header-icon {
     padding: 0.25rem;
     border-radius: 0.25rem;
-    background-color: var(--secondary-button-default);
   }
 </style>

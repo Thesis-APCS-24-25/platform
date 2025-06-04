@@ -11,7 +11,7 @@
   import TaskPresenter from '@hcengineering/task-resources/src/components/TaskPresenter.svelte'
   import StateRefPresenter from '@hcengineering/task-resources/src/components/state/StateRefPresenter.svelte'
   import ProgressPresenter from './ProgressPresenter.svelte'
-  
+
   export let currentSpace: Ref<Space>
 
   const userId = getCurrentAccount()._id as Ref<PersonAccount>
