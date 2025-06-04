@@ -11,6 +11,7 @@
     Icon,
     IconChevronDown,
     IconWithEmoji,
+    Label,
     showPopup
   } from '@hcengineering/ui'
   import SpacesPopup from '@hcengineering/presentation/src/components/SpacesPopup.svelte'
@@ -82,7 +83,13 @@
 >
   <svelte:fragment slot="content">
     <span class="uppercase name">
-      {team?.name}
+      {#if team !== undefined}
+        {team?.name}
+      {:else}
+        <Label
+          label={performance.string.NoTeam}
+        />
+      {/if}
     </span>
   </svelte:fragment>
   <svelte:fragment slot="iconRight">
