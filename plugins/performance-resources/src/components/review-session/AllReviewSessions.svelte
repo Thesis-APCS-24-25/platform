@@ -24,7 +24,7 @@
 
   $: baseQuery = {
     ...baseQuery,
-    space: $currentTeam
+    space: $currentTeam ?? '' as Ref<Space>
   }
 
   const client = getClient()

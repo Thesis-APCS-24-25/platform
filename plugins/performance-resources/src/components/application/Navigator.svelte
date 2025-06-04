@@ -6,8 +6,6 @@
   import { currentTeam } from '../../utils/team'
   import SpaceNav from './SpaceNav.svelte'
   import { navigatorModel } from '../../navigation'
-  import { Label } from '@hcengineering/ui'
-  import { TreeSeparator } from '@hcengineering/workbench-resources'
   import ActiveReviewSessionNav from './ActiveReviewSessionNav.svelte'
 
   export let currentSpace: Ref<Space> | undefined
@@ -22,10 +20,14 @@
   $: reviewSessionQ.query(
     performance.class.ReviewSession,
     {
-      space: $currentTeam
+      space: $currentTeam ?? '' as Ref<Space>,
+      archived: false
     },
     (res) => {
       reviewSessions = res as ReviewSession[]
+    },
+    {
+      limit: 100
     }
   )
 
@@ -43,10 +45,6 @@
   const activeReviewSessionModel = models[0]
   const draftingReviewSessionModel = models[1]
   const concludedReviewSessionModel = models[2]
-
-  const activeReviewSessions = filter(reviewSessions, activeReviewSessionModel.id)
-  const draftingReviewSessions = filter(reviewSessions, draftingReviewSessionModel.id)
-  const concludedReviewSessions = filter(reviewSessions, concludedReviewSessionModel.id)
 </script>
 
 <ActiveReviewSessionNav

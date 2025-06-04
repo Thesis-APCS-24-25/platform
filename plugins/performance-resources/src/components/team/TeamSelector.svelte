@@ -22,7 +22,7 @@
   const dispatch = createEventDispatcher()
   async function findDefaultSpace (): Promise<Team | undefined> {
     const client = getClient()
-    $selectedTeam = localStorage.getItem(performance.string.SelectTeam) as Ref<Team> | undefined
+    $selectedTeam = (localStorage.getItem(performance.string.SelectTeam) ?? undefined) as Ref<Team> | undefined
     if ($selectedTeam === undefined) {
       const team = await client.findOne(kraTeam.class.Team, {
         members: me
@@ -32,6 +32,10 @@
         localStorage.setItem(performance.string.SelectTeam, team._id)
       }
       return team
+    }
+    if ($selectedTeam === undefined) {
+      $selectedTeam = '' as Ref<Team>
+      return undefined
     }
     return await client.findOne(kraTeam.class.Team, {
       _id: $selectedTeam
@@ -43,7 +47,7 @@
   $: teamQ.query(
     kraTeam.class.Team,
     {
-      _id: $selectedTeam
+      _id: $selectedTeam ?? '' as Ref<Team>
     },
     (res) => {
       team = res[0]
