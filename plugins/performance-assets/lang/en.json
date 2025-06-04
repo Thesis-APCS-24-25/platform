@@ -54,6 +54,8 @@
     "DraftingReviewSessions": "Drafting Review Sessions",
     "ConcludedReviewSessions": "Concluded Review Sessions",
     "NotDraftingCannotCreateKRA": "You can only create KRA when the review session is in Drafting status",
-    "KRACompletionLevel": "% KRA Completed"
+    "KRACompletionLevel": "% KRA Completed",
+    "ReviewSessionStartDetail": "Start date of the Review Session",
+    "ReviewSessionEndDetail": "End date of the Review Session"
   }
 }

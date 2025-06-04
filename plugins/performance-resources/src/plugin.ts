@@ -72,7 +72,9 @@ export default mergeIds(performanceId, performance, {
     Drafting: '' as IntlString,
     InProgress: '' as IntlString,
     Concluded: '' as IntlString,
-    SetStatus: '' as IntlString
+    SetStatus: '' as IntlString,
+    ReviewSessionStartDetail: '' as IntlString,
+    ReviewSessionEndDetail: '' as IntlString
   },
   category: {
     ReviewSessionType: '' as IntlString
