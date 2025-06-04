@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Ref, getCurrentAccount } from '@hcengineering/core'
+  import { Ref, Space, getCurrentAccount } from '@hcengineering/core'
   import { Breadcrumb, Header, Scroller } from '@hcengineering/ui'
   import { createQuery } from '@hcengineering/presentation'
   import performance from '../../plugin'
@@ -11,6 +11,8 @@
   import TaskPresenter from '@hcengineering/task-resources/src/components/TaskPresenter.svelte'
   import StateRefPresenter from '@hcengineering/task-resources/src/components/state/StateRefPresenter.svelte'
   import ProgressPresenter from './ProgressPresenter.svelte'
+  
+  export let currentSpace: Ref<Space>
 
   const userId = getCurrentAccount()._id as Ref<PersonAccount>
   const actionItemQuery = createQuery()
@@ -26,7 +28,8 @@
   $: assignedKRAsQuery.query(
     performance.class.EmployeeKRA,
     {
-      employee: userId
+      employee: userId,
+      space: currentSpace
     },
     (res) => {
       if (res !== undefined) {

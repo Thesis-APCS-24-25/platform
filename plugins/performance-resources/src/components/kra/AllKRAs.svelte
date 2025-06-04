@@ -21,10 +21,12 @@
   import EmployeeKrAsByKraList from './EmployeeKRAsByKRAList.svelte'
   import { canAssignKRAs } from '../../utils/team'
 
-  export let space: Ref<ReviewSession>
+  export let currentSpace: Ref<ReviewSession>
   export let icon: Asset = performance.icon.Active
   export let label: IntlString = performance.string.KRA
   export let baseQuery: DocumentQuery<Doc> | undefined = undefined
+
+  $: space = currentSpace
 
   $: baseQuery = {
     ...baseQuery,
