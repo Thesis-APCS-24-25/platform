@@ -172,7 +172,7 @@
   .placeholder {
     .title {
       height: 100%;
-      width: 100%;
+      width: 60%;
       font-size: 2rem;
       display: flex;
       flex-direction: column;
@@ -180,6 +180,7 @@
       justify-content: stretch;
       font-weight: bold;
       color: var(--theme-trans-color);
+      text-align: center;
       flex-grow: 1;
     }
     .upper-gap {

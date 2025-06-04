@@ -2,7 +2,7 @@
   import kraTeam, { Team } from '@hcengineering/kra-team'
   import performance from '../../plugin'
   import { getCurrentAccount, Ref } from '@hcengineering/core'
-  import { getClient, createQuery } from '@hcengineering/presentation'
+  import { createQuery } from '@hcengineering/presentation'
   import { currentTeam as selectedTeam } from '../../utils/team'
   import {
     AnySvelteComponent,
@@ -11,7 +11,9 @@
     Icon,
     IconChevronDown,
     IconWithEmoji,
-    showPopup
+    showPopup,
+    getCurrentLocation,
+    navigate
   } from '@hcengineering/ui'
   import SpacesPopup from '@hcengineering/presentation/src/components/SpacesPopup.svelte'
   import { ComponentType, createEventDispatcher } from 'svelte'
@@ -20,55 +22,39 @@
 
   const me = getCurrentAccount()._id
   const dispatch = createEventDispatcher()
-  async function findDefaultSpace (): Promise<Team | undefined> {
-    const client = getClient()
-    $selectedTeam = (localStorage.getItem(performance.string.SelectTeam) ?? undefined) as Ref<Team> | undefined
-    if ($selectedTeam === undefined) {
-      const team = await client.findOne(kraTeam.class.Team, {
-        members: me
-      })
-      if (team !== undefined) {
+
+  let team: Team | undefined = undefined
+  let teams: Team[] = []
+  const teamQ = createQuery()
+
+  const SELECT_TEAM_KEY = performance.string.SelectTeam
+
+  $: fetchTeams()
+
+  function fetchTeams (): void {
+    teamQ.query(kraTeam.class.Team, { members: me }, (res) => {
+      teams = res
+      if (res.length > 0) {
+        const storedTeamId = localStorage.getItem(SELECT_TEAM_KEY) as Ref<Team> | undefined
+        team = res.find((t) => t._id === storedTeamId) ?? res[0]
         $selectedTeam = team._id
-        localStorage.setItem(performance.string.SelectTeam, team._id)
+        localStorage.setItem(SELECT_TEAM_KEY, team._id)
+      } else {
+        resetTeamSelection()
       }
-      return team
-    }
-    if ($selectedTeam === undefined) {
-      $selectedTeam = '' as Ref<Team>
-      return undefined
-    }
-    return await client.findOne(kraTeam.class.Team, {
-      _id: $selectedTeam
     })
   }
 
-  let team: Team | undefined = undefined
-  const teamQ = createQuery()
-  $: teamQ.query(
-    kraTeam.class.Team,
-    {
-      _id: $selectedTeam ?? '' as Ref<Team>
-    },
-    (res) => {
-      team = res[0]
-    }
-  )
-  export let iconWithEmoji: AnySvelteComponent | Asset | ComponentType | undefined = view.ids.IconWithEmoji
+  function resetTeamSelection (): void {
+    team = undefined
+    $selectedTeam = undefined
+    localStorage.removeItem(SELECT_TEAM_KEY)
+  }
+
+  export let iconWithEmoji: AnySvelteComponent | Asset | ComponentType = view.ids.IconWithEmoji
   export let defaultIcon: AnySvelteComponent | Asset | ComponentType = kraTeam.icon.Team
 
-  $: void findDefaultSpace()
-</script>
-
-<Button
-  size="large"
-  kind="primary"
-  width="100%"
-  justify="center"
-  icon={team?.icon === iconWithEmoji && iconWithEmoji !== undefined ? IconWithEmoji : team?.icon ?? defaultIcon}
-  iconProps={team?.icon === iconWithEmoji && iconWithEmoji !== undefined
-    ? { icon: team?.color, size: 'medium' }
-    : { size: 'medium' }}
-  on:click={(ev) => {
+  function handleButtonClick (ev: MouseEvent): void {
     showPopup(
       SpacesPopup,
       {
@@ -78,15 +64,41 @@
       eventToHTMLElement(ev),
       (res) => {
         if (res !== undefined) {
-          dispatch('change', res._id)
+          updateSelectedTeam(res)
+          dispatch('change', res)
         }
       }
     )
-  }}
+  }
+
+  function updateSelectedTeam (selected: Team): void {
+    if ($selectedTeam === selected._id) return
+
+    team = selected
+    $selectedTeam = selected._id
+    localStorage.setItem(SELECT_TEAM_KEY, $selectedTeam)
+
+    const cur = getCurrentLocation()
+    const loc = {
+      path: [cur.path[0], cur.path[1], cur.path[2]],
+      fragment: cur.fragment
+    }
+    navigate(loc)
+  }
+</script>
+
+<Button
+  size="large"
+  kind="primary"
+  width="100%"
+  justify="center"
+  icon={team?.icon === iconWithEmoji ? IconWithEmoji : team?.icon ?? defaultIcon}
+  iconProps={team?.icon === iconWithEmoji ? { icon: team?.color, size: 'medium' } : { size: 'medium' }}
+  on:click={handleButtonClick}
 >
   <svelte:fragment slot="content">
     <span class="uppercase name">
-      {team?.name}
+      {team?.name ?? 'No Team Selected'}
     </span>
   </svelte:fragment>
   <svelte:fragment slot="iconRight">

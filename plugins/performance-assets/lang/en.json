@@ -41,6 +41,7 @@
     "Reviewee": "Reviewee",
     "ActiveReviewSessions": "Active Review Sessions",
     "ReviewSessions": "Review Sessions",
+    "NotInAnyTeam": "You are not currently in any team, ask your manager to add you to a team",
     "SetStatus": "Set Status",
     "Drafting": "Drafting",
     "InProgress": "In Progress",
