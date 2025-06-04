@@ -10,7 +10,7 @@
   import { createEventDispatcher } from 'svelte'
   import { translateCB } from '@hcengineering/platform'
 
-  let teams: Team[]
+  let teams: Team[] = []
   export let currentTeam: Ref<Team> | undefined
 
   myTeams.subscribe((res) => {

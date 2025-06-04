@@ -48,6 +48,11 @@
     "PerKRA": "By KRA",
     "PerMember": "By Member",
     "AssignKRA": "Assign KRA",
+    "NoActiveReviewSession": "No Active Review Sessions",
+    "NoDraftingReviewSession": "No Drafting Review Sessions",
+    "NoConcludedReviewSession": "No Concluded Review Sessions",
+    "DraftingReviewSessions": "Drafting Review Sessions",
+    "ConcludedReviewSessions": "Concluded Review Sessions",
     "NotDraftingCannotCreateKRA": "You can only create KRA when the review session is in Drafting status",
     "KRACompletionLevel": "% KRA Completed"
   }
