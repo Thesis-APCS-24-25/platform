@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { Ref, getCurrentAccount } from '@hcengineering/core'
-  import { Breadcrumb, Header, Scroller } from '@hcengineering/ui'
+  import { Ref, Space, getCurrentAccount } from '@hcengineering/core'
+  import { Breadcrumb, getPlatformColorDef, Header, Scroller, themeStore } from '@hcengineering/ui'
   import { createQuery } from '@hcengineering/presentation'
   import performance from '../../plugin'
   import { PersonAccount } from '@hcengineering/contact'
@@ -11,6 +11,8 @@
   import TaskPresenter from '@hcengineering/task-resources/src/components/TaskPresenter.svelte'
   import StateRefPresenter from '@hcengineering/task-resources/src/components/state/StateRefPresenter.svelte'
   import ProgressPresenter from './ProgressPresenter.svelte'
+
+  export let currentSpace: Ref<Space>
 
   const userId = getCurrentAccount()._id as Ref<PersonAccount>
   const actionItemQuery = createQuery()
@@ -26,7 +28,8 @@
   $: assignedKRAsQuery.query(
     performance.class.EmployeeKRA,
     {
-      employee: userId
+      employee: userId,
+      space: currentSpace
     },
     (res) => {
       if (res !== undefined) {
@@ -35,6 +38,32 @@
       }
     }
   )
+
+  const krasQuery = createQuery()
+  let kras: KRA[] | undefined = undefined
+  $: krasQuery.query(
+    performance.class.KRA,
+    {
+      _id: { $in: assignedKRAs }
+    },
+    (res) => {
+      if (res !== undefined) {
+        kras = res
+      }
+    },
+    {
+      projection: {
+        _id: 1,
+        color: 1
+      }
+    }
+  )
+
+  function getKRAColor(kra: Ref<KRA>): string | undefined {
+    if (kras === undefined) return ''
+    const found = kras.find((item) => item._id === kra)
+    return found?.color !== undefined ? getPlatformColorDef(found.color, $themeStore.dark).background : undefined
+  }
 
   let scroll: Scroller
   let divScroll: HTMLDivElement

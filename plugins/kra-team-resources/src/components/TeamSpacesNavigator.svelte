@@ -36,9 +36,11 @@
   $: translateCB(kraTeam.string.AllTeams, {}, $themeStore.language, (res) => {
     title = res
   })
+
+  $: empty = teams.length === 0
 </script>
 
-<TreeNode {title} {actions}>
+<TreeNode {title} {actions} {empty} parent isFold>
   {#each teams as team}
     <TeamNavItem {team} {currentTeam} />
   {/each}

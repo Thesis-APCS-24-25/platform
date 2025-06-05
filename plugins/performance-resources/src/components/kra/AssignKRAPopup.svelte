@@ -18,7 +18,8 @@
   export let kra: Ref<KRA> | undefined = undefined
   export let space: Ref<Space> | undefined = undefined
   export let assigns: Array<EmployeeKRA> | undefined = undefined
-  let newAssigns: Array<Data<EmployeeKRA>> | undefined = undefined
+  let newAssigns: Array<Data<EmployeeKRA>> = []
+  let tempAssigns: Array<Data<EmployeeKRA>> = []
 
   const client = getClient()
   const query = createQuery()
@@ -54,8 +55,7 @@
   function handleUpdate (data: Ref<Member>[] | undefined): void {
     if (kra !== undefined && data !== undefined) {
       const v = kra
-      newAssigns = [
-        ...(newAssigns ?? []),
+      tempAssigns = [
         ...data
           .map((mem) => {
             const p = $personAccountByPersonId.get(mem)
@@ -73,7 +73,15 @@
     }
   }
 
-  function handleClose (): void {}
+  function handleClose (): void {
+    if (tempAssigns.length > 0) {
+      if (newAssigns === undefined) {
+        newAssigns = []
+      }
+      newAssigns = [...newAssigns, ...tempAssigns]
+      tempAssigns = []
+    }
+  }
 
   function newAssignWeightUpdate (assign: Data<EmployeeKRA>, weight: number): void {
     if (newAssigns !== undefined) {
@@ -154,27 +162,25 @@
         </div>
       {/each}
     {/if}
-    {#if newAssigns !== undefined}
-      {#each newAssigns as assign}
-        <div class="flex-row-center assign-pill pl-1 new">
-          <div class="flex-row-center flex-gap-1">
-            <PersonAccountRefPresenter value={assign.employee} disabled />
-            <KraWeightEditorWithPopup value={assign} onUpdate={newAssignWeightUpdate.bind(null, assign)} />
-          </div>
-          <Button
-            kind="ghost"
-            shape="rectangle-left"
-            icon={IconClose}
-            iconProps={{
-              size: 'small'
-            }}
-            on:click={() => {
-              newAssigns = newAssigns?.filter((it) => it !== assign)
-            }}
-          />
+    {#each [...newAssigns, ...tempAssigns] as assign}
+      <div class="flex-row-center assign-pill pl-1 new">
+        <div class="flex-row-center flex-gap-1">
+          <PersonAccountRefPresenter value={assign.employee} disabled />
+          <KraWeightEditorWithPopup value={assign} onUpdate={newAssignWeightUpdate.bind(null, assign)} />
         </div>
-      {/each}
-    {/if}
+        <Button
+          kind="ghost"
+          shape="rectangle-left"
+          icon={IconClose}
+          iconProps={{
+            size: 'small'
+          }}
+          on:click={() => {
+            newAssigns = newAssigns?.filter((it) => it !== assign)
+          }}
+        />
+      </div>
+    {/each}
     <Button
       label={performance.string.AssignTo}
       kind="regular"

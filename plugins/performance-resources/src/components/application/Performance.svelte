@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Ref } from '@hcengineering/core'
+  import { getCurrentAccount, Ref } from '@hcengineering/core'
   import { NavLink } from '@hcengineering/view-resources'
   import {
     defineSeparators,
@@ -20,6 +20,8 @@
   import TeamSwitchHeader from '../navigator/TeamSwitchHeader.svelte'
   import { ReviewSession } from '@hcengineering/performance'
   import { navigatorModel } from '../../navigation'
+  import kraTeam, { Team } from '@hcengineering/kra-team'
+  import { createQuery, getClient } from '@hcengineering/presentation'
 
   let currentSpecial: SpecialNavModel | undefined
 
@@ -82,61 +84,112 @@
   onDestroy(() => ($deviceInfo.replacedPanel = undefined))
 
   $: disabled = false
+
+  const teamQ = createQuery()
+  let haveTeam = false
+  $: teamQ.query(
+    kraTeam.class.Team,
+    {
+      members: getCurrentAccount()._id
+    },
+    (res) => {
+      if (res.length > 0) {
+        haveTeam = true
+      } else {
+        haveTeam = false
+      }
+    }
+  )
 </script>
 
 <div class="hulyPanels-container">
-  {#if $deviceInfo.navigator.visible}
-    <div class="min-h-3 flex-no-shrink" />
-    <div
-      class="antiPanel-navigator {$deviceInfo.navigator.direction === 'horizontal'
-        ? 'portrait'
-        : 'landscape'} border-left"
-      class:fly={$deviceInfo.navigator.float}
-    >
-      <div class="antiPanel-wrap__content hulyNavPanel-container">
-        <div class="hulyNavPanel-header" class:withButton={false}>
-          <span class="overflow-label">
-            <Label label={performance.string.PerformanceApplication} />
-          </span>
-        </div>
-
-        <TeamSwitchHeader />
-
-        {#if specials}
-          {#each specials as special, row}
-            {#if row > 0 && specials[row].position !== specials[row - 1].position}
-              <TreeSeparator line />
-            {/if}
-            <NavLink space={special.id} {disabled}>
-              <NavItem
-                label={special.label}
-                icon={special.icon}
-                selected={currentSpecial !== undefined && currentSpecial.id === special.id}
-                {disabled}
-              />
-            </NavLink>
-          {/each}
-        {/if}
-
-        <div class="antiVSpacer" />
-        <Navigator {currentSpace} currentSpecial={currentSpecial?.id} models={spaces} />
-      </div>
+  {#if !haveTeam}
+    <div class="hulyComponent flex justify-stretch items-center placeholder">
+      <div class="upper-gap" />
+      <span class="title">
+        <Label label={performance.string.NotInAnyTeam} />
+      </span>
+      <div class="lower-gap" />
     </div>
-    <Separator
-      name="performance"
-      float={$deviceInfo.navigator.float}
-      index={0}
-      color={'transparent'}
-      separatorSize={0}
-      short
-    />
-  {/if}
-  <div bind:this={replacedPanel} class="hulyComponent">
-    {#if currentSpace !== undefined && currentSpecial !== undefined}
-      <Component is={currentSpecial.component} props={{ ...currentSpecial.componentProps, currentSpace }} />
-    {:else if currentSpecial !== undefined}
-      <Component is={currentSpecial.component} props={currentSpecial.componentProps} />
-    {:else if currentSpace !== undefined}
+  {:else}
+    {#if $deviceInfo.navigator.visible}
+      <div class="min-h-3 flex-no-shrink" />
+      <div
+        class="antiPanel-navigator {$deviceInfo.navigator.direction === 'horizontal'
+          ? 'portrait'
+          : 'landscape'} border-left"
+        class:fly={$deviceInfo.navigator.float}
+      >
+        <div class="antiPanel-wrap__content hulyNavPanel-container">
+          <div class="hulyNavPanel-header" class:withButton={false}>
+            <span class="overflow-label">
+              <Label label={performance.string.PerformanceApplication} />
+            </span>
+          </div>
+
+          <TeamSwitchHeader />
+
+          {#if specials}
+            {#each specials as special, row}
+              {#if row > 0 && specials[row].position !== specials[row - 1].position}
+                <TreeSeparator line />
+              {/if}
+              <NavLink space={special.id} {disabled}>
+                <NavItem
+                  label={special.label}
+                  icon={special.icon}
+                  selected={currentSpecial !== undefined && currentSpecial.id === special.id}
+                  {disabled}
+                />
+              </NavLink>
+            {/each}
+          {/if}
+
+          <div class="antiVSpacer" />
+          <Navigator {currentSpace} currentSpecial={currentSpecial?.id} />
+        </div>
+      </div>
+      <Separator
+        name="performance"
+        float={$deviceInfo.navigator.float}
+        index={0}
+        color={'transparent'}
+        separatorSize={0}
+        short
+      />
     {/if}
-  </div>
+    <div bind:this={replacedPanel} class="hulyComponent">
+      {#if currentSpace !== undefined && currentSpecial !== undefined}
+        <Component is={currentSpecial.component} props={{ ...currentSpecial.componentProps, currentSpace }} />
+      {:else if currentSpecial !== undefined}
+        <Component is={currentSpecial.component} props={currentSpecial.componentProps} />
+      {:else if currentSpace !== undefined}{/if}
+    </div>
+  {/if}
 </div>
+
+<style lang="scss">
+  .placeholder {
+    .title {
+      height: 100%;
+      width: 60%;
+      font-size: 2rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: stretch;
+      font-weight: bold;
+      color: var(--theme-trans-color);
+      text-align: center;
+      flex-grow: 1;
+    }
+    .upper-gap {
+      height: 100%;
+      flex-grow: 4;
+    }
+    .lower-gap {
+      height: 100%;
+      flex-grow: 6;
+    }
+  }
+</style>

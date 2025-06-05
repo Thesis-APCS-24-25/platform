@@ -34,17 +34,13 @@
   const manager = createFocusManager()
   const kraId = generateId<KRA>()
 
-  export function canClose(): boolean {
-    return title !== ''
-  }
-
   const kind: Ref<TaskType> = performance.taskTypes.KRA
 
   $: colorString = colorSelected
     ? getPlatformColor(color ?? 0, $themeStore.dark)
     : getPlatformColorForText(title, $themeStore.dark)
 
-  async function createKRA(): Promise<void> {
+  async function createKRA (): Promise<void> {
     if (reviewSession === undefined) {
       return
     }

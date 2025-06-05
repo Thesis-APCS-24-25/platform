@@ -7,6 +7,7 @@
   export let categories: any[] = []
   export let items: Doc[] = []
   export let key: string
+  export let headerBGColor: string | ((catetory: any) => string) = 'var(--header-bg-color)'
 
   const collapsed: boolean[] = Array(items.length).fill(true)
 
@@ -30,7 +31,7 @@
       <ListHeader
         count={mapping.get(category)?.length ?? 0}
         collapsed={collapsed[idx]}
-        headerBGColor={'var(--header-bg-color)'}
+        headerBGColor={typeof headerBGColor === 'function' ? headerBGColor(category) : headerBGColor}
         on:collapse={() => {
           collapsed[idx] = !collapsed[idx]
         }}
