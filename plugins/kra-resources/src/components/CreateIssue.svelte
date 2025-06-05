@@ -778,6 +778,7 @@
         }
       } else {
         kraDocQuery = { _id: { $in: [performance.ids.NoKRARef] } }
+        krasOfAssignee = undefined
       }
     })
   }
@@ -1037,6 +1038,10 @@
         size={'large'}
         groupBy={'space'}
         label={performance.string.SetKRA}
+        readonly={krasOfAssignee === undefined}
+        showTooltip={{
+          label: (krasOfAssignee === undefined ? tracker.string.SetAssigneeFirst : undefined)
+        }}
         icon={performance.icon.KRA}
         placeholder={performance.string.KRA}
         allowDeselect

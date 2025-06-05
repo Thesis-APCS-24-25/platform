@@ -312,7 +312,8 @@
     "AddTargetPlaceholder": "Add target\u2026",
     "Value": "Value",
     "RemoveGoal": "Remove goal",
-    "EditGoal": "Edit goal"
+    "EditGoal": "Edit goal",
+    "SetAssigneeFirst": "Set assignee before choosing KRA"
   },
   "status": {}
 }
