@@ -58,7 +58,7 @@
 </script>
 
 {#if kind === 'list'}
-  <FixedColumn key="kra-editor">
+  <FixedColumn key="kra-editor" addClass="m-2">
     <ObjectBox
       _class={performance.class.KRA}
       searchField={'title'}
