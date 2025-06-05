@@ -1,5 +1,5 @@
 import performance, { ReviewSessionStatus, type ReviewSession } from '@hcengineering/performance'
-import { getCurrentAccount, type Timestamp, type Ref, type TxOperations, type Space } from '@hcengineering/core'
+import { type Timestamp, type Ref, type TxOperations, type Space } from '@hcengineering/core'
 import type { ProjectType } from '@hcengineering/task'
 import {
   EastSideColor,
@@ -36,7 +36,7 @@ export async function createReviewSession (
     status: ReviewSessionStatus.Drafting,
     private: false,
     archived: false,
-    members: [getCurrentAccount()._id],
+    members: [],
     type
   })
 
