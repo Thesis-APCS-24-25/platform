@@ -16,8 +16,7 @@
 import core, { AccountRole, Ref, RolesAssignment, Tx, TxCreateDoc, TxMixin, TxUpdateDoc } from '@hcengineering/core'
 import { TriggerControl } from '@hcengineering/server-core'
 import kraTeam, { Team, TeamType } from '@hcengineering/kra-team'
-import contact, { Person, PersonAccount } from '@hcengineering/contact'
-import { create } from 'domain'
+import contact, { Employee, Person, PersonAccount } from '@hcengineering/contact'
 
 /**
  * Get the roles assignment for a team, if `typeType` is not provided, the default team type will be used.
@@ -121,21 +120,24 @@ export async function OnTeamRolesAssignmentUpdate (txes: Tx[], control: TriggerC
 
 export async function OnPersonCreate (txes: Tx[], control: TriggerControl): Promise<Tx[]> {
   const result: Tx[] = []
-
   for (const tx of txes) {
-    if (control.hierarchy.isDerived(tx._class, core.class.TxCreateDoc)) {
-      const createTx = tx as TxCreateDoc<Person>
-      const mixinTx = control.txFactory.createTxMixin(
-        createTx.objectId,
-        contact.class.Person,
-        contact.space.Contacts,
-        kraTeam.mixin.Member,
-        {}
-      )
-      result.push(mixinTx)
-    }
-  }
+    const ctx = tx as TxMixin<Person, Employee>
 
+    const person = (await control.findAll(control.ctx, contact.class.Person, { _id: ctx.objectId }))[0]
+    if (person === undefined) {
+      continue
+    }
+
+    const employee = control.hierarchy.as(person, ctx.mixin)
+    if (control.hierarchy.hasMixin(person, kraTeam.mixin.Member) || !employee.active) {
+      continue
+    }
+
+    result.push(
+      control.txFactory.createTxMixin(ctx.objectId, ctx.objectClass, ctx.objectSpace, kraTeam.mixin.Member, {})
+    )
+  }
+  console.log(result)
   return result
 }
 

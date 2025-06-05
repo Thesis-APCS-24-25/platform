@@ -481,8 +481,8 @@ export default function buildModel (enabled: string[] = ['*'], disabled: string[
     [serverDocumentsModel, serverDocumentsId],
     [serverAiBotModel, serverAiBotId],
     [serverFulltextModel, serverFulltextId],
-    [serverPerformanceModel, serverPerformanceId],
     [serverKraTeamModel, serverKraTeamId],
+    [serverPerformanceModel, serverPerformanceId],
     [serverKraModel, serverKraId]
   ]
 

@@ -18,7 +18,7 @@ import { type Builder } from '@hcengineering/model'
 import kraTeam from '@hcengineering/kra-team'
 import serverCore from '@hcengineering/server-core'
 import serverKraTeam from '@hcengineering/server-kra-team'
-import contract from '@hcengineering/contact'
+import contact from '@hcengineering/contact'
 
 export { serverKraTeamId } from '@hcengineering/server-kra-team'
 
@@ -47,8 +47,8 @@ export function createModel (builder: Builder): void {
   builder.createDoc(serverCore.class.Trigger, core.space.Model, {
     trigger: serverKraTeam.trigger.OnPersonCreate,
     txMatch: {
-      _class: core.class.TxCreateDoc,
-      objectClass: contract.class.Person
+      _class: core.class.TxMixin,
+      mixin: contact.mixin.Employee
     }
   })
 }
