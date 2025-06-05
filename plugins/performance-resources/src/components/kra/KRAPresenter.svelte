@@ -51,7 +51,7 @@
             class:header={!noSelect && kind === 'list-header'}
             class:select-text={!noSelect}
             class:uppercase={kind === 'list-header'}
-            class:font-bold-12={kind === 'list-header'}
+            class:font-medium-12={kind === 'list-header'}
             title={value?.title}
           >
             {#if kind === 'list-header'}
@@ -64,27 +64,31 @@
       </DocNavLink>
     </div>
   {:else if type === 'text'}
-    {#if shouldShowAvatar}
-      <div
-        class="icon"
-        class:header-icon={!noSelect && kind === 'list-header'}
-        use:tooltip={{ label: performance.string.KRA }}
-        aria-label="KRA Icon"
+    <div class="kraPresenterRoot">
+      {#if shouldShowAvatar}
+        <div
+          class="icon"
+          class:header-icon={!noSelect && kind === 'list-header'}
+          use:tooltip={{ label: performance.string.KRA }}
+          aria-label="KRA Icon"
+        >
+          <Icon icon={icon ?? performance.icon.KRA} size="medium" />
+        </div>
+      {/if}
+      <span
+        class:header={!noSelect && kind === 'list-header'}
+        class:uppercase={kind === 'list-header'}
+        class:font-medium-12={kind === 'list-header'}
+        class:select-text={!noSelect}
+        use:tooltip={{ label: getEmbeddedLabel(value.title) }}
+        aria-label={value.title}
       >
-        <Icon icon={icon ?? performance.icon.KRA} size="medium" />
-      </div>
-    {/if}
-    <span
-      class:header={!noSelect && kind === 'list-header'}
-      class:uppercase={kind === 'list-header'}
-      class:font-medium-12={kind === 'list-header'}
-      class="overflow-label"
-      class:select-text={!noSelect}
-      use:tooltip={{ label: getEmbeddedLabel(value.title) }}
-      aria-label={value.title}
-    >
-      [{value.identifier}] {value.title}
-    </span>
+        <span class="font-bold-12">
+          {value.identifier}
+        </span>
+        {value.title}
+      </span>
+    </div>
   {/if}
 {/if}
 
@@ -95,6 +99,7 @@
   .kraPresenterRoot {
     display: flex;
     align-items: center;
+    gap: 0.5rem;
     flex-shrink: 0;
     text-wrap: nowrap;
     text-overflow: ellipsis;
@@ -112,7 +117,10 @@
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    max-width: 15rem;
+
+    &:not(.header) {
+      max-width: 15rem;
+    }
   }
 
   .icon {
