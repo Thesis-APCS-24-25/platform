@@ -78,9 +78,9 @@ function defineReviewSession (builder: Builder): void {
     attachTo: performance.class.ReviewSession,
     descriptor: view.viewlet.Table,
     configOptions: {
-      hiddenKeys: ['modifiedOn', 'modifiedBy', 'createdOn', 'createdBy', 'type']
+      hiddenKeys: ['modifiedOn', 'modifiedBy', 'createdOn', 'createdBy', 'type', 'private', 'owners', 'autojoin']
     },
-    config: ['name', 'description', 'reviewSessionStart', 'reviewSessionEnd', 'members', 'status'],
+    config: ['name', 'reviewSessionStart', 'reviewSessionEnd', 'members', 'status'],
     viewOptions: {
       groupBy: [],
       orderBy: [],

@@ -118,6 +118,11 @@ export const navigatorModel: NavigatorModel = {
       spaceClass: performance.class.ReviewSession,
       specials: [
         {
+          id: 'dashboard',
+          label: performance.string.PerformanceDashboard,
+          component: performance.component.PerformanceDashboard
+        },
+        {
           id: 'kras',
           label: performance.string.KRA,
           component: performance.component.AllKRAs

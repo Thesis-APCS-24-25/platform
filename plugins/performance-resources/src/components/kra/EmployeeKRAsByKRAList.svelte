@@ -45,7 +45,7 @@
 <GroupedList categories={kras.map(k => k._id)} items={employeeKras} key="kra" headerBGColor={listHeaderColor}>
   <svelte:fragment slot="header" let:category let:count>
     <div class="flex-row-center flex-grow" style:color={'inherit'}>
-      <KraRefPresenter value={category} kind="list-header" type="text" shouldShowAvatar />
+      <KraRefPresenter value={category} kind="list-header" type="link" shouldShowAvatar />
       <span class="ml-2 font-medium-12">{count}</span>
     </div>
   </svelte:fragment>
@@ -76,7 +76,7 @@
       <FixedColumn key="person" justify="left">
         <PersonAccountRefPresenter value={item.employee} />
       </FixedColumn>
-      <FixedColumn key="kra" justify="left">
+      <FixedColumn key="kra" justify="right">
         <KraWeightEditorWithPopup
           value={item}
           kind="list"

@@ -86,15 +86,6 @@
       focusIndex={1}
     />
   </div>
-  <div class="flex-row-center m-3 clear-mins">
-    <EditBox
-      label={performance.string.ReviewSessionDescription}
-      placeholder={performance.string.ReviewSessionDescriptionPlaceholder}
-      bind:value={description}
-      kind={'large-style'}
-      focusIndex={2}
-    />
-  </div>
   <svelte:fragment slot="pool">
     <div class="flex-row-center clear-mins">
       <DatePresenter
