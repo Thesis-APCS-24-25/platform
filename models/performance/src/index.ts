@@ -21,7 +21,8 @@ import {
   TMeasureProgress,
   TPerformanceReport,
   TTypeReviewSessionStatus,
-  TProgressPresenter
+  TProgressPresenter,
+  TPerformanceReview
 } from './types'
 import { defineViewlets } from './viewlets'
 
@@ -241,7 +242,7 @@ function defineKRA (builder: Builder): void {
 }
 
 function defineReport (builder: Builder): void {
-  builder.createModel(TPerformanceReport)
+  builder.createModel(TPerformanceReport, TPerformanceReview)
 
   builder.mixin(performance.class.PerformanceReport, core.class.Class, view.mixin.ObjectPresenter, {
     presenter: performance.component.ReportPresenter
@@ -270,6 +271,10 @@ function defineReport (builder: Builder): void {
 
   builder.mixin(performance.class.PerformanceReport, core.class.Class, view.mixin.IgnoreActions, {
     actions: [view.action.Delete, tracker.action.EditRelatedTargets, tracker.action.NewRelatedIssue]
+  })
+
+  builder.mixin(performance.class.PerformanceReview, core.class.Class, view.mixin.ObjectPresenter, {
+    presenter: performance.component.ReviewPresenter
   })
 }
 
@@ -369,11 +374,7 @@ function defineApplication (builder: Builder): void {
 function defineActivity (builder: Builder): void {
   builder.mixin(performance.class.ReviewSession, core.class.Class, activity.mixin.ActivityDoc, {})
   builder.mixin(performance.class.KRA, core.class.Class, activity.mixin.ActivityDoc, {})
-
-  builder.createDoc(activity.class.ActivityExtension, core.space.Model, {
-    ofClass: performance.class.PerformanceReport,
-    components: { input: { component: chunter.component.ChatMessageInput } }
-  })
+  builder.mixin(performance.class.PerformanceReport, core.class.Class, activity.mixin.ActivityDoc, {})
 
   builder.createDoc(activity.class.ActivityExtension, core.space.Model, {
     ofClass: performance.class.KRA,
@@ -390,7 +391,7 @@ function defineActivity (builder: Builder): void {
   builder.createDoc(activity.class.DocUpdateMessageViewlet, core.space.Model, {
     objectClass: performance.class.KRA,
     action: 'update',
-    icon: tracker.icon.Issue
+    icon: performance.icon.KRA
   })
 }
 
