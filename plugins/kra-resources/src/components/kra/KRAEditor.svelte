@@ -47,6 +47,7 @@
 {#if kind === 'list'}
   <FixedColumn key="kra-editor">
     <ObjectBox
+      shouldShowAvatar={true}
       _class={performance.class.KRA}
       searchField={'title'}
       label={performance.string.NoKRA}

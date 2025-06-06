@@ -29,7 +29,7 @@
   export let onUpdate: (value: number) => void = () => {}
   export let doCheckPermission: boolean = false
 
-  async function updateWeight (newWeight: number): Promise<void> {
+  async function updateWeight(newWeight: number): Promise<void> {
     if (Number.isFinite(newWeight) && validateFunction(newWeight)) {
       onUpdate(newWeight)
       if ('_id' in value && doUpdate) {
@@ -42,7 +42,7 @@
 
   let shown: boolean = false
 
-  async function onchange (ev: Event): Promise<void> {
+  async function onchange(ev: Event): Promise<void> {
     const newWeight = (ev.target as HTMLInputElement).valueAsNumber
     await updateWeight(newWeight)
   }
@@ -54,7 +54,7 @@
     })
   }
   $: readonly = readonly || (doCheckPermission && !canAssign && value.employee !== getCurrentAccount()._id)
-  let otherWeights: { value: number, label: string }[] = []
+  let otherWeights: EmployeeKRA[] = []
   const weightQ = createQuery()
   $: weightQ.query(
     performance.class.EmployeeKRA,
@@ -65,13 +65,7 @@
     },
     (res) => {
       if (res !== undefined) {
-        console.log('other weights in space ', space, res)
-        otherWeights = res
-          .filter((item) => item.space === space)
-          .map((item) => ({
-            value: item.weight,
-            label: item.$lookup?.kra?.title ?? ''
-          }))
+        otherWeights = res.filter((item) => item.space === space)
       }
     },
     {
