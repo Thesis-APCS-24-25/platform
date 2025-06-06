@@ -36,11 +36,6 @@ export class TProgressPresenter extends TClass implements ProgressPresenter {
 
 @Model(performance.class.ReviewSession, task.class.Project)
 export class TReviewSession extends TProject implements ReviewSession {
-  // @Prop(TypeRef(core.class.Status), performance.string.ReviewSessionStatus)
-  //   reviewSessionStatus!: Ref<ReviewSessionStatus>
-  @Prop(TypeBoolean(), performance.string.Active)
-    active!: boolean
-
   @Prop(TypeDate(), performance.string.ReviewSessionStart)
     reviewSessionStart!: Timestamp
 

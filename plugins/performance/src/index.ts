@@ -30,7 +30,6 @@ export enum ReviewSessionStatus {
 export interface KRAStatus extends Status {}
 
 export interface ReviewSession extends Project {
-  active: boolean
   reviewSessionStart: Timestamp
   reviewSessionEnd: Timestamp
   status?: ReviewSessionStatus
