@@ -74,7 +74,7 @@
 
 <TreeNode
   parent
-  label={!empty ? model.label : performance.string.NoActiveReviewSession}
+  label={!empty ? model.label : performance.string.NoDraftingReviewSession}
   highlighted={visible}
   isFold={!empty}
   forciblyСollapsed={false}
