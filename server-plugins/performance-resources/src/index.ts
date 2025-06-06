@@ -80,6 +80,13 @@ export async function OnCreateReport (txes: Tx[], control: TriggerControl): Prom
       { _id: createTx.attributes.reviewSession },
       { limit: 1 }
     ))[0]
+    const kras = (await control.findAll(
+      control.ctx,
+      performance.class.KRA,
+      {
+        space: reviewSession._id
+      }
+    )).map(kra => kra._id)
     const tasks = (await control.findAll(control.ctx, kra.class.Issue,
       {
         assignee: assignee.person,
@@ -87,7 +94,8 @@ export async function OnCreateReport (txes: Tx[], control: TriggerControl): Prom
           $gte: reviewSession.reviewSessionStart,
           // Add an extra day to include tasks at the end of review session date
           $lt: reviewSession.reviewSessionEnd + 86400
-        }
+        },
+        kra: { $in: kras }
       },
       { projection: { _id: 1 } }
     )) as WithKRA[]
