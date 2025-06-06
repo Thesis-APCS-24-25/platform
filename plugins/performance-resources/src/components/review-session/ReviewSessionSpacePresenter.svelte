@@ -13,7 +13,7 @@
   export let model: SpacesNavModel
   export let currentSpace: Ref<Space> | undefined
   export let currentSpecial: string | undefined
-  export let getActions: (space: Project) => Promise<Action[]> = async () => []
+  export let getActions: (space: ReviewSession) => Promise<Action[]> = async () => []
   export let deselect: boolean = false
   export let forciblyСollapsed: boolean = true
 
@@ -53,6 +53,7 @@
     {visible}
     actions={() => getActions(space)}
     {forciblyСollapsed}
+    shouldTooltip
   >
     {#each specials as special}
       <NavLink space={space._id} special={special.id}>

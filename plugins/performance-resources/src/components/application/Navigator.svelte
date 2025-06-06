@@ -7,6 +7,9 @@
   import SpaceNav from './SpaceNav.svelte'
   import { navigatorModel } from '../../navigation'
   import ActiveReviewSessionNav from './ActiveReviewSessionNav.svelte'
+  import DraftingReviewSessionNav from './DraftingReviewSessionNav.svelte'
+  import { Scroller } from '@hcengineering/ui'
+  import { NavFooter } from '@hcengineering/workbench-resources'
 
   export let currentSpace: Ref<Space> | undefined
   export let currentSpecial: string | undefined
@@ -20,7 +23,7 @@
   $: reviewSessionQ.query(
     performance.class.ReviewSession,
     {
-      space: $currentTeam ?? '' as Ref<Space>,
+      space: $currentTeam ?? ('' as Ref<Space>),
       archived: false
     },
     (res) => {
@@ -47,35 +50,30 @@
   const concludedReviewSessionModel = models[2]
 </script>
 
-<ActiveReviewSessionNav
-  {reviewSessions}
-  model={activeReviewSessionModel}
-  {currentSpace}
-  {currentSpecial}
-  {deselect}
-  {separate}
-/>
-<SpaceNav
-  reviewSessions={filter(reviewSessions, draftingReviewSessionModel.id)}
-  model={draftingReviewSessionModel}
-  {currentSpace}
-  {currentSpecial}
-  {deselect}
-  {separate}
-/>
-<SpaceNav
-  reviewSessions={filter(reviewSessions, concludedReviewSessionModel.id)}
-  model={concludedReviewSessionModel}
-  {currentSpace}
-  {currentSpecial}
-  {deselect}
-  {separate}
-/>
-
-<style>
-  .empty-label {
-    text-overflow: ellipsis;
-    border-radius: 0.25rem;
-    border: 1px dashed black;
-  }
-</style>
+<Scroller shrink>
+  <ActiveReviewSessionNav
+    {reviewSessions}
+    model={activeReviewSessionModel}
+    {currentSpace}
+    {currentSpecial}
+    {deselect}
+    {separate}
+  />
+  <DraftingReviewSessionNav
+    reviewSessions={filter(reviewSessions, draftingReviewSessionModel.id)}
+    model={draftingReviewSessionModel}
+    {currentSpace}
+    {currentSpecial}
+    {deselect}
+    {separate}
+  />
+  <SpaceNav
+    reviewSessions={filter(reviewSessions, concludedReviewSessionModel.id)}
+    model={concludedReviewSessionModel}
+    {currentSpace}
+    {currentSpecial}
+    {deselect}
+    {separate}
+  />
+</Scroller>
+<NavFooter />

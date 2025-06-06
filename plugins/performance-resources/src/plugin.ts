@@ -21,6 +21,9 @@ import { type GetAllValuesFunc, type SortFunc } from '@hcengineering/view'
 
 export default mergeIds(performanceId, performance, {
   string: {
+    WeightWarningPopupTitle: '' as IntlString,
+    StartReviewSession: '' as IntlString,
+    StartReviewSessionConfirm: '' as IntlString,
     NotInAnyTeam: '' as IntlString,
     DraftingReviewSessions: '' as IntlString,
     ConcludedReviewSessions: '' as IntlString,
