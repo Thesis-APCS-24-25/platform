@@ -76,7 +76,7 @@
       <FixedColumn key="person" justify="left">
         <PersonAccountRefPresenter value={item.employee} />
       </FixedColumn>
-      <FixedColumn key="kra" justify="left">
+      <FixedColumn key="kra" justify="right">
         <KraWeightEditorWithPopup
           value={item}
           kind="list"

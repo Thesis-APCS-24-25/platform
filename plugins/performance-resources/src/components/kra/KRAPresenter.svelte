@@ -16,6 +16,7 @@
   export let colorInherit = false
   export let noSelect = false
   export let inline = false
+  export let shrink = 0
   export let kind: 'list-header' | 'list' = 'list' // Default value added
   export let type: ObjectPresenterType = 'link' // Default value added
   export let icon: Asset | AnySvelteComponent | undefined = undefined
@@ -24,6 +25,8 @@
   const colorDef = value?.color ? getPlatformColorDef(value.color, $themeStore.dark) : undefined
   $: bgColor = colorDef?.background || 'transparent' // Fallback added
   $: color = colorDef?.color || 'inherit' // Fallback added
+  $: shouldShowTitle = kind === 'list-header' || shrink === 0
+  $: shouldShowIdentifier = kind === 'list-header' || shrink > 0
 </script>
 
 {#if value}
@@ -38,7 +41,7 @@
         {noUnderline}
         {colorInherit}
         component={performance.component.EditKRA}
-        shrink={0}
+        shrink={2}
       >
         <div class="kraPresenterRoot" class:list={kind === 'list'} class:cursor-pointer={!disabled}>
           {#if shouldShowAvatar}
@@ -54,11 +57,12 @@
             class:font-medium-12={kind === 'list-header'}
             title={value?.title}
           >
-            {#if kind === 'list-header'}
-              [{value.identifier}]
+            {#if shouldShowIdentifier}
+              {value.identifier}
             {/if}
-            {value.title}
-            <slot name="details" />
+            {#if shouldShowTitle}
+              {value.title}
+            {/if}
           </div>
         </div>
       </DocNavLink>
@@ -83,10 +87,15 @@
         use:tooltip={{ label: getEmbeddedLabel(value.title) }}
         aria-label={value.title}
       >
-        <span class="font-bold-12">
-          {value.identifier}
-        </span>
-        {value.title}
+
+        {#if shouldShowIdentifier}
+          <span class="font-bold-12">
+            {value.identifier}
+          </span>
+        {/if}
+        {#if shouldShowTitle}
+          {value.title}
+        {/if}
       </span>
     </div>
   {/if}
@@ -99,7 +108,7 @@
   .kraPresenterRoot {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: 0.25rem;
     flex-shrink: 0;
     text-wrap: nowrap;
     text-overflow: ellipsis;
@@ -117,10 +126,6 @@
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-
-    &:not(.header) {
-      max-width: 15rem;
-    }
   }
 
   .icon {
