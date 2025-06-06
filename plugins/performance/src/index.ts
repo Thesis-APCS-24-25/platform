@@ -68,6 +68,7 @@ export interface PerformanceReport extends Doc {
 
 export interface PerformanceReview extends Doc {
   report: Ref<PerformanceReport>
+  content: string
   score: number
 }
 
@@ -105,7 +106,8 @@ export default plugin(performanceId, {
     ReviewSessionStatus: '' as IntlString,
     KRACompletionLevel: '' as IntlString,
     ScorePreview: '' as IntlString,
-    PerformanceReport: '' as IntlString
+    PerformanceReport: '' as IntlString,
+    ReviewContent: '' as IntlString
   },
   kraStatus: {
     Drafting: '' as Ref<KRAStatus>,

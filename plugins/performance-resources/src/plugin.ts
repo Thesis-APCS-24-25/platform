@@ -79,7 +79,10 @@ export default mergeIds(performanceId, performance, {
     RemovePerformanceReview: '' as IntlString,
     EditPerformanceReview: '' as IntlString,
     NoReviews: '' as IntlString,
-    InputScore: '' as IntlString
+    InputScore: '' as IntlString,
+    ReviewContentPlaceholder: '' as IntlString,
+    SubmitReview: '' as IntlString,
+    ReviewerScore: '' as IntlString
   },
   category: {
     ReviewSessionType: '' as IntlString

@@ -1,11 +1,11 @@
 <script lang="ts">
-  import { IconAdd, Label, showPopup, ButtonIcon, IconDelete, Component, eventToHTMLElement } from '@hcengineering/ui'
+  import { IconAdd, Label, showPopup, ButtonIcon, IconDelete, Component, Icon } from '@hcengineering/ui'
   import { createQuery, getClient } from '@hcengineering/presentation'
   import performance from '../../plugin'
   import { getCurrentAccount, Ref, WithLookup } from '@hcengineering/core'
   import { PerformanceReport, PerformanceReview } from '@hcengineering/performance'
   import view from '@hcengineering/view'
-  import { EditBoxPopup } from '@hcengineering/view-resources'
+  import AddReviewPopup from './AddReviewPopup.svelte'
 
   const client = getClient()
 
@@ -29,14 +29,6 @@
 
   $: yourReview = reviews?.find(v => v.createdBy === getCurrentAccount()._id)
 
-  async function onNewPerformanceReview (score: number): Promise<void> {
-    await client.createDoc(
-      performance.class.PerformanceReview,
-      object.space,
-      { report: object._id, score }
-    )
-  }
-
   async function onRemovePerformanceReview (review: Ref<PerformanceReview>): Promise<void> {
     await client.removeDoc(
       performance.class.PerformanceReview,
@@ -45,13 +37,8 @@
     )
   }
 
-  function handleCreatePerformanceReview (ev: MouseEvent): void {
-    ev.stopPropagation()
-    showPopup(EditBoxPopup, { placeholder: performance.string.InputScore, format: 'number' }, eventToHTMLElement(ev), (res) => {
-      if (Number.isFinite(res)) {
-        void onNewPerformanceReview(res as number)
-      }
-    })
+  function handleCreatePerformanceReview (): void {
+    showPopup(AddReviewPopup, { type: 'add', report: object._id, space: object.space }, 'top')
   }
 
   function handleRemovePerformanceReview (): void {
@@ -61,11 +48,23 @@
   }
 
   function handleEditPerformanceReview (): void {
+    showPopup(AddReviewPopup, {
+      type: 'edit',
+      report: object._id,
+      space: object.space,
+      _id: yourReview?._id,
+      content: yourReview?.content,
+      score: yourReview?.score
+    }, 'top')
   }
 </script>
 
 <div class="review-section">
   <div class="header" class:collapsed={isCollapsed}>
+    <Icon
+      icon={performance.icon.PerformanceReview}
+      size={'medium'}
+    />
     <Label label={performance.string.Reviews} />
     {#if yourReview !== undefined}
       <div>

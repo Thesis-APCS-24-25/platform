@@ -94,6 +94,9 @@ export class TPerformanceReview extends TDoc implements PerformanceReview {
   @Prop(TypeRef(performance.class.PerformanceReport), performance.string.PerformanceReport)
     report!: Ref<PerformanceReport>
 
+  @Prop(TypeString(), performance.string.ReviewContent)
+    content!: string
+
   @Prop(TypeNumber(), performance.string.ReviewScore)
     score!: number
 }

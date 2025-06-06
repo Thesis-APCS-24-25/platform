@@ -3,6 +3,7 @@
   import { personAccountByIdStore, personByIdStore, UserInfo } from '@hcengineering/contact-resources'
   import { Ref, WithLookup } from '@hcengineering/core'
   import { PerformanceReview } from '@hcengineering/performance'
+  import { MarkupPresenter } from '@hcengineering/view-resources'
 
   export let value: WithLookup<PerformanceReview>
 
@@ -15,9 +16,9 @@
 </script>
 
 {#if value}
-  <div class="flex-row-center p-4 gap-4">
-    <div class="flex-col header">
-      <div class="fs-title text-xl">
+  <div class="flex-row-center p-4 gap-4 justify-between">
+    <div class="content flex-row-center items-center">
+      <div class="fs-title right-divider">
         {#if person}
           <UserInfo
             value={person}
@@ -25,10 +26,14 @@
           />
         {/if}
       </div>
-      <div class="description"></div>
+      <div class="review-box flex-col">
+        <MarkupPresenter
+          value={value.content}
+        />
+      </div>
     </div>
 
-    <div class="review-box flex-col items-end">
+    <div class="review-box flex-col items-stretch">
       <div class="value">
         <span class="value-value">{value.score}</span>
         <span class="value-target">/100</span>
@@ -44,16 +49,16 @@
     font-weight: 500;
   }
 
-  .header {
+  .right-divider {
+    margin-right: 1rem;
+  }
+
+  .content {
     flex-grow: 3;
   }
 
   .value-value {
     color: var(--theme-primary-color, #4c6ef5);
-  }
-
-  .description {
-    text-wrap: balance;
   }
 
   .review-box {
