@@ -104,11 +104,6 @@ export const navigatorModel: NavigatorModel = {
           id: 'kras',
           label: performance.string.KRA,
           component: performance.component.AllKRAs
-        },
-        {
-          id: 'my-kras',
-          label: performance.string.MyKRAs,
-          component: performance.component.MyKRAs
         }
       ]
     },

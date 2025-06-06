@@ -1,15 +1,13 @@
 <script lang="ts">
-  import { IntlString } from '@hcengineering/platform'
-  import { Button, ButtonSize, EditBox, eventToHTMLElement, Label, showPopup } from '@hcengineering/ui'
+  import { Button, ButtonSize, EditBox, eventToHTMLElement, showPopup } from '@hcengineering/ui'
   import { NumberPresenter } from '@hcengineering/view-resources'
   import KraWeightEditBoxPopup from './KRAWeightEditBoxPopup.svelte'
   import { PersonAccount } from '@hcengineering/contact'
-  import { checkPermission, Data, getCurrentAccount, Ref, TypedSpace, WithLookup } from '@hcengineering/core'
+  import { Data, getCurrentAccount, Ref, WithLookup } from '@hcengineering/core'
   import { createQuery, getClient } from '@hcengineering/presentation'
   import { EmployeeKRA, ReviewSession } from '@hcengineering/performance'
   import KraWeightPresenter from './KRAWeightPresenter.svelte'
   import performance from '../../plugin'
-  import kraTeam from '@hcengineering/kra-team'
   import { canAssignKRAs } from '../../utils/team'
 
   export let value: EmployeeKRA | Data<EmployeeKRA> | WithLookup<EmployeeKRA>
@@ -29,7 +27,7 @@
   export let onUpdate: (value: number) => void = () => {}
   export let doCheckPermission: boolean = false
 
-  async function updateWeight(newWeight: number): Promise<void> {
+  async function updateWeight (newWeight: number): Promise<void> {
     if (Number.isFinite(newWeight) && validateFunction(newWeight)) {
       onUpdate(newWeight)
       if ('_id' in value && doUpdate) {
@@ -42,7 +40,7 @@
 
   let shown: boolean = false
 
-  async function onchange(ev: Event): Promise<void> {
+  async function onchange (ev: Event): Promise<void> {
     const newWeight = (ev.target as HTMLInputElement).valueAsNumber
     await updateWeight(newWeight)
   }
@@ -60,13 +58,13 @@
     performance.class.EmployeeKRA,
     {
       employee,
-      space,
-      _id: { $ne: _id }
+      space: (space ?? '') as Ref<ReviewSession>,
+      _id: {
+        $ne: _id
+      }
     },
     (res) => {
-      if (res !== undefined) {
-        otherWeights = res.filter((item) => item.space === space)
-      }
+      otherWeights = res
     },
     {
       lookup: {
