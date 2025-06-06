@@ -2,7 +2,7 @@
   import { onMount, afterUpdate, createEventDispatcher, onDestroy } from 'svelte'
   import { Chart, ChartOptions, registerables } from 'chart.js'
   import { EmployeeKRA, ReviewSession, WithKRA, type KRA } from '@hcengineering/performance'
-  import contact, { Person, PersonAccount } from '@hcengineering/contact'
+  import contact, { getName, Person, PersonAccount } from '@hcengineering/contact'
   import { getClient } from '@hcengineering/presentation'
   import performance from '@hcengineering/performance'
   import { Ref } from '@hcengineering/core'
@@ -167,7 +167,7 @@
     if (employeeDetails === undefined) {
       return null
     }
-    const employeeNames = employees.map((e) => (employeeDetails as Record<Ref<Person>, Person>)[e.person].name ?? '')
+    const employeeNames = employees.map((e) => getName(client.getHierarchy(), (employeeDetails as Record<Ref<Person>, Person>)[e.person]) ?? '')
 
     // Create a dataset for each KRA
     const datasets = kras.map((kra, index) => {

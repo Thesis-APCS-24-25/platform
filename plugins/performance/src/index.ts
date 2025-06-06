@@ -30,7 +30,6 @@ export enum ReviewSessionStatus {
 export interface KRAStatus extends Status {}
 
 export interface ReviewSession extends Project {
-  active: boolean
   reviewSessionStart: Timestamp
   reviewSessionEnd: Timestamp
   status?: ReviewSessionStatus
@@ -123,6 +122,7 @@ export default plugin(performanceId, {
     NoKRARef: '' as Ref<KRA>
   },
   icon: {
+    StartReviewSession: '' as Asset,
     Active: '' as Asset,
     Weight: '' as Asset,
     AssignKRA: '' as Asset,
