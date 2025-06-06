@@ -1,6 +1,5 @@
 import performance, { ReviewSessionStatus, type ReviewSession } from '@hcengineering/performance'
 import {
-  getCurrentAccount,
   type Timestamp,
   type Ref,
   type TxOperations,
@@ -33,10 +32,8 @@ export async function createReviewSession (
   reviewSessionEnd: Timestamp,
   team: Ref<Space>,
   type: Ref<ProjectType>,
-  active: boolean = false
 ): Promise<Ref<ReviewSession>> {
   const reviewSessionRef = await client.createDoc(performance.class.ReviewSession, team, {
-    active,
     reviewSessionStart,
     reviewSessionEnd,
     name,
@@ -44,7 +41,7 @@ export async function createReviewSession (
     status: ReviewSessionStatus.Drafting,
     private: false,
     archived: false,
-    members: [getCurrentAccount()._id],
+    members: [],
     type
   })
 
@@ -89,7 +86,6 @@ export async function deactivateReviewSession (team: Ref<Space>, reviewSession: 
   const client = getClient()
 
   await client.updateDoc(performance.class.ReviewSession, team, reviewSession, {
-    active: false
   })
 }
 
@@ -97,7 +93,7 @@ export async function endReviewSession (team: Ref<Space>, reviewSession: Ref<Rev
   const client = getClient()
 
   await client.updateDoc(performance.class.ReviewSession, team, reviewSession, {
-    active: false,
+    status: ReviewSessionStatus.Concluded,
     archived: true
   })
 }

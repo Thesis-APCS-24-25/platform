@@ -48,4 +48,12 @@ export function createModel (builder: Builder): void {
     },
     isAsync: true
   })
+
+  builder.createDoc(serverCore.class.Trigger, core.space.Model, {
+    trigger: serverPerformance.trigger.OnCreateReviewSession,
+    txMatch: {
+      _class: core.class.TxCreateDoc,
+      objectClass: performance.class.ReviewSession
+    }
+  })
 }

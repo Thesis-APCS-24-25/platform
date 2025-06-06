@@ -23,6 +23,7 @@ export class TTeamTypeData extends TTeam implements RolesAssignment {
 export class TTeamType extends TSpaceType implements TeamType { }
 
 @Mixin(kraTeam.mixin.Member, contact.class.Person)
+@UX(kraTeam.string.Member)
 export class TMember extends TPerson implements Member { }
 
 @Model(kraTeam.class.TeamTypeDescriptor, core.class.SpaceTypeDescriptor)

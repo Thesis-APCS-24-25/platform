@@ -31,6 +31,8 @@
     "Manager": "Manager",
     "Member": "Member",
     "AddMember": "Add member",
-    "CreateKraDescription": "Create KRA"
+    "CreateKraDescription": "Create KRA",
+    "Add": "Add Member",
+    "ChooseMember": "Choose Member"
   }
 }

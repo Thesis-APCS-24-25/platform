@@ -59,6 +59,8 @@
     "StartReviewSession": "Start Review Session",
     "StartReviewSessionConfirm": "Are you sure you want to start this review session? Doing this will set all other review sessions to Drafting.",
     "WeightWarningPopupTitle": "Weight assigned to the following members is not 100%: ",
-    "KRACompletionLevel": "% KRA Completed"
+    "KRACompletionLevel": "% KRA Completed",
+    "ReviewSessionStartDetail": "Start date of the Review Session",
+    "ReviewSessionEndDetail": "End date of the Review Session"
   }
 }

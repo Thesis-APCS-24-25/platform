@@ -11,6 +11,7 @@
     Icon,
     IconChevronDown,
     IconWithEmoji,
+    Label,
     showPopup,
     getCurrentLocation,
     navigate
@@ -24,7 +25,6 @@
   const dispatch = createEventDispatcher()
 
   let team: Team | undefined = undefined
-  let teams: Team[] = []
   const teamQ = createQuery()
 
   const SELECT_TEAM_KEY = performance.string.SelectTeam
@@ -33,7 +33,6 @@
 
   function fetchTeams (): void {
     teamQ.query(kraTeam.class.Team, { members: me }, (res) => {
-      teams = res
       if (res.length > 0) {
         const storedTeamId = localStorage.getItem(SELECT_TEAM_KEY) as Ref<Team> | undefined
         team = res.find((t) => t._id === storedTeamId) ?? res[0]
@@ -98,7 +97,13 @@
 >
   <svelte:fragment slot="content">
     <span class="uppercase name">
-      {team?.name ?? 'No Team Selected'}
+      {#if team !== undefined}
+        {team?.name}
+      {:else}
+        <Label
+          label={performance.string.NoTeam}
+        />
+      {/if}
     </span>
   </svelte:fragment>
   <svelte:fragment slot="iconRight">

@@ -16,7 +16,7 @@
 import { Account, PullArray, Ref, Tx, TxCreateDoc, TxUpdateDoc } from '@hcengineering/core'
 import { TriggerControl } from '@hcengineering/server-core'
 import performance, { PerformanceReport, ReviewSession, ReviewSessionStatus, WithKRA } from '@hcengineering/performance'
-import { Team } from '@hcengineering/kra-team'
+import kraTeam, { Team } from '@hcengineering/kra-team'
 import kra from '@hcengineering/kra'
 import contact, { PersonAccount } from '@hcengineering/contact'
 
@@ -132,11 +132,37 @@ export async function OnReviewSessionConclusion (txes: Tx[], control: TriggerCon
   return result
 }
 
+export async function OnCreateReviewSession (txes: Tx[], control: TriggerControl): Promise<Tx[]> {
+  const result: Tx[] = []
+
+  for (const tx of txes) {
+    const createTx = tx as TxCreateDoc<ReviewSession>
+
+    const members = (await control.findAll(control.ctx, kraTeam.class.Team,
+      { _id: createTx.objectSpace as Ref<Team> },
+      { limit: 1 }
+    ))[0].members
+    const updateTx = control.txFactory.createTxUpdateDoc(
+      createTx.objectClass,
+      createTx.objectSpace,
+      createTx.objectId,
+      {
+        members
+      }
+    )
+
+    result.push(updateTx)
+  }
+
+  return result
+}
+
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export default async () => ({
   trigger: {
     OnTeamMemberUpdate,
     OnCreateReport,
-    OnReviewSessionConclusion
+    OnReviewSessionConclusion,
+    OnCreateReviewSession
   }
 })
