@@ -8,15 +8,24 @@
   import { navigatorModel } from '../../navigation'
   import ActiveReviewSessionNav from './ActiveReviewSessionNav.svelte'
   import DraftingReviewSessionNav from './DraftingReviewSessionNav.svelte'
-  import { Scroller } from '@hcengineering/ui'
+  import { Label, Scroller } from '@hcengineering/ui'
   import { NavFooter } from '@hcengineering/workbench-resources'
+  import { SpacesNavModel } from '@hcengineering/workbench'
+  import { onDestroy } from 'svelte'
 
   export let currentSpace: Ref<Space> | undefined
   export let currentSpecial: string | undefined
   export let deselect: boolean = false
   export let separate: boolean = false
 
-  const models = navigatorModel.spaces
+  let models: SpacesNavModel[] = []
+  const unsub = navigatorModel.subscribe((m) => {
+    models = m?.spaces ?? []
+  })
+
+  onDestroy(() => {
+    unsub()
+  })
 
   let reviewSessions: ReviewSession[] = []
   const reviewSessionQ = createQuery()
@@ -45,35 +54,38 @@
     return []
   }
 
-  const activeReviewSessionModel = models[0]
-  const draftingReviewSessionModel = models[1]
-  const concludedReviewSessionModel = models[2]
+  $: activeReviewSessionModel = models[0]
+  $: draftingReviewSessionModel = models[1]
+  $: concludedReviewSessionModel = models[2]
 </script>
 
 <Scroller shrink>
-  <ActiveReviewSessionNav
-    {reviewSessions}
-    model={activeReviewSessionModel}
-    {currentSpace}
-    {currentSpecial}
-    {deselect}
-    {separate}
-  />
-  <DraftingReviewSessionNav
-    reviewSessions={filter(reviewSessions, draftingReviewSessionModel.id)}
-    model={draftingReviewSessionModel}
-    {currentSpace}
-    {currentSpecial}
-    {deselect}
-    {separate}
-  />
-  <SpaceNav
-    reviewSessions={filter(reviewSessions, concludedReviewSessionModel.id)}
-    model={concludedReviewSessionModel}
-    {currentSpace}
-    {currentSpecial}
-    {deselect}
-    {separate}
-  />
+  {#if activeReviewSessionModel === undefined || draftingReviewSessionModel === undefined || concludedReviewSessionModel === undefined}
+    <Label label={performance.string.NoTeam} />
+  {:else}
+    <ActiveReviewSessionNav
+      {reviewSessions}
+      model={activeReviewSessionModel}
+      {currentSpace}
+      {currentSpecial}
+      {deselect}
+      {separate}
+    />
+    <DraftingReviewSessionNav
+      reviewSessions={filter(reviewSessions, draftingReviewSessionModel.id)}
+      {currentSpace}
+      {currentSpecial}
+      {deselect}
+      {separate}
+    />
+    <SpaceNav
+      reviewSessions={filter(reviewSessions, concludedReviewSessionModel.id)}
+      model={concludedReviewSessionModel}
+      {currentSpace}
+      {currentSpecial}
+      {deselect}
+      {separate}
+    />
+  {/if}
 </Scroller>
 <NavFooter />

@@ -9,6 +9,7 @@ const permissions = [
   kraTeam.permission.CreateKra,
   kraTeam.permission.ApproveKra,
   kraTeam.permission.CreateReviewSession,
+  kraTeam.permission.ViewDashboard,
   kraTeam.permission.AssignWeightForAll
 ]
 
