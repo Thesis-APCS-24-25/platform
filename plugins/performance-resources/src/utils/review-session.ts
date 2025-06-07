@@ -1,11 +1,5 @@
 import performance, { ReviewSessionStatus, type ReviewSession } from '@hcengineering/performance'
-import {
-  type Timestamp,
-  type Ref,
-  type TxOperations,
-  type Space,
-  type Client
-} from '@hcengineering/core'
+import { type Timestamp, type Ref, type TxOperations, type Space, type Client } from '@hcengineering/core'
 import type { ProjectType } from '@hcengineering/task'
 import {
   EastSideColor,
@@ -31,7 +25,7 @@ export async function createReviewSession (
   reviewSessionStart: Timestamp,
   reviewSessionEnd: Timestamp,
   team: Ref<Space>,
-  type: Ref<ProjectType>,
+  type: Ref<ProjectType>
 ): Promise<Ref<ReviewSession>> {
   const reviewSessionRef = await client.createDoc(performance.class.ReviewSession, team, {
     reviewSessionStart,
@@ -73,9 +67,9 @@ export async function activateReviewSession (team: Ref<Space>, reviewSession: Re
   const ops = client.apply()
   for (const session of sessions) {
     if (session._id !== reviewSession) {
-      await ops.update(session, { active: false })
+      await ops.update(session, { status: ReviewSessionStatus.Drafting })
     } else {
-      await ops.update(session, { active: true })
+      await ops.update(session, { status: ReviewSessionStatus.InProgress, archived: false })
     }
   }
 
@@ -85,8 +79,7 @@ export async function activateReviewSession (team: Ref<Space>, reviewSession: Re
 export async function deactivateReviewSession (team: Ref<Space>, reviewSession: Ref<ReviewSession>): Promise<void> {
   const client = getClient()
 
-  await client.updateDoc(performance.class.ReviewSession, team, reviewSession, {
-  })
+  await client.updateDoc(performance.class.ReviewSession, team, reviewSession, {})
 }
 
 export async function endReviewSession (team: Ref<Space>, reviewSession: Ref<ReviewSession>): Promise<void> {
@@ -164,7 +157,7 @@ export async function doKRAWeightCheck (
     acc.set(kra.employee, (acc.get(kra.employee) ?? 0) + kra.weight)
     return acc
   }, mapped)
-  return mapped.entries().reduce((acc, [employee, weight]) => {
+  return mapped.entries().toArray().reduce((acc, [employee, weight]) => {
     acc.set(employee, Math.abs(weight - 1) < 0.0001)
     return acc
   }, new Map<Ref<PersonAccount>, boolean>())

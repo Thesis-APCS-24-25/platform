@@ -13,6 +13,7 @@ export default [
       kraTeam.permission.CreateKra,
       kraTeam.permission.ApproveKra,
       kraTeam.permission.AssignWeightForAll,
+      kraTeam.permission.ViewDashboard,
       kraTeam.permission.CreateReviewSession
     ]
   }

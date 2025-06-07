@@ -79,7 +79,12 @@ function defineReviewSession (builder: Builder): void {
     configOptions: {
       hiddenKeys: ['modifiedOn', 'modifiedBy', 'createdOn', 'createdBy', 'type', 'private', 'owners', 'autojoin']
     },
-    config: ['name', 'reviewSessionStart', 'reviewSessionEnd', 'members', 'status'],
+    config: ['name', 'reviewSessionStart', 'reviewSessionEnd', 'members', {
+      key: 'status',
+      props: {
+        readonly: true
+      }
+    }],
     viewOptions: {
       groupBy: [],
       orderBy: [],

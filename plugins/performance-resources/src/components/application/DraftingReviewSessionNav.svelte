@@ -17,7 +17,7 @@
   export let separate: boolean = false
   export let reviewSessions: ReviewSession[] = []
 
-  const model = navigatorModel.spaces[1]
+  const model = $navigatorModel.spaces[1]
 
   $: filtered = reviewSessions.filter((rs) => rs.status === ReviewSessionStatus.Drafting)
 

@@ -7,6 +7,8 @@ import { type ViewActionAvailabilityFunction, type ViewAction } from '@hcenginee
 
 export default mergeIds(kraTeamId, kraTeam, {
   string: {
+    ViewDashboard: '' as IntlString,
+    ViewDashboardDescription: '' as IntlString,
     Roles: '' as IntlString,
     Teams: '' as IntlString,
     Description: '' as IntlString,
