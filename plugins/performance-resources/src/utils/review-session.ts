@@ -148,7 +148,7 @@ export async function doKRAWeightCheck (
   })
 
   const members = reviewSession.members ?? []
-  let mapped = members.reduce((acc, member) => {
+  let mapped: Map<Ref<PersonAccount>, number> = members.reduce((acc, member) => {
     acc.set(member as Ref<PersonAccount>, 0)
     return acc
   }, new Map<Ref<PersonAccount>, number>())
@@ -157,7 +157,11 @@ export async function doKRAWeightCheck (
     acc.set(kra.employee, (acc.get(kra.employee) ?? 0) + kra.weight)
     return acc
   }, mapped)
-  return mapped.entries().toArray().reduce((acc, [employee, weight]) => {
+  const data: Array<[Ref<PersonAccount>, number]> = []
+  mapped.forEach((weight, employee) => {
+    data.push([employee, weight])
+  })
+  return data.reduce((acc, [employee, weight]) => {
     acc.set(employee, Math.abs(weight - 1) < 0.0001)
     return acc
   }, new Map<Ref<PersonAccount>, boolean>())
