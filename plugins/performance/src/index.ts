@@ -62,6 +62,13 @@ export interface PerformanceReport extends Doc {
   reviewee: Ref<PersonAccount>
   reviewSession: Ref<ReviewSession>
   tasks?: Arr<Ref<WithKRA>>
+  scorePreview?: number
+}
+
+export interface PerformanceReview extends Doc {
+  report: Ref<PerformanceReport>
+  content: string
+  score: number
 }
 
 export const performanceId = 'performance' as Plugin
@@ -76,6 +83,7 @@ export default plugin(performanceId, {
     KRA: '' as Ref<Class<KRA>>,
     EmployeeKRA: '' as Ref<Class<EmployeeKRA>>,
     PerformanceReport: '' as Ref<Class<PerformanceReport>>,
+    PerformanceReview: '' as Ref<Class<PerformanceReview>>,
     TypeReviewSessionStatus: '' as Ref<Class<Type<ReviewSessionStatus>>>
   },
   string: {
@@ -95,7 +103,10 @@ export default plugin(performanceId, {
     NoKRA: '' as IntlString,
     Active: '' as IntlString,
     ReviewSessionStatus: '' as IntlString,
-    KRACompletionLevel: '' as IntlString
+    KRACompletionLevel: '' as IntlString,
+    ScorePreview: '' as IntlString,
+    PerformanceReport: '' as IntlString,
+    ReviewContent: '' as IntlString
   },
   kraStatus: {
     Drafting: '' as Ref<KRAStatus>,
@@ -129,7 +140,8 @@ export default plugin(performanceId, {
     ReviewSession: '' as Asset,
     KRA: '' as Asset,
     StatusInProgress: '' as Asset,
-    StatusConcluded: '' as Asset
+    StatusConcluded: '' as Asset,
+    PerformanceReview: '' as Asset
   },
   descriptor: {
     KRAType: '' as Ref<TaskTypeDescriptor>,

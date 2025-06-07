@@ -48,8 +48,6 @@
   onMount(() => {
     ;(document.activeElement as HTMLElement)?.blur()
   })
-
-  $: console.log(viewlet.props)
 </script>
 
 <ActionContext

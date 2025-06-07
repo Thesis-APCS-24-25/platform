@@ -10,6 +10,7 @@
   import { Panel } from '@hcengineering/panel'
   import { Viewlet, ViewOptions } from '@hcengineering/view'
   import ViewletSelector from '@hcengineering/view-resources/src/components/ViewletSelector.svelte'
+  import ReviewEditor from './ReviewEditor.svelte'
 
   const client = getClient()
   const dispatch = createEventDispatcher()
@@ -94,6 +95,7 @@
           }
         }}
       />
+      <ReviewEditor object={value}/>
     {/if}
   </Panel>
 {/if}

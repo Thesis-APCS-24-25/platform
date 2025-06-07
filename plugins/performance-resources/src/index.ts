@@ -45,6 +45,7 @@ import Performance from './components/application/Performance.svelte'
 import { IsActiveReviewSessionOfCurrentTeam, IsInactiveReviewSessionOfCurrentTeam, IsReviewSessionOfCurrentTeam } from './utils/review-session'
 import AllKRAs from './components/kra/AllKRAs.svelte'
 import AllReviewSessions from './components/review-session/AllReviewSessions.svelte'
+import ReviewPresenter from './components/report/ReviewPresenter.svelte'
 
 export default async (): Promise<Resources> => ({
   component: {
@@ -71,7 +72,8 @@ export default async (): Promise<Resources> => ({
     ReviewSessionStatusPresenter,
     ReviewSessionStatusEditor,
     PerformanceApplication: Performance,
-    KRAStatistics
+    KRAStatistics,
+    ReviewPresenter
   },
   function: {
     KRAStatusSort: kraStatusSort,

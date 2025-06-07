@@ -2,18 +2,16 @@ import { ArrOf, Index, Mixin, Model, Prop, TypeBoolean, TypeDate, TypeNumber, Ty
 
 import performance from './plugin'
 import core, { TClass, TDoc, TStatus, TType } from '@hcengineering/model-core'
-import type { EmployeeKRA, KRA, KRAStatus, MeasureProgress, PerformanceReport, ProgressPresenter, ReviewSession, ReviewSessionStatus, WithKRA } from '@hcengineering/performance'
+import type { EmployeeKRA, KRA, KRAStatus, MeasureProgress, PerformanceReport, PerformanceReview, ProgressPresenter, ReviewSession, ReviewSessionStatus, WithKRA } from '@hcengineering/performance'
 import { TProject, TTask } from '@hcengineering/model-task'
 import task, { type Task } from '@hcengineering/task'
 import { Account, type Arr, type Domain, IndexKind, Ref, type Role, type RolesAssignment, type Timestamp, type Type } from '@hcengineering/core'
 import contact, { type PersonAccount } from '@hcengineering/contact'
 import { type Resource } from '@hcengineering/platform'
-import { AnyComponent } from '@hcengineering/ui'
+import { type AnyComponent } from '@hcengineering/ui'
 
 export const DOMAIN_PERFORMANCE = 'performance' as Domain
 
-// @Model(performance.class.ReviewSessionStatus, core.class.Status)
-// export class TReviewSessionStatus extends TStatus implements ReviewSessionStatus {}
 export function TypeReviewSessionStatus (): Type<ReviewSessionStatus> {
   return { _class: performance.class.TypeReviewSessionStatus, label: performance.string.ReviewSessionStatus }
 }
@@ -81,6 +79,21 @@ export class TPerformanceReport extends TDoc implements PerformanceReport {
 
   @Prop(ArrOf(TypeRef(performance.mixin.WithKRA)), performance.string.Tasks)
     tasks?: Arr<Ref<WithKRA>>
+
+  @Prop(TypeNumber(), performance.string.ScorePreview)
+    scorePreview?: number
+}
+
+@Model(performance.class.PerformanceReview, core.class.Doc, DOMAIN_PERFORMANCE)
+export class TPerformanceReview extends TDoc implements PerformanceReview {
+  @Prop(TypeRef(performance.class.PerformanceReport), performance.string.PerformanceReport)
+    report!: Ref<PerformanceReport>
+
+  @Prop(TypeString(), performance.string.ReviewContent)
+    content!: string
+
+  @Prop(TypeNumber(), performance.string.ReviewScore)
+    score!: number
 }
 
 @Mixin(performance.mixin.DefaultReviewSessionData, performance.class.ReviewSession)

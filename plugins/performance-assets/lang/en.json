@@ -61,6 +61,15 @@
     "WeightWarningPopupTitle": "Weight assigned to the following members is not 100%: ",
     "KRACompletionLevel": "% KRA Completed",
     "ReviewSessionStartDetail": "Start date of the Review Session",
-    "ReviewSessionEndDetail": "End date of the Review Session"
+    "ReviewSessionEndDetail": "End date of the Review Session",
+    "Reviews": "Reviews",
+    "NoReviews": "No Reviews",
+    "AddPerformanceReview": "Add Performance Review",
+    "EditPerformanceReview": "Edit Performance Review",
+    "RemovePerformanceReview": "Remove Performance Review",
+    "SubmitReview": "Submit Review",
+    "ReviewContentPlaceholder": "Write your review here...",
+    "ReviewerScore": "Reviewer Score",
+    "InputScore": "Give a score"
   }
 }

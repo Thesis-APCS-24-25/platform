@@ -47,12 +47,10 @@ export default mergeIds(performanceId, performance, {
     PerformanceDashboard: '' as IntlString,
     AssignedTo: '' as IntlString,
     AllReviewSessions: '' as IntlString,
-    ReviewCommentAuthor: '' as IntlString,
-    ReviewerComment: '' as IntlString,
-    ReviewerScore: '' as IntlString,
     Reviewee: '' as IntlString,
     ReviewSession: '' as IntlString,
-    ReviewComments: '' as IntlString,
+    Reviews: '' as IntlString,
+    ReviewScore: '' as IntlString,
     PerformanceReports: '' as IntlString,
     CreateReportLabel: '' as IntlString,
     Assignees: '' as IntlString,
@@ -79,7 +77,16 @@ export default mergeIds(performanceId, performance, {
     Concluded: '' as IntlString,
     SetStatus: '' as IntlString,
     ReviewSessionStartDetail: '' as IntlString,
-    ReviewSessionEndDetail: '' as IntlString
+    ReviewSessionEndDetail: '' as IntlString,
+    PerformanceReview: '' as IntlString,
+    AddPerformanceReview: '' as IntlString,
+    RemovePerformanceReview: '' as IntlString,
+    EditPerformanceReview: '' as IntlString,
+    NoReviews: '' as IntlString,
+    InputScore: '' as IntlString,
+    ReviewContentPlaceholder: '' as IntlString,
+    SubmitReview: '' as IntlString,
+    ReviewerScore: '' as IntlString
   },
   category: {
     ReviewSessionType: '' as IntlString
@@ -111,7 +118,9 @@ export default mergeIds(performanceId, performance, {
     KRAStatistics: '' as AnyComponent,
     ReviewSessionStatusPresenter: '' as AnyComponent,
     // ReviewSessionStatusRefPresenter: '' as AnyComponent,
-    ReviewSessionStatusEditor: '' as AnyComponent
+    ReviewSessionStatusEditor: '' as AnyComponent,
+    ReviewPresenter: '' as AnyComponent,
+    ReviewEditor: '' as AnyComponent
   },
   function: {
     IsReviewSessionOfCurrentTeam: '' as Resource<(space: Space) => Promise<boolean>>,
