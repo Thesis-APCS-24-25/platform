@@ -62,6 +62,7 @@
           showPopup(
             AssignKraPopup,
             {
+              space,
               kra: category,
               assigns
             },

@@ -2,8 +2,8 @@
   import presentation, { Card, createQuery, getClient, MessageBox } from '@hcengineering/presentation'
   import performance from '../../plugin'
   import { ObjectBox, ObjectBoxPopup } from '@hcengineering/view-resources'
-  import { Data, Ref, Space } from '@hcengineering/core'
-  import { EmployeeKRA, KRA } from '@hcengineering/performance'
+  import { Data, Ref } from '@hcengineering/core'
+  import { EmployeeKRA, KRA, ReviewSession } from '@hcengineering/performance'
   import {
     personAccountByPersonId,
     PersonAccountRefPresenter,
@@ -16,7 +16,7 @@
   import { PersonAccount } from '@hcengineering/contact'
 
   export let kra: Ref<KRA> | undefined = undefined
-  export let space: Ref<Space> | undefined = undefined
+  export let space: Ref<ReviewSession> | undefined = undefined
   export let assigns: Array<EmployeeKRA> | undefined = undefined
   let newAssigns: Array<Data<EmployeeKRA>> = []
   let tempAssigns: Array<Data<EmployeeKRA>> = []
@@ -25,6 +25,19 @@
   const query = createQuery()
   const dispatch = createEventDispatcher()
 
+  let rsMembers: Ref<Member>[] = []
+  const spaceQ = createQuery()
+  $: spaceQ.query(
+    performance.class.ReviewSession,
+    {
+      _id: space as Ref<ReviewSession>
+    },
+    (res) => {
+      rsMembers =
+        res[0]?.members.map((m) => $personIdByAccountId.get(m as Ref<PersonAccount>)).filter((m) => m !== undefined) ??
+        []
+    }
+  )
   $: ignoreObjects = [...(assigns ?? []), ...(newAssigns ?? [])]
     .map((s) => $personIdByAccountId.get(s.employee))
     .filter((s) => s !== undefined)
@@ -48,7 +61,7 @@
         _id: kra
       })
       .then((kra) => {
-        space = kra?.space
+        space = kra?.space as Ref<ReviewSession>
       })
   }
 
@@ -133,7 +146,7 @@
         <div class="flex-row-center assign-pill pl-1">
           <div class="flex-row-center flex-gap-1">
             <PersonAccountRefPresenter value={assign.employee} disabled />
-            <KraWeightEditorWithPopup value={assign} />
+            <KraWeightEditorWithPopup value={assign} {space}/>
           </div>
           <Button
             kind="ghost"
@@ -166,7 +179,7 @@
       <div class="flex-row-center assign-pill pl-1 new">
         <div class="flex-row-center flex-gap-1">
           <PersonAccountRefPresenter value={assign.employee} disabled />
-          <KraWeightEditorWithPopup value={assign} onUpdate={newAssignWeightUpdate.bind(null, assign)} />
+          <KraWeightEditorWithPopup {space} value={assign} onUpdate={newAssignWeightUpdate.bind(null, assign)} />
         </div>
         <Button
           kind="ghost"
@@ -189,6 +202,11 @@
         showPopup(
           ObjectBoxPopup,
           {
+            docQuery: {
+              _id: {
+                $in: rsMembers
+              }
+            },
             ignoreObjects,
             _class: kraTeam.mixin.Member,
             multiSelect: true

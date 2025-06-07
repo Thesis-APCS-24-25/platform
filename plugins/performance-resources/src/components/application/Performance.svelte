@@ -11,7 +11,7 @@
     Label,
     Component
   } from '@hcengineering/ui'
-  import { SpecialNavModel } from '@hcengineering/workbench'
+  import { NavigatorModel, SpacesNavModel, SpecialNavModel } from '@hcengineering/workbench'
   import { onDestroy } from 'svelte'
   import { decodeObjectURI } from '@hcengineering/view'
   import { TreeSeparator } from '@hcengineering/workbench-resources'
@@ -20,8 +20,8 @@
   import TeamSwitchHeader from '../navigator/TeamSwitchHeader.svelte'
   import { ReviewSession } from '@hcengineering/performance'
   import { navigatorModel } from '../../navigation'
-  import kraTeam, { Team } from '@hcengineering/kra-team'
-  import { createQuery, getClient } from '@hcengineering/presentation'
+  import kraTeam from '@hcengineering/kra-team'
+  import { createQuery } from '@hcengineering/presentation'
 
   let currentSpecial: SpecialNavModel | undefined
 
@@ -29,8 +29,16 @@
 
   let replacedPanel: HTMLElement
 
-  const specials = navigatorModel.specials
-  const spaces = navigatorModel.spaces
+  let specials: SpecialNavModel[] = []
+  let spaces: SpacesNavModel[] = []
+
+  const unsub = navigatorModel.subscribe((n) => {
+    specials = n?.specials ?? []
+    spaces = n?.spaces ?? []
+  })
+  onDestroy(() => {
+    unsub()
+  })
 
   const unsubcribe = location.subscribe((loc) => {
     syncLocation(loc)
@@ -39,12 +47,12 @@
     unsubcribe()
   })
 
-  function syncLocation(loc: Location): void {
+  function syncLocation (loc: Location): void {
     if (loc.path[2] !== 'performance') {
       return
     }
 
-    const special = specials.find((s) => s.id === loc.path[3])
+    const special = specials?.find((s) => s.id === loc.path[3])
     if (special !== undefined) {
       currentSpecial = special
       currentSpace = undefined

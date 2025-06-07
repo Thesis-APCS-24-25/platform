@@ -39,7 +39,7 @@ import task, { getStatusIndex, makeRank, type Task, type ProjectType } from '@hc
 import { activeProjects as taskActiveProjects, taskTypeStore } from '@hcengineering/task-resources'
 import {
   IssuePriority,
-  Kpi,
+  type Kpi,
   TimeReportDayType,
   type Issue,
   type IssueStatus,

@@ -72,7 +72,7 @@
   }
 
   defineSeparators('kra-team', [
-    { minSize: 15, maxSize: 40, size: 20, float: 'navigator' },
+    { minSize: 15, maxSize: 20, size: 20, float: 'navigator' },
     { size: 'auto', minSize: 20, maxSize: 'auto' },
     { size: 20, minSize: 20, maxSize: 50, float: 'aside' }
   ])
@@ -125,7 +125,7 @@
       </div>
     </div>
     <Separator
-      name="chat"
+      name="kra-team"
       float={$deviceInfo.navigator.float}
       index={0}
       color={'transparent'}

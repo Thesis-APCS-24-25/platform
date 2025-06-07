@@ -39,4 +39,13 @@ export function definePermissions (builder: Builder): void {
     },
     kraTeam.permission.AssignWeightForAll
   )
+  builder.createDoc(
+    core.class.Permission,
+    core.space.Model,
+    {
+      label: kraTeam.string.ViewDashboard,
+      description: kraTeam.string.ViewDashboardDescription
+    },
+    kraTeam.permission.ViewDashboard
+  )
 }
