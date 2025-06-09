@@ -15,4 +15,13 @@
   }
 </script>
 
-<ObjectPopup _class={kra.class.Unit} {create} width="medium" size={'large'} type="presenter" on:close on:update/>
+<ObjectPopup
+  ignoreObjects={[kra.ids.RatingScaleUnit]}
+  _class={kra.class.Unit}
+  {create}
+  width="medium"
+  size={'large'}
+  type="presenter"
+  on:close
+  on:update
+/>
