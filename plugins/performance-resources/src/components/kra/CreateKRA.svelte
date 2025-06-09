@@ -111,7 +111,7 @@
 <Card
   label={performance.string.CreateKRA}
   okAction={createKRA}
-  width="small"
+  width="medium"
   canSave={title.trim().length > 0}
   on:close
   on:changeContent
@@ -144,21 +144,23 @@
           })
         }}
       />
-      <div class="flex-col-left m-3 clear-mins flex-gap-4">
+      <div class="flex-col-left m-3 clear-mins flex-gap-4 flex-grow">
         <div class="mb-3">
           <EditBox
+            fullSize
             bind:value={title}
             placeholder={performance.string.KRANamePlaceholder}
             autoFocus
-            kind={'large-style'}
+            kind="large-style"
             focusIndex={1}
           />
         </div>
         <div>
           <EditBox
+            fullSize
             bind:value={description}
             placeholder={performance.string.KRADescriptionPlaceholder}
-            kind={'large-style'}
+            kind="editbox"
             focusIndex={2}
           />
         </div>
