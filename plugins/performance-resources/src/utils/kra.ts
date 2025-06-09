@@ -162,6 +162,9 @@ export async function getAllKRAs (
   attr: Attribute<Status>
 ): Promise<Array<Ref<KRA>>> {
   const client = getClient()
+  if (attr.attributeOf !== performance.class.EmployeeKRA) {
+    return []
+  }
   const res = (await client.findAll(performance.class.KRA, query as DocumentQuery<KRA>)).map(
     (kra) => kra._id
   )

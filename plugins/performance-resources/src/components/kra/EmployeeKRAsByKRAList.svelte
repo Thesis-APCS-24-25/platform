@@ -48,6 +48,9 @@
 </script>
 
 <List
+  props={{
+    type: 'link'
+  }}
   createItemDialog={AssignKraPopup}
   createItemLabel={performance.string.AssignKRA}
   {listProvider}

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Ref, Space, getCurrentAccount } from '@hcengineering/core'
+  import { Ref, SortingOrder, Space, getCurrentAccount } from '@hcengineering/core'
   import { Breadcrumb, getPlatformColorDef, Header, Scroller, themeStore } from '@hcengineering/ui'
   import { createQuery } from '@hcengineering/presentation'
   import performance from '../../plugin'
@@ -7,10 +7,11 @@
   import { KRA, WithKRA } from '@hcengineering/performance'
   import GroupedList from '../ui/GroupedList.svelte'
   import KraRefPresenter from './KRARefPresenter.svelte'
-  import { FixedColumn } from '@hcengineering/view-resources'
+  import { FixedColumn, List, ListSelectionProvider } from '@hcengineering/view-resources'
   import TaskPresenter from '@hcengineering/task-resources/src/components/TaskPresenter.svelte'
   import StateRefPresenter from '@hcengineering/task-resources/src/components/state/StateRefPresenter.svelte'
   import ProgressPresenter from './ProgressPresenter.svelte'
+  import view from '@hcengineering/view'
 
   export let currentSpace: Ref<Space>
 
@@ -39,34 +40,9 @@
     }
   )
 
-  const krasQuery = createQuery()
-  let kras: KRA[] | undefined = undefined
-  $: krasQuery.query(
-    performance.class.KRA,
-    {
-      _id: { $in: assignedKRAs }
-    },
-    (res) => {
-      if (res !== undefined) {
-        kras = res
-      }
-    },
-    {
-      projection: {
-        _id: 1,
-        color: 1
-      }
-    }
-  )
-
-  function getKRAColor(kra: Ref<KRA>): string | undefined {
-    if (kras === undefined) return ''
-    const found = kras.find((item) => item._id === kra)
-    return found?.color !== undefined ? getPlatformColorDef(found.color, $themeStore.dark).background : undefined
-  }
-
   let scroll: Scroller
   let divScroll: HTMLDivElement
+  const listProvider = new ListSelectionProvider((offset: 1 | -1 | 0) => {})
 </script>
 
 <Header>
@@ -76,6 +52,46 @@
 <div class="w-full h-full py-4 clear-mins">
   <Scroller bind:this={scroll} bind:divScroll padding={'0 1rem'} noFade checkForHeaders>
     <div class="flex-col-stretch flex-gap-2">
+      <List
+        {listProvider}
+        config={[
+          '',
+          {
+            key: 'title'
+          },
+          {
+            key: '',
+            presenter: view.component.GrowPresenter
+          },
+          {
+            key: '',
+            presenter: ProgressPresenter,
+            props: {
+              readonly: true
+            }
+          }
+        ]}
+        configurations={undefined}
+        query={{
+          kra: { $in: assignedKRAs }
+        }}
+        viewOptionsConfig={[
+          {
+            key: 'shouldShowAll',
+            type: 'toggle',
+            defaultValue: true,
+            actionTarget: 'category',
+            action: performance.function.ShowEmptyGroups,
+            label: view.string.View
+          }
+        ]}
+        viewOptions={{
+          groupBy: ['kra'],
+          orderBy: ['kra', SortingOrder.Ascending]
+        }}
+        _class={performance.mixin.WithKRA}
+      />
+
       <GroupedList key="kra" items={tasks} categories={assignedKRAs}>
         <svelte:fragment slot="header" let:category let:count>
           <div class="flex-row-center flex-grow" style:color={'inherit'}>
