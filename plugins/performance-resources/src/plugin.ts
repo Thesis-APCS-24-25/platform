@@ -21,6 +21,9 @@ import { ViewCategoryAction, type GetAllValuesFunc, type SortFunc } from '@hceng
 
 export default mergeIds(performanceId, performance, {
   string: {
+    ConcludeReviewSession: '' as IntlString,
+    ConcludeReviewSessionMessage: '' as IntlString,
+    ConcludeReviewSessionConfirm: '' as IntlString,
     NoDraftingReviewSession: '' as IntlString,
     WeightWarningPopupTitle: '' as IntlString,
     StartReviewSession: '' as IntlString,

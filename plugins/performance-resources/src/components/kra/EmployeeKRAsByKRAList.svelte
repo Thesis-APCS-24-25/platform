@@ -37,7 +37,7 @@
     }
   }
 
-  function listHeaderColor(category: Ref<KRA>): string {
+  function listHeaderColor (category: Ref<KRA>): string {
     const color = kraById.get(category)?.color
     return color !== undefined
       ? getPlatformColorDef(color, $themeStore.dark)?.background ?? 'var(--header-bg-color)'
@@ -47,52 +47,54 @@
   const listProvider = new ListSelectionProvider((offset: 1 | -1 | 0) => {})
 </script>
 
-<List
-  props={{
-    type: 'link'
-  }}
-  createItemDialog={AssignKraPopup}
-  createItemLabel={performance.string.AssignKRA}
-  {listProvider}
-  config={[
-    {
-      key: 'employee'
-    },
-    {
-      key: '',
-      presenter: view.component.GrowPresenter
-    },
-    {
-      key: '',
-      presenter: KraWeightEditorWithPopup,
-      props: {
-        readonly: !canAssign
+{#key kras.length}
+  <List
+    props={{
+      type: 'link'
+    }}
+    createItemDialog={AssignKraPopup}
+    createItemLabel={performance.string.AssignKRA}
+    {listProvider}
+    config={[
+      {
+        key: 'employee'
       },
-      displayProps: {
-        key: 'weight',
-        optional: false,
-        dividerBefore: true,
-        fixed: 'right'
+      {
+        key: '',
+        presenter: view.component.GrowPresenter
+      },
+      {
+        key: '',
+        presenter: KraWeightEditorWithPopup,
+        props: {
+          readonly: !canAssign
+        },
+        displayProps: {
+          key: 'weight',
+          optional: false,
+          dividerBefore: true,
+          fixed: 'right'
+        }
       }
-    }
-  ]}
-  configurations={undefined}
-  query={{
-    space
-  }}
-  viewOptionsConfig={[
-    {
-      key: 'shouldShowAll',
-      type: 'toggle',
-      defaultValue: true,
-      actionTarget: 'category',
-      action: performance.function.ShowEmptyGroups,
-      label: view.string.View
-    }
-  ]}
-  viewOptions={{
-    groupBy: ['kra'],
-    orderBy: ['kra', SortingOrder.Ascending]
-  }}
-  _class={performance.class.EmployeeKRA}
-/>
+    ]}
+    configurations={undefined}
+    query={{
+      space
+    }}
+    viewOptionsConfig={[
+      {
+        key: 'shouldShowAll',
+        type: 'toggle',
+        defaultValue: true,
+        actionTarget: 'category',
+        action: performance.function.ShowEmptyGroups,
+        label: view.string.View
+      }
+    ]}
+    viewOptions={{
+      groupBy: ['kra'],
+      orderBy: ['kra', SortingOrder.Ascending]
+    }}
+    _class={performance.class.EmployeeKRA}
+  />
+{/key}
