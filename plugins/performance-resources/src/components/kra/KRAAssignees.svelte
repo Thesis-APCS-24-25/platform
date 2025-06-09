@@ -11,8 +11,7 @@
   export let hasAssignees = true
   export let kra: Ref<KRA>
   export let space: Ref<ReviewSession>
-
-  let isCollapsed = true
+  export let isCollapsed = true
 
   let items: EmployeeKRA[] = []
 
