@@ -6,7 +6,7 @@
   import performance from '../../plugin'
   import { PersonAccount } from '@hcengineering/contact'
   import { personAccountByPersonId } from '@hcengineering/contact-resources'
-  import { getClient } from '@hcengineering/presentation'
+  import { createQuery, getClient } from '@hcengineering/presentation'
   import { Task } from '@hcengineering/task'
 
   const client = getClient()
@@ -27,34 +27,36 @@
 
   let kraDocQuery: DocumentQuery<KRA> = { _id: { $in: [performance.ids.NoKRARef] } }
 
-  $: personAccount = object.assignee != null
-    ? ($personAccountByPersonId.get(object.assignee) ?? [{ _id: '' as Ref<PersonAccount> }])[0]._id
-    : '' as Ref<PersonAccount>
+  $: personAccount =
+    object.assignee != null
+      ? ($personAccountByPersonId.get(object.assignee) ?? [{ _id: '' as Ref<PersonAccount> }])[0]._id
+      : ('' as Ref<PersonAccount>)
 
-  $: void client.findAll(
+  const employeeKRAQuery = createQuery()
+  $: employeeKRAQuery.query(
     performance.class.EmployeeKRA,
     {
       employee: personAccount
-    }
-  ).then((result) => {
-    console.log(result)
-    if (result !== undefined && result.length > 0) {
-      const krasOfAssignee: Ref<KRA>[] | undefined = result.map(it => it.kra)
-      if (!krasOfAssignee.includes(value)) {
-        if (onChange !== undefined) {
-          void onChange('' as Ref<KRA>)
+    },
+    async (result) => {
+      if (result !== undefined && result.length > 0) {
+        const krasOfAssignee: Ref<KRA>[] | undefined = result.map((it) => it.kra)
+        if (!krasOfAssignee.includes(value)) {
+          if (onChange !== undefined) {
+            void onChange('' as Ref<KRA>)
+          }
         }
+        kraDocQuery = {
+          _id: { $in: krasOfAssignee }
+        }
+      } else {
+        if (onChange !== undefined) {
+          await onChange('' as Ref<KRA>)
+        }
+        kraDocQuery = { _id: { $in: [performance.ids.NoKRARef] } }
       }
-      kraDocQuery = {
-        _id: { $in: krasOfAssignee }
-      }
-    } else {
-      if (onChange !== undefined) {
-        void onChange('' as Ref<KRA>)
-      }
-      kraDocQuery = { _id: { $in: [performance.ids.NoKRARef] } }
     }
-  })
+  )
 </script>
 
 {#if kind === 'list'}
@@ -72,7 +74,7 @@
       docQuery={kraDocQuery}
       showNavigate={false}
       on:change={handleChange}
-      />
+    />
   </FixedColumn>
 {:else}
   <ObjectBox

@@ -42,10 +42,16 @@ import Performance from './components/application/Performance.svelte'
 // import ReviewSessionStatusPresenter from './components/review-session/ReviewSessionStatusPresenter.svelte'
 // import ReviewSessionStatusRefPresenter from './components/review-session/ReviewSessionStatusRefPresenter.svelte'
 // import ReviewSessionStateEditor from './components/review-session/ReviewSessionStateEditor.svelte'
-import { IsActiveReviewSessionOfCurrentTeam, IsInactiveReviewSessionOfCurrentTeam, IsReviewSessionOfCurrentTeam } from './utils/review-session'
+import {
+  IsActiveReviewSessionOfCurrentTeam,
+  IsInactiveReviewSessionOfCurrentTeam,
+  IsReviewSessionOfCurrentTeam
+} from './utils/review-session'
 import AllKRAs from './components/kra/AllKRAs.svelte'
 import AllReviewSessions from './components/review-session/AllReviewSessions.svelte'
 import ReviewPresenter from './components/report/ReviewPresenter.svelte'
+
+export { KRAPresenter, KRAEditor }
 
 export default async (): Promise<Resources> => ({
   component: {
