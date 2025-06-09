@@ -70,6 +70,11 @@
     "SubmitReview": "Submit Review",
     "ReviewContentPlaceholder": "Write your review here...",
     "ReviewerScore": "Reviewer Score",
-    "InputScore": "Give a score"
+    "InputScore": "Give a score",
+    "StartDateFilter": "Filter tasks after date",
+    "EndDateFilter": "Filter tasks upto date",
+    "StartDateFilterDetail": "Only include tasks after chosen date",
+    "EndDateFilterDetail": "Only include tasks upto chosen date",
+    "ResetFilters": "Reset filters"
   }
 }

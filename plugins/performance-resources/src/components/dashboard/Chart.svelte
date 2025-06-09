@@ -4,10 +4,10 @@
   import { EmployeeKRA, ReviewSession, WithKRA, type KRA } from '@hcengineering/performance'
   import contact, { getName, Person, PersonAccount } from '@hcengineering/contact'
   import { getClient } from '@hcengineering/presentation'
-  import performance from '@hcengineering/performance'
-  import { Ref } from '@hcengineering/core'
+  import performance from '../../plugin'
+  import { Ref, Timestamp } from '@hcengineering/core'
   import { calculateCompletionLevel } from '../../utils/kra'
-  import { themeStore } from '@hcengineering/ui'
+  import { Button, DatePresenter, themeStore } from '@hcengineering/ui'
 
   // Register all Chart.js components
   Chart.register(...registerables)
@@ -29,6 +29,8 @@
   let chart: Chart
   let krasByEmployee: KRAsByEmployee
   const colors: string[] = ['#4285F4', '#EA4335', '#FBBC05', '#34A853', '#8B44AC', '#00ACC1', '#FF7043']
+  let startDate: Timestamp | undefined
+  let endDate: Timestamp | undefined
 
   themeStore.subscribe(() => { updateChart() })
 
@@ -104,7 +106,11 @@
   $: if (kraRefs !== undefined) {
     void client
       .findAll(performance.mixin.WithKRA, {
-        kra: { $in: kraRefs }
+        kra: { $in: kraRefs },
+        createdOn: {
+          $gte: (startDate ?? Number.MIN_SAFE_INTEGER),
+          $lte: (endDate !== undefined ? endDate + 86400 : Number.MAX_SAFE_INTEGER)
+        }
       })
       .then((result) => {
         if (result !== undefined) {
@@ -354,6 +360,11 @@
       chart.destroy()
     }
   })
+
+  function resetFilters (): void {
+    startDate = undefined
+    endDate = undefined
+  }
 </script>
 
 <div class="chart-container">
@@ -362,6 +373,32 @@
   {#if employees.length === 0}
     <div class="no-data">No data available.</div>
   {:else}
+    <div class="date-filter">
+      <DatePresenter
+        kind={'regular'}
+        size={'large'}
+        bind:value={startDate}
+        editable
+        label={performance.string.StartDateFilter}
+        labelNull={performance.string.StartDateFilter}
+        detail={performance.string.StartDateFilterDetail}
+      />
+      <DatePresenter
+        kind={'regular'}
+        size={'large'}
+        bind:value={endDate}
+        editable
+        label={performance.string.EndDateFilter}
+        labelNull={performance.string.EndDateFilter}
+        detail={performance.string.EndDateFilterDetail}
+      />
+      <Button
+        label={performance.string.ResetFilters}
+        kind={'regular'}
+        size={'large'}
+        on:click={resetFilters}
+      />
+    </div>
     <canvas
       id="chart"
       bind:this={chartCanvas}
@@ -379,6 +416,12 @@
     background-color: var(--theme-panel-color);
     border-radius: 8px;
     /* box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08); */
+  }
+
+  .date-filter {
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
   }
 
   h2 {
