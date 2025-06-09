@@ -122,6 +122,10 @@ function defineReviewSession (builder: Builder): void {
 function defineKRA (builder: Builder): void {
   builder.createModel(TKRA, TEmployeeKRA, TKRAStatus, TDefaultKRAData)
 
+  builder.mixin(performance.class.EmployeeKRA, core.class.Class, view.mixin.ListHeaderExtra, {
+    presenters: [performance.component.EmployeeKRATotalWeightStat]
+  })
+
   builder.mixin(performance.class.KRA, core.class.Class, view.mixin.AttributePresenter, {
     presenter: performance.component.KRARefPresenter
   })
@@ -136,6 +140,10 @@ function defineKRA (builder: Builder): void {
 
   builder.mixin(performance.class.KRA, core.class.Class, view.mixin.ObjectPanel, {
     component: performance.component.EditKRA
+  })
+
+  builder.mixin(performance.class.KRA, core.class.Class, view.mixin.AllValuesFunc, {
+    func: performance.function.GetAllKRAs
   })
 
   // builder.mixin(performance.class.ReviewSession, core.class.Class, workbench.mixin.SpaceView, {

@@ -26,7 +26,7 @@
   $: bgColor = colorDef?.background
   $: color = colorDef?.color
 
-  $: shouldShowTitle = shrink > 1 || (shrink === 1 && !inline)
+  $: shouldShowTitle = shrink > 1 || (shrink === 1 && !inline) || kind === 'list-header'
   $: shouldShowIdentifier = true
 </script>
 

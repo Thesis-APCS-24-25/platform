@@ -17,7 +17,7 @@ import { type Space } from '@hcengineering/core'
 import performance, { performanceId } from '@hcengineering/performance'
 import { type IntlString, mergeIds, type Resource } from '@hcengineering/platform'
 import { type AnyComponent } from '@hcengineering/ui'
-import { type GetAllValuesFunc, type SortFunc } from '@hcengineering/view'
+import { ViewCategoryAction, type GetAllValuesFunc, type SortFunc } from '@hcengineering/view'
 
 export default mergeIds(performanceId, performance, {
   string: {
@@ -120,6 +120,7 @@ export default mergeIds(performanceId, performance, {
     // ReviewSessionStatusRefPresenter: '' as AnyComponent,
     ReviewSessionStatusEditor: '' as AnyComponent,
     ReviewPresenter: '' as AnyComponent,
+    EmployeeKRATotalWeightStat: '' as AnyComponent,
     ReviewEditor: '' as AnyComponent
   },
   function: {
@@ -127,6 +128,8 @@ export default mergeIds(performanceId, performance, {
     IsActiveReviewSessionOfCurrentTeam: '' as Resource<(space: Space) => Promise<boolean>>,
     IsInactiveReviewSessionOfCurrentTeam: '' as Resource<(space: Space) => Promise<boolean>>,
     GetAllKRAStates: '' as GetAllValuesFunc,
-    KRAStatusSort: '' as SortFunc
+    KRAStatusSort: '' as SortFunc,
+    ShowEmptyGroups: '' as ViewCategoryAction,
+    GetAllKRAs: '' as GetAllValuesFunc
   }
 })

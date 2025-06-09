@@ -227,6 +227,7 @@ export async function getAllStates (
   attr: Attribute<Status>,
   filterDone: boolean = true
 ): Promise<any[]> {
+  console.log('getAllStates', query, queryId, attr, filterDone)
   const typeId = get(selectedTypeStore)
   const type = typeId !== undefined ? get(typeStore).get(typeId) : undefined
   const taskTypeId = get(selectedTaskTypeStore)
@@ -239,15 +240,20 @@ export async function getAllStates (
       const statusMap = get(statusStore).byId
       const statuses = (taskType.statuses.map((p) => statusMap.get(p)) as Status[]) ?? []
       if (filterDone) {
-        return statuses
+        const s = statuses
           .filter((p) => p?.category !== task.statusCategory.Lost && p?.category !== task.statusCategory.Won)
           .map((p) => p?._id)
+        console.log(s)
+        return s
       } else {
-        return statuses.map((p) => p?._id)
+        const s = statuses.map((p) => p?._id)
+        console.log('sts bewr', s)
+        return s
       }
     }
     const _space = query?.space
     if (_space !== undefined) {
+      console.log('here')
       const promise = new Promise<Array<Ref<Doc>>>((resolve, reject) => {
         let refresh: boolean = false
         const lq = CategoryQuery.getLiveQuery(queryId)
@@ -274,6 +280,7 @@ export async function getAllStates (
       return await promise
     }
   } else if (type !== undefined) {
+    console.log('type', type)
     const statusMap = get(statusStore).byId
     const statuses = (type.statuses.map((p) => statusMap.get(p._id)) as Status[]) ?? []
     if (filterDone) {
@@ -281,9 +288,12 @@ export async function getAllStates (
         .filter((p) => p?.category !== task.statusCategory.Lost && p?.category !== task.statusCategory.Won)
         .map((p) => p?._id)
     } else {
-      return statuses.map((p) => p?._id)
+      const rs = statuses.map((p) => p?._id)
+      console.log('getAllStates', rs)
+      return rs
     }
   }
+  console.log('no type')
   const joinedProjectsTypes = get(typesOfJoinedProjectsStore) ?? []
   const includedStatuses = Array.from(get(taskTypeStore).values())
     .filter((taskType) => joinedProjectsTypes.includes(taskType.parent))
@@ -294,7 +304,10 @@ export async function getAllStates (
       .filter((p) => p?.category !== task.statusCategory.Lost && p?.category !== task.statusCategory.Won)
       .map((p) => p?._id)
   } else {
-    return allStates.map((p) => p?._id)
+    const sts = allStates.map((p) => p?._id)
+    console.log('getAllStates', sts)
+    sts.push('hello')
+    return sts
   }
 }
 
