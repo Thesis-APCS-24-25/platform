@@ -11,22 +11,23 @@
   export let value: WithLookup<KRA> | undefined
   export let disabled = false
   export let onClick: (() => void) | undefined = undefined
-  export let shouldShowAvatar = false
+  export let shouldShowAvatar = true
   export let noUnderline = disabled
   export let colorInherit = false
   export let noSelect = false
   export let inline = false
-  export let shrink = 0
-  export let kind: 'list-header' | 'list' = 'list' // Default value added
-  export let type: ObjectPresenterType = 'link' // Default value added
+  export let shrink = 1
+  export let kind: 'list-header' | 'list' = 'list'
+  export let type: ObjectPresenterType = 'text'
   export let icon: Asset | AnySvelteComponent | undefined = undefined
 
   // Reactive variables
-  const colorDef = value?.color ? getPlatformColorDef(value.color, $themeStore.dark) : undefined
-  $: bgColor = colorDef?.background || 'transparent' // Fallback added
-  $: color = colorDef?.color || 'inherit' // Fallback added
-  $: shouldShowTitle = kind === 'list-header' || shrink === 0
-  $: shouldShowIdentifier = kind === 'list-header' || shrink > 0
+  $: colorDef = value?.color !== undefined ? getPlatformColorDef(value.color, $themeStore.dark) : undefined
+  $: bgColor = colorDef?.background
+  $: color = colorDef?.color
+
+  $: shouldShowTitle = shrink > 1 || (shrink === 1 && !inline)
+  $: shouldShowIdentifier = true
 </script>
 
 {#if value}
@@ -68,35 +69,27 @@
       </DocNavLink>
     </div>
   {:else if type === 'text'}
-    <div class="kraPresenterRoot">
+    <div class="kraPresenterRoot" class:list={kind === 'list'} class:cursor-pointer={!disabled}>
       {#if shouldShowAvatar}
-        <div
-          class="icon"
-          class:header-icon={!noSelect && kind === 'list-header'}
-          use:tooltip={{ label: performance.string.KRA }}
-          aria-label="KRA Icon"
-        >
-          <Icon icon={icon ?? performance.icon.KRA} size="medium" />
+        <div class="icon" use:tooltip={{ label: performance.string.KRA }} aria-label="KRA Icon">
+          <Icon icon={icon ?? performance.icon.KRA} size="medium" fill={color} />
         </div>
       {/if}
-      <span
+      <div
+        class="kra-name"
         class:header={!noSelect && kind === 'list-header'}
+        class:select-text={!noSelect}
         class:uppercase={kind === 'list-header'}
         class:font-medium-12={kind === 'list-header'}
-        class:select-text={!noSelect}
-        use:tooltip={{ label: getEmbeddedLabel(value.title) }}
-        aria-label={value.title}
+        title={value?.title}
       >
-
         {#if shouldShowIdentifier}
-          <span class="font-bold-12">
-            {value.identifier}
-          </span>
+          {value.identifier}
         {/if}
         {#if shouldShowTitle}
           {value.title}
         {/if}
-      </span>
+      </div>
     </div>
   {/if}
 {/if}
