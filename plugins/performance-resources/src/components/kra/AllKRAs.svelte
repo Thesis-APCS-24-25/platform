@@ -102,6 +102,9 @@
 <Header>
   <Breadcrumb {icon} {label} size={'large'} isCurrent />
   <svelte:fragment slot="actions">
+    {#if modes !== undefined}
+      <ModeSelector props={modes} kind="subtle" />
+    {/if}
     <Button
       icon={IconAdd}
       size="large"
@@ -124,9 +127,6 @@
   </svelte:fragment>
 
   <svelte:fragment slot="extra">
-    {#if modes !== undefined}
-      <ModeSelector props={modes} kind="subtle" />
-    {/if}
   </svelte:fragment>
 </Header>
 
