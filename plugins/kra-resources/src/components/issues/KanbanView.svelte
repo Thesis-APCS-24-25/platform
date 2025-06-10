@@ -79,6 +79,9 @@
   import PriorityEditor from './PriorityEditor.svelte'
   import StatusEditor from './StatusEditor.svelte'
   import EstimationEditor from './timereport/EstimationEditor.svelte'
+  import GoalPresenter from './goal/GoalPresenter.svelte'
+  import KraRefPresenter from '@hcengineering/performance-resources/src/components/kra/KRARefPresenter.svelte'
+  import KraEditor from '../kra/KRAEditor.svelte'
 
   const _class = tracker.class.Issue
   export let space: Ref<Project> | undefined = undefined
@@ -263,6 +266,7 @@
       if ((issue.$lookup?.attachedTo?.comments ?? 0) > 0) return true
     }
     if (enabledConfig(config, 'attachments') && (issue.attachments ?? 0) > 0) return true
+    if (enabledConfig(config, 'goal') && issue.goal !== undefined) return true
     return false
   }
 
@@ -404,6 +408,13 @@
                 justify={'center'}
               />
             {/if}
+            {#if enabledConfig(config, 'kra')}
+              <KraEditor
+                kind={'link-bordered'}
+                value={issue}
+                size={'small'}
+              />
+            {/if}
             {#if enabledConfig(config, 'dueDate')}
               <DueDatePresenter value={issue} size={'small'} kind={'link-bordered'} />
             {/if}
@@ -428,6 +439,9 @@
           {#await shouldShowFooter(config, reports, estimations, object) then withFooter}
             {#if withFooter}
               <div class="card-footer flex-between">
+                {#if enabledConfig(config, 'goal')}
+                  <GoalPresenter kind={'list'} size={'small'} value={issue} />
+                {/if}
                 {#if enabledConfig(config, 'estimation')}
                   <EstimationEditor kind={'list'} size={'small'} value={issue} />
                 {/if}

@@ -180,14 +180,12 @@ export function issueConfig (
           {
             key: '',
             presenter: kra.component.KRAEditor,
+            props: { kind: 'list', size: 'small' },
             displayProps: {
               key: '',
               fixed: 'right',
               dividerBefore: true,
               align: 'right'
-            },
-            props: {
-              kind: 'list'
             }
           } as const
         ]
@@ -359,10 +357,19 @@ export function defineViewlets (builder: Builder): void {
         groupDepth: 1
       },
       configOptions: {
-        strict: true,
-        hiddenKeys: ['goal']
+        strict: true
       },
-      config: ['subIssues', 'priority', 'dueDate', 'labels', 'estimation', 'attachments', 'comments']
+      config: [
+        'subIssues',
+        'priority',
+        'dueDate',
+        'labels',
+        'estimation',
+        'attachments',
+        'comments',
+        'kra',
+        'goal'
+      ]
     },
     kra.viewlet.IssueKanban
   )
@@ -513,9 +520,7 @@ export function defineViewlets (builder: Builder): void {
       ],
       viewOptions: {
         groupDepth: 1,
-        groupBy: [
-          'kra'
-        ],
+        groupBy: ['kra'],
         orderBy: [
           ['modifiedOn', SortingOrder.Descending],
           ['status', SortingOrder.Ascending],

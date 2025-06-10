@@ -9,7 +9,7 @@
   export let value: WithLookup<Issue>
   export let readonly = false
   export let kind: ButtonKind = 'link'
-  export let size: ButtonSize = 'large'
+  export let size: ButtonSize = 'small'
   export let width: string | undefined = undefined
 
   const client = getClient()

@@ -17,7 +17,7 @@
   export let noSelect = false
   export let inline = false
   export let shrink = 1
-  export let kind: 'list-header' | 'list' = 'list'
+  export let kind: 'list-header' | 'list' | 'link-bordered' = 'list'
   export let type: ObjectPresenterType = 'text'
   export let icon: Asset | AnySvelteComponent | undefined = undefined
 
@@ -34,7 +34,7 @@
   {#if inline}
     <ObjectMention object={value} {disabled} {noUnderline} {onClick} component={performance.component.EditKRA} />
   {:else if type === 'link'}
-    <div class="flex-row-center">
+    <div class="flex-row-center" class:link-bordered={kind === 'link-bordered'}>
       <DocNavLink
         object={value}
         {onClick}
@@ -69,7 +69,12 @@
       </DocNavLink>
     </div>
   {:else if type === 'text'}
-    <div class="kraPresenterRoot" class:list={kind === 'list'} class:cursor-pointer={!disabled}>
+    <div
+      class="kraPresenterRoot"
+      class:list={kind === 'list'}
+      class:cursor-pointer={!disabled}
+      class:link-bordered={kind === 'link-bordered'}
+    >
       {#if shouldShowAvatar}
         <div class="icon" use:tooltip={{ label: performance.string.KRA }} aria-label="KRA Icon">
           <Icon icon={icon ?? performance.icon.KRA} size="medium" fill={color} />
@@ -97,6 +102,13 @@
 <style lang="scss">
   $theme-content-color: var(--theme-content-color);
   $theme-halfcontent-color: var(--theme-halfcontent-color);
+
+  .link-bordered {
+    border: 1px solid var(--theme-button-border);
+    background-color: var(--theme-button-default);
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+  }
 
   .kraPresenterRoot {
     display: flex;
