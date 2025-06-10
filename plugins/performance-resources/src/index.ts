@@ -22,7 +22,7 @@ import KRAPresenter from './components/kra/KRAPresenter.svelte'
 import TeamSpacePresenter from './components/navigator/TeamSpacePresenter.svelte'
 import KRARefPresenter from './components/kra/KRARefPresenter.svelte'
 import KRAEditor from './components/kra/KRAEditor.svelte'
-import { kraStatusSort } from './utils/kra'
+import { getAllKRAs, kraStatusSort } from './utils/kra'
 import { type Attribute, type Doc, type DocumentQuery, type Ref, type Space } from '@hcengineering/core'
 import { getAllStates } from '@hcengineering/task-resources'
 import PerformanceDashboard from './components/dashboard/Dashboard.svelte'
@@ -42,13 +42,22 @@ import Performance from './components/application/Performance.svelte'
 // import ReviewSessionStatusPresenter from './components/review-session/ReviewSessionStatusPresenter.svelte'
 // import ReviewSessionStatusRefPresenter from './components/review-session/ReviewSessionStatusRefPresenter.svelte'
 // import ReviewSessionStateEditor from './components/review-session/ReviewSessionStateEditor.svelte'
-import { IsActiveReviewSessionOfCurrentTeam, IsInactiveReviewSessionOfCurrentTeam, IsReviewSessionOfCurrentTeam } from './utils/review-session'
+import {
+  IsActiveReviewSessionOfCurrentTeam,
+  IsInactiveReviewSessionOfCurrentTeam,
+  IsReviewSessionOfCurrentTeam
+} from './utils/review-session'
 import AllKRAs from './components/kra/AllKRAs.svelte'
 import AllReviewSessions from './components/review-session/AllReviewSessions.svelte'
 import ReviewPresenter from './components/report/ReviewPresenter.svelte'
+import EmployeeKRATotalWeightStat from './components/kra/EmployeeKRATotalWeightStat.svelte'
+import { showEmptyGroups } from '@hcengineering/view-resources'
+
+export { KRAPresenter, KRAEditor }
 
 export default async (): Promise<Resources> => ({
   component: {
+    EmployeeKRATotalWeightStat,
     MyKRAs,
     KRAAssigneesEditor,
     KRAAssigneesPresenter,
@@ -83,6 +92,8 @@ export default async (): Promise<Resources> => ({
       queryId: Ref<Doc<Space>>,
       attr: Attribute<Status>
     ) => await getAllStates(query, onUpdate, queryId, attr, false),
+    GetAllKRAs: getAllKRAs,
+    ShowEmptyGroups: showEmptyGroups,
     IsReviewSessionOfCurrentTeam,
     IsActiveReviewSessionOfCurrentTeam,
     IsInactiveReviewSessionOfCurrentTeam

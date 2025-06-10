@@ -5,8 +5,8 @@
   import { Component } from '@hcengineering/ui'
   import { Task } from '@hcengineering/task'
 
-  export let _class: Ref<Class<Doc>>
   export let value: Doc<Space> | undefined = undefined
+  export let _class: Ref<Class<Doc>> | undefined = value?._class
   export let props: Record<string, any> = {}
   export let inline: boolean = false
   export let accent: boolean = false

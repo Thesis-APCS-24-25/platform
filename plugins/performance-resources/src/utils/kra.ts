@@ -1,4 +1,4 @@
-import core, { type AttachedData, type DocumentQuery, type Rank, SortingOrder, type Space, type Status, type Ref, type TxOperations, type Class } from '@hcengineering/core'
+import core, { type AttachedData, type DocumentQuery, type Rank, SortingOrder, type Space, type Status, type Ref, type TxOperations, type Class, Attribute, Doc } from '@hcengineering/core'
 import { type MeasureProgress, type KRA, type KRAStatus, type ReviewSession } from '@hcengineering/performance'
 import performance from '../plugin'
 import task, { getStatusIndex, makeRank, type Task, type ProjectType } from '@hcengineering/task'
@@ -153,4 +153,20 @@ export async function calculateCompletionLevel (task: Ref<Task> | Task): Promise
     }
   }
   return undefined
+}
+
+export async function getAllKRAs (
+  query: DocumentQuery<Doc<Space>> | undefined,
+  onUpdate: () => void,
+  queryId: Ref<Doc<Space>>,
+  attr: Attribute<Status>
+): Promise<Array<Ref<KRA>>> {
+  const client = getClient()
+  if (attr.attributeOf !== performance.class.EmployeeKRA) {
+    return []
+  }
+  const res = (await client.findAll(performance.class.KRA, query as DocumentQuery<KRA>)).map(
+    (kra) => kra._id
+  )
+  return res
 }

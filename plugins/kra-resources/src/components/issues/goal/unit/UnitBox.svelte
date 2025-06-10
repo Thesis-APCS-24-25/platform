@@ -28,6 +28,7 @@
   {size}
   {kind}
   {width}
+  excluded={[kra.ids.RatingScaleUnit]}
   label={kra.string.SelectUnit}
   _class={kra.class.Unit}
   placeholder={kra.string.AddUnit}
