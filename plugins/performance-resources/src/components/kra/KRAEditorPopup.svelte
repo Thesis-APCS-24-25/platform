@@ -7,7 +7,6 @@
   export let docQuery: DocumentQuery<KRA> = { }
 </script>
 
-{value}
 <ObjectPopup
   groupBy="space"
   type="presenter"
