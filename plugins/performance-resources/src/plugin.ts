@@ -21,6 +21,8 @@ import { ViewCategoryAction, type GetAllValuesFunc, type SortFunc } from '@hceng
 
 export default mergeIds(performanceId, performance, {
   string: {
+    Chart: '' as IntlString,
+    AssignedKRAs: '' as IntlString,
     ConcludeReviewSession: '' as IntlString,
     ConcludeReviewSessionMessage: '' as IntlString,
     ConcludeReviewSessionConfirm: '' as IntlString,
