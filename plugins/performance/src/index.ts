@@ -56,7 +56,9 @@ export interface ProgressPresenter extends Class<Task> {
   presenter: AnyComponent
 }
 
-export interface WithKRA extends Task { }
+export interface WithKRA extends Task {
+  kra?: Ref<KRA>
+}
 
 export interface PerformanceReport extends Doc {
   reviewee: Ref<PersonAccount>
