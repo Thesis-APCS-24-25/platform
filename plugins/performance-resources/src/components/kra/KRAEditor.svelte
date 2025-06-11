@@ -21,7 +21,7 @@
   export let width: string | undefined = undefined
   export let object: Task
 
-  async function handleChange(kra: KRA): Promise<void> {
+  async function handleChange (kra: KRA): Promise<void> {
     if (onChange !== undefined && kra !== undefined) {
       await onChange(kra._id)
     }
