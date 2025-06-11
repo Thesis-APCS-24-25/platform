@@ -1,5 +1,25 @@
-import core, { type AttachedData, type DocumentQuery, type Rank, SortingOrder, type Space, type Status, type Ref, type TxOperations, type Class, Attribute, Doc } from '@hcengineering/core'
-import { type MeasureProgress, type KRA, type KRAStatus, type ReviewSession } from '@hcengineering/performance'
+import core, {
+  type AttachedData,
+  type DocumentQuery,
+  type Rank,
+  SortingOrder,
+  type Space,
+  type Status,
+  type Ref,
+  type TxOperations,
+  type Class,
+  type Attribute,
+  type Doc,
+  type Client
+} from '@hcengineering/core'
+import {
+  type MeasureProgress,
+  type KRA,
+  type KRAStatus,
+  type ReviewSession,
+  type EmployeeKRA,
+  type WithKRA
+} from '@hcengineering/performance'
 import performance from '../plugin'
 import task, { getStatusIndex, makeRank, type Task, type ProjectType } from '@hcengineering/task'
 import { type ViewletDescriptor } from '@hcengineering/view'
@@ -62,9 +82,7 @@ export async function kraStatusSort (
   value.sort((a, b) => {
     const aVal = statuses.get(a) as KRAStatus
     const bVal = statuses.get(b) as KRAStatus
-    const res =
-        listKRAStatusOrder.indexOf(aVal._id) -
-        listKRAStatusOrder.indexOf(bVal._id)
+    const res = listKRAStatusOrder.indexOf(aVal._id) - listKRAStatusOrder.indexOf(bVal._id)
     if (res === 0) {
       if (type != null) {
         const aIndex = getStatusIndex(type, taskTypes, a)
@@ -126,14 +144,24 @@ export async function createKRA (
     ...attributes
   }
 
-  return await client.addCollection(performance.class.KRA, space, space, performance.class.ReviewSession, 'kras', object)
+  return await client.addCollection(
+    performance.class.KRA,
+    space,
+    space,
+    performance.class.ReviewSession,
+    'kras',
+    object
+  )
 }
 
 export async function calculateCompletionLevel (task: Ref<Task> | Task): Promise<number | undefined> {
   const client = getClient()
   const hierarchy = client.getHierarchy()
   async function calculate (task: Task): Promise<number | undefined> {
-    const measure = hierarchy.classHierarchyMixin<Class<Task>, MeasureProgress>(task._class, performance.mixin.MeasureProgress)
+    const measure = hierarchy.classHierarchyMixin<Class<Task>, MeasureProgress>(
+      task._class,
+      performance.mixin.MeasureProgress
+    )
     if (measure !== undefined) {
       const fn = await getResource(measure.calculate)
       const d = await fn?.(task._id)
@@ -155,18 +183,35 @@ export async function calculateCompletionLevel (task: Ref<Task> | Task): Promise
   return undefined
 }
 
+async function getKRAsOfEmployeeKRA (client: Client, query: DocumentQuery<EmployeeKRA>): Promise<Array<Ref<KRA>>> {
+  const res = (await client.findAll(performance.class.KRA, query as DocumentQuery<KRA>)).map((kra) => kra._id)
+  return res
+}
+
+async function getKRAsOfTask (client: Client, query: DocumentQuery<WithKRA>): Promise<Array<Ref<KRA>>> {
+  const kra = query.kra.$in?.[0] ?? query.kra
+  if (kra === undefined) {
+    return []
+  }
+  const space = await client
+    .findOne(performance.class.KRA, { _id: kra }, { projection: { space: 1 } })
+    .then((kra) => kra?.space)
+  const res = (await client.findAll(performance.class.KRA, { space })).map((kra) => kra._id)
+  return res
+}
+
 export async function getAllKRAs (
   query: DocumentQuery<Doc<Space>> | undefined,
-  onUpdate: () => void,
-  queryId: Ref<Doc<Space>>,
+  _onUpdate: () => void,
+  _queryId: Ref<Doc<Space>>,
   attr: Attribute<Status>
 ): Promise<Array<Ref<KRA>>> {
   const client = getClient()
-  if (attr.attributeOf !== performance.class.EmployeeKRA) {
-    return []
+  const hierarchy = client.getHierarchy()
+  if (hierarchy.isDerived(attr.attributeOf, performance.class.EmployeeKRA)) {
+    return await getKRAsOfEmployeeKRA(client, query as DocumentQuery<EmployeeKRA>)
+  } else if (hierarchy.isDerived(attr.attributeOf, task.class.Task)) {
+    return await getKRAsOfTask(client, query as DocumentQuery<WithKRA>)
   }
-  const res = (await client.findAll(performance.class.KRA, query as DocumentQuery<KRA>)).map(
-    (kra) => kra._id
-  )
-  return res
+  return []
 }
