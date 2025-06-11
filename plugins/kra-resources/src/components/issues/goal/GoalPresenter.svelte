@@ -13,7 +13,13 @@
   export let justify: 'left' | 'center' = 'left'
   export let width: string | undefined = undefined
   export let focusIndex: number | undefined = undefined
+  export let disabled: boolean | undefined = false
   export let readonly: boolean | undefined = false
+
+  if (readonly || disabled) {
+    readonly = true
+    disabled = true
+  }
 
   const client = getClient()
   const goalQuery = createQuery()
@@ -62,7 +68,8 @@
       justify,
       width,
       focusIndex,
-      readonly
+      readonly,
+      disabled
     }}
   />
 {/if}
