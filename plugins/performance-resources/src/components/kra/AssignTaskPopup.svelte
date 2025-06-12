@@ -1,14 +1,10 @@
 <script lang="ts">
   import performance from '../../plugin'
-  import { getCurrentAccount, Ref } from '@hcengineering/core'
-  import { EmployeeKRA, KRA, ReviewSession, TaskWithKRA, WithKRA } from '@hcengineering/performance'
-  import { Person, PersonAccount } from '@hcengineering/contact'
-  import { createQuery, DocPopup, getClient, ObjectCreate, ObjectPopup } from '@hcengineering/presentation'
-  import view, { ObjectFactory } from '@hcengineering/view'
-  import task, { Task } from '@hcengineering/task'
-  import { ClassPresenter } from '@hcengineering/view-resources'
-  import ClassRefPresenter from '@hcengineering/view-resources/src/components/ClassRefPresenter.svelte'
-  import { personAccountByPersonId, personIdByAccountId } from '@hcengineering/contact-resources'
+  import { Ref } from '@hcengineering/core'
+  import { KRA, ReviewSession } from '@hcengineering/performance'
+  import { createQuery, getClient, ObjectCreate } from '@hcengineering/presentation'
+  import task from '@hcengineering/task'
+  import { Component, Label } from '@hcengineering/ui'
 
   export let kra: Ref<KRA> | undefined = undefined
   export let space: Ref<ReviewSession> | undefined = undefined
@@ -17,62 +13,110 @@
   const hierarchy = client.getHierarchy()
   const factories = hierarchy
     .getDescendants(task.class.Task)
-    .filter((subclass) => {
-      return hierarchy.classHierarchyMixin(subclass, performance.mixin.WithKRA) !== undefined
-    })
+    .filter((c) => !hierarchy.isMixin(c))
     .map((subclass) => {
-      return hierarchy.classHierarchyMixin(subclass, view.mixin.ObjectFactory)
+      const factory = hierarchy.classHierarchyMixin(subclass, performance.mixin.ActionItemFactory)
+      if (factory === undefined) return undefined
+      const label = hierarchy.getClass(subclass)?.label
+      if (label === undefined) return undefined
+      return {
+        component: factory.component,
+        label
+      } satisfies ObjectCreate
     })
     .filter((s) => s !== undefined)
 
-  const create =
-    factories[0]?.component !== undefined
-      ? {
-          component: factories[0].component,
-          label: performance.string.Active
-        }
-      : undefined
-
-  async function handleClose (event: CustomEvent<WithKRA>): Promise<void> {
-    const task = event.detail
-    await client.updateMixin<Task, WithKRA>(task._id, task._class, task.space, performance.mixin.WithKRA, {
-      kra
-    })
-  }
-  const me = $personIdByAccountId.get(getCurrentAccount()._id as Ref<PersonAccount>) ?? null
-
-  let tasks: TaskWithKRA[] = []
-  $: assignedTasks = tasks.filter((task) => task.assignee === me)
-  const taskQuery = createQuery()
-  $: taskQuery.query(
-    performance.mixin.WithKRA,
+  const kraQ = createQuery()
+  let kraValue: KRA | undefined = undefined
+  $: kraQ.query(
+    performance.class.KRA,
     {
-      kra,
-      assignee: $personIdByAccountId.get(getCurrentAccount()._id as Ref<PersonAccount>) ?? null
+      _id: kra
     },
-    (result) => {
-      if (result !== undefined) {
-        tasks = result
+    (res) => {
+      if (res.length > 0) {
+        kraValue = res[0]
+      } else {
+        kraValue = undefined
       }
     },
-    { sort: { createdAt: -1 }, limit: 100 }
+    {
+      limit: 1
+    }
   )
+
+  let selectedFactory: ObjectCreate | undefined = factories[0]
+  $: showSelector = factories.length > 1
 </script>
 
-<DocPopup
-  type="presenter"
-  _class={performance.mixin.WithKRA}
-  size={'large'}
-  {create}
-  selectedObjects={assignedTasks.map((t) => t._id)}
-  objects={tasks}
-  groupBy="_class"
-  closeAfterSelect
-  multiSelect
-  on:close={handleClose}
-  on:update
->
-  <svelte:fragment slot="category" let:item>
-    <ClassRefPresenter value={item._class} />
-  </svelte:fragment>
-</DocPopup>
+<div class="container">
+  <div class="header" class:hidden={!showSelector}>
+    {#each factories as factory}
+      {@const selected = selectedFactory?.label === factory.label}
+      <button
+        class="header-item"
+        class:selected
+        on:click={() => {
+          selectedFactory = factory
+        }}
+      >
+        <Label label={factory.label} />
+      </button>
+    {/each}
+  </div>
+
+  <div class="content">
+    {#if selectedFactory?.component !== undefined}
+      {#key selectedFactory}
+        <Component
+          is={selectedFactory.component}
+          props={{
+            kra: kraValue
+          }}
+          on:close
+        />
+      {/key}
+    {/if}
+  </div>
+</div>
+
+<style lang="scss">
+  .container {
+    display: flex;
+    flex-direction: column;
+    border-radius: 0.5rem;
+    background-color: var(--theme-bg-color);
+  }
+
+  .header {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 0 1rem;
+    background-color: var(--hc-color-background-secondary);
+    border-bottom: 1px solid var(--hc-color-border);
+  }
+
+  .header-item {
+    padding: 0.5rem 1rem;
+    border: none;
+    cursor: pointer;
+
+    &.selected {
+      background-color: var(--theme-button-pressed);
+      border-bottom: 2px solid grey;
+    }
+
+    &:hover &:not(.selected) {
+      background-color: var(--theme-button-hover);
+    }
+  }
+
+  .content {
+    flex-grow: 1;
+  }
+
+  .hidden {
+    display: none;
+  }
+</style>

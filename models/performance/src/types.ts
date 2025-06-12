@@ -1,8 +1,8 @@
-import { ArrOf, Index, Mixin, Model, Prop, TypeBoolean, TypeDate, TypeNumber, TypeRef, TypeString } from '@hcengineering/model'
+import { ArrOf, Index, Mixin, Model, Prop, TypeDate, TypeNumber, TypeRef, TypeString } from '@hcengineering/model'
 
 import performance from './plugin'
 import core, { TClass, TDoc, TStatus, TType } from '@hcengineering/model-core'
-import type { EmployeeKRA, KRA, KRAStatus, MeasureProgress, PerformanceReport, PerformanceReview, ProgressPresenter, ReviewSession, ReviewSessionStatus, WithKRA } from '@hcengineering/performance'
+import type { ActionItemFactory, EmployeeKRA, KRA, KRAStatus, MeasureProgress, PerformanceReport, PerformanceReview, ProgressPresenter, ReviewSession, ReviewSessionStatus, WithKRA } from '@hcengineering/performance'
 import { TProject, TTask } from '@hcengineering/model-task'
 import task, { type Task } from '@hcengineering/task'
 import { Account, type Arr, type Domain, IndexKind, Ref, type Role, type RolesAssignment, type Timestamp, type Type } from '@hcengineering/core'
@@ -30,6 +30,11 @@ export class TMeasureProgress extends TClass implements MeasureProgress {
 @Mixin(performance.mixin.ProgressPresenter, core.class.Class)
 export class TProgressPresenter extends TClass implements ProgressPresenter {
   presenter!: AnyComponent
+}
+
+@Mixin(performance.mixin.ActionItemFactory, core.class.Class)
+export class TActionItemFactory extends TClass implements ActionItemFactory {
+  component!: AnyComponent
 }
 
 @Model(performance.class.ReviewSession, task.class.Project)
