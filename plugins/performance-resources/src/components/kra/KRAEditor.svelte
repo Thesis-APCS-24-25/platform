@@ -2,19 +2,16 @@
   import { DocumentQuery, Ref } from '@hcengineering/core'
   import { KRA } from '@hcengineering/performance'
   import { Button, ButtonKind, ButtonSize, showPopup } from '@hcengineering/ui'
-  import { FixedColumn, ObjectBox } from '@hcengineering/view-resources'
   import performance from '../../plugin'
   import { PersonAccount } from '@hcengineering/contact'
   import { personAccountByPersonId } from '@hcengineering/contact-resources'
-  import { createQuery, getClient } from '@hcengineering/presentation'
+  import { createQuery } from '@hcengineering/presentation'
   import { Task } from '@hcengineering/task'
   import KraEditorPopup from './KRAEditorPopup.svelte'
   import KraRefPresenter from './KRARefPresenter.svelte'
 
-  const client = getClient()
-
   export let value: Ref<KRA>
-  export let onChange: ((ref: Ref<KRA>) => void | Promise<void>) | undefined
+  export let onChange: ((ref: Ref<KRA> | undefined) => void | Promise<void>) | undefined
   export let readonly = false
   export let kind: ButtonKind = 'primary'
   export let size: ButtonSize = 'large'
@@ -45,7 +42,7 @@
         const krasOfAssignee: Ref<KRA>[] | undefined = result.map((it) => it.kra)
         if (!krasOfAssignee.includes(value)) {
           if (onChange !== undefined) {
-            void onChange('' as Ref<KRA>)
+            await onChange(performance.ids.NoKRARef)
           }
         }
         kraDocQuery = {
@@ -53,7 +50,7 @@
         }
       } else {
         if (onChange !== undefined) {
-          await onChange('' as Ref<KRA>)
+          await onChange(performance.ids.NoKRARef)
         }
         kraDocQuery = { _id: { $in: [performance.ids.NoKRARef] } }
       }
