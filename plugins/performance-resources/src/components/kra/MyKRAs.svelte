@@ -56,6 +56,9 @@
         {listProvider}
         createItemLabel={performance.string.CreateKRA}
         createItemDialog={AssignTaskPopup}
+        createItemDialogProps={{
+          assignee: me
+        }}
         _class={performance.mixin.WithKRA}
         config={[
           '',

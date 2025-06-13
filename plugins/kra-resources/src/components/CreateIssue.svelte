@@ -99,6 +99,7 @@
   export let space: Ref<Project> | undefined
   export let status: Ref<IssueStatus> | undefined = undefined
   export let priority: IssuePriority | undefined = undefined
+  export let kra: Ref<KRA> | undefined = undefined
   export let assignee: Ref<Employee> | null = null
   export let relatedTo: Doc | undefined
   export let shouldSaveDraft: boolean = true
@@ -186,7 +187,7 @@
       labels: [],
       parentIssue: parentIssue?._id,
       subIssues: [],
-      kra: performance.ids.NoKRARef
+      kra: kra ?? performance.ids.NoKRARef
     }
     if (originalIssue !== undefined && !ignoreOriginal) {
       const res: IssueDraft = {
@@ -504,8 +505,7 @@
         childInfo: [],
         kind,
         identifier,
-        goal: object.goal,
-        kra: object.kra
+        goal: object.goal
       }
 
       if (!isEmptyMarkup(object.description)) {
@@ -544,7 +544,9 @@
           }
         }
       }
-      await operations.createMixin<Task, WithKRA>(_id, tracker.class.Issue, object.space, performance.mixin.WithKRA, {})
+      await operations.createMixin<Task, WithKRA>(_id, tracker.class.Issue, object.space, performance.mixin.WithKRA, {
+        kra: object.kra ?? performance.ids.NoKRARef
+      })
 
       await descriptionBox?.createAttachments(_id, operations)
       const result = await operations.commit()
@@ -762,6 +764,10 @@
   let krasOfAssignee: Ref<KRA>[] | undefined
   let kraDocQuery: DocumentQuery<KRA> = { _id: { $in: [performance.ids.NoKRARef] } }
 
+  $: if (assignee != null) {
+    updateKRAs(assignee)
+  }
+
   function updateKRAs (assignee: Ref<Person>): void {
     const personAccount = ($personAccountByPersonId.get(assignee) ?? [{ _id: '' as Ref<PersonAccount> }])[0]._id
     void client.findAll(
@@ -770,7 +776,6 @@
         employee: personAccount
       }
     ).then((result) => {
-      console.log(result)
       if (result !== undefined && result.length > 0) {
         krasOfAssignee = result.map(it => it.kra)
         kraDocQuery = {

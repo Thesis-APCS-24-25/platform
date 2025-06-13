@@ -1,13 +1,15 @@
 <script lang="ts">
+  import { Person } from '@hcengineering/contact'
   import performance from '../../plugin'
   import { Ref } from '@hcengineering/core'
   import { KRA, ReviewSession } from '@hcengineering/performance'
-  import { createQuery, getClient, ObjectCreate } from '@hcengineering/presentation'
+  import { getClient, ObjectCreate } from '@hcengineering/presentation'
   import task from '@hcengineering/task'
   import { Component, Label } from '@hcengineering/ui'
 
   export let kra: Ref<KRA> | undefined = undefined
   export let space: Ref<ReviewSession> | undefined = undefined
+  export let assignee: Ref<Person> | undefined = undefined
 
   const client = getClient()
   const hierarchy = client.getHierarchy()
@@ -25,25 +27,6 @@
       } satisfies ObjectCreate
     })
     .filter((s) => s !== undefined)
-
-  const kraQ = createQuery()
-  let kraValue: KRA | undefined = undefined
-  $: kraQ.query(
-    performance.class.KRA,
-    {
-      _id: kra
-    },
-    (res) => {
-      if (res.length > 0) {
-        kraValue = res[0]
-      } else {
-        kraValue = undefined
-      }
-    },
-    {
-      limit: 1
-    }
-  )
 
   let selectedFactory: ObjectCreate | undefined = factories[0]
   $: showSelector = factories.length > 1
@@ -71,7 +54,8 @@
         <Component
           is={selectedFactory.component}
           props={{
-            kra: kraValue
+            kra,
+            assignee
           }}
           on:close
         />
