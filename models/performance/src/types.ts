@@ -1,4 +1,4 @@
-import { ArrOf, Index, Mixin, Model, Prop, TypeDate, TypeNumber, TypeRef, TypeString } from '@hcengineering/model'
+import { ArrOf, Hidden, Index, Mixin, Model, Prop, TypeDate, TypeNumber, TypeRef, TypeString } from '@hcengineering/model'
 
 import performance from './plugin'
 import core, { TClass, TDoc, TStatus, TType } from '@hcengineering/model-core'
@@ -35,6 +35,7 @@ import contact, { Person, type PersonAccount } from '@hcengineering/contact'
 import { type Resource } from '@hcengineering/platform'
 import { type AnyComponent } from '@hcengineering/ui'
 import kraTeam, { type Member } from '@hcengineering/kra-team'
+import view from '@hcengineering/view'
 
 export const DOMAIN_PERFORMANCE = 'performance' as Domain
 
@@ -73,6 +74,10 @@ export class TReviewSession extends TProject implements ReviewSession {
 
   @Prop(TypeReviewSessionStatus(), performance.string.ReviewSessionStatus)
     status?: ReviewSessionStatus
+
+  @Prop(TypeNumber(), task.string.TaskNumber)
+  @Hidden()
+    sequence!: number
 }
 
 @Model(performance.class.KRA, task.class.Task, DOMAIN_PERFORMANCE)
@@ -93,19 +98,13 @@ export class TKRA extends TTask implements KRA {
 
 @Model(performance.class.EmployeeKRA, core.class.Doc, DOMAIN_PERFORMANCE)
 export class TEmployeeKRA extends TTask implements EmployeeKRA {
-  @Prop(TypeRef(performance.class.KRA), performance.string.AttachedKRA)
-    kra!: Ref<KRA>
-
   @Prop(TypeRef(kraTeam.mixin.Member), performance.string.Assignee)
   declare assignee: Ref<Member>
-
-  @Prop(TypeRef(contact.class.PersonAccount), performance.string.AttachedEmployee)
-    employee!: Ref<PersonAccount>
 
   @Prop(TypeNumber(), performance.string.KRAWeight)
     weight!: number
 
-  @Prop(TypeRef(performance.class.KRA), performance.string.KRA)
+  @Prop(TypeRef(performance.class.KRA), performance.string.AttachedKRA)
   declare attachedTo: Ref<KRA>
 }
 
