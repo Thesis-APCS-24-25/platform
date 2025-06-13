@@ -2,12 +2,13 @@
   import { PersonAccount } from '@hcengineering/contact'
   import { Ref } from '@hcengineering/core'
   import performance from '../../plugin'
-  import { PersonAccountRefPresenter } from '@hcengineering/contact-resources'
+  import { PersonAccountRefPresenter, PersonPresenter, PersonRefPresenter } from '@hcengineering/contact-resources'
   import { Button, Icon, IconInfo, Label } from '@hcengineering/ui'
   import presentation from '@hcengineering/presentation'
   import { createEventDispatcher } from 'svelte'
+  import { Member } from '@hcengineering/kra-team'
 
-  export let members: Ref<PersonAccount>[] = []
+  export let members: Ref<Member>[] = []
 
   const dispatch = createEventDispatcher()
 </script>
@@ -21,7 +22,7 @@
   <div class="flex-row-center justify-left m-4">
     {#each members as value}
       <div class="item">
-        <PersonAccountRefPresenter {value} disabled/>
+        <PersonRefPresenter {value} disabled/>
       </div>
     {/each}
   </div>

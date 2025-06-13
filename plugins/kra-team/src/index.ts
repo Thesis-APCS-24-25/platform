@@ -20,6 +20,7 @@ export default plugin(kraTeamId, {
     NoMembers: '' as IntlString
   },
   class: {
+    Member: '' as Ref<Class<Member>>,
     Team: '' as Ref<Class<Team>>,
     TeamType: '' as Ref<Class<TeamType>>,
     TeamTypeDescriptor: '' as Ref<Class<TeamTypeDescriptor>>

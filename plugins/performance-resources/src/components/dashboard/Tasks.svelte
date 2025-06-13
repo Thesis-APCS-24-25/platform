@@ -1,26 +1,28 @@
 <script lang="ts">
-  import { getCurrentAccount, Ref, SortingOrder } from '@hcengineering/core'
+  import { FindOptions, getCurrentAccount, Ref, SortingOrder } from '@hcengineering/core'
   import { Scroller } from '@hcengineering/ui'
   import view from '@hcengineering/view'
-  import { ListSelectionProvider, List } from '@hcengineering/view-resources'
+  import { ListSelectionProvider, List, getCurrentPersonAccounts } from '@hcengineering/view-resources'
   import ProgressPresenter from '../kra/ProgressPresenter.svelte'
   import performance from '../../plugin'
   import KraWeightEditorWithPopup from '../kra/KRAWeightEditorWithPopup.svelte'
-  import { KRA, ReviewSession } from '@hcengineering/performance'
+  import { KRA, ReviewSession, WithKRA } from '@hcengineering/performance'
   import task from '@hcengineering/task'
   import { createQuery } from '@hcengineering/presentation'
-  import { PersonAccount } from '@hcengineering/contact'
+  import { Person, PersonAccount } from '@hcengineering/contact'
+  import { personIdByAccountId } from '@hcengineering/contact-resources'
 
   export let space: Ref<ReviewSession>
 
   const userId = getCurrentAccount()._id as Ref<PersonAccount>
+  const me = $personIdByAccountId.get(userId)
 
   let assignedKRAs: Ref<KRA>[] = []
   const assignedKRAsQuery = createQuery()
   $: assignedKRAsQuery.query(
     performance.class.EmployeeKRA,
     {
-      employee: userId,
+      assignee: me ?? ('' as Ref<Person>),
       space
     },
     (res) => {
@@ -31,10 +33,14 @@
     }
   )
 
-
   let scroll: Scroller
   let divScroll: HTMLDivElement
   const listProvider = new ListSelectionProvider((offset: 1 | -1 | 0) => {})
+  const options: FindOptions<WithKRA> = {
+    lookup: {
+      kra: performance.class.KRA
+    }
+  }
 </script>
 
 <div class="w-full h-full py-4 clear-mins">
@@ -65,11 +71,7 @@
         query={{
           kra: { $in: assignedKRAs }
         }}
-        options={{
-          lookup: {
-            kra: performance.class.KRA
-          }
-        }}
+        {options}
         viewOptionsConfig={[
           {
             key: 'shouldShowAll',

@@ -26,7 +26,7 @@
         label
       } satisfies ObjectCreate
     })
-    .filter((s) => s !== undefined)
+    .filter((s) => s !== undefined) as ObjectCreate[]
 
   let selectedFactory: ObjectCreate | undefined = factories[0]
   $: showSelector = factories.length > 1

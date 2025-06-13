@@ -82,7 +82,7 @@
       </div>
     {/if}
   </div>
-{:else if currentMode === 'tasks'}
+{:else if currentMode === 'tasks' && currentSpace !== undefined}
   <Tasks space={currentSpace}/>
 {/if}
 

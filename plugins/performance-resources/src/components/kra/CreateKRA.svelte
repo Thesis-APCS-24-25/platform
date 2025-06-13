@@ -82,6 +82,7 @@
       rank: makeRank(lastOne?.rank, undefined),
       kraStatus: performance.kraStatus.Drafting,
       assignee: null,
+      assignedTo: [],
       color: getColorNumberByText(colorString),
       description,
       dueDate: null

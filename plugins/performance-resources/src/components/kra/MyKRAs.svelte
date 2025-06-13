@@ -15,7 +15,7 @@
   export let currentSpace: Ref<Space>
 
   const userId = getCurrentAccount()._id as Ref<PersonAccount>
-  const me = $personIdByAccountId.get(getCurrentAccount()._id as Ref<PersonAccount>) ?? null
+  const me = $personIdByAccountId.get(getCurrentAccount()._id as Ref<PersonAccount>)
   const actionItemQuery = createQuery()
   let tasks: WithKRA[] = []
   $: actionItemQuery.query(performance.mixin.WithKRA, {}, (res) => {
@@ -29,7 +29,7 @@
   $: assignedKRAsQuery.query(
     performance.class.EmployeeKRA,
     {
-      employee: userId,
+      assignee: me,
       space: currentSpace
     },
     (res) => {

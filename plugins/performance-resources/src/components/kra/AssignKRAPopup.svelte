@@ -2,13 +2,10 @@
   import presentation, { Card, createQuery, getClient, MessageBox } from '@hcengineering/presentation'
   import performance from '../../plugin'
   import { ObjectBox, ObjectBoxPopup } from '@hcengineering/view-resources'
-  import { Data, Ref } from '@hcengineering/core'
+  import { AttachedData, Ref } from '@hcengineering/core'
   import { EmployeeKRA, KRA, ReviewSession } from '@hcengineering/performance'
-  import {
-    personAccountByPersonId,
-    PersonAccountRefPresenter,
-    personIdByAccountId
-  } from '@hcengineering/contact-resources'
+  import { personIdByAccountId, PersonRefPresenter } from '@hcengineering/contact-resources'
+
   import KraWeightEditorWithPopup from './KRAWeightEditorWithPopup.svelte'
   import { Button, eventToHTMLElement, IconAdd, IconClose, showPopup } from '@hcengineering/ui'
   import kraTeam, { Member } from '@hcengineering/kra-team'
@@ -18,8 +15,8 @@
   export let kra: Ref<KRA> | undefined = undefined
   export let space: Ref<ReviewSession> | undefined = undefined
   export let assigns: Array<EmployeeKRA> | undefined = undefined
-  let newAssigns: Array<Data<EmployeeKRA>> = []
-  let tempAssigns: Array<Data<EmployeeKRA>> = []
+  let newAssigns: Array<AttachedData<EmployeeKRA>> = []
+  let tempAssigns: Array<AttachedData<EmployeeKRA>> = []
 
   const client = getClient()
   const query = createQuery()
@@ -34,13 +31,12 @@
     },
     (res) => {
       rsMembers =
-        res[0]?.members.map((m) => $personIdByAccountId.get(m as Ref<PersonAccount>)).filter((m) => m !== undefined) ??
+        (res[0]?.members.map((m) => $personIdByAccountId.get(m as Ref<PersonAccount>)).filter((m) => m !== undefined) as Ref<Member>[]) ??
         []
     }
   )
   $: ignoreObjects = [...(assigns ?? []), ...(newAssigns ?? [])]
-    .map((s) => $personIdByAccountId.get(s.employee))
-    .filter((s) => s !== undefined)
+    .map((s) => s.assignee)
   $: if (assigns === undefined && kra !== undefined) {
     query.query(
       performance.class.EmployeeKRA,
@@ -69,19 +65,13 @@
     if (kra !== undefined && data !== undefined) {
       const v = kra
       tempAssigns = [
-        ...data
-          .map((mem) => {
-            const p = $personAccountByPersonId.get(mem)
-            return p?.[0]
-          })
-          .filter((it) => it !== undefined)
-          .map((it) => {
-            return {
-              kra: v,
-              employee: (it as PersonAccount)._id,
-              weight: 0
-            }
-          })
+        ...data.map((it) => {
+          return {
+            kra: v,
+            assignee: it,
+            weight: 0
+          }
+        })
       ]
     }
   }
@@ -92,13 +82,14 @@
         newAssigns = []
       }
       newAssigns = [...newAssigns, ...tempAssigns]
+      console.log('newAssigns', newAssigns)
       tempAssigns = []
     }
   }
 
-  function newAssignWeightUpdate (assign: Data<EmployeeKRA>, weight: number): void {
+  function newAssignWeightUpdate (assign: AttachedData<EmployeeKRA>, weight: number): void {
     if (newAssigns !== undefined) {
-      const index = newAssigns.findIndex((it) => it.employee === assign.employee)
+      const index = newAssigns.findIndex((it) => it.assignee === assign.assignee)
       if (index !== -1) {
         newAssigns[index].weight = weight
       }
@@ -110,9 +101,10 @@
   async function handleSave (): Promise<void> {
     if (kra !== undefined && newAssigns !== undefined && newAssigns.length > 0 && space !== undefined) {
       for (const assign of newAssigns) {
-        await client.createDoc(performance.class.EmployeeKRA, space, {
+        await client.addCollection(performance.class.EmployeeKRA, space, kra, performance.class.KRA, 'kras', {
+          // TODO: remove this when we done migrating to AttachedDoc
           kra,
-          employee: assign.employee,
+          assignee: assign.assignee,
           weight: assign.weight
         })
         newAssigns = []
@@ -145,8 +137,8 @@
       {#each assigns as assign}
         <div class="flex-row-center assign-pill pl-1">
           <div class="flex-row-center flex-gap-1">
-            <PersonAccountRefPresenter value={assign.employee} disabled />
-            <KraWeightEditorWithPopup value={assign} {space}/>
+            <PersonRefPresenter value={assign.assignee} disabled />
+            <KraWeightEditorWithPopup value={assign} {space} />
           </div>
           <Button
             kind="ghost"
@@ -178,7 +170,7 @@
     {#each [...newAssigns, ...tempAssigns] as assign}
       <div class="flex-row-center assign-pill pl-1 new">
         <div class="flex-row-center flex-gap-1">
-          <PersonAccountRefPresenter value={assign.employee} disabled />
+          <PersonRefPresenter value={assign.assignee} disabled />
           <KraWeightEditorWithPopup {space} value={assign} onUpdate={newAssignWeightUpdate.bind(null, assign)} />
         </div>
         <Button

@@ -14,8 +14,22 @@
 // limitations under the License.
 //
 
-import { type PersonAccount } from '@hcengineering/contact'
-import type { Arr, Attribute, Class, Doc, Mixin, Obj, Ref, SpaceType, SpaceTypeDescriptor, Status, Timestamp, Type } from '@hcengineering/core'
+import { Person, type PersonAccount } from '@hcengineering/contact'
+import type {
+  Arr,
+  AttachedDoc,
+  Attribute,
+  Class,
+  Doc,
+  Mixin,
+  Ref,
+  SpaceType,
+  SpaceTypeDescriptor,
+  Status,
+  Timestamp,
+  Type
+} from '@hcengineering/core'
+import { Member } from '@hcengineering/kra-team'
 import { Asset, IntlString, plugin, Plugin, Resource } from '@hcengineering/platform'
 import type { Project, ProjectType, Task, TaskType, TaskTypeDescriptor } from '@hcengineering/task'
 import { AnyComponent } from '@hcengineering/ui'
@@ -33,18 +47,22 @@ export interface ReviewSession extends Project {
   reviewSessionStart: Timestamp
   reviewSessionEnd: Timestamp
   status?: ReviewSessionStatus
+  sequence: number
 }
 
 export interface KRA extends Task {
   title: string
-  description: string
   kraStatus: Ref<KRAStatus>
+  description: string
   color?: number
+  // keep track of assigned members, will be updated in server
+  assignedTo: Array<Ref<Person>>
 }
 
-export interface EmployeeKRA extends Doc {
+export interface EmployeeKRA extends AttachedDoc<KRA> {
+  attachedTo: Ref<KRA>
   kra: Ref<KRA>
-  employee: Ref<PersonAccount>
+  assignee: Ref<Member>
   weight: number
 }
 

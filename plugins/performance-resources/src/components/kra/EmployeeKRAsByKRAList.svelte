@@ -36,14 +36,6 @@
       }
     }
   }
-
-  function listHeaderColor (category: Ref<KRA>): string {
-    const color = kraById.get(category)?.color
-    return color !== undefined
-      ? getPlatformColorDef(color, $themeStore.dark)?.background ?? 'var(--header-bg-color)'
-      : 'var(--header-bg-color)'
-  }
-
   const listProvider = new ListSelectionProvider((offset: 1 | -1 | 0) => {})
 </script>
 
@@ -57,7 +49,10 @@
     {listProvider}
     config={[
       {
-        key: 'employee'
+        key: 'assignee',
+        props: {
+          disabled: true
+        }
       },
       {
         key: '',

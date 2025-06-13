@@ -139,6 +139,7 @@ export async function createKRA (
     number,
     rank,
     assignee: null,
+    assignedTo: [],
     identifier: `KRA-${number}`,
     description,
     ...attributes

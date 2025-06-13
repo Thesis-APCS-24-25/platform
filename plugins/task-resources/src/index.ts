@@ -304,10 +304,7 @@ export async function getAllStates (
       .filter((p) => p?.category !== task.statusCategory.Lost && p?.category !== task.statusCategory.Won)
       .map((p) => p?._id)
   } else {
-    const sts = allStates.map((p) => p?._id)
-    console.log('getAllStates', sts)
-    sts.push('hello')
-    return sts
+    return allStates.map((p) => p?._id)
   }
 }
 

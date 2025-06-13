@@ -76,10 +76,10 @@
         labelParams={{ subIssues: 0 }}
         kind={'ghost'}
         showTooltip={{ label: performance.string.AssignTo, direction: 'bottom' }}
-        on:click={(e) => {
+        on:click={() => {
           isCollapsed = false
           closeTooltip()
-          openNewAssigneeDialog(e)
+          openNewAssigneeDialog()
         }}
       />
     {/if}

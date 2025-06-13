@@ -5,7 +5,7 @@
   import { createQuery } from '@hcengineering/presentation'
   import type { ButtonKind, ButtonSize } from '@hcengineering/ui'
   import { Label, tooltip } from '@hcengineering/ui'
-  import { UserInfo, CombineAvatars, personIdByAccountId, personByIdStore } from '@hcengineering/contact-resources'
+  import { UserInfo, CombineAvatars, personByIdStore } from '@hcengineering/contact-resources'
   import performance from '../../plugin'
   import { EmployeeKRA, KRA } from '@hcengineering/performance'
   import kraTeam from '@hcengineering/kra-team'
@@ -38,7 +38,7 @@
     return (items ?? []).filter((it, idx, arr) => it !== undefined && arr.indexOf(it) === idx) as Ref<Person>[]
   }
 
-  $: persons = filter(items.map((i) => $personIdByAccountId.get(i.employee)))
+  $: persons = filter(items.map((i) => i.assignee))
     .map((p) => $personByIdStore.get(p))
     .filter((p) => p !== undefined)
     .map((p) => p as Person)

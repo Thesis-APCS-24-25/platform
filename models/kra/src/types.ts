@@ -81,7 +81,7 @@ import {
 } from '@hcengineering/kra'
 import kra from './plugin'
 import { type TaskType } from '@hcengineering/task'
-import performance, { WithKRA, type KRA } from '@hcengineering/performance'
+import performance, { type WithKRA, type KRA } from '@hcengineering/performance'
 
 import preference, { TPreference } from '@hcengineering/model-preference'
 
@@ -306,23 +306,13 @@ export class TIssue extends TTask implements Issue {
 
   @Prop(TypeRef(kra.class.Goal), kra.string.Goal)
     goal?: Ref<Goal>
-
-  @Prop(TypeRef(performance.class.KRA), performance.string.KRA)
-    kra!: Ref<KRA>
 }
 /**
  * @public
  */
 
 @Model(kra.class.IssueTemplate, core.class.Doc, DOMAIN_KRA)
-@UX(
-  kra.string.IssueTemplate,
-  kra.icon.IssueTemplates,
-  'PROCESS',
-  undefined,
-  undefined,
-  kra.string.IssueTemplates
-)
+@UX(kra.string.IssueTemplate, kra.icon.IssueTemplates, 'PROCESS', undefined, undefined, kra.string.IssueTemplates)
 export class TIssueTemplate extends TDoc implements IssueTemplate {
   @Prop(TypeString(), kra.string.Title)
   @Index(IndexKind.FullText)
@@ -430,5 +420,5 @@ export class TReportAggregator extends TClass implements ReportAggregator {
 @UX(performance.string.KRA, performance.icon.KRA, 'WKRA', 'kra')
 export class TWithKRA extends TIssue implements WithKRA {
   @Prop(TypeRef(performance.class.KRA), performance.string.KRA)
-    kra?: Ref<KRA>
+  kra?: Ref<KRA>
 }

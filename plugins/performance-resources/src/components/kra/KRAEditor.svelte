@@ -3,12 +3,11 @@
   import { KRA } from '@hcengineering/performance'
   import { Button, ButtonKind, ButtonSize, showPopup } from '@hcengineering/ui'
   import performance from '../../plugin'
-  import { PersonAccount } from '@hcengineering/contact'
-  import { personAccountByPersonId } from '@hcengineering/contact-resources'
   import { createQuery } from '@hcengineering/presentation'
   import { Task } from '@hcengineering/task'
   import KraEditorPopup from './KRAEditorPopup.svelte'
   import KraRefPresenter from './KRARefPresenter.svelte'
+  import { Member } from '@hcengineering/kra-team'
 
   export let value: Ref<KRA>
   export let onChange: ((ref: Ref<KRA> | undefined) => void | Promise<void>) | undefined
@@ -26,16 +25,11 @@
 
   let kraDocQuery: DocumentQuery<KRA> = { _id: { $in: [performance.ids.NoKRARef] } }
 
-  $: personAccount =
-    object.assignee != null
-      ? ($personAccountByPersonId.get(object.assignee) ?? [{ _id: '' as Ref<PersonAccount> }])[0]._id
-      : ('' as Ref<PersonAccount>)
-
   const employeeKRAQuery = createQuery()
   $: employeeKRAQuery.query(
     performance.class.EmployeeKRA,
     {
-      employee: personAccount
+      assignee: object.assignee ?? '' as Ref<Member>
     },
     async (result) => {
       if (result !== undefined && result.length > 0) {

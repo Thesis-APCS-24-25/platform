@@ -17,6 +17,8 @@ import { getClient } from '@hcengineering/presentation'
 import { currentTeam } from './team'
 import { get } from 'svelte/store'
 import { type PersonAccount } from '@hcengineering/contact'
+import { type Member } from '@hcengineering/kra-team'
+import { personIdByAccountId } from '@hcengineering/contact-resources'
 
 export async function createReviewSession (
   client: TxOperations,
@@ -28,6 +30,7 @@ export async function createReviewSession (
   type: Ref<ProjectType>
 ): Promise<Ref<ReviewSession>> {
   const reviewSessionRef = await client.createDoc(performance.class.ReviewSession, team, {
+    sequence: 0,
     reviewSessionStart,
     reviewSessionEnd,
     name,
@@ -142,29 +145,33 @@ export async function IsInactiveReviewSessionOfCurrentTeam (space: Space): Promi
 export async function doKRAWeightCheck (
   client: Client,
   reviewSession: ReviewSession
-): Promise<Map<Ref<PersonAccount>, boolean>> {
+): Promise<Map<Ref<Member>, boolean>> {
   const kraWeights = await client.findAll(performance.class.EmployeeKRA, {
     space: reviewSession._id
   })
 
   const members = reviewSession.members ?? []
-  let mapped: Map<Ref<PersonAccount>, number> = members.reduce((acc, member) => {
-    acc.set(member as Ref<PersonAccount>, 0)
+  let mapped: Map<Ref<Member>, number> = members.reduce((acc, member) => {
+    const person = get(personIdByAccountId).get(member as Ref<PersonAccount>)
+    if (person === undefined) {
+      return acc
+    }
+    acc.set(person, 0)
     return acc
-  }, new Map<Ref<PersonAccount>, number>())
+  }, new Map<Ref<Member>, number>())
 
   mapped = kraWeights.reduce((acc, kra) => {
-    acc.set(kra.employee, (acc.get(kra.employee) ?? 0) + kra.weight)
+    acc.set(kra.assignee, (acc.get(kra.assignee) ?? 0) + kra.weight)
     return acc
   }, mapped)
-  const data: Array<[Ref<PersonAccount>, number]> = []
+  const data: Array<[Ref<Member>, number]> = []
   mapped.forEach((weight, employee) => {
     data.push([employee, weight])
   })
   return data.reduce((acc, [employee, weight]) => {
     acc.set(employee, Math.abs(weight - 1) < 0.0001)
     return acc
-  }, new Map<Ref<PersonAccount>, boolean>())
+  }, new Map<Ref<Member>, boolean>())
 }
 
 export async function startReviewSession (reviewSession: ReviewSession): Promise<void> {

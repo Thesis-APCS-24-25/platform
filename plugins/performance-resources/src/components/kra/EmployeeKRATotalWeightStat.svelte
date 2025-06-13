@@ -22,7 +22,7 @@
   $: warning = shouldWarn(sum)
 </script>
 
-{#if docs !== undefined && category === 'employee'}
+{#if docs !== undefined && category === 'assignee'}
   <FixedColumn key="weight">
     <div
       class="flex-row-center flex-gap-1 total-weight"

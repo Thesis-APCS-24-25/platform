@@ -62,7 +62,7 @@
 <Scroller shrink>
   {#if activeReviewSessionModel === undefined || draftingReviewSessionModel === undefined || concludedReviewSessionModel === undefined}
     <Label label={performance.string.NoTeam} />
-  {:else}
+  {:else if currentSpace === undefined}
     <ActiveReviewSessionNav
       {reviewSessions}
       model={activeReviewSessionModel}
