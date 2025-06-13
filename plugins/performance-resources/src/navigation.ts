@@ -91,14 +91,14 @@ export const navigatorModel = derived([currentTeam, permissionsStore], ([team, p
               ]
             : []),
           {
-            id: 'kras',
-            label: performance.string.KRA,
-            component: performance.component.AllKRAs
-          },
-          {
             id: 'my-kras',
             label: performance.string.MyKRAs,
             component: performance.component.MyKRAs
+          },
+          {
+            id: 'kras',
+            label: performance.string.AssignedKRAs,
+            component: performance.component.AllKRAs
           },
           {
             id: 'my-reports',
@@ -118,7 +118,7 @@ export const navigatorModel = derived([currentTeam, permissionsStore], ([team, p
         specials: [
           {
             id: 'kras',
-            label: performance.string.KRA,
+            label: performance.string.AssignedKRAs,
             component: performance.component.AllKRAs
           }
         ]
@@ -138,14 +138,14 @@ export const navigatorModel = derived([currentTeam, permissionsStore], ([team, p
               ]
             : []),
           {
-            id: 'kras',
-            label: performance.string.KRA,
-            component: performance.component.AllKRAs
-          },
-          {
             id: 'my-kras',
             label: performance.string.MyKRAs,
             component: performance.component.MyKRAs
+          },
+          {
+            id: 'kras',
+            label: performance.string.AssignedKRAs,
+            component: performance.component.AllKRAs
           },
           {
             id: 'my-reports',

@@ -1,21 +1,21 @@
 <script lang="ts">
   import { Ref, SortingOrder, Space, getCurrentAccount } from '@hcengineering/core'
-  import { Breadcrumb, getPlatformColorDef, Header, Scroller, themeStore } from '@hcengineering/ui'
-  import { createQuery } from '@hcengineering/presentation'
+  import { Breadcrumb, Header, Scroller } from '@hcengineering/ui'
+  import { createQuery, getClient } from '@hcengineering/presentation'
   import performance from '../../plugin'
   import { PersonAccount } from '@hcengineering/contact'
   import { KRA, WithKRA } from '@hcengineering/performance'
-  import GroupedList from '../ui/GroupedList.svelte'
-  import KraRefPresenter from './KRARefPresenter.svelte'
-  import { FixedColumn, List, ListSelectionProvider } from '@hcengineering/view-resources'
-  import TaskPresenter from '@hcengineering/task-resources/src/components/TaskPresenter.svelte'
-  import StateRefPresenter from '@hcengineering/task-resources/src/components/state/StateRefPresenter.svelte'
+  import { List, ListSelectionProvider } from '@hcengineering/view-resources'
   import ProgressPresenter from './ProgressPresenter.svelte'
   import view from '@hcengineering/view'
+  import AssignTaskPopup from './AssignTaskPopup.svelte'
+  import task from '@hcengineering/task'
+  import { personIdByAccountId } from '@hcengineering/contact-resources'
 
   export let currentSpace: Ref<Space>
 
   const userId = getCurrentAccount()._id as Ref<PersonAccount>
+  const me = $personIdByAccountId.get(getCurrentAccount()._id as Ref<PersonAccount>) ?? null
   const actionItemQuery = createQuery()
   let tasks: WithKRA[] = []
   $: actionItemQuery.query(performance.mixin.WithKRA, {}, (res) => {
@@ -54,6 +54,9 @@
     <div class="flex-col-stretch flex-gap-2">
       <List
         {listProvider}
+        createItemLabel={performance.string.CreateKRA}
+        createItemDialog={AssignTaskPopup}
+        _class={performance.mixin.WithKRA}
         config={[
           '',
           {
@@ -73,7 +76,8 @@
         ]}
         configurations={undefined}
         query={{
-          kra: { $in: assignedKRAs }
+          kra: { $in: [...assignedKRAs, null, undefined, performance.ids.NoKRARef] },
+          assignee: me
         }}
         viewOptionsConfig={[
           {
@@ -89,47 +93,46 @@
           groupBy: ['kra'],
           orderBy: ['kra', SortingOrder.Ascending]
         }}
-        _class={performance.mixin.WithKRA}
       />
 
-      <GroupedList key="kra" items={tasks} categories={assignedKRAs}>
-        <svelte:fragment slot="header" let:category let:count>
-          <div class="flex-row-center flex-grow" style:color={'inherit'}>
-            <KraRefPresenter value={category} kind="list-header" type="text" />
-            <span class="ml-2 font-medium-12">{count}</span>
-          </div>
-        </svelte:fragment>
-
-        <svelte:fragment slot="item" let:item>
-          <div class="m-4 flex-row-center justify-between flex-grow" style:minHeight={'3rem'}>
-            <div class="flex-row-center">
-              <FixedColumn key="id" addClass="pr-4">
-                <TaskPresenter value={item} />
-              </FixedColumn>
-              <FixedColumn key="status" justify="end" addClass="pr-4">
-                <StateRefPresenter value={item.status} space={item.space} shouldShowName={false} />
-              </FixedColumn>
-              <FixedColumn key="name" addClass="pr-4">
-                <span class="text-ellipsis">
-                  {item.title}
-                </span>
-              </FixedColumn>
-            </div>
-
-            <div class="flex-row-center">
-              <FixedColumn key="progress" justify="end">
-                <ProgressPresenter
-                  _class={item._class}
-                  value={item}
-                  props={{
-                    readonly: true
-                  }}
-                />
-              </FixedColumn>
-            </div>
-          </div>
-        </svelte:fragment>
-      </GroupedList>
+      <!-- <GroupedList key="kra" items={tasks} categories={assignedKRAs}> -->
+      <!--   <svelte:fragment slot="header" let:category let:count> -->
+      <!--     <div class="flex-row-center flex-grow" style:color={'inherit'}> -->
+      <!--       <KraRefPresenter value={category} kind="list-header" type="text" /> -->
+      <!--       <span class="ml-2 font-medium-12">{count}</span> -->
+      <!--     </div> -->
+      <!--   </svelte:fragment> -->
+      <!---->
+      <!--   <svelte:fragment slot="item" let:item> -->
+      <!--     <div class="m-4 flex-row-center justify-between flex-grow" style:minHeight={'3rem'}> -->
+      <!--       <div class="flex-row-center"> -->
+      <!--         <FixedColumn key="id" addClass="pr-4"> -->
+      <!--           <TaskPresenter value={item} /> -->
+      <!--         </FixedColumn> -->
+      <!--         <FixedColumn key="status" justify="end" addClass="pr-4"> -->
+      <!--           <StateRefPresenter value={item.status} space={item.space} shouldShowName={false} /> -->
+      <!--         </FixedColumn> -->
+      <!--         <FixedColumn key="name" addClass="pr-4"> -->
+      <!--           <span class="text-ellipsis"> -->
+      <!--             {item.title} -->
+      <!--           </span> -->
+      <!--         </FixedColumn> -->
+      <!--       </div> -->
+      <!---->
+      <!--       <div class="flex-row-center"> -->
+      <!--         <FixedColumn key="progress" justify="end"> -->
+      <!--           <ProgressPresenter -->
+      <!--             _class={item._class} -->
+      <!--             value={item} -->
+      <!--             props={{ -->
+      <!--               readonly: true -->
+      <!--             }} -->
+      <!--           /> -->
+      <!--         </FixedColumn> -->
+      <!--       </div> -->
+      <!--     </div> -->
+      <!--   </svelte:fragment> -->
+      <!-- </GroupedList> -->
     </div>
   </Scroller>
 </div>

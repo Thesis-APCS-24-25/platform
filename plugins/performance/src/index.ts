@@ -15,7 +15,7 @@
 //
 
 import { type PersonAccount } from '@hcengineering/contact'
-import type { Arr, Attribute, Class, Doc, Mixin, Ref, SpaceType, SpaceTypeDescriptor, Status, Timestamp, Type } from '@hcengineering/core'
+import type { Arr, Attribute, Class, Doc, Mixin, Obj, Ref, SpaceType, SpaceTypeDescriptor, Status, Timestamp, Type } from '@hcengineering/core'
 import { Asset, IntlString, plugin, Plugin, Resource } from '@hcengineering/platform'
 import type { Project, ProjectType, Task, TaskType, TaskTypeDescriptor } from '@hcengineering/task'
 import { AnyComponent } from '@hcengineering/ui'
@@ -56,7 +56,17 @@ export interface ProgressPresenter extends Class<Task> {
   presenter: AnyComponent
 }
 
-export interface WithKRA extends Task { }
+/**
+ * Allow to create new action items for KRA
+ * `component` will be created with `kra` and `assignee` props
+ */
+export interface ActionItemFactory extends Class<Task> {
+  component: AnyComponent
+}
+
+export interface WithKRA extends Task {
+  kra?: Ref<KRA>
+}
 
 export interface PerformanceReport extends Doc {
   reviewee: Ref<PersonAccount>
@@ -119,6 +129,7 @@ export default plugin(performanceId, {
     WithKRAList: '' as Ref<Viewlet>
   },
   mixin: {
+    ActionItemFactory: '' as Ref<Mixin<ActionItemFactory>>,
     DefaultReviewSessionData: '' as Ref<Mixin<ReviewSession>>,
     DefaultKRAData: '' as Ref<Mixin<KRA>>,
     WithKRA: '' as Ref<Mixin<WithKRA>>,

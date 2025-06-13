@@ -17,10 +17,12 @@ import { type Space } from '@hcengineering/core'
 import performance, { performanceId } from '@hcengineering/performance'
 import { type IntlString, mergeIds, type Resource } from '@hcengineering/platform'
 import { type AnyComponent } from '@hcengineering/ui'
-import { ViewCategoryAction, type GetAllValuesFunc, type SortFunc } from '@hcengineering/view'
+import { type ViewCategoryAction, type GetAllValuesFunc, type SortFunc } from '@hcengineering/view'
 
 export default mergeIds(performanceId, performance, {
   string: {
+    Chart: '' as IntlString,
+    AssignedKRAs: '' as IntlString,
     ConcludeReviewSession: '' as IntlString,
     ConcludeReviewSessionMessage: '' as IntlString,
     ConcludeReviewSessionConfirm: '' as IntlString,

@@ -81,7 +81,7 @@ import {
 } from '@hcengineering/kra'
 import kra from './plugin'
 import { type TaskType } from '@hcengineering/task'
-import performance, { type KRA } from '@hcengineering/performance'
+import performance, { WithKRA, type KRA } from '@hcengineering/performance'
 
 import preference, { TPreference } from '@hcengineering/model-preference'
 
@@ -427,4 +427,8 @@ export class TReportAggregator extends TClass implements ReportAggregator {
 }
 
 @Mixin(performance.mixin.WithKRA, kra.class.Issue)
-export class TWithKRA extends TIssue { }
+@UX(performance.string.KRA, performance.icon.KRA, 'WKRA', 'kra')
+export class TWithKRA extends TIssue implements WithKRA {
+  @Prop(TypeRef(performance.class.KRA), performance.string.KRA)
+    kra?: Ref<KRA>
+}

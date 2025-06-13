@@ -11,12 +11,12 @@ import { serverDriveId } from '@hcengineering/server-drive'
 import { serverGithubId } from '@hcengineering/server-github'
 import { serverGmailId } from '@hcengineering/server-gmail'
 import { serverGuestId } from '@hcengineering/server-guest'
-import { serverHrId } from '@hcengineering/server-hr'
+// import { serverHrId } from '@hcengineering/server-hr'
 import { serverInventoryId } from '@hcengineering/server-inventory'
 import { serverLeadId } from '@hcengineering/server-lead'
 import { serverLoveId } from '@hcengineering/server-love'
 import { serverNotificationId } from '@hcengineering/server-notification'
-import { serverRecruitId } from '@hcengineering/server-recruit'
+// import { serverRecruitId } from '@hcengineering/server-recruit'
 import { serverRequestId } from '@hcengineering/server-request'
 import { serverSettingId } from '@hcengineering/server-setting'
 import { serverTagsId } from '@hcengineering/server-tags'
@@ -42,7 +42,7 @@ export function registerServerPlugins (): void {
   addLocation(serverChunterId, () => import('@hcengineering/server-chunter-resources'))
   addLocation(serverInventoryId, () => import('@hcengineering/server-inventory-resources'))
   addLocation(serverLeadId, () => import('@hcengineering/server-lead-resources'))
-  addLocation(serverRecruitId, () => import('@hcengineering/server-recruit-resources'))
+  // addLocation(serverRecruitId, () => import('@hcengineering/server-recruit-resources'))
   addLocation(serverTaskId, () => import('@hcengineering/server-task-resources'))
   addLocation(serverTrackerId, () => import('@hcengineering/server-tracker-resources'))
   addLocation(serverTagsId, () => import('@hcengineering/server-tags-resources'))
@@ -51,7 +51,7 @@ export function registerServerPlugins (): void {
   addLocation(serverTelegramId, () => import('@hcengineering/server-telegram-resources'))
   addLocation(serverRequestId, () => import('@hcengineering/server-request-resources'))
   addLocation(serverViewId, () => import('@hcengineering/server-view-resources'))
-  addLocation(serverHrId, () => import('@hcengineering/server-hr-resources'))
+  // addLocation(serverHrId, () => import('@hcengineering/server-hr-resources'))
   addLocation(serverLoveId, () => import('@hcengineering/server-love-resources'))
   addLocation(serverGuestId, () => import('@hcengineering/server-guest-resources'))
   addLocation(serverDocumentId, () => import('@hcengineering/server-document-resources'))

@@ -22,7 +22,8 @@ import {
   TPerformanceReport,
   TTypeReviewSessionStatus,
   TProgressPresenter,
-  TPerformanceReview
+  TPerformanceReview,
+  TActionItemFactory
 } from './types'
 import { defineViewlets } from './viewlets'
 
@@ -120,7 +121,7 @@ function defineReviewSession (builder: Builder): void {
 }
 
 function defineKRA (builder: Builder): void {
-  builder.createModel(TKRA, TEmployeeKRA, TKRAStatus, TDefaultKRAData)
+  builder.createModel(TKRA, TEmployeeKRA, TKRAStatus, TDefaultKRAData, TActionItemFactory)
 
   builder.mixin(performance.class.EmployeeKRA, core.class.Class, view.mixin.ListHeaderExtra, {
     presenters: [performance.component.EmployeeKRATotalWeightStat]
