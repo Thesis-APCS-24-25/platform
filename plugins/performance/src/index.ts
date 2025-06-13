@@ -15,7 +15,7 @@
 //
 
 import { type PersonAccount } from '@hcengineering/contact'
-import type { Arr, Attribute, Class, Doc, Mixin, Obj, Ref, SpaceType, SpaceTypeDescriptor, Status, Timestamp, Type } from '@hcengineering/core'
+import type { Arr, Attribute, Class, Doc, Mixin, Ref, SpaceType, SpaceTypeDescriptor, Status, Timestamp, Type } from '@hcengineering/core'
 import { Asset, IntlString, plugin, Plugin, Resource } from '@hcengineering/platform'
 import type { Project, ProjectType, Task, TaskType, TaskTypeDescriptor } from '@hcengineering/task'
 import { AnyComponent } from '@hcengineering/ui'

@@ -62,7 +62,7 @@
     "ConcludedReviewSessions": "Concluded Review Sessions",
     "NotDraftingCannotCreateKRA": "You can only create KRA when the review session is in Drafting status",
     "StartReviewSession": "Start Review Session",
-    "StartReviewSessionConfirm": "Are you sure you want to start this review session? Doing this will set all other review sessions to Drafting.",
+    "StartReviewSessionConfirm": "Are you sure you want to start this review session? Doing this will set all other review sessions to Drafting!",
     "WeightWarningPopupTitle": "Weight assigned to the following members is not 100%: ",
     "KRACompletionLevel": "% KRA Completed",
     "ReviewSessionStartDetail": "Start date of the Review Session",
@@ -81,6 +81,8 @@
     "StartDateFilterDetail": "Only include tasks after chosen date",
     "EndDateFilterDetail": "Only include tasks upto chosen date",
     "ResetFilters": "Reset filters",
-    "PerformanceReport": "Report"
+    "PerformanceReport": "Report",
+    "EmployeeScore": "Score",
+    "ConcludeReviewSessionConfirm": "Make sure the Review session's End date is met."
   }
 }

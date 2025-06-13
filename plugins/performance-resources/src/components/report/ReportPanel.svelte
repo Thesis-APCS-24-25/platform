@@ -1,5 +1,5 @@
 <script lang="ts">
-  import performance, { PerformanceReport, ReviewSession } from '@hcengineering/performance'
+  import { PerformanceReport, ReviewSession } from '@hcengineering/performance'
   import { ViewletContentView, ViewletSettingButton } from '@hcengineering/view-resources'
   // import { DatePresenter, ListView } from '@hcengineering/ui'
   import { personAccountByIdStore, personAccountPersonByIdStore, UserInfo } from '@hcengineering/contact-resources'
@@ -11,8 +11,8 @@
   import { Viewlet, ViewOptions } from '@hcengineering/view'
   import ViewletSelector from '@hcengineering/view-resources/src/components/ViewletSelector.svelte'
   import ReviewEditor from './ReviewEditor.svelte'
-  import { IconChevronRight } from '@hcengineering/ui'
-  import Label from '@hcengineering/ui/src/components/Label.svelte'
+  import { IconChevronRight, Label } from '@hcengineering/ui'
+  import performance from '../../plugin'
 
   const client = getClient()
   const dispatch = createEventDispatcher()
@@ -89,6 +89,11 @@
       {/if}
     </svelte:fragment>
     {#if viewlet !== undefined && viewOptions}
+      {#if value.scorePreview !== undefined}
+        <span class="heading-ui-H2">
+          <Label label={performance.string.EmployeeScore}/>: {value.scorePreview}
+        </span>
+      {/if}
       <ViewletContentView
         _class={performance.mixin.WithKRA}
         space={undefined}
