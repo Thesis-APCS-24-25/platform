@@ -240,20 +240,15 @@ export async function getAllStates (
       const statusMap = get(statusStore).byId
       const statuses = (taskType.statuses.map((p) => statusMap.get(p)) as Status[]) ?? []
       if (filterDone) {
-        const s = statuses
+        return statuses
           .filter((p) => p?.category !== task.statusCategory.Lost && p?.category !== task.statusCategory.Won)
           .map((p) => p?._id)
-        console.log(s)
-        return s
       } else {
-        const s = statuses.map((p) => p?._id)
-        console.log('sts bewr', s)
-        return s
+        return statuses.map((p) => p?._id)
       }
     }
     const _space = query?.space
     if (_space !== undefined) {
-      console.log('here')
       const promise = new Promise<Array<Ref<Doc>>>((resolve, reject) => {
         let refresh: boolean = false
         const lq = CategoryQuery.getLiveQuery(queryId)
@@ -280,7 +275,6 @@ export async function getAllStates (
       return await promise
     }
   } else if (type !== undefined) {
-    console.log('type', type)
     const statusMap = get(statusStore).byId
     const statuses = (type.statuses.map((p) => statusMap.get(p._id)) as Status[]) ?? []
     if (filterDone) {
@@ -288,12 +282,9 @@ export async function getAllStates (
         .filter((p) => p?.category !== task.statusCategory.Lost && p?.category !== task.statusCategory.Won)
         .map((p) => p?._id)
     } else {
-      const rs = statuses.map((p) => p?._id)
-      console.log('getAllStates', rs)
-      return rs
+      return statuses.map((p) => p?._id)
     }
   }
-  console.log('no type')
   const joinedProjectsTypes = get(typesOfJoinedProjectsStore) ?? []
   const includedStatuses = Array.from(get(taskTypeStore).values())
     .filter((taskType) => joinedProjectsTypes.includes(taskType.parent))

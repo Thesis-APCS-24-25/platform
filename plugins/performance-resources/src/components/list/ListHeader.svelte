@@ -139,7 +139,7 @@
         {#each extraHeaders ?? [] as extra}
           <Component is={extra} props={{ ...props, value: category, category: groupByKey, docs: items }} />
         {/each}
-        <Component is={performance.component.KRAStatistics} props={{ ...props, category: groupByKey, docs: items }} />
+        <Component is={performance.component.KRAStatistics} props={{ ...props, value: category, category: groupByKey, docs: items }} />
       </div>
     {/if}
   </div>

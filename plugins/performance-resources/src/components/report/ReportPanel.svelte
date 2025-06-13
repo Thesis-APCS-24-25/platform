@@ -11,6 +11,8 @@
   import { Viewlet, ViewOptions } from '@hcengineering/view'
   import ViewletSelector from '@hcengineering/view-resources/src/components/ViewletSelector.svelte'
   import ReviewEditor from './ReviewEditor.svelte'
+  import { IconChevronRight } from '@hcengineering/ui'
+  import Label from '@hcengineering/ui/src/components/Label.svelte'
 
   const client = getClient()
   const dispatch = createEventDispatcher()
@@ -75,11 +77,14 @@
       <ViewletSettingButton bind:viewOptions bind:viewlet />
       {#if person !== undefined}
       <div class="title not-active report-title">
+        <Label label={performance.string.PerformanceReport}/>
+        <IconChevronRight size={'small'}/>
+        <span>{reviewSession?.name}</span>
+        <IconChevronRight size={'small'}/>
         <UserInfo
           value={person}
           size={'small'}
-          />
-          <span>'s {reviewSession?.name} Report</span>
+        />
       </div>
       {/if}
     </svelte:fragment>
@@ -105,6 +110,7 @@
     display: flex;
     flex-direction: row;
     justify-content: center;
+    align-items: center;
 
     span {
       align-content: center;

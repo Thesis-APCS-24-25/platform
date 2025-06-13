@@ -95,7 +95,7 @@ export async function OnCreateReport (txes: Tx[], control: TriggerControl): Prom
           // Add an extra day to include tasks at the end of review session date
           $lt: reviewSession.reviewSessionEnd + 86400
         },
-        kra: { $in: kras }
+        'performance:mixin:WithKRA.kra': { $in: kras }
       },
       { projection: { _id: 1 } }
     )) as WithKRA[]
