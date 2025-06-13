@@ -80,6 +80,7 @@
     "EndDateFilter": "Filter tasks upto date",
     "StartDateFilterDetail": "Only include tasks after chosen date",
     "EndDateFilterDetail": "Only include tasks upto chosen date",
-    "ResetFilters": "Reset filters"
+    "ResetFilters": "Reset filters",
+    "PerformanceReport": "Report"
   }
 }
