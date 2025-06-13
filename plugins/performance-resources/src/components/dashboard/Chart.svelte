@@ -8,18 +8,18 @@
   import { Ref, Timestamp } from '@hcengineering/core'
   import { calculateCompletionLevel } from '../../utils/kra'
   import { Button, DatePresenter, themeStore } from '@hcengineering/ui'
+  import kraTeam, { Member } from '@hcengineering/kra-team'
+  import { personIdByAccountId } from '@hcengineering/contact-resources'
 
   // Register all Chart.js components
   Chart.register(...registerables)
 
   export let space: Ref<ReviewSession>
 
-  type KRAsByEmployee = Record<Ref<PersonAccount>, Array<KRA & { weight: number, completionLevel: number }>>
+  type KRAsByEmployee = Record<Ref<Member>, Array<KRA & { weight: number, completionLevel: number }>>
 
   let reviewSession: ReviewSession
-  let employees: PersonAccount[] = []
-  let employeeIds: Ref<Person>[] | undefined = undefined
-  let employeeDetails: Record<Ref<Person>, Person> | undefined = undefined
+  let employees: Member[] = []
   let tasks: Array<WithKRA>
   const taskCompletion: Record<Ref<WithKRA>, number> = {}
   const kras: KRA[] = []
@@ -32,7 +32,9 @@
   let startDate: Timestamp | undefined
   let endDate: Timestamp | undefined
 
-  themeStore.subscribe(() => { updateChart() })
+  themeStore.subscribe(() => {
+    updateChart()
+  })
 
   const client = getClient()
   const dispatch = createEventDispatcher()
@@ -71,34 +73,19 @@
       }
     })
 
-  $: if (employeeIds === undefined && reviewSession !== undefined) {
+  $: if (reviewSession !== undefined) {
+    const persons = reviewSession.members
+      .map((mem) => $personIdByAccountId.get(mem as Ref<PersonAccount>))
+      .filter((m) => m !== undefined) as Ref<Person>[]
     void client
-      .findAll(contact.class.PersonAccount, {
+      .findAll(kraTeam.mixin.Member, {
         _id: {
-          $in: reviewSession.members as Ref<PersonAccount>[]
+          $in: persons
         }
       })
       .then((result) => {
         if (result !== undefined) {
           employees = result
-          employeeIds = employees.map((emp) => emp.person)
-        }
-      })
-  }
-
-  $: if (employeeIds !== undefined && employeeDetails === undefined) {
-    void client
-      .findAll(contact.class.Person, {
-        _id: {
-          $in: employeeIds
-        }
-      })
-      .then((result) => {
-        if (result !== undefined) {
-          employeeDetails = {}
-          result.forEach((res) => {
-            ;(employeeDetails as Record<Ref<Person>, Person>)[res._id as Ref<Person>] = res
-          })
         }
       })
   }
@@ -108,8 +95,8 @@
       .findAll(performance.mixin.WithKRA, {
         kra: { $in: kraRefs },
         createdOn: {
-          $gte: (startDate ?? Number.MIN_SAFE_INTEGER),
-          $lte: (endDate !== undefined ? endDate + 86400 : Number.MAX_SAFE_INTEGER)
+          $gte: startDate ?? Number.MIN_SAFE_INTEGER,
+          $lte: endDate !== undefined ? endDate + 86400 : Number.MAX_SAFE_INTEGER
         }
       })
       .then((result) => {
@@ -134,7 +121,7 @@
     // Group KRAs by employee using the relationships table
     krasByEmployee = employees.reduce<KRAsByEmployee>((acc, employee) => {
       // Get all EmployeeKRA entries for this employee
-      const employeeKraEntries = employeeKras.filter((entry) => entry.employee === employee._id)
+      const employeeKraEntries = employeeKras.filter((entry) => entry.assignee === employee._id)
       // For each entry, fetch the corresponding KRA details
       const employeeKraDetails = employeeKraEntries
         .map((entry) => {
@@ -142,7 +129,7 @@
           if (kra == null || tasks === undefined) return null
           const filteredTasks = tasks.filter((task) => {
             const asMixin = client.getHierarchy().as(task, performance.mixin.WithKRA) as any
-            return asMixin.kra === kra._id && asMixin.assignee === employee.person
+            return asMixin.kra === kra._id && asMixin.assignee === employee
           })
           let completionLevel = filteredTasks.reduce<number>((acc, task) => {
             return acc + (taskCompletion[task._id] ?? 0)
@@ -170,10 +157,9 @@
 
   // Create datasets for Chart.js
   function createChartData (): any {
-    if (employeeDetails === undefined) {
-      return null
-    }
-    const employeeNames = employees.map((e) => getName(client.getHierarchy(), (employeeDetails as Record<Ref<Person>, Person>)[e.person]) ?? '')
+    const employeeNames = employees.map(
+      (e) => getName(client.getHierarchy(), e)
+    )
 
     // Create a dataset for each KRA
     const datasets = kras.map((kra, index) => {
@@ -293,9 +279,7 @@
 
               let footerText = '\nKRA Breakdown:'
               employeeKras.forEach((kra) => {
-                footerText += `\n${kra.title} (${kra.weight * 100}%): ${
-                  kra.completionLevel ?? 0
-                }`
+                footerText += `\n${kra.title} (${kra.weight * 100}%): ${kra.completionLevel ?? 0}`
               })
 
               return footerText
@@ -392,17 +376,9 @@
         labelNull={performance.string.EndDateFilter}
         detail={performance.string.EndDateFilterDetail}
       />
-      <Button
-        label={performance.string.ResetFilters}
-        kind={'regular'}
-        size={'large'}
-        on:click={resetFilters}
-      />
+      <Button label={performance.string.ResetFilters} kind={'regular'} size={'large'} on:click={resetFilters} />
     </div>
-    <canvas
-      id="chart"
-      bind:this={chartCanvas}
-    ></canvas>
+    <canvas id="chart" bind:this={chartCanvas}></canvas>
   {/if}
 </div>
 
