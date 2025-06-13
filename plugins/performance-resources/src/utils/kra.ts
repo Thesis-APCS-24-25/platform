@@ -189,7 +189,13 @@ async function getKRAsOfEmployeeKRA (client: Client, query: DocumentQuery<Employ
 }
 
 async function getKRAsOfTask (client: Client, query: DocumentQuery<WithKRA>): Promise<Array<Ref<KRA>>> {
-  const kra = query.kra.$in?.[0] ?? query.kra
+  let kra: Ref<KRA> | undefined
+  if (query.kra === undefined) return []
+  if ('$in' in query.kra) {
+    kra = query.kra.$in?.[0]
+  } else if (typeof query.kra === 'string') {
+    kra = query.kra
+  }
   if (kra === undefined) {
     return []
   }
