@@ -21,6 +21,7 @@ import { type ViewCategoryAction, type GetAllValuesFunc, type SortFunc } from '@
 
 export default mergeIds(performanceId, performance, {
   string: {
+    CreateActionItem: '' as IntlString,
     Chart: '' as IntlString,
     AssignedKRAs: '' as IntlString,
     ConcludeReviewSession: '' as IntlString,

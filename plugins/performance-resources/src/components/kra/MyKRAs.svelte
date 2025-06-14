@@ -54,7 +54,7 @@
     <div class="flex-col-stretch flex-gap-2">
       <List
         {listProvider}
-        createItemLabel={performance.string.CreateKRA}
+        createItemLabel={performance.string.CreateActionItem}
         createItemDialog={AssignTaskPopup}
         createItemDialogProps={{
           assignee: me

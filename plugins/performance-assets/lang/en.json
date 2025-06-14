@@ -1,5 +1,6 @@
 {
   "string": {
+    "CreateActionItem": "Create Action Item",
     "CreateReviewSession": "Create Review Session",
     "ReviewSession": "Review Session",
     "MyReviewSessions": "My Review Sessions",
