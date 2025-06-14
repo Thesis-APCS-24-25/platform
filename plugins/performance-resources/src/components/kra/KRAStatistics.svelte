@@ -65,7 +65,7 @@
   >
     {#if weight !== undefined}
       <Icon icon={performance.icon.Weight} size={'inline'}/>
-      {floorFractionDigits(weight * 100, 0)}%
+      {weight}%
       x
     {/if}
     {completionLevel}%

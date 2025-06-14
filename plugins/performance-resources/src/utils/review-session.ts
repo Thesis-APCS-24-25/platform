@@ -162,7 +162,7 @@ export async function doKRAWeightCheck (
     data.push([employee, weight])
   })
   return data.reduce((acc, [employee, weight]) => {
-    acc.set(employee, Math.abs(weight - 1) < 0.0001)
+    acc.set(employee, Math.abs(weight - 100) === 0)
     return acc
   }, new Map<Ref<PersonAccount>, boolean>())
 }

@@ -113,7 +113,7 @@ async function calculateScore (control: TriggerControl, tasks: Issue[], employee
       const goal = find !== undefined && find.length > 0 ? find[0] : undefined
       sum += getScore(task, goal)
     }
-    score += (sum / entry.tasks.length) * entry.weight * 100
+    score += (sum / entry.tasks.length) * entry.weight
   }
   return score
 }

@@ -14,12 +14,12 @@
     <NumberEditor {onChange} {value} {placeholder} {kind} />
   {:else if showPercent}
     <span class="fs-bold text-md">
-      {value !== undefined ? (value * 100.0).toFixed(0) : 0}
+      {value ?? 0}
     </span>
     %
   {:else}
     <span class="fs-bold text-md">
-      {value?.toFixed(2)}
+      {value}
     </span>
   {/if}
 </div>

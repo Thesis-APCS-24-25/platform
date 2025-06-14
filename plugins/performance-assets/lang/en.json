@@ -83,6 +83,7 @@
     "ResetFilters": "Reset filters",
     "PerformanceReport": "Report",
     "EmployeeScore": "Score",
-    "ConcludeReviewSessionConfirm": "Make sure the Review session's End date is met."
+    "ConcludeReviewSessionConfirm": "Make sure the Review session's End date is met.",
+    "RemainingWeight": "Remaining"
   }
 }

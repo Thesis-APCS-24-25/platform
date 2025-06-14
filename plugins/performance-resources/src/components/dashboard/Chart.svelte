@@ -189,7 +189,7 @@
           matchingKra?.completionLevel != null && matchingKra.weight != null
             ? matchingKra.completionLevel * matchingKra.weight
             : 0
-        return d * 100
+        return d
       })
 
       return {
@@ -293,7 +293,7 @@
 
               let footerText = '\nKRA Breakdown:'
               employeeKras.forEach((kra) => {
-                footerText += `\n${kra.title} (${kra.weight * 100}%): ${
+                footerText += `\n${kra.title} (${kra.weight}%): ${
                   kra.completionLevel ?? 0
                 }`
               })
