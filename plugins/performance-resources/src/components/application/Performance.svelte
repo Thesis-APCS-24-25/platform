@@ -29,22 +29,21 @@
 
   let replacedPanel: HTMLElement
 
-  let specials: SpecialNavModel[] = []
-  let spaces: SpacesNavModel[] = []
+  let specials: SpecialNavModel[] = $navigatorModel.specials ?? []
+  let spaces: SpacesNavModel[] = $navigatorModel.spaces ?? []
 
   const unsub = navigatorModel.subscribe((n) => {
     specials = n?.specials ?? []
     spaces = n?.spaces ?? []
+    syncLocation($location)
   })
   onDestroy(() => {
     unsub()
+    unsubcribe()
   })
 
   const unsubcribe = location.subscribe((loc) => {
     syncLocation(loc)
-  })
-  onDestroy(() => {
-    unsubcribe()
   })
 
   function syncLocation (loc: Location): void {
@@ -79,8 +78,6 @@
 
     currentSpecial = undefined
   }
-
-  $: console.log(currentSpace, currentSpecial)
 
   defineSeparators('performance', [
     { minSize: 15, maxSize: 40, size: 15, float: 'navigator' },
