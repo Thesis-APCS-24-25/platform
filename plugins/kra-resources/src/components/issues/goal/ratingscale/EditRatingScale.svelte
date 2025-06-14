@@ -50,21 +50,10 @@
 <div class="m-1">
   <EditBox
     label={kra.string.Name}
-    kind="default"
+    kind="default-large"
     fullSize
     bind:value={data.name}
     placeholder={kra.string.AddNamePlaceholder}
     focusIndex={1}
-  />
-</div>
-
-<div class="m-1">
-  <EditBox
-    label={kra.string.Description}
-    kind="default"
-    fullSize
-    bind:value={data.description}
-    placeholder={kra.string.IssueDescriptionPlaceholder}
-    focusIndex={2}
   />
 </div>

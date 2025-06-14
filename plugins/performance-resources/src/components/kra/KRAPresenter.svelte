@@ -1,6 +1,6 @@
 <script lang="ts">
   import { WithLookup } from '@hcengineering/core'
-  import { Asset, getEmbeddedLabel } from '@hcengineering/platform'
+  import { Asset } from '@hcengineering/platform'
   import type { KRA } from '@hcengineering/performance'
   import { AnySvelteComponent, getPlatformColorDef, Icon, themeStore, tooltip } from '@hcengineering/ui'
 
@@ -16,17 +16,16 @@
   export let colorInherit = false
   export let noSelect = false
   export let inline = false
-  export let shrink = 1
+  export let shrink = 0 // Set default to 0 because we want to show the title by default on ObjectPopup
   export let kind: 'list-header' | 'list' | 'link-bordered' = 'list'
   export let type: ObjectPresenterType = 'text'
   export let icon: Asset | AnySvelteComponent | undefined = undefined
 
   // Reactive variables
   $: colorDef = value?.color !== undefined ? getPlatformColorDef(value.color, $themeStore.dark) : undefined
-  $: bgColor = colorDef?.background
   $: color = colorDef?.color
 
-  $: shouldShowTitle = shrink > 1 || (shrink === 1 && !inline) || kind === 'list-header'
+  $: shouldShowTitle = shrink === 0 || kind === 'list-header' || inline
   $: shouldShowIdentifier = true
 </script>
 

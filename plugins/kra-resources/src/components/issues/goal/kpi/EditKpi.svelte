@@ -58,7 +58,7 @@
 <div class="m-1">
   <EditBox
     label={kra.string.Name}
-    kind="default"
+    kind="default-large"
     fullSize
     bind:value={data.name}
     placeholder={kra.string.AddNamePlaceholder}
@@ -66,21 +66,10 @@
   />
 </div>
 
-<div class="m-1">
-  <EditBox
-    label={kra.string.Description}
-    kind="default"
-    fullSize
-    bind:value={data.description}
-    placeholder={kra.string.IssueDescriptionPlaceholder}
-    focusIndex={2}
-  />
-</div>
-
 <div class="m-1 flex-row-baseline items-end justify-between">
   <EditBox
     label={kra.string.Target}
-    kind="default"
+    kind="default-large"
     format="number"
     maxWidth="15rem"
     bind:value={data.target}
@@ -88,6 +77,6 @@
     focusIndex={3}
   />
   {#if space !== undefined}
-    <UnitBox size="medium" {space} bind:value={data.unit} focusIndex={4} />
+    <UnitBox size="large" {space} bind:value={data.unit} focusIndex={4} />
   {/if}
 </div>

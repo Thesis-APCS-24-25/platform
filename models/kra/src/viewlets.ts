@@ -180,7 +180,7 @@ export function issueConfig (
           {
             key: '',
             presenter: kra.component.KRAEditor,
-            props: { kind: 'list', size: 'small' },
+            props: { kind: 'list', size: 'small', shrink: 1 },
             displayProps: {
               key: '',
               fixed: 'right',

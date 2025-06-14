@@ -14,6 +14,7 @@
   export let readonly = false
   export let kind: ButtonKind = 'primary'
   export let size: ButtonSize = 'large'
+  export let shrink: number = 1
   export let width: string | undefined = undefined
   export let object: Task
 
@@ -71,7 +72,7 @@
     }}
   >
     <svelte:fragment slot="content">
-      <KraRefPresenter {value} type="text" shrink={1} shouldShowAvatar />
+      <KraRefPresenter {value} type="text" {shrink} shouldShowAvatar />
     </svelte:fragment>
   </Button>
 {:else}
@@ -93,7 +94,7 @@
     }}
   >
     <svelte:fragment slot="content">
-      <KraRefPresenter {value} type="text" shrink={0} shouldShowAvatar />
+      <KraRefPresenter {value} type="text" {shrink} shouldShowAvatar />
     </svelte:fragment>
   </Button>
 {/if}

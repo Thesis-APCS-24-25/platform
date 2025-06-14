@@ -11,6 +11,7 @@
   export let readonly = false
   export let kind: ButtonKind = 'link'
   export let size: ButtonSize = 'small'
+  export let shrink = 1
   export let width: string | undefined = undefined
 
   const client = getClient()
@@ -28,4 +29,4 @@
   }
 </script>
 
-<KRAEditor object={value} value={kra} {readonly} {kind} {size} {width} onChange={handleChange} />
+<KRAEditor {shrink} object={value} value={kra} {readonly} {kind} {size} {width} onChange={handleChange} />

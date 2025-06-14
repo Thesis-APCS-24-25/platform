@@ -10,7 +10,6 @@
     <div class="fs-title text-xl">
       {ratingScale.name}
     </div>
-    <div class="description">{ratingScale.description}</div>
   </div>
   <RatingScaleBoxes value={ratingScale.progress} editable={false} />
 </div>
