@@ -4,6 +4,7 @@
   import RatingScaleCircle from './RatingScaleCircle.svelte'
   import GoalPresenterContainer from '../GoalPresenterContainer.svelte'
   import RatingScaleEditPopup from './RatingScaleEditPopup.svelte'
+  import kra from '../../../../plugin'
 
   export let value: RatingScale
   export let issue: Issue
@@ -27,11 +28,21 @@
   }
 </script>
 
-<GoalPresenterContainer disabled={readonly} {size} {kind} onClick={handleOpen.bind(null, rating ?? 0)}>
+<GoalPresenterContainer
+  disabled={readonly}
+  {size}
+  {kind}
+  onClick={handleOpen.bind(null, rating ?? 0)}
+  showTooltip={{
+    label: kra.string.RatingScaleName,
+    props: { name: value.name }
+  }}
+>
   <RatingScaleCircle value={rating ?? 0} />
   <div class="separator"></div>
   <div class="label">
-    <strong class="current-value">{rating ?? 0}</strong> <span class="divider">/</span> <span class="target-value">5</span>
+    <strong class="current-value">{rating ?? 0}</strong> <span class="divider">/</span>
+    <span class="target-value">5</span>
   </div>
 </GoalPresenterContainer>
 
