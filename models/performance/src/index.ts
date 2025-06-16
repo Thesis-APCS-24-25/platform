@@ -262,7 +262,7 @@ function defineSpaceType (builder: Builder): void {
       kind: 'task',
       ofClass: performance.class.KRA,
       targetClass: performance.mixin.DefaultKRAData,
-      statusClass: performance.class.KRAStatus,
+      statusClass: performance.class.TypeKRAStatus,
       statusCategories: kraCategories,
       allowedAsChildOf: [performance.taskTypes.KRA],
       icon: tracker.icon.Issue

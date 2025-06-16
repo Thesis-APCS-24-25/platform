@@ -83,6 +83,9 @@ export class TReviewSession extends TProject implements ReviewSession {
   @Prop(TypeNumber(), task.string.TaskNumber)
   @Hidden()
     sequence!: number
+
+  @Prop(TypeString(), performance.string.Identifier)
+    identifier!: string
 }
 
 @Model(performance.class.KRA, task.class.Task, DOMAIN_PERFORMANCE)
@@ -114,7 +117,7 @@ export class TEmployeeKRA extends TDoc implements EmployeeKRA {
 }
 
 export function TypeKRAStatus (): Type<KRAStatus> {
-  return { _class: performance.class.KRAStatus, label: performance.string.KRAStatus }
+  return { _class: performance.class.TypeKRAStatus, label: performance.string.KRAStatus }
 }
 
 @Model(performance.class.TypeKRAStatus, core.class.Type, DOMAIN_PERFORMANCE)

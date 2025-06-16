@@ -11,8 +11,9 @@ import core, {
   type Attribute,
   type Doc,
   type Client,
-  QuerySelector,
-  ObjQueryType} from '@hcengineering/core'
+  type QuerySelector,
+  type ObjQueryType
+} from '@hcengineering/core'
 import {
   type MeasureProgress,
   type KRA,
@@ -24,8 +25,7 @@ import task, { makeRank, type Task } from '@hcengineering/task'
 import { getClient } from '@hcengineering/presentation'
 import hcTask from '@hcengineering/task'
 import { getResource } from '@hcengineering/platform'
-import { Employee } from '@hcengineering/contact'
-import { Member } from '@hcengineering/kra-team'
+import type { Member } from '@hcengineering/kra-team'
 
 export async function getFirstRank (
   client: TxOperations,

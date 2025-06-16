@@ -1,6 +1,6 @@
 <script lang="ts">
   import core, { AttachedData, Ref, SortingOrder, Space, generateId } from '@hcengineering/core'
-  import { Card, getClient, SpaceSelector } from '@hcengineering/presentation'
+  import { Card, getClient, SpaceSelector, createQuery } from '@hcengineering/presentation'
   import { TaskType, makeRank } from '@hcengineering/task'
   import {
     Button,
@@ -22,7 +22,6 @@
 
   $: team = $currentTeam
   export let space: Ref<ReviewSession> | undefined
-  let reviewSession: Ref<ReviewSession> | undefined = space
 
   let title: string = ''
   let description: string = ''
@@ -33,7 +32,6 @@
   const client = getClient()
   const manager = createFocusManager()
   const kraId = generateId<KRA>()
-
   const kind: Ref<TaskType> = performance.taskTypes.KRA
 
   $: colorString = colorSelected
@@ -41,10 +39,10 @@
     : getPlatformColorForText(title, $themeStore.dark)
 
   async function createKRA (): Promise<void> {
-    if (reviewSession === undefined) {
+    if (space === undefined) {
       return
     }
-    const sp = await client.findOne(performance.class.ReviewSession, { _id: reviewSession })
+    const sp = await client.findOne(performance.class.ReviewSession, { _id: space })
     if (sp === undefined) {
       throw new Error('Review Session not found')
     }
@@ -52,19 +50,15 @@
     if (status === undefined) {
       throw new Error('Status not found')
     }
-    // if (kind === undefined) {
-    //   throw new Error('kind is not specified')
-    // }
-
     const lastOne = await client.findOne(
       performance.class.KRA,
-      { space: reviewSession },
+      { space },
       { sort: { rank: SortingOrder.Descending } }
     )
     const incResult = await client.updateDoc(
       performance.class.ReviewSession,
       core.space.Space,
-      reviewSession,
+      space,
       {
         $inc: { sequence: 1 }
       },
@@ -72,13 +66,12 @@
     )
 
     const number = (incResult as any).object.sequence
-
     const value: AttachedData<KRA> = {
       status: status._id,
       number,
       title,
       kind,
-      identifier: `KRA-${number}`,
+      identifier: `${sp.identifier}-${number}`,
       rank: makeRank(lastOne?.rank, undefined),
       assignee: null,
       assignedTo: [],
@@ -89,8 +82,8 @@
 
     await client.addCollection(
       performance.class.KRA,
-      reviewSession as Ref<Space>,
-      reviewSession,
+      space,
+      space,
       performance.class.ReviewSession,
       'kras',
       value,
@@ -124,13 +117,13 @@
     <SpaceSelector
       kind="regular"
       defaultIcon={performance.icon.ReviewSession}
-      bind:space={reviewSession}
+      bind:space
       label={performance.string.ReviewSession}
       _class={performance.class.ReviewSession}
       query={{ space: team }}
     />
   </svelte:fragment>
-  {#if reviewSession !== undefined}
+  {#if space !== undefined}
     <div class="flex-row-center clear-mins flex-gap-2 items-baseline">
       <Button
         icon={performance.icon.KRA}

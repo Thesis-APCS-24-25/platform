@@ -48,6 +48,7 @@ export enum KRAStatus {
 export interface ReviewSession extends Project {
   reviewSessionStart: Timestamp
   reviewSessionEnd: Timestamp
+  identifier: string
   status?: ReviewSessionStatus
   sequence: number
 }
@@ -109,7 +110,7 @@ export default plugin(performanceId, {
     EmployeeKRA: '' as Ref<Class<EmployeeKRA>>,
     PerformanceReport: '' as Ref<Class<PerformanceReport>>,
     PerformanceReview: '' as Ref<Class<PerformanceReview>>,
-    KRAStatus: '' as Ref<Class<Type<KRAStatus>>>,
+    TypeKRAStatus: '' as Ref<Class<Type<KRAStatus>>>,
     TypeReviewSessionStatus: '' as Ref<Class<Type<ReviewSessionStatus>>>
   },
   string: {

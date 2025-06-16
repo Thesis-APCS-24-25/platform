@@ -27,7 +27,8 @@ export async function createReviewSession (
   reviewSessionStart: Timestamp,
   reviewSessionEnd: Timestamp,
   team: Ref<Space>,
-  type: Ref<ProjectType>
+  type: Ref<ProjectType>,
+  identifier: string
 ): Promise<Ref<ReviewSession>> {
   const reviewSessionRef = await client.createDoc(performance.class.ReviewSession, team, {
     sequence: 0,
@@ -35,6 +36,7 @@ export async function createReviewSession (
     reviewSessionEnd,
     name,
     description,
+    identifier,
     status: ReviewSessionStatus.Drafting,
     private: false,
     archived: false,
