@@ -25,7 +25,7 @@
   export let doUpdate: boolean = true
   export let validateFunction: (value: number | undefined) => boolean = () => true
   export let onUpdate: (value: number) => void = () => {}
-  export let doCheckPermission: boolean = false
+  export let doCheckPermission: boolean = true
 
   async function updateWeight (newWeight: number): Promise<void> {
     if (Number.isFinite(newWeight) && validateFunction(newWeight)) {
