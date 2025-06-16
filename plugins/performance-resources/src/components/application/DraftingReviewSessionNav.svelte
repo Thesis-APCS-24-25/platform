@@ -32,11 +32,12 @@
       action: async (): Promise<void> => {
         const client = getClient()
 
-        const notFullEmployees = (await doKRAWeightCheck(client, rs))
-          .entries()
-          .toArray()
-          .filter(([, ok]) => ok === false)
-          .map(([e]) => e)
+        const notFullEmployees = []
+        for (const [employee, ok] of (await doKRAWeightCheck(client, rs))) {
+          if (!ok) {
+            notFullEmployees.push(employee)
+          }
+        }
 
         if (notFullEmployees.length > 0) {
           showPopup(

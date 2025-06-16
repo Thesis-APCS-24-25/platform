@@ -58,11 +58,11 @@
       await assignKRA(ops, space as Ref<ReviewSession>, kra, item.weight, item.assignee)
     }
     for (const item of remove) {
-      await unassignKRA(ops, item._id, space as Ref<ReviewSession>, kra)
+      await unassignKRA(ops, space as Ref<ReviewSession>, item._id, kra)
     }
 
     for (const item of update) {
-      await updateWeight(ops, item._id, item.space as Ref<ReviewSession>, item.kra, item.weight)
+      await updateWeight(ops, item.space as Ref<ReviewSession>, item._id, item.kra, item.weight)
     }
     await ops.commit()
   }

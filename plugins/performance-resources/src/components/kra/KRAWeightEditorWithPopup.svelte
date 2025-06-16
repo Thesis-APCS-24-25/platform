@@ -10,7 +10,7 @@
   import { canAssignKRAs } from '../../utils/team'
   import { Member } from '@hcengineering/kra-team'
 
-  export let value: EmployeeKRA | Data<EmployeeKRA> | WithLookup<EmployeeKRA> | AttachedData<EmployeeKRA>
+  export let value: EmployeeKRA | Data<EmployeeKRA> | WithLookup<EmployeeKRA>
   export let space: Ref<ReviewSession> | undefined = undefined
   const assignee: Ref<Member> = value.assignee
 

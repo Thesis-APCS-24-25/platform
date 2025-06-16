@@ -2,8 +2,8 @@
   import presentation, { Card, createQuery, getClient, MessageBox } from '@hcengineering/presentation'
   import performance from '../../plugin'
   import { ObjectBox, ObjectBoxPopup } from '@hcengineering/view-resources'
-  import { AttachedData, Ref } from '@hcengineering/core'
-  import { EmployeeKRA, KRA, ReviewSession } from '@hcengineering/performance'
+  import { Data, Ref } from '@hcengineering/core'
+  import { EmployeeKRA, KRA, KRAStatus, ReviewSession } from '@hcengineering/performance'
   import { personIdByAccountId, PersonRefPresenter } from '@hcengineering/contact-resources'
 
   import KraWeightEditorWithPopup from './KRAWeightEditorWithPopup.svelte'
@@ -16,8 +16,8 @@
   export let kra: Ref<KRA> | undefined = undefined
   export let space: Ref<ReviewSession> | undefined = undefined
   export let assigns: Array<EmployeeKRA> | undefined = undefined
-  let newAssigns: Array<AttachedData<EmployeeKRA>> = []
-  let tempAssigns: Array<AttachedData<EmployeeKRA>> = []
+  let newAssigns: Array<Data<EmployeeKRA>> = []
+  let tempAssigns: Array<Data<EmployeeKRA>> = []
 
   const client = getClient()
   const query = createQuery()
@@ -68,6 +68,7 @@
       tempAssigns = [
         ...data.map((it) => {
           return {
+            status: KRAStatus.Drafting,
             kra: v,
             assignee: it,
             weight: 0
@@ -88,7 +89,7 @@
     }
   }
 
-  function newAssignWeightUpdate (assign: AttachedData<EmployeeKRA>, weight: number): void {
+  function newAssignWeightUpdate (assign: Data<EmployeeKRA>, weight: number): void {
     if (newAssigns !== undefined) {
       const index = newAssigns.findIndex((it) => it.assignee === assign.assignee)
       if (index !== -1) {
@@ -102,7 +103,7 @@
   async function handleSave (): Promise<void> {
     if (kra !== undefined && newAssigns !== undefined && newAssigns.length > 0 && space !== undefined) {
       for (const assign of newAssigns) {
-        await assignKRA(client, kra, space, assign.weight, assign.assignee)
+        await assignKRA(client, space, kra, assign.weight, assign.assignee)
         newAssigns = []
       }
     }

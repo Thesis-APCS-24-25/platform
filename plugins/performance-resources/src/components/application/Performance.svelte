@@ -11,7 +11,7 @@
     Label,
     Component
   } from '@hcengineering/ui'
-  import { NavigatorModel, SpacesNavModel, SpecialNavModel } from '@hcengineering/workbench'
+  import { SpacesNavModel, SpecialNavModel } from '@hcengineering/workbench'
   import { onDestroy } from 'svelte'
   import { decodeObjectURI } from '@hcengineering/view'
   import { TreeSeparator } from '@hcengineering/workbench-resources'

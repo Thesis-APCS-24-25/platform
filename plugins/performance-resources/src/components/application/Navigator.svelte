@@ -13,7 +13,7 @@
   import { SpacesNavModel } from '@hcengineering/workbench'
   import { onDestroy } from 'svelte'
 
-  export let currentSpace: Ref<Space> | undefined
+  export let currentSpace: Ref<ReviewSession> | undefined
   export let currentSpecial: string | undefined
   export let deselect: boolean = false
   export let separate: boolean = false

@@ -113,8 +113,8 @@
   function extractMember (reviewSession: ReviewSession): Member[] {
     return reviewSession.members
       .map((mem) => $personIdByAccountId.get(mem as Ref<PersonAccount>))
-      .filter((m) => m !== undefined)
       .map((m) => {
+        if (m === undefined) return undefined
         const p = $personByIdStore.get(m)
         if (p !== undefined) {
           return hierarchy.as(p, kraTeam.mixin.Member)
