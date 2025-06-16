@@ -15,25 +15,10 @@
 
 import { Account, PullArray, Ref, Tx, TxCreateDoc, TxUpdateDoc } from '@hcengineering/core'
 import { TriggerControl } from '@hcengineering/server-core'
-import performance, { PerformanceReport, ReviewSession, ReviewSessionStatus, WithKRA } from '@hcengineering/performance'
+import performance, { PerformanceReport, ReviewSession, ReviewSessionStatus } from '@hcengineering/performance'
 import kraTeam, { Team } from '@hcengineering/kra-team'
-import kra from '@hcengineering/kra'
-import contact, { PersonAccount } from '@hcengineering/contact'
-
-function addUpdates (control: TriggerControl, member: Ref<Account>, reviewSessions: ReviewSession[]): Tx[] {
-  const result: Tx[] = []
-
-  for (const rs of reviewSessions) {
-    if (!rs.members.includes(member)) continue
-    const pullTx = control.txFactory.createTxUpdateDoc(rs._class, rs.space, rs._id, {
-      $pull: {
-        members: member
-      }
-    })
-    result.push(pullTx)
-  }
-  return result
-}
+import { PersonAccount } from '@hcengineering/contact'
+import { addUpdates, prepareReport } from './utils'
 
 /**
  * @public
@@ -68,47 +53,8 @@ export async function OnCreateReport (txes: Tx[], control: TriggerControl): Prom
   console.log(txes)
   for (const tx of txes) {
     const createTx = tx as TxCreateDoc<PerformanceReport>
-    const assignee = (await control.findAll(
-      control.ctx,
-      contact.class.PersonAccount,
-      { _id: createTx.attributes.reviewee },
-      { limit: 1 }
-    ))[0]
-    const reviewSession = (await control.findAll(
-      control.ctx,
-      performance.class.ReviewSession,
-      { _id: createTx.attributes.reviewSession },
-      { limit: 1 }
-    ))[0]
-    const kras = (await control.findAll(
-      control.ctx,
-      performance.class.KRA,
-      {
-        space: reviewSession._id
-      }
-    )).map(kra => kra._id)
-    const tasks = (await control.findAll(control.ctx, kra.class.Issue,
-      {
-        assignee: assignee.person,
-        createdOn: {
-          $gte: reviewSession.reviewSessionStart,
-          // Add an extra day to include tasks at the end of review session date
-          $lt: reviewSession.reviewSessionEnd + 86400
-        },
-        'performance:mixin:WithKRA.kra': { $in: kras }
-      },
-      { projection: { _id: 1 } }
-    )) as WithKRA[]
-    const taskRefs = tasks.map<Ref<WithKRA>>((task) => { return task._id })
-    const pushTx = control.txFactory.createTxUpdateDoc(
-      createTx.objectClass,
-      createTx.objectSpace,
-      createTx.objectId,
-      {
-        tasks: taskRefs
-      }
-    )
-    result.push(pushTx)
+
+    result.push(await prepareReport(control, createTx))
   }
 
   return result

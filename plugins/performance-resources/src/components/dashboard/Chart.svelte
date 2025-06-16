@@ -190,13 +190,7 @@
       <Button label={performance.string.ResetFilters} kind={'regular'} size={'large'} on:click={resetFilters} />
     </div>
     {#if kras !== undefined && employees !== undefined && employeeKras !== undefined && tasks !== undefined && taskCompletion !== undefined}
-      {@const krasByEmployee = summarizeKra(
-        employees,
-        kras,
-        employeeKras,
-        tasks,
-        taskCompletion
-      )}
+      {@const krasByEmployee = summarizeKra(employees, kras, employeeKras, tasks, taskCompletion)}
       <ChartComponent {employees} {krasByEmployee} {kras} on:segmentClick />
     {:else}
       <Loading />

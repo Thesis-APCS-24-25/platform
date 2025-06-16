@@ -97,7 +97,9 @@ export default mergeIds(performanceId, performance, {
     EndDateFilter: '' as IntlString,
     StartDateFilterDetail: '' as IntlString,
     EndDateFilterDetail: '' as IntlString,
-    ResetFilters: '' as IntlString
+    ResetFilters: '' as IntlString,
+    EmployeeScore: '' as IntlString,
+    RemainingWeight: '' as IntlString
   },
   category: {
     ReviewSessionType: '' as IntlString

@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { IntlString } from '@hcengineering/platform'
   import { createEventDispatcher } from 'svelte'
-  import { Button, EditBox, ListView, IconCheck, resizeObserver } from '@hcengineering/ui'
+  import { Button, EditBox, ListView, IconCheck, resizeObserver, Label } from '@hcengineering/ui'
   import type { EditStyle } from '@hcengineering/ui'
   import FixedColumn from '../../../../view-resources/src/components/FixedColumn.svelte'
   import KraWeightPresenter from './KRAWeightPresenter.svelte'
@@ -23,13 +23,10 @@
 
   function calculateRemaining (value: number): number {
     const total = otherWeights.reduce((acc, item) => acc + item.weight, 0)
-    const result = 1 - total - value
+    const result = 100 - total - value
     return result < 0 ? 0 : result
   }
 
-  let valueInPercent = value !== undefined ? value * 100 : undefined
-  const round = (num: number): number => Math.round(num * 100) / 100
-  $: value = valueInPercent !== undefined ? round(valueInPercent / 100) : undefined
   $: remaining = calculateRemaining(typeof value === 'number' ? value : 0)
 </script>
 
@@ -39,7 +36,7 @@
       <EditBox
         label={performance.string.Weight}
         maxDigitsAfterPoint={0}
-        bind:value={valueInPercent}
+        bind:value={value}
         {placeholder}
         format="number"
         kind='ghost'
@@ -67,6 +64,9 @@
     </svelte:fragment>
   </ListView>
   <div class="flex-col items-end m-4">
-    <span>Remaining: <KraWeightPresenter value={remaining} showPercent /></span>
+    <span>
+      <Label label={performance.string.RemainingWeight}/>:
+      <KraWeightPresenter value={remaining} showPercent />
+    </span>
   </div>
 </div>

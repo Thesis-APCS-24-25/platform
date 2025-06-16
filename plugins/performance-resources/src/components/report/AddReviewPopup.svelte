@@ -50,7 +50,7 @@
 <Card
   {label}
   okAction={submitReview}
-  canSave={content !== '' && Number.isInteger(score)}
+  canSave={_content !== '' && Number.isInteger(_score)}
   okLabel={performance.string.SubmitReview}
   on:changeContent
   on:close

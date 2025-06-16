@@ -17,15 +17,12 @@
 import { Person, type PersonAccount } from '@hcengineering/contact'
 import type {
   Arr,
-  AttachedDoc,
-  Attribute,
   Class,
   Doc,
   Mixin,
   Ref,
   SpaceType,
   SpaceTypeDescriptor,
-  Status,
   Timestamp,
   Type
 } from '@hcengineering/core'
