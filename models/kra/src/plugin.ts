@@ -52,6 +52,7 @@ export default mergeIds(kraId, kra, {
     PriorityIcon: '' as AnyComponent
   },
   component: {
+    RatingScaleObjectPresenter: '' as AnyComponent,
     IssueStatistics: '' as AnyComponent,
     TimeSpendReportPopup: '' as AnyComponent,
     NotificationIssuePresenter: '' as AnyComponent,

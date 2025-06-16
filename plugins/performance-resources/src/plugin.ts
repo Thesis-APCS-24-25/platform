@@ -139,7 +139,6 @@ export default mergeIds(performanceId, performance, {
     IsActiveReviewSessionOfCurrentTeam: '' as Resource<(space: Space) => Promise<boolean>>,
     IsInactiveReviewSessionOfCurrentTeam: '' as Resource<(space: Space) => Promise<boolean>>,
     GetAllKRAStates: '' as GetAllValuesFunc,
-    KRAStatusSort: '' as SortFunc,
     ShowEmptyGroups: '' as ViewCategoryAction,
     GetAllKRAs: '' as GetAllValuesFunc
   }

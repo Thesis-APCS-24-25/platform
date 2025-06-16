@@ -80,7 +80,6 @@
       kind,
       identifier: `KRA-${number}`,
       rank: makeRank(lastOne?.rank, undefined),
-      kraStatus: performance.kraStatus.Drafting,
       assignee: null,
       assignedTo: [],
       color: getColorNumberByText(colorString),

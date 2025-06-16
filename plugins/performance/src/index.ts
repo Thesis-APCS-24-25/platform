@@ -41,7 +41,12 @@ export enum ReviewSessionStatus {
   Concluded
 }
 
-export interface KRAStatus extends Status {}
+export enum KRAStatus {
+  Drafting,
+  NeedChanges,
+  Approved,
+  Cancelled
+}
 
 export interface ReviewSession extends Project {
   reviewSessionStart: Timestamp
@@ -52,15 +57,14 @@ export interface ReviewSession extends Project {
 
 export interface KRA extends Task {
   title: string
-  kraStatus: Ref<KRAStatus>
   description: string
   color?: number
   // keep track of assigned members, will be updated in server
   assignedTo: Array<Ref<Person>>
 }
 
-export interface EmployeeKRA extends AttachedDoc<KRA> {
-  attachedTo: Ref<KRA>
+export interface EmployeeKRA extends Doc {
+  status: KRAStatus
   kra: Ref<KRA>
   assignee: Ref<Member>
   weight: number
@@ -102,16 +106,13 @@ export interface PerformanceReview extends Doc {
 export const performanceId = 'performance' as Plugin
 
 export default plugin(performanceId, {
-  attribute: {
-    KRAStatus: '' as Ref<Attribute<KRAStatus>>
-  },
   class: {
-    KRAStatus: '' as Ref<Class<KRAStatus>>,
     ReviewSession: '' as Ref<Class<ReviewSession>>,
     KRA: '' as Ref<Class<KRA>>,
     EmployeeKRA: '' as Ref<Class<EmployeeKRA>>,
     PerformanceReport: '' as Ref<Class<PerformanceReport>>,
     PerformanceReview: '' as Ref<Class<PerformanceReview>>,
+    KRAStatus: '' as Ref<Class<Type<KRAStatus>>>,
     TypeReviewSessionStatus: '' as Ref<Class<Type<ReviewSessionStatus>>>
   },
   string: {
@@ -135,12 +136,6 @@ export default plugin(performanceId, {
     ScorePreview: '' as IntlString,
     PerformanceReport: '' as IntlString,
     ReviewContent: '' as IntlString
-  },
-  kraStatus: {
-    Drafting: '' as Ref<KRAStatus>,
-    NeedChanges: '' as Ref<KRAStatus>,
-    Approved: '' as Ref<KRAStatus>,
-    Cancelled: '' as Ref<KRAStatus>
   },
   viewlet: {
     TaskList: '' as Ref<ViewletDescriptor>,

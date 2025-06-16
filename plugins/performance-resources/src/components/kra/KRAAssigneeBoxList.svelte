@@ -8,8 +8,9 @@
   import { UserInfo, CombineAvatars, personByIdStore } from '@hcengineering/contact-resources'
   import KraAssigneesPopup from './KRAAssigneesPopup.svelte'
   import performance from '../../plugin'
-  import { EmployeeKRA, KRA } from '@hcengineering/performance'
+  import { EmployeeKRA, KRA, ReviewSession } from '@hcengineering/performance'
   import kraTeam, { Member } from '@hcengineering/kra-team'
+  import { assignKRA, unassignKRA, updateWeight } from '../../utils/kra-assign'
 
   export let items: Array<EmployeeKRA | DocData<EmployeeKRA>> = []
   export let space: Ref<Space>
@@ -54,22 +55,14 @@
     const client = getClient()
     const ops = client.apply()
     for (const item of add) {
-      await ops.addCollection(performance.class.EmployeeKRA, space, kra, performance.class.KRA, 'kras', item)
+      await assignKRA(ops, space as Ref<ReviewSession>, kra, item.weight, item.assignee)
     }
     for (const item of remove) {
-      await ops.removeCollection(performance.class.EmployeeKRA, space, item._id, kra, performance.class.KRA, 'kras')
+      await unassignKRA(ops, item._id, space as Ref<ReviewSession>, kra)
     }
 
     for (const item of update) {
-      await ops.updateCollection(
-        performance.class.EmployeeKRA,
-        space,
-        item._id,
-        kra,
-        performance.class.KRA,
-        'kras',
-        item
-      )
+      await updateWeight(ops, item._id, item.space as Ref<ReviewSession>, item.kra, item.weight)
     }
     await ops.commit()
   }

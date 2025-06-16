@@ -119,7 +119,8 @@
       showNavigate={false}
       docQuery={{ space }}
       on:object={handleTemplateSelected}
-    />
+    >
+    </ObjectBox>
   </svelte:fragment>
 
   <svelte:fragment slot="pool">

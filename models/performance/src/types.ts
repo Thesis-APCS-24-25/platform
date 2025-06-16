@@ -1,7 +1,19 @@
-import { ArrOf, Hidden, Index, Mixin, Model, Prop, TypeDate, TypeNumber, TypeRef, TypeString } from '@hcengineering/model'
+import {
+  ArrOf,
+  Hidden,
+  Index,
+  Mixin,
+  Model,
+  Prop,
+  TypeDate,
+  TypeNumber,
+  TypeRef,
+  TypeString,
+  UX
+} from '@hcengineering/model'
 
 import performance from './plugin'
-import core, { TClass, TDoc, TStatus, TType } from '@hcengineering/model-core'
+import core, { TClass, TDoc, TType } from '@hcengineering/model-core'
 import type {
   ActionItemFactory,
   EmployeeKRA,
@@ -20,22 +32,18 @@ import task, { type Task } from '@hcengineering/task'
 import {
   Account,
   type Arr,
-  Class,
-  Doc,
   type Domain,
   IndexKind,
   Ref,
   type Role,
   type RolesAssignment,
-  Space,
   type Timestamp,
   type Type
 } from '@hcengineering/core'
-import contact, { Person, type PersonAccount } from '@hcengineering/contact'
+import contact, { type PersonAccount } from '@hcengineering/contact'
 import { type Resource } from '@hcengineering/platform'
 import { type AnyComponent } from '@hcengineering/ui'
 import kraTeam, { type Member } from '@hcengineering/kra-team'
-import view from '@hcengineering/view'
 
 export const DOMAIN_PERFORMANCE = 'performance' as Domain
 
@@ -45,9 +53,6 @@ export function TypeReviewSessionStatus (): Type<ReviewSessionStatus> {
 
 @Model(performance.class.TypeReviewSessionStatus, core.class.Type, DOMAIN_PERFORMANCE)
 export class TTypeReviewSessionStatus extends TType { }
-
-@Model(performance.class.KRAStatus, core.class.Status)
-export class TKRAStatus extends TStatus implements KRAStatus { }
 
 @Mixin(performance.mixin.MeasureProgress, core.class.Class)
 export class TMeasureProgress extends TClass implements MeasureProgress {
@@ -86,9 +91,6 @@ export class TKRA extends TTask implements KRA {
   @Index(IndexKind.FullText)
     title!: string
 
-  @Prop(TypeRef(performance.class.KRAStatus), performance.string.KRAStatus)
-    kraStatus!: Ref<KRAStatus>
-
   @Prop(TypeString(), performance.string.Description)
   declare description: string
 
@@ -97,7 +99,7 @@ export class TKRA extends TTask implements KRA {
 }
 
 @Model(performance.class.EmployeeKRA, core.class.Doc, DOMAIN_PERFORMANCE)
-export class TEmployeeKRA extends TTask implements EmployeeKRA {
+export class TEmployeeKRA extends TDoc implements EmployeeKRA {
   @Prop(TypeRef(kraTeam.mixin.Member), performance.string.Assignee)
   declare assignee: Ref<Member>
 
@@ -105,8 +107,19 @@ export class TEmployeeKRA extends TTask implements EmployeeKRA {
     weight!: number
 
   @Prop(TypeRef(performance.class.KRA), performance.string.AttachedKRA)
-  declare attachedTo: Ref<KRA>
+    kra!: Ref<KRA>
+
+  @Prop(TypeKRAStatus(), performance.string.KRAStatus)
+    status!: KRAStatus
 }
+
+export function TypeKRAStatus (): Type<KRAStatus> {
+  return { _class: performance.class.KRAStatus, label: performance.string.KRAStatus }
+}
+
+@Model(performance.class.TypeKRAStatus, core.class.Type, DOMAIN_PERFORMANCE)
+@UX(performance.string.KRAStatus)
+export class TTypeKRAStatus extends TType { }
 
 @Model(performance.class.PerformanceReport, core.class.Doc, DOMAIN_PERFORMANCE)
 export class TPerformanceReport extends TDoc implements PerformanceReport {

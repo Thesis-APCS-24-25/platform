@@ -11,6 +11,7 @@
   import kraTeam, { Member } from '@hcengineering/kra-team'
   import { createEventDispatcher } from 'svelte'
   import { PersonAccount } from '@hcengineering/contact'
+  import { assignKRA } from '../../utils/kra-assign'
 
   export let kra: Ref<KRA> | undefined = undefined
   export let space: Ref<ReviewSession> | undefined = undefined
@@ -101,12 +102,7 @@
   async function handleSave (): Promise<void> {
     if (kra !== undefined && newAssigns !== undefined && newAssigns.length > 0 && space !== undefined) {
       for (const assign of newAssigns) {
-        await client.addCollection(performance.class.EmployeeKRA, space, kra, performance.class.KRA, 'kras', {
-          // TODO: remove this when we done migrating to AttachedDoc
-          kra,
-          assignee: assign.assignee,
-          weight: assign.weight
-        })
+        await assignKRA(client, kra, space, assign.weight, assign.assignee)
         newAssigns = []
       }
     }

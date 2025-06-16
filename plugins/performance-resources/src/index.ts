@@ -22,7 +22,7 @@ import KRAPresenter from './components/kra/KRAPresenter.svelte'
 import TeamSpacePresenter from './components/navigator/TeamSpacePresenter.svelte'
 import KRARefPresenter from './components/kra/KRARefPresenter.svelte'
 import KRAEditor from './components/kra/KRAEditor.svelte'
-import { getAllKRAs, kraStatusSort } from './utils/kra'
+import { getAllKRAs } from './utils/kra'
 import { type Attribute, type Doc, type DocumentQuery, type Ref, type Space } from '@hcengineering/core'
 import { getAllStates } from '@hcengineering/task-resources'
 import PerformanceDashboard from './components/dashboard/Dashboard.svelte'
@@ -85,7 +85,6 @@ export default async (): Promise<Resources> => ({
     ReviewPresenter
   },
   function: {
-    KRAStatusSort: kraStatusSort,
     GetAllKRAStates: async (
       query: DocumentQuery<Doc<Space>> | undefined,
       onUpdate: () => void,
