@@ -48,7 +48,7 @@
     {
       key: 'kra',
       props: {
-        shrink: 1
+        shrink: 0
       }
     },
     {
