@@ -315,6 +315,9 @@
     "Value": "Value",
     "RemoveGoal": "Remove goal",
     "EditGoal": "Edit goal",
+    "ChooseTemplate": "Choose template",
+    "Template": "Template",
+    "CreateFrom": "Create from template",
     "SetAssigneeFirst": "Set assignee before choosing KRA"
   },
   "status": {}
