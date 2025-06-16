@@ -52,6 +52,7 @@ import AllReviewSessions from './components/review-session/AllReviewSessions.sve
 import ReviewPresenter from './components/report/ReviewPresenter.svelte'
 import EmployeeKRATotalWeightStat from './components/kra/EmployeeKRATotalWeightStat.svelte'
 import { showEmptyGroups } from '@hcengineering/view-resources'
+import KRAStatusPresenter from './components/kra/KRAStatusPresenter.svelte'
 
 export { KRAPresenter, KRAEditor }
 
@@ -82,6 +83,7 @@ export default async (): Promise<Resources> => ({
     ReviewSessionStatusEditor,
     PerformanceApplication: Performance,
     KRAStatistics,
+    KRAStatusPresenter,
     ReviewPresenter
   },
   function: {

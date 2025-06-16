@@ -1,5 +1,8 @@
 {
   "string": {
+    "NeedChanges": "Need Changes",
+    "Approved": "Approved",
+    "Cancelled": "Cancelled",
     "Identifier": "Identifier",
     "CreateActionItem": "Create Action Item",
     "CreateReviewSession": "Create Review Session",

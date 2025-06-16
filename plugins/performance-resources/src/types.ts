@@ -1,4 +1,4 @@
-import { ReviewSessionStatus } from '@hcengineering/performance'
+import { KRAStatus, ReviewSessionStatus } from '@hcengineering/performance'
 import { type Asset, type IntlString } from '@hcengineering/platform'
 import view from '@hcengineering/view'
 import performance from './plugin'
@@ -21,5 +21,31 @@ export const reviewSessionStatusAssets: Record<ReviewSessionStatus, { icon: Asse
   [ReviewSessionStatus.Concluded]: {
     icon: performance.icon.StatusConcluded,
     label: performance.string.Concluded
+  }
+}
+
+export const defaultKRAStatuses = [
+  KRAStatus.Drafting,
+  KRAStatus.NeedChanges,
+  KRAStatus.Approved,
+  KRAStatus.Cancelled
+]
+
+export const kraStatusAssets: Record<KRAStatus, { icon: Asset, label: IntlString }> = {
+  [KRAStatus.Drafting]: {
+    icon: performance.icon.StatusDrafting,
+    label: performance.string.Drafting
+  },
+  [KRAStatus.NeedChanges]: {
+    icon: performance.icon.StatusNeedChanges,
+    label: performance.string.NeedChanges
+  },
+  [KRAStatus.Approved]: {
+    icon: performance.icon.StatusApproved,
+    label: performance.string.Approved
+  },
+  [KRAStatus.Cancelled]: {
+    icon: performance.icon.StatusCancelled,
+    label: performance.string.Cancelled
   }
 }

@@ -123,6 +123,11 @@ function defineReviewSession (builder: Builder): void {
 function defineKRA (builder: Builder): void {
   builder.createModel(TKRA, TEmployeeKRA, TDefaultKRAData, TActionItemFactory)
 
+  builder.mixin(performance.class.TypeKRAStatus, core.class.Class, view.mixin.AttributePresenter, {
+    presenter: performance.component.KRAStatusPresenter
+  })
+
+
   builder.mixin(performance.class.EmployeeKRA, core.class.Class, view.mixin.ListHeaderExtra, {
     presenters: [performance.component.EmployeeKRATotalWeightStat]
   })

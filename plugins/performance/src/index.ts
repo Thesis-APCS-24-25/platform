@@ -155,6 +155,10 @@ export default plugin(performanceId, {
     NoKRARef: '' as Ref<KRA>
   },
   icon: {
+    StatusDrafting: '' as Asset,
+    StatusNeedChanges: '' as Asset,
+    StatusApproved: '' as Asset,
+    StatusCancelled: '' as Asset,
     StartReviewSession: '' as Asset,
     Active: '' as Asset,
     Weight: '' as Asset,

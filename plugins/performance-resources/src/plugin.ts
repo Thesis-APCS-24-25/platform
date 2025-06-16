@@ -17,10 +17,13 @@ import { type Space } from '@hcengineering/core'
 import performance, { performanceId } from '@hcengineering/performance'
 import { type IntlString, mergeIds, type Resource } from '@hcengineering/platform'
 import { type AnyComponent } from '@hcengineering/ui'
-import { type ViewCategoryAction, type GetAllValuesFunc, type SortFunc } from '@hcengineering/view'
+import { type ViewCategoryAction, type GetAllValuesFunc } from '@hcengineering/view'
 
 export default mergeIds(performanceId, performance, {
   string: {
+    NeedChanges: '' as IntlString,
+    Approved: '' as IntlString,
+    Cancelled: '' as IntlString,
     IdentifierPlaceholder: '' as IntlString,
     Identifier: '' as IntlString,
     CreateActionItem: '' as IntlString,
@@ -107,6 +110,7 @@ export default mergeIds(performanceId, performance, {
     ReviewSessionType: '' as IntlString
   },
   component: {
+    KRAStatusPresenter: '' as AnyComponent,
     KRAWeightEditorWithPopup: '' as AnyComponent,
     PerformanceApplication: '' as AnyComponent,
     MyKRAs: '' as AnyComponent,

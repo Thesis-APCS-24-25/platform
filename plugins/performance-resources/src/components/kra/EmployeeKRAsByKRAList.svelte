@@ -59,6 +59,9 @@
         presenter: view.component.GrowPresenter
       },
       {
+        key: 'status'
+      },
+      {
         key: '',
         presenter: KraWeightEditorWithPopup,
         props: {
