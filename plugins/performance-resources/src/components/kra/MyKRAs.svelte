@@ -27,6 +27,7 @@
   let assignedKRAs: Ref<KRA>[] = []
   const assignedKRAsQuery = createQuery()
   $: assignedKRAsQuery.query(
+    // TODO: When the value `assignedTo` KRA is used, we should update the query to use it
     performance.class.EmployeeKRA,
     {
       assignee: me,

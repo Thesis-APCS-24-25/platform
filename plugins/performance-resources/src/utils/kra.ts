@@ -10,7 +10,8 @@ import core, {
   type Class,
   type Attribute,
   type Doc,
-  type Client
+  type Client,
+  ObjQueryType
 } from '@hcengineering/core'
 import {
   type MeasureProgress,
@@ -190,20 +191,15 @@ async function getKRAsOfEmployeeKRA (client: Client, query: DocumentQuery<Employ
 }
 
 async function getKRAsOfTask (client: Client, query: DocumentQuery<WithKRA>): Promise<Array<Ref<KRA>>> {
-  let kra: Ref<KRA> | undefined
+  // TODO: Refactor when assignedTo in `KRA` is added
   if (query.kra === undefined) return []
-  if ('$in' in query.kra) {
-    kra = query.kra.$in?.[0]
-  } else if (typeof query.kra === 'string') {
-    kra = query.kra
-  }
-  if (kra === undefined) {
-    return []
-  }
   const space = await client
-    .findOne(performance.class.KRA, { _id: kra }, { projection: { space: 1 } })
+    .findOne(performance.class.KRA, { _id: query.kra }, { projection: { space: 1 } })
     .then((kra) => kra?.space)
-  const res = (await client.findAll(performance.class.KRA, { space })).map((kra) => kra._id)
+  const assignee = query.assignee
+  const res = (await client.findAll(performance.class.EmployeeKRA, { space, kra: query.kra, assignee })).map((kra) => kra.kra)
+
+  console.log('getKRAsOfTask', res, query, space)
   return res
 }
 
