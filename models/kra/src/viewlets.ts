@@ -176,6 +176,7 @@ export function issueConfig (
             displayProps: {
               key: 'kra',
               fixed: 'right',
+              dividerBefore: true,
               align: 'right'
             }
           } as const
@@ -477,8 +478,8 @@ export function defineViewlets (builder: Builder): void {
           presenter: kra.component.GoalPresenter,
           props: { kind: 'list', size: 'small' },
           displayProps: {
+            key: 'goal',
             fixed: 'right',
-            dividerBefore: true,
             optional: true
           }
         },

@@ -18,7 +18,7 @@
   export let width: string | undefined = undefined
   export let object: Task
 
-  async function handleChange (kra: KRA): Promise<void> {
+  async function handleChange(kra: KRA): Promise<void> {
     if (onChange !== undefined && kra !== undefined) {
       await onChange(kra._id)
     }
@@ -30,7 +30,7 @@
   $: employeeKRAQuery.query(
     performance.class.EmployeeKRA,
     {
-      assignee: object.assignee ?? '' as Ref<Member>
+      assignee: object.assignee ?? ('' as Ref<Member>)
     },
     async (result) => {
       if (result !== undefined && result.length > 0) {
@@ -58,6 +58,7 @@
     {kind}
     {size}
     {width}
+    justify="left"
     disabled={readonly}
     on:click={() => {
       showPopup(
@@ -79,6 +80,7 @@
   <Button
     {kind}
     {size}
+    justify="left"
     {width}
     disabled={readonly}
     on:click={() => {

@@ -112,6 +112,7 @@
   .kraPresenterRoot {
     display: flex;
     align-items: center;
+    justify-content: left;
     gap: 0.25rem;
     flex-shrink: 0;
     text-wrap: nowrap;
@@ -134,7 +135,7 @@
 
   .icon {
     display: flex;
-    align-items: center;
-    justify-content: center;
+    align-items: left;
+    justify-content: left;
   }
 </style>
