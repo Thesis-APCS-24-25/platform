@@ -9,7 +9,8 @@
   import { Ref } from '@hcengineering/core'
   import { createEventDispatcher } from 'svelte'
 
-  export let issue: Ref<Issue>
+  export let value: Issue | undefined = undefined
+  export let issue: Ref<Issue> | undefined = value !== undefined ? value._id : undefined
   export let space: Ref<Project>
   export let canEditIssue: boolean = true
 

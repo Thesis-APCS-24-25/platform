@@ -343,6 +343,7 @@ export default mergeIds(kraId, tracker, {
     SetAssigneeFirst: '' as IntlString
   },
   component: {
+    AddGoalPopup: '' as AnyComponent,
     GoalObjectPresenter: '' as AnyComponent,
     UnitPresenter: '' as AnyComponent,
     AddUnitPopup: '' as AnyComponent,

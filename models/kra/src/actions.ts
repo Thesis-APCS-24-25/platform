@@ -28,7 +28,7 @@ import tags from '@hcengineering/tags'
 import { defaultPriorities, issuePriorities } from '@hcengineering/kra-resources/src/types'
 import performance from '@hcengineering/model-performance'
 
-function createGotoSpecialAction (
+function createGotoSpecialAction(
   builder: Builder,
   id: string,
   key: KeyBinding,
@@ -43,7 +43,7 @@ function createGotoSpecialAction (
     query
   })
 }
-export function createActions (builder: Builder, issuesId: string, myIssuesId: string): void {
+export function createActions(builder: Builder, issuesId: string, myIssuesId: string): void {
   createGotoSpecialAction(builder, issuesId, 'keyG->keyE', kra.string.GotoIssues)
   createGotoSpecialAction(builder, issuesId, 'keyG->keyA', kra.string.GotoActive, { mode: 'active' })
   createGotoSpecialAction(builder, issuesId, 'keyG->keyB', kra.string.GotoBacklog, { mode: 'backlog' })
@@ -271,6 +271,27 @@ export function createActions (builder: Builder, issuesId: string, myIssuesId: s
     },
     kra.action.SetParent
   )
+
+  createAction(builder, {
+    action: view.actionImpl.ShowPopup,
+    actionProps: {
+      component: kra.component.AddGoalPopup,
+      element: 'top',
+      fillProps: {
+        _objects: 'value'
+      }
+    },
+    label: kra.string.AddGoal,
+    icon: kra.icon.Goal,
+    input: 'none',
+    category: kra.category.Tracker,
+    target: kra.class.Issue,
+    context: {
+      mode: ['context'],
+      application: kra.app.Tracker,
+      group: 'associate'
+    }
+  })
   createAction(
     builder,
     {
@@ -679,7 +700,7 @@ export function createActions (builder: Builder, issuesId: string, myIssuesId: s
   ignoreActions(builder)
 }
 
-function ignoreActions (builder: Builder): void {
+function ignoreActions(builder: Builder): void {
   builder.mixin(performance.class.PerformanceReport, core.class.Class, view.mixin.IgnoreActions, {
     actions: [kra.action.NewRelatedIssue]
   })
