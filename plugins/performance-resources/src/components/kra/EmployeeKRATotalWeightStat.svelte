@@ -9,7 +9,7 @@
   export let category: string | undefined = undefined
 
   const shouldWarn = (value: number | undefined): boolean => {
-    return value === undefined || Math.abs(value - 1) > 0.0001
+    return value === undefined || Math.abs(value - 100) !== 0
   }
 
   $: sum =
