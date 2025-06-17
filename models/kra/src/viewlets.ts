@@ -151,7 +151,6 @@ export function issueConfig (
       props: { kind: 'list', size: 'small' },
       displayProps: {
         fixed: 'right',
-        dividerBefore: true,
         optional: true
       }
     },
