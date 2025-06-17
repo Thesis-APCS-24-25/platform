@@ -1,5 +1,6 @@
 import {
   ArrOf,
+  Collection,
   Hidden,
   Index,
   Mixin,
@@ -44,6 +45,7 @@ import contact, { type PersonAccount } from '@hcengineering/contact'
 import { type Resource } from '@hcengineering/platform'
 import { type AnyComponent } from '@hcengineering/ui'
 import kraTeam, { type Member } from '@hcengineering/kra-team'
+import chunter from '@hcengineering/model-chunter'
 
 export const DOMAIN_PERFORMANCE = 'performance' as Domain
 
@@ -114,6 +116,9 @@ export class TEmployeeKRA extends TDoc implements EmployeeKRA {
 
   @Prop(TypeKRAStatus(), performance.string.KRAStatus)
     status!: KRAStatus
+
+  @Prop(Collection(chunter.class.ChatMessage), performance.string.Comments)
+    comments!: number
 }
 
 export function TypeKRAStatus (): Type<KRAStatus> {

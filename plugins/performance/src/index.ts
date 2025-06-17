@@ -31,6 +31,7 @@ import { Asset, IntlString, plugin, Plugin, Resource } from '@hcengineering/plat
 import type { Project, ProjectType, Task, TaskType, TaskTypeDescriptor } from '@hcengineering/task'
 import { AnyComponent } from '@hcengineering/ui'
 import { Viewlet, ViewletDescriptor } from '@hcengineering/view'
+import { ChatMessageViewlet } from '@hcengineering/chunter'
 
 export enum ReviewSessionStatus {
   Drafting,
@@ -152,6 +153,7 @@ export default plugin(performanceId, {
   },
   ids: {
     ClassingProjectType: '' as Ref<ProjectType>,
+    EmployeeKRAMessageViewlet: '' as Ref<ChatMessageViewlet>,
     NoKRARef: '' as Ref<KRA>
   },
   icon: {

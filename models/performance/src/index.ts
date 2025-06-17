@@ -341,23 +341,34 @@ function defineApplication (builder: Builder): void {
 
 function defineActivity (builder: Builder): void {
   builder.mixin(performance.class.ReviewSession, core.class.Class, activity.mixin.ActivityDoc, {})
-  builder.mixin(performance.class.KRA, core.class.Class, activity.mixin.ActivityDoc, {})
+  builder.mixin(performance.class.EmployeeKRA, core.class.Class, activity.mixin.ActivityDoc, {})
   builder.mixin(performance.class.PerformanceReport, core.class.Class, activity.mixin.ActivityDoc, {})
 
   builder.createDoc(activity.class.ActivityExtension, core.space.Model, {
-    ofClass: performance.class.KRA,
+    ofClass: performance.class.EmployeeKRA,
     components: { input: { component: chunter.component.ChatMessageInput } }
   })
 
   builder.createDoc(activity.class.DocUpdateMessageViewlet, core.space.Model, {
-    objectClass: performance.class.KRA,
+    objectClass: performance.class.EmployeeKRA,
     action: 'create',
     icon: performance.icon.KRA,
-    valueAttr: 'title'
+    valueAttr: 'kra'
   })
 
+  builder.createDoc(
+    chunter.class.ChatMessageViewlet,
+    core.space.Model,
+    {
+      messageClass: chunter.class.ChatMessage,
+      objectClass: performance.class.EmployeeKRA,
+      label: chunter.string.LeftComment
+    },
+    performance.ids.EmployeeKRAMessageViewlet
+  )
+
   builder.createDoc(activity.class.DocUpdateMessageViewlet, core.space.Model, {
-    objectClass: performance.class.KRA,
+    objectClass: performance.class.EmployeeKRA,
     action: 'update',
     icon: performance.icon.KRA
   })

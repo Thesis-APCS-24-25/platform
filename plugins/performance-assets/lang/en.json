@@ -2,6 +2,7 @@
   "string": {
     "NeedChanges": "Need Changes",
     "Approved": "Approved",
+    "AttachedKRA": "Attached KRA",
     "Cancelled": "Cancelled",
     "Identifier": "Identifier",
     "CreateActionItem": "Create Action Item",

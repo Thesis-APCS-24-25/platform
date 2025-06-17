@@ -45,7 +45,8 @@
     "@hcengineering/ui": "^0.6.15",
     "@hcengineering/preference": "^0.6.13",
     "@hcengineering/tags": "^0.6.16",
-    "@hcengineering/kra-team": "^0.6.0"
+    "@hcengineering/kra-team": "^0.6.0",
+    "@hcengineering/chunter": "~0.6.20"
   },
   "repository": "https://github.com/hcengineering/platform",
   "publishConfig": {
