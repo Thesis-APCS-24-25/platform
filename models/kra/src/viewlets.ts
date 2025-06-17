@@ -171,11 +171,11 @@ export function issueConfig (
           {
             key: '',
             presenter: kra.component.KRAEditor,
+            label: performance.string.KRA,
             props: { kind: 'list', size: 'small', shrink: 1 },
             displayProps: {
-              key: '',
+              key: 'kra',
               fixed: 'right',
-              dividerBefore: true,
               align: 'right'
             }
           } as const
@@ -498,7 +498,7 @@ export function defineViewlets (builder: Builder): void {
           ['priority', SortingOrder.Ascending],
           ['createdOn', SortingOrder.Descending],
           ['dueDate', SortingOrder.Ascending],
-          ['rank', SortingOrder.Ascending],
+          ['rank', SortingOrder.Ascending]
         ],
         other: []
       }
