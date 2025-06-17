@@ -285,6 +285,7 @@ export function createActions(builder: Builder, issuesId: string, myIssuesId: st
     icon: kra.icon.Goal,
     input: 'none',
     category: kra.category.Tracker,
+    visibilityTester: kra.function.CanAddGoal,
     target: kra.class.Issue,
     context: {
       mode: ['context'],

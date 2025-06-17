@@ -366,7 +366,13 @@ export default async (): Promise<Resources> => ({
     IssueChatTitleProvider: getIssueChatTitle,
     IsProjectJoined: async (project: Project) => project.members.includes(getCurrentAccount()._id),
     GetIssueStatusCategories: getIssueStatusCategories,
-    CalculateGoal: calculateCompletionLevel
+    CalculateGoal: calculateCompletionLevel,
+    CanAddGoal: async (issue: Issue | undefined): Promise<boolean> => {
+      console.debug('CanAddGoal', issue)
+      if (issue === undefined) return false
+      if (issue.goal != null) return false
+      return true
+    }
   },
   actionImpl: {
     Move: move,

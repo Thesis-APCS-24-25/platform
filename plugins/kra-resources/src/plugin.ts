@@ -20,6 +20,7 @@ import { type Task, type ProjectType } from '@hcengineering/task'
 import tracker, { kraId, type IssueDraft, type Issue, type GoalAggregateFunction } from '@hcengineering/kra'
 import { type AnyComponent, type Location } from '@hcengineering/ui'
 import {
+    ViewActionAvailabilityFunction,
   type CreateAggregationManagerFunc,
   type GetAllValuesFunc,
   type GrouppingManagerResource,
@@ -422,6 +423,7 @@ export default mergeIds(kraId, tracker, {
     CreateIssueDraft: '' as Metadata<IssueDraft>
   },
   function: {
+    CanAddGoal: '' as Resource<ViewActionAvailabilityFunction<Issue>>,
     CalculateGoal: '' as Resource<(task: Ref<Task>) => Promise<number | undefined>>,
     KpiAggregator: '' as Resource<GoalAggregateFunction>,
     RatingScaleAggregator: '' as Resource<GoalAggregateFunction>,
