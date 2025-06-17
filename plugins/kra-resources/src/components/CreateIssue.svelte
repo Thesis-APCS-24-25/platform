@@ -17,7 +17,7 @@
   import { Analytics } from '@hcengineering/analytics'
   import { Attachment } from '@hcengineering/attachment'
   import { AttachmentPresenter, AttachmentStyledBox } from '@hcengineering/attachment-resources'
-  import { Employee, Person, PersonAccount } from '@hcengineering/contact'
+  import { Employee, Person } from '@hcengineering/contact'
   import core, {
     Account,
     Class,
@@ -94,7 +94,6 @@
   import ProjectPresenter from './projects/ProjectPresenter.svelte'
   import AddGoalPopup from './issues/goal/AddGoalPopup.svelte'
   import CreateIssueGoalDisplay from './issues/goal/CreateIssueGoalDisplay.svelte'
-  import { personAccountByPersonId } from '@hcengineering/contact-resources'
 
   export let space: Ref<Project> | undefined
   export let status: Ref<IssueStatus> | undefined = undefined
@@ -769,11 +768,10 @@
   }
 
   function updateKRAs (assignee: Ref<Person>): void {
-    const personAccount = ($personAccountByPersonId.get(assignee) ?? [{ _id: '' as Ref<PersonAccount> }])[0]._id
     void client.findAll(
       performance.class.EmployeeKRA,
       {
-        employee: personAccount
+        assignee
       }
     ).then((result) => {
       if (result !== undefined && result.length > 0) {

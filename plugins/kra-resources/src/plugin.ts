@@ -20,7 +20,7 @@ import { type Task, type ProjectType } from '@hcengineering/task'
 import tracker, { kraId, type IssueDraft, type Issue, type GoalAggregateFunction } from '@hcengineering/kra'
 import { type AnyComponent, type Location } from '@hcengineering/ui'
 import {
-    ViewActionAvailabilityFunction,
+  type ViewActionAvailabilityFunction,
   type CreateAggregationManagerFunc,
   type GetAllValuesFunc,
   type GrouppingManagerResource,
