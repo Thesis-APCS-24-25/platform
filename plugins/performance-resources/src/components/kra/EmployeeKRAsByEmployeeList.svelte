@@ -56,6 +56,12 @@
       presenter: view.component.GrowPresenter
     },
     {
+      key: 'comments',
+      displayProps: {
+        key: 'comments'
+      }
+    },
+    {
       key: '',
       presenter: KraWeightEditorWithPopup,
       props: {
