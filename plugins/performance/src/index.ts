@@ -157,6 +157,7 @@ export default plugin(performanceId, {
     NoKRARef: '' as Ref<KRA>
   },
   icon: {
+    EmployeeKRA: '' as Asset,
     ConcludeReviewSession: '' as Asset,
     StatusDrafting: '' as Asset,
     StatusNeedChanges: '' as Asset,

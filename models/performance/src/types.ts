@@ -104,6 +104,7 @@ export class TKRA extends TTask implements KRA {
 }
 
 @Model(performance.class.EmployeeKRA, core.class.Doc, DOMAIN_PERFORMANCE)
+@UX(performance.string.EmployeeKRA, performance.icon.EmployeeKRA)
 export class TEmployeeKRA extends TDoc implements EmployeeKRA {
   @Prop(TypeRef(kraTeam.mixin.Member), performance.string.Assignee)
   declare assignee: Ref<Member>

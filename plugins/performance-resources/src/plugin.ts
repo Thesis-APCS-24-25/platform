@@ -21,6 +21,7 @@ import { type ViewCategoryAction, type GetAllValuesFunc } from '@hcengineering/v
 
 export default mergeIds(performanceId, performance, {
   string: {
+    EmployeeKRA: '' as IntlString,
     CannotStartReviewSession: '' as IntlString,
     StartReviewSessionNotAllKRAApproved: '' as IntlString,
     Comments: '' as IntlString,
