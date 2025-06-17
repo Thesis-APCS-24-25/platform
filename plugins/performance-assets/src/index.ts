@@ -16,5 +16,6 @@ loadMetadata(performance.icon, {
   PerformanceReview: `${icons}#score`,
   StatusConcluded: `${icons}#status-concluded`,
   StartReviewSession: `${icons}#start-review-session`,
+  ConcludeReviewSession: `${icons}#conclude-review-session`,
   EditReview: `${icons}#edit-review`
 })

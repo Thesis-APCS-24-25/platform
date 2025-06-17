@@ -27,7 +27,7 @@
   function concludeReviewSession (rs: ReviewSession): Action {
     return {
       label: performance.string.ConcludeReviewSession,
-      icon: performance.icon.StatusConcluded,
+      icon: performance.icon.ConcludeReviewSession,
       action: async (): Promise<void> => {
         const client = getClient()
         showPopup(
