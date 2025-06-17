@@ -90,7 +90,6 @@
   import ParentIssue from './issues/ParentIssue.svelte'
   import PriorityEditor from './issues/PriorityEditor.svelte'
   import StatusEditor from './issues/StatusEditor.svelte'
-  import EstimationEditor from './issues/timereport/EstimationEditor.svelte'
   import ProjectPresenter from './projects/ProjectPresenter.svelte'
   import AddGoalPopup from './issues/goal/AddGoalPopup.svelte'
   import CreateIssueGoalDisplay from './issues/goal/CreateIssueGoalDisplay.svelte'
@@ -498,7 +497,7 @@
             : [],
         reportedTime: 0,
         remainingTime: 0,
-        estimation: object.estimation,
+        estimation: 0,
         reports: 0,
         relations: relatedTo !== undefined ? [{ _id: relatedTo._id, _class: relatedTo._class }] : [],
         childInfo: [],
@@ -997,9 +996,6 @@
         object.labels = object.labels.filter((it) => it._id !== evt.detail)
       }}
     />
-    <div id="estimation-editor" class="new-line">
-      <EstimationEditor focusIndex={8} kind={'regular'} size={'large'} value={object} />
-    </div>
     <div id="duedate-editor" class="new-line">
       <DatePresenter
         focusIndex={10}

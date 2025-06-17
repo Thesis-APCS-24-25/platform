@@ -31,7 +31,6 @@ export const issuesOptions = (kanban: boolean): ViewOptionsModel => ({
     'priority',
     'createdBy',
     'modifiedBy',
-    'estimation',
     'remainingTime',
     'reportedTime',
     'kra'
@@ -44,7 +43,6 @@ export const issuesOptions = (kanban: boolean): ViewOptionsModel => ({
     ['createdOn', SortingOrder.Descending],
     ['dueDate', SortingOrder.Ascending],
     ['rank', SortingOrder.Ascending],
-    ['estimation', SortingOrder.Descending],
     ['remainingTime', SortingOrder.Descending],
     ['reportedTime', SortingOrder.Descending]
   ],
@@ -156,13 +154,6 @@ export function issueConfig (
         dividerBefore: true,
         optional: true
       }
-    },
-    {
-      key: '',
-      label: kra.string.Estimation,
-      presenter: kra.component.EstimationEditor,
-      props: { kind: 'list', size: 'small' },
-      displayProps: { key: key + 'estimation', fixed: 'left', dividerBefore: true, optional: true }
     },
     {
       key: 'modifiedOn',
@@ -320,16 +311,6 @@ export function defineViewlets (builder: Builder): void {
           props: { type: 'issue', shouldUseMargin: true }
         },
         // { key: '', presenter: tracker.component.DueDatePresenter, props: { kind: 'list' } },
-        {
-          key: '',
-          label: kra.string.Estimation,
-          presenter: kra.component.TemplateEstimationEditor,
-          props: {
-            kind: 'list',
-            size: 'small'
-          },
-          displayProps: { key: 'estimation', compression: true }
-        },
         { key: '', displayProps: { grow: true } },
         {
           key: 'modifiedOn',
@@ -364,7 +345,6 @@ export function defineViewlets (builder: Builder): void {
         'priority',
         'dueDate',
         'labels',
-        'estimation',
         'attachments',
         'comments',
         'kra',
@@ -423,11 +403,8 @@ export function defineViewlets (builder: Builder): void {
           'relations',
           'description',
           'number',
-          'reportedTime',
-          'reports',
           'priority',
           'estimation',
-          'remainingTime',
           'status',
           'dueDate',
           'attachedTo',
@@ -506,13 +483,6 @@ export function defineViewlets (builder: Builder): void {
           }
         },
         {
-          key: '',
-          label: kra.string.Estimation,
-          presenter: kra.component.EstimationEditor,
-          props: { kind: 'list', size: 'small' },
-          displayProps: { key: 'estimation', fixed: 'left', dividerBefore: true, optional: true }
-        },
-        {
           key: 'modifiedOn',
           presenter: kra.component.ModificationDatePresenter,
           displayProps: { key: 'modified', fixed: 'left', dividerBefore: true }
@@ -529,9 +499,6 @@ export function defineViewlets (builder: Builder): void {
           ['createdOn', SortingOrder.Descending],
           ['dueDate', SortingOrder.Ascending],
           ['rank', SortingOrder.Ascending],
-          ['estimation', SortingOrder.Descending],
-          ['remainingTime', SortingOrder.Descending],
-          ['reportedTime', SortingOrder.Descending]
         ],
         other: []
       }

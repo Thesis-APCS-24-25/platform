@@ -1,5 +1,6 @@
 {
   "string": {
+    "EmployeeKRA": "Employee KRA",
     "CannotStartReviewSession": "Cannoy start review session",
     "StartReviewSessionNotAllKRAApproved": "There are some KRAs that are not approved yet. Please approve all KRAs before starting the review session.",
     "NeedChanges": "Need Changes",
