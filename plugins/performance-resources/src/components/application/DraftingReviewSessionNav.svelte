@@ -8,7 +8,7 @@
   import { TreeSeparator } from '@hcengineering/workbench-resources'
   import { Action, showPopup } from '@hcengineering/ui'
   import { navigatorModel } from '../../navigation'
-  import { doKRAWeightCheck } from '../../utils/review-session'
+  import { allKRAApproved, doKRAWeightCheck } from '../../utils/review-session'
   import WeightWarningPopup from './WeightWarningPopup.svelte'
 
   export let currentSpace: Ref<Space> | undefined
@@ -32,6 +32,18 @@
       action: async (): Promise<void> => {
         const client = getClient()
 
+        const allApproved = await allKRAApproved(client, rs)
+        if (!allApproved) {
+          showPopup(
+            MessageBox,
+            {
+              label: performance.string.CannotStartReviewSession,
+              message: performance.string.StartReviewSessionNotAllKRAApproved
+            },
+            'top'
+          )
+          return
+        }
         const notFullEmployees = []
         for (const [employee, ok] of (await doKRAWeightCheck(client, rs))) {
           if (!ok) {

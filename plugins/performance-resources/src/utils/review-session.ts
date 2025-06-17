@@ -1,4 +1,4 @@
-import performance, { ReviewSessionStatus, type ReviewSession } from '@hcengineering/performance'
+import performance, { KRAStatus, ReviewSessionStatus, type ReviewSession } from '@hcengineering/performance'
 import { type Timestamp, type Ref, type TxOperations, type Space, type Client } from '@hcengineering/core'
 import type { ProjectType } from '@hcengineering/task'
 import {
@@ -142,6 +142,16 @@ export async function IsInactiveReviewSessionOfCurrentTeam (space: Space): Promi
     client.getHierarchy().isDerived(activeSession._class, performance.class.ReviewSession) &&
     activeSession.status !== ReviewSessionStatus.InProgress
   )
+}
+
+export async function allKRAApproved (
+  client: Client,
+  reviewSession: ReviewSession
+): Promise<boolean> {
+  const kras = await client.findAll(performance.class.EmployeeKRA, {
+    space: reviewSession._id
+  })
+  return kras.every(kra => kra.status === KRAStatus.Approved)
 }
 
 export async function doKRAWeightCheck (
