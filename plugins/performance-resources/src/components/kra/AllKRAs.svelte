@@ -20,6 +20,8 @@
   import { PersonAccount } from '@hcengineering/contact'
   import EmployeeKrAsByKraList from './EmployeeKRAsByKRAList.svelte'
   import { canAssignKRAs } from '../../utils/team'
+  import { Member } from '@hcengineering/kra-team'
+  import { personIdByAccountId } from '@hcengineering/contact-resources'
 
   export let currentSpace: Ref<ReviewSession>
   export let icon: Asset = performance.icon.Active
@@ -28,9 +30,6 @@
 
   $: baseQuery = {
     ...baseQuery,
-    // employee: {
-    //   $exists: true
-    // },
     space: currentSpace
   }
 
@@ -40,7 +39,7 @@
       ['per-kra', performance.string.PerKRA, {}],
       ['per-employee', performance.string.PerMember, {}]
     ],
-    onChange (mode) {
+    onChange(mode) {
       modes.mode = mode
       currentMode = mode
     }
@@ -53,6 +52,7 @@
 
   let kras: KRA[] = []
   let employees: Ref<PersonAccount>[] = []
+  $: members = employees.map((e) => $personIdByAccountId.get(e)).filter((e) => e !== undefined) as Ref<Member>[]
   let employeeKras: WithLookup<EmployeeKRA>[] = []
   const kraQuery = createQuery()
   const employeeKraQuery = createQuery()
@@ -84,7 +84,7 @@
     performance.class.EmployeeKRA,
     {
       space: currentSpace,
-      kra: { $in: kras.map(k => k._id) }
+      kra: { $in: kras.map((k) => k._id) }
     },
     (res) => {
       employeeKras = res
@@ -102,6 +102,9 @@
 <Header>
   <Breadcrumb {icon} {label} size={'large'} isCurrent />
   <svelte:fragment slot="actions">
+    {#if modes !== undefined}
+      <ModeSelector props={modes} kind="subtle" />
+    {/if}
     <Button
       icon={IconAdd}
       size="large"
@@ -123,11 +126,7 @@
     />
   </svelte:fragment>
 
-  <svelte:fragment slot="extra">
-    {#if modes !== undefined}
-      <ModeSelector props={modes} kind="subtle" />
-    {/if}
-  </svelte:fragment>
+  <svelte:fragment slot="extra"></svelte:fragment>
 </Header>
 
 <div class="w-full h-full py-4 clear-mins">
@@ -136,7 +135,7 @@
       {#if currentMode === 'per-kra'}
         <EmployeeKrAsByKraList {kras} {employeeKras} {canAssign} space={currentSpace} />
       {:else if currentMode === 'per-employee'}
-        <EmployeeKRAsByEmployeeList {employees} {employeeKras} space={currentSpace} {canAssign} />
+        <EmployeeKRAsByEmployeeList {members} {employeeKras} space={currentSpace} {canAssign} />
       {/if}
     </div>
   </Scroller>

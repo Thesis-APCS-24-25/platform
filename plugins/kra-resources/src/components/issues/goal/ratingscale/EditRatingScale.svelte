@@ -1,33 +1,45 @@
 <script lang="ts">
-  import { Goal, Issue, Project, RatingScale } from '@hcengineering/kra'
-  import { createFocusManager, EditBox, FocusHandler } from '@hcengineering/ui'
+  import { Issue, Project, RatingScale } from '@hcengineering/kra'
+  import { createFocusManager, EditBox, FocusHandler, ToggleWithLabel } from '@hcengineering/ui'
   import kra from '../../../../plugin'
-  import { getClient } from '@hcengineering/presentation'
+  import { Card, getClient } from '@hcengineering/presentation'
   import { Ref } from '@hcengineering/core'
-  import { onMount } from 'svelte'
+  import { createEventDispatcher, onMount } from 'svelte'
+  import { ObjectBox } from '@hcengineering/view-resources'
 
   export let canSave = false
   export let issue: Ref<Issue> | undefined = undefined
   export let space: Ref<Project> | undefined = undefined
   export let ratingScale: RatingScale | undefined = undefined
+  export let canEditIssue: boolean = true
+
+  let id = ratingScale?._id
+  let useAsTemplate: boolean = false
+
+  const dispatch = createEventDispatcher()
 
   const data = {
     name: ratingScale?.name ?? '',
     description: ratingScale?.description ?? ''
   }
 
+  const focusManager = createFocusManager()
+  onMount(() => {
+    focusManager.setFocusPos(1)
+  })
+
   const client = getClient()
 
-  export async function save (): Promise<Ref<Goal> | undefined> {
+  async function save (): Promise<void> {
     if (canSave) {
       if (space !== undefined && issue !== undefined) {
-        const id = await client.createDoc(kra.class.RatingScale, space, {
+        id = await client.createDoc(kra.class.RatingScale, space, {
           name: data.name,
           description: data.description,
           reports: 0,
+          isTemplate: useAsTemplate,
           unit: kra.ids.RatingScaleUnit
         })
-        return id
       } else if (ratingScale !== undefined) {
         await client.update(ratingScale, {
           name: data.name,
@@ -36,35 +48,78 @@
       }
     }
   }
+  let template: RatingScale | undefined = undefined
+
+  function handleIssueChange (evt: CustomEvent<Ref<Issue>>): void {
+    issue = evt.detail
+  }
+
+  function handleTemplateSelected (evt: CustomEvent<RatingScale | undefined>): void {
+    if (evt.detail === undefined) {
+      template = undefined
+      return
+    }
+    template = evt.detail
+    data.name = template.name
+  }
 
   $: canSave = data.name.length > 0
-
-  const focusManager = createFocusManager()
-  onMount(() => {
-    focusManager.setFocusPos(1)
-  })
 </script>
 
 <FocusHandler manager={focusManager} />
 
-<div class="m-1">
-  <EditBox
-    label={kra.string.Name}
-    kind="default"
-    fullSize
-    bind:value={data.name}
-    placeholder={kra.string.AddNamePlaceholder}
-    focusIndex={1}
-  />
-</div>
-
-<div class="m-1">
-  <EditBox
-    label={kra.string.Description}
-    kind="default"
-    fullSize
-    bind:value={data.description}
-    placeholder={kra.string.IssueDescriptionPlaceholder}
-    focusIndex={2}
-  />
-</div>
+<Card
+  label={kra.string.AddRatingScale}
+  okAction={save}
+  {canSave}
+  width="small"
+  on:close={() => {
+    dispatch('close', id)
+  }}
+>
+  <svelte:fragment slot="header">
+    {#if canEditIssue}
+      <ObjectBox
+        docQuery={{
+          goal: undefined
+        }}
+        size="small"
+        kind="regular"
+        showNavigate={false}
+        icon={kra.icon.Issue}
+        value={issue}
+        on:change={handleIssueChange}
+        _class={kra.class.Issue}
+        label={kra.string.Issue}
+      />
+    {/if}
+    <ObjectBox
+      kind="regular"
+      _class={kra.class.RatingScale}
+      label={kra.string.ChooseTemplate}
+      value={template?._id}
+      showNavigate={false}
+      docQuery={{ space, isTemplate: true }}
+      on:object={handleTemplateSelected}
+      allowDeselect
+      on:change={(e) => {
+        if (e.detail === null) {
+          template = undefined
+        }
+      }}
+    ></ObjectBox>
+  </svelte:fragment>
+  <div class="m-1">
+    <EditBox
+      label={kra.string.Name}
+      kind="default-large"
+      fullSize
+      bind:value={data.name}
+      placeholder={kra.string.AddNamePlaceholder}
+      focusIndex={1}
+    />
+  </div>
+  <svelte:fragment slot="pool">
+    <ToggleWithLabel disabled={template !== undefined} bind:on={useAsTemplate} label={kra.string.UseAsTemplate} />
+  </svelte:fragment>
+</Card>

@@ -11,7 +11,7 @@
   _class={performance.class.EmployeeKRA}
   {query}
   config={[
-    'employee',
+    'assignee',
     {
       key: '',
       label: performance.string.Weight,

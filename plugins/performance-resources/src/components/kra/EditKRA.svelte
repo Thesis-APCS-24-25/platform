@@ -246,7 +246,7 @@
       />
     </div>
     <div class="w-full mt-6">
-      <KRAAssignees kra={kraId ?? _id} {space} />
+      <KRAAssignees kra={kraId ?? _id} {space} isCollapsed={false}/>
     </div>
 
     <RelationsEditor object={kra} {readonly} />

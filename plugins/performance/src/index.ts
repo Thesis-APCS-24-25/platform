@@ -14,12 +14,24 @@
 // limitations under the License.
 //
 
-import { type PersonAccount } from '@hcengineering/contact'
-import type { Arr, Attribute, Class, Doc, Mixin, Ref, SpaceType, SpaceTypeDescriptor, Status, Timestamp, Type } from '@hcengineering/core'
+import { Person, type PersonAccount } from '@hcengineering/contact'
+import type {
+  Arr,
+  Class,
+  Doc,
+  Mixin,
+  Ref,
+  SpaceType,
+  SpaceTypeDescriptor,
+  Timestamp,
+  Type
+} from '@hcengineering/core'
+import { Member } from '@hcengineering/kra-team'
 import { Asset, IntlString, plugin, Plugin, Resource } from '@hcengineering/platform'
 import type { Project, ProjectType, Task, TaskType, TaskTypeDescriptor } from '@hcengineering/task'
 import { AnyComponent } from '@hcengineering/ui'
 import { Viewlet, ViewletDescriptor } from '@hcengineering/view'
+import { ChatMessageViewlet } from '@hcengineering/chunter'
 
 export enum ReviewSessionStatus {
   Drafting,
@@ -27,24 +39,33 @@ export enum ReviewSessionStatus {
   Concluded
 }
 
-export interface KRAStatus extends Status {}
+export enum KRAStatus {
+  Drafting,
+  NeedChanges,
+  Approved,
+  Cancelled
+}
 
 export interface ReviewSession extends Project {
   reviewSessionStart: Timestamp
   reviewSessionEnd: Timestamp
+  identifier: string
   status?: ReviewSessionStatus
+  sequence: number
 }
 
 export interface KRA extends Task {
   title: string
   description: string
-  kraStatus: Ref<KRAStatus>
   color?: number
+  // keep track of assigned members, will be updated in server
+  assignedTo: Array<Ref<Person>>
 }
 
 export interface EmployeeKRA extends Doc {
+  status: KRAStatus
   kra: Ref<KRA>
-  employee: Ref<PersonAccount>
+  assignee: Ref<Member>
   weight: number
 }
 
@@ -56,7 +77,17 @@ export interface ProgressPresenter extends Class<Task> {
   presenter: AnyComponent
 }
 
-export interface WithKRA extends Task { }
+/**
+ * Allow to create new action items for KRA
+ * `component` will be created with `kra` and `assignee` props
+ */
+export interface ActionItemFactory extends Class<Task> {
+  component: AnyComponent
+}
+
+export interface WithKRA extends Task {
+  kra?: Ref<KRA>
+}
 
 export interface PerformanceReport extends Doc {
   reviewee: Ref<PersonAccount>
@@ -74,16 +105,13 @@ export interface PerformanceReview extends Doc {
 export const performanceId = 'performance' as Plugin
 
 export default plugin(performanceId, {
-  attribute: {
-    KRAStatus: '' as Ref<Attribute<KRAStatus>>
-  },
   class: {
-    KRAStatus: '' as Ref<Class<KRAStatus>>,
     ReviewSession: '' as Ref<Class<ReviewSession>>,
     KRA: '' as Ref<Class<KRA>>,
     EmployeeKRA: '' as Ref<Class<EmployeeKRA>>,
     PerformanceReport: '' as Ref<Class<PerformanceReport>>,
     PerformanceReview: '' as Ref<Class<PerformanceReview>>,
+    TypeKRAStatus: '' as Ref<Class<Type<KRAStatus>>>,
     TypeReviewSessionStatus: '' as Ref<Class<Type<ReviewSessionStatus>>>
   },
   string: {
@@ -108,17 +136,12 @@ export default plugin(performanceId, {
     PerformanceReport: '' as IntlString,
     ReviewContent: '' as IntlString
   },
-  kraStatus: {
-    Drafting: '' as Ref<KRAStatus>,
-    NeedChanges: '' as Ref<KRAStatus>,
-    Approved: '' as Ref<KRAStatus>,
-    Cancelled: '' as Ref<KRAStatus>
-  },
   viewlet: {
     TaskList: '' as Ref<ViewletDescriptor>,
     WithKRAList: '' as Ref<Viewlet>
   },
   mixin: {
+    ActionItemFactory: '' as Ref<Mixin<ActionItemFactory>>,
     DefaultReviewSessionData: '' as Ref<Mixin<ReviewSession>>,
     DefaultKRAData: '' as Ref<Mixin<KRA>>,
     WithKRA: '' as Ref<Mixin<WithKRA>>,
@@ -130,9 +153,16 @@ export default plugin(performanceId, {
   },
   ids: {
     ClassingProjectType: '' as Ref<ProjectType>,
+    EmployeeKRAMessageViewlet: '' as Ref<ChatMessageViewlet>,
     NoKRARef: '' as Ref<KRA>
   },
   icon: {
+    EmployeeKRA: '' as Asset,
+    ConcludeReviewSession: '' as Asset,
+    StatusDrafting: '' as Asset,
+    StatusNeedChanges: '' as Asset,
+    StatusApproved: '' as Asset,
+    StatusCancelled: '' as Asset,
     StartReviewSession: '' as Asset,
     Active: '' as Asset,
     Weight: '' as Asset,
@@ -141,7 +171,8 @@ export default plugin(performanceId, {
     KRA: '' as Asset,
     StatusInProgress: '' as Asset,
     StatusConcluded: '' as Asset,
-    PerformanceReview: '' as Asset
+    PerformanceReview: '' as Asset,
+    EditReview: '' as Asset
   },
   descriptor: {
     KRAType: '' as Ref<TaskTypeDescriptor>,

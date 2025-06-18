@@ -23,7 +23,6 @@ distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRAN
     <div class="fs-title text-xl">
       {kpi.name}
     </div>
-    <div class="description">{kpi.description}</div>
   </div>
 
   <div class="kpi-box flex-col items-end">

@@ -12,9 +12,8 @@
   export let shouldShowAvatar: boolean = true
   export let noUnderline: boolean = false
   export let disabled: boolean = false
-  export let shouldShowName: boolean = true
   export let shrink: number = 0
-  export let kind: 'list-header' | 'list' = 'list'
+  export let kind: 'list-header' | 'list' | 'link-bordered' = 'list'
   export let type: ObjectPresenterType = 'link'
 </script>
 
@@ -27,7 +26,6 @@
       type
     }}
     {shouldShowAvatar}
-    {shouldShowName}
     {disabled}
     {inline}
     {noUnderline}

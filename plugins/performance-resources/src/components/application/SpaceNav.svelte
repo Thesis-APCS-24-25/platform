@@ -1,14 +1,10 @@
 <script lang="ts">
-  import { ReviewSession, ReviewSessionStatus } from '@hcengineering/performance'
+  import { ReviewSession } from '@hcengineering/performance'
   import ReviewSessionSpacePresenter from '../review-session/ReviewSessionSpacePresenter.svelte'
-  import { Ref, Space } from '@hcengineering/core'
-  import { createQuery } from '@hcengineering/presentation'
-  import performance from '../../plugin'
-  import { currentTeam } from '../../utils/team'
+  import { Ref } from '@hcengineering/core'
   import { TreeNode } from '@hcengineering/view-resources'
   import { SpacesNavModel } from '@hcengineering/workbench'
   import { TreeSeparator } from '@hcengineering/workbench-resources'
-  import { Asset } from '@hcengineering/platform'
 
   export let model: SpacesNavModel
   export let currentSpace: Ref<ReviewSession> | undefined

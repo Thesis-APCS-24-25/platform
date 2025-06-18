@@ -1,13 +1,14 @@
 <script lang="ts">
   import { ObjectPopup } from '@hcengineering/presentation'
-  import contact, { Person } from '@hcengineering/contact'
+  import { Person } from '@hcengineering/contact'
   import { DocData } from '@hcengineering/core'
-  import { UserInfo, personIdByAccountId, personAccountByPersonId } from '@hcengineering/contact-resources'
+  import { UserInfo, personAccountByPersonId } from '@hcengineering/contact-resources'
   import { EmployeeKRA } from '@hcengineering/performance'
   import { createEventDispatcher } from 'svelte'
+  import kraTeam from '@hcengineering/kra-team'
 
   export let items: Array<DocData<EmployeeKRA> | EmployeeKRA> = []
-  const ignoreObjects = items.map((s) => $personIdByAccountId.get(s.employee)).filter((s) => s !== undefined)
+  const ignoreObjects = items.map((s) => s.assignee)
   const dispatch = createEventDispatcher()
   function close (event: CustomEvent<Person>): void {
     const items = [event.detail]
@@ -21,7 +22,7 @@
 
 <ObjectPopup
   size="large"
-  _class={contact.class.Person}
+  _class={kraTeam.mixin.Member}
   closeAfterSelect
   shadows={false}
   allowDeselect

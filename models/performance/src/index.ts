@@ -1,12 +1,12 @@
 import { type Builder } from '@hcengineering/model'
-import { type KRAStatus, performanceId } from '@hcengineering/performance'
+import { performanceId } from '@hcengineering/performance'
 import tracker from '@hcengineering/model-tracker'
 import activity from '@hcengineering/activity'
 import chunter from '@hcengineering/chunter'
 import kraTeam from '@hcengineering/model-kra-team'
 import performance from './plugin'
 import task from '@hcengineering/task'
-import { type Ref, type StatusCategory } from '@hcengineering/core'
+import { type Status, type Ref, type StatusCategory } from '@hcengineering/core'
 import core from '@hcengineering/model-core'
 import workbench, { type Application } from '@hcengineering/model-workbench'
 import view from '@hcengineering/model-view'
@@ -16,13 +16,14 @@ import {
   TDefaultReviewSessionData,
   TEmployeeKRA,
   TKRA,
-  TKRAStatus,
   TReviewSession,
   TMeasureProgress,
   TPerformanceReport,
   TTypeReviewSessionStatus,
   TProgressPresenter,
-  TPerformanceReview
+  TPerformanceReview,
+  TActionItemFactory,
+  TTypeKRAStatus
 } from './types'
 import { defineViewlets } from './viewlets'
 
@@ -120,7 +121,15 @@ function defineReviewSession (builder: Builder): void {
 }
 
 function defineKRA (builder: Builder): void {
-  builder.createModel(TKRA, TEmployeeKRA, TKRAStatus, TDefaultKRAData)
+  builder.createModel(TKRA, TEmployeeKRA, TDefaultKRAData, TActionItemFactory)
+
+  builder.mixin(performance.class.TypeKRAStatus, core.class.Class, view.mixin.AttributePresenter, {
+    presenter: performance.component.KRAStatusPresenter
+  })
+
+  builder.mixin(performance.class.EmployeeKRA, core.class.Class, view.mixin.ListHeaderExtra, {
+    presenters: [performance.component.EmployeeKRATotalWeightStat]
+  })
 
   builder.mixin(performance.class.KRA, core.class.Class, view.mixin.AttributePresenter, {
     presenter: performance.component.KRARefPresenter
@@ -136,6 +145,10 @@ function defineKRA (builder: Builder): void {
 
   builder.mixin(performance.class.KRA, core.class.Class, view.mixin.ObjectPanel, {
     component: performance.component.EditKRA
+  })
+
+  builder.mixin(performance.class.KRA, core.class.Class, view.mixin.AllValuesFunc, {
+    func: performance.function.GetAllKRAs
   })
 
   // builder.mixin(performance.class.ReviewSession, core.class.Class, workbench.mixin.SpaceView, {
@@ -167,8 +180,7 @@ function defineKRA (builder: Builder): void {
           readonly: true
         }
       },
-      'description',
-      'kraStatus'
+      'description'
     ]
   })
 
@@ -200,50 +212,6 @@ function defineKRA (builder: Builder): void {
       }
     ]
   })
-
-  builder.createDoc(
-    performance.class.KRAStatus,
-    core.space.Model,
-    {
-      name: 'Drafting',
-      ofAttribute: performance.attribute.KRAStatus,
-      category: task.statusCategory.UnStarted
-    },
-    performance.kraStatus.Drafting
-  )
-
-  builder.createDoc(
-    performance.class.KRAStatus,
-    core.space.Model,
-    {
-      name: 'Need Changes',
-      ofAttribute: performance.attribute.KRAStatus,
-      category: task.statusCategory.Active
-    },
-    performance.kraStatus.NeedChanges
-  )
-
-  builder.createDoc(
-    performance.class.KRAStatus,
-    core.space.Model,
-    {
-      name: 'Approved',
-      ofAttribute: performance.attribute.KRAStatus,
-      category: task.statusCategory.Won
-    },
-    performance.kraStatus.Approved
-  )
-
-  builder.createDoc(
-    performance.class.KRAStatus,
-    core.space.Model,
-    {
-      name: 'Cancelled',
-      ofAttribute: performance.attribute.KRAStatus,
-      category: task.statusCategory.Lost
-    },
-    performance.kraStatus.Cancelled
-  )
 }
 
 function defineReport (builder: Builder): void {
@@ -284,27 +252,21 @@ function defineReport (builder: Builder): void {
 }
 
 function defineSpaceType (builder: Builder): void {
-  const kraStatuses: Ref<KRAStatus>[] = []
-  for (const statusId of Object.values(performance.kraStatus)) {
-    kraStatuses.push(statusId)
-  }
+  const kraStatuses: Ref<Status>[] = []
   const kraCategories: Ref<StatusCategory>[] = []
-  for (const category of Object.values(performance.kraStatusCategory)) {
-    kraCategories.push(category)
-  }
 
   builder.createDoc(
     task.class.TaskType,
     core.space.Model,
     {
       parent: performance.ids.ClassingProjectType,
-      statuses: kraStatuses,
+      statuses: [],
       descriptor: performance.descriptor.KRAType,
       name: 'KRA',
       kind: 'task',
       ofClass: performance.class.KRA,
       targetClass: performance.mixin.DefaultKRAData,
-      statusClass: performance.class.KRAStatus,
+      statusClass: performance.class.TypeKRAStatus,
       statusCategories: kraCategories,
       allowedAsChildOf: [performance.taskTypes.KRA],
       icon: tracker.icon.Issue
@@ -378,39 +340,41 @@ function defineApplication (builder: Builder): void {
 
 function defineActivity (builder: Builder): void {
   builder.mixin(performance.class.ReviewSession, core.class.Class, activity.mixin.ActivityDoc, {})
-  builder.mixin(performance.class.KRA, core.class.Class, activity.mixin.ActivityDoc, {})
+  builder.mixin(performance.class.EmployeeKRA, core.class.Class, activity.mixin.ActivityDoc, {})
   builder.mixin(performance.class.PerformanceReport, core.class.Class, activity.mixin.ActivityDoc, {})
 
   builder.createDoc(activity.class.ActivityExtension, core.space.Model, {
-    ofClass: performance.class.KRA,
+    ofClass: performance.class.EmployeeKRA,
     components: { input: { component: chunter.component.ChatMessageInput } }
   })
 
   builder.createDoc(activity.class.DocUpdateMessageViewlet, core.space.Model, {
-    objectClass: performance.class.KRA,
+    objectClass: performance.class.EmployeeKRA,
     action: 'create',
     icon: performance.icon.KRA,
-    valueAttr: 'title'
+    valueAttr: 'kra'
   })
 
+  builder.createDoc(
+    chunter.class.ChatMessageViewlet,
+    core.space.Model,
+    {
+      messageClass: chunter.class.ChatMessage,
+      objectClass: performance.class.EmployeeKRA,
+      label: chunter.string.LeftComment
+    },
+    performance.ids.EmployeeKRAMessageViewlet
+  )
+
   builder.createDoc(activity.class.DocUpdateMessageViewlet, core.space.Model, {
-    objectClass: performance.class.KRA,
+    objectClass: performance.class.EmployeeKRA,
     action: 'update',
     icon: performance.icon.KRA
   })
 }
 
-function defineSortAndGrouping (builder: Builder): void {
-  builder.mixin(performance.class.KRAStatus, core.class.Class, view.mixin.SortFuncs, {
-    func: performance.function.KRAStatusSort
-  })
-
-  builder.mixin(performance.class.KRAStatus, core.class.Class, view.mixin.AllValuesFunc, {
-    func: performance.function.GetAllKRAStates
-  })
-}
-
 export function createModel (builder: Builder): void {
+  builder.createModel(TTypeKRAStatus)
   builder.createModel(TMeasureProgress)
   builder.createModel(TProgressPresenter)
   defineTeam(builder)
@@ -418,7 +382,6 @@ export function createModel (builder: Builder): void {
   defineKRA(builder)
   defineReport(builder)
   defineActivity(builder)
-  defineSortAndGrouping(builder)
   defineViewlets(builder)
 
   defineApplication(builder)

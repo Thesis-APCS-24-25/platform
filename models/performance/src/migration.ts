@@ -1,8 +1,5 @@
-import { DOMAIN_MODEL_TX, DOMAIN_STATUS, generateId, type TxCreateDoc } from '@hcengineering/core'
 import { type MigrateOperation, type MigrationClient, type MigrationUpgradeClient, type ModelLogger, tryMigrate } from '@hcengineering/model'
-import core from '@hcengineering/model-core'
-import performance, { type KRAStatus, performanceId } from '@hcengineering/performance'
-import task from '@hcengineering/task'
+import { performanceId } from '@hcengineering/performance'
 
 // async function migrateReviewSessionStatuses (client: MigrationClient): Promise<void> {
 //   await client.update(
@@ -88,97 +85,13 @@ import task from '@hcengineering/task'
 //   }
 // }
 
-async function migrateKRAStatuses (client: MigrationClient): Promise<void> {
-  await client.update(
-    DOMAIN_MODEL_TX,
-    {
-      objectClass: task.class.TaskType,
-      'attributes.ofClass': performance.class.KRA,
-      'attributes.statusClass': core.class.Status
-    },
-    {
-      $set: {
-        'attributes.statusClass': performance.class.KRAStatus
-      }
-    }
-  )
-  await client.update(
-    DOMAIN_MODEL_TX,
-    {
-      objectClass: core.class.Status,
-      'attributes.ofAttribute': performance.attribute.KRAStatus
-    },
-    {
-      $set: {
-        objectClass: performance.class.KRAStatus
-      }
-    }
-  )
-
-  await client.update(
-    DOMAIN_STATUS,
-    {
-      _class: core.class.Status,
-      ofAttribute: performance.attribute.KRAStatus
-    },
-    {
-      $set: {
-        _class: performance.class.KRAStatus
-      }
-    }
-  )
-}
-
-async function migrateKRAStatusesToModel (client: MigrationClient): Promise<void> {
-  // Move statuses to model:
-  // Migrate the default ones with well-known ids as system's model
-  // And the rest as user's model
-  // Skip __superseded statuses
-  const allStatuses = await client.find<KRAStatus>(DOMAIN_STATUS, {
-    _class: performance.class.KRAStatus,
-    __superseded: { $exists: false }
-  })
-
-  for (const status of allStatuses) {
-    const isSystem = (status as any).__migratedFrom !== undefined
-    const modifiedBy =
-      status.modifiedBy === core.account.System
-        ? isSystem
-          ? core.account.System
-          : core.account.ConfigUser
-        : status.modifiedBy
-
-    const tx: TxCreateDoc<KRAStatus> = {
-      _id: generateId(),
-      _class: core.class.TxCreateDoc,
-      space: core.space.Tx,
-      objectId: status._id,
-      objectClass: status._class,
-      objectSpace: core.space.Model,
-      attributes: {
-        ofAttribute: status.ofAttribute,
-        category: status.category,
-        name: status.name,
-        color: status.color,
-        description: status.description
-      },
-      modifiedOn: status.modifiedOn,
-      createdBy: status.createdBy,
-      createdOn: status.createdOn,
-      modifiedBy
-    }
-
-    await client.create(DOMAIN_MODEL_TX, tx)
-  }
-}
-
 export const performanceOperation: MigrateOperation = {
   async preMigrate (client: MigrationClient, logger: ModelLogger): Promise<void> {
     await tryMigrate(client, performanceId, [
-      {
-        state: 'migrateKRAStatuses',
-        func: migrateKRAStatuses
-      }
+      // {
+      //   state: 'migrateKRAStatuses',
+      //   func: migrateKRAStatuses
+      // }
       // {
       //   state: 'migrateReviewSessionStatuses',
       //   func: migrateReviewSessionStatuses
@@ -199,10 +112,10 @@ export const performanceOperation: MigrateOperation = {
       //   state: 'passIdentifierToParentInfo',
       //   func: passIdentifierToParentInfo
       // },
-      {
-        state: 'kraStatusesToModel',
-        func: migrateKRAStatusesToModel
-      }
+      // {
+      //   state: 'kraStatusesToModel',
+      //   func: migrateKRAStatusesToModel
+      // }
       // {
       //   state: 'reviewSessionStatusesToModel',
       //   func: migrateReviewSessionStatusesToModel

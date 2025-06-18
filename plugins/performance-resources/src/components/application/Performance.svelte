@@ -9,16 +9,17 @@
     deviceOptionsStore as deviceInfo,
     NavItem,
     Label,
-    Component
+    Component,
+    restoreLocation
   } from '@hcengineering/ui'
-  import { NavigatorModel, SpacesNavModel, SpecialNavModel } from '@hcengineering/workbench'
+  import { SpacesNavModel, SpecialNavModel } from '@hcengineering/workbench'
   import { onDestroy } from 'svelte'
   import { decodeObjectURI } from '@hcengineering/view'
   import { TreeSeparator } from '@hcengineering/workbench-resources'
   import Navigator from './Navigator.svelte'
   import performance from '../../plugin'
   import TeamSwitchHeader from '../navigator/TeamSwitchHeader.svelte'
-  import { ReviewSession } from '@hcengineering/performance'
+  import { performanceId, ReviewSession } from '@hcengineering/performance'
   import { navigatorModel } from '../../navigation'
   import kraTeam from '@hcengineering/kra-team'
   import { createQuery } from '@hcengineering/presentation'
@@ -29,28 +30,37 @@
 
   let replacedPanel: HTMLElement
 
-  let specials: SpecialNavModel[] = []
-  let spaces: SpacesNavModel[] = []
+  let needRestoreLoc = true
+
+  let specials: SpecialNavModel[] = $navigatorModel.specials ?? []
+  let spaces: SpacesNavModel[] = $navigatorModel.spaces ?? []
 
   const unsub = navigatorModel.subscribe((n) => {
     specials = n?.specials ?? []
     spaces = n?.spaces ?? []
+    syncLocation($location)
   })
   onDestroy(() => {
     unsub()
+    unsubcribe()
   })
 
   const unsubcribe = location.subscribe((loc) => {
     syncLocation(loc)
   })
-  onDestroy(() => {
-    unsubcribe()
-  })
 
   function syncLocation (loc: Location): void {
-    if (loc.path[2] !== 'performance') {
+    if (loc.path[2] !== performanceId) {
       return
     }
+
+    if (needRestoreLoc) {
+      needRestoreLoc = false
+      restoreLocation(loc, performanceId)
+      return
+    }
+
+    needRestoreLoc = false
 
     const special = specials?.find((s) => s.id === loc.path[3])
     if (special !== undefined) {
@@ -79,8 +89,6 @@
 
     currentSpecial = undefined
   }
-
-  $: console.log(currentSpace, currentSpecial)
 
   defineSeparators('performance', [
     { minSize: 15, maxSize: 40, size: 15, float: 'navigator' },

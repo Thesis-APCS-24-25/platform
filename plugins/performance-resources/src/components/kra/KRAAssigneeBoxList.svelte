@@ -1,24 +1,21 @@
 <script lang="ts">
-  import contact, { Person, PersonAccount } from '@hcengineering/contact'
+  import contact, { Person } from '@hcengineering/contact'
   import type { Class, Doc, DocData, Ref, Space } from '@hcengineering/core'
   import { type IntlString } from '@hcengineering/platform'
   import { ObjectCreate, createQuery, getClient } from '@hcengineering/presentation'
   import type { ButtonKind, ButtonSize, TooltipAlignment } from '@hcengineering/ui'
   import { Button, Label, showPopup, IconScale, eventToHTMLElement } from '@hcengineering/ui'
-  import {
-    UserInfo,
-    CombineAvatars,
-    personIdByAccountId,
-    personByIdStore
-  } from '@hcengineering/contact-resources'
+  import { UserInfo, CombineAvatars, personByIdStore } from '@hcengineering/contact-resources'
   import KraAssigneesPopup from './KRAAssigneesPopup.svelte'
   import performance from '../../plugin'
-  import { EmployeeKRA, KRA } from '@hcengineering/performance'
+  import { EmployeeKRA, KRA, ReviewSession } from '@hcengineering/performance'
+  import kraTeam, { Member } from '@hcengineering/kra-team'
+  import { assignKRA, unassignKRA, updateWeight } from '../../utils/kra-assign'
 
   export let items: Array<EmployeeKRA | DocData<EmployeeKRA>> = []
   export let space: Ref<Space>
   export let kra: Ref<KRA>
-  export let _class: Ref<Class<Person>> = contact.mixin.Employee
+  export let _class: Ref<Class<Person>> = kraTeam.mixin.Member
 
   export let label: IntlString | undefined = undefined
   export let kind: ButtonKind = 'no-border'
@@ -48,14 +45,7 @@
     }
   )
 
-  function filter (items: (Ref<Person> | undefined)[] | undefined): Ref<Person>[] {
-    return (items ?? []).filter((it, idx, arr) => it !== undefined && arr.indexOf(it) === idx) as Ref<Person>[]
-  }
-
-  $: persons = filter(items.map((i) => $personIdByAccountId.get(i.employee)))
-    .map((p) => $personByIdStore.get(p))
-    .filter((p) => p !== undefined)
-    .map((p) => p as Person)
+  $: persons = items.map((item) => $personByIdStore.get(item.assignee)).filter((it) => it !== undefined) as Person[]
 
   async function saveKRAAssignment (
     add: DocData<EmployeeKRA>[],
@@ -65,14 +55,14 @@
     const client = getClient()
     const ops = client.apply()
     for (const item of add) {
-      await ops.createDoc(performance.class.EmployeeKRA, space, item)
+      await assignKRA(ops, space as Ref<ReviewSession>, kra, item.weight, item.assignee)
     }
     for (const item of remove) {
-      await ops.removeDoc(performance.class.EmployeeKRA, space, item._id)
+      await unassignKRA(ops, space as Ref<ReviewSession>, item._id, kra)
     }
 
     for (const item of update) {
-      await ops.updateDoc(performance.class.EmployeeKRA, space, item._id, item)
+      await updateWeight(ops, item.space as Ref<ReviewSession>, item._id, item.kra, item.weight)
     }
     await ops.commit()
   }
@@ -90,7 +80,7 @@
         const h = getClient().getHierarchy()
         if (h.hasMixin(it, contact.mixin.Employee)) {
           const isActive = h.as(it, contact.mixin.Employee).active
-          const isSelected = items.some((selectedItem) => selectedItem.employee === it._id)
+          const isSelected = items.some((selectedItem) => selectedItem.assignee === it._id)
           return isActive || isSelected
         }
         return accounts.has(it._id as Ref<Person>)
@@ -108,19 +98,19 @@
       eventToHTMLElement(evt),
       async () => {
         // diffing with the old value
-        const mapped = items.reduce((acc, { employee, weight }) => {
-          acc.set(employee, weight)
+        const mapped = items.reduce((acc, { assignee, weight }) => {
+          acc.set(assignee, weight)
           return acc
-        }, new Map<Ref<PersonAccount>, number>())
-        const mappedBefore = beforeUpdateItems.reduce((acc, { employee, weight }) => {
-          acc.set(employee, weight)
+        }, new Map<Ref<Member>, number>())
+        const mappedBefore = beforeUpdateItems.reduce((acc, { assignee, weight }) => {
+          acc.set(assignee, weight)
           return acc
-        }, new Map<Ref<PersonAccount>, number>())
-        const added = items.filter(({ employee }) => !mappedBefore.has(employee))
-        const removed = beforeUpdateItems.filter(({ employee }) => !mapped.has(employee)).map((s) => s as EmployeeKRA)
+        }, new Map<Ref<Member>, number>())
+        const added = items.filter(({ assignee }) => !mappedBefore.has(assignee))
+        const removed = beforeUpdateItems.filter(({ assignee }) => !mapped.has(assignee)).map((s) => s as EmployeeKRA)
         const changed = items
-          .filter(({ employee, weight }) => {
-            const beforeWeight = mappedBefore.get(employee)
+          .filter(({ assignee, weight }) => {
+            const beforeWeight = mappedBefore.get(assignee)
             return beforeWeight !== undefined && beforeWeight !== weight
           })
           .map((s) => s as EmployeeKRA)

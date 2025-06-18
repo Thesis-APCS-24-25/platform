@@ -17,10 +17,27 @@ import { type Space } from '@hcengineering/core'
 import performance, { performanceId } from '@hcengineering/performance'
 import { type IntlString, mergeIds, type Resource } from '@hcengineering/platform'
 import { type AnyComponent } from '@hcengineering/ui'
-import { type GetAllValuesFunc, type SortFunc } from '@hcengineering/view'
+import { type ViewCategoryAction, type GetAllValuesFunc } from '@hcengineering/view'
 
 export default mergeIds(performanceId, performance, {
   string: {
+    LeaveComment: '' as IntlString,
+    ReviewSubmitted: '' as IntlString,
+    EmployeeKRA: '' as IntlString,
+    CannotStartReviewSession: '' as IntlString,
+    StartReviewSessionNotAllKRAApproved: '' as IntlString,
+    Comments: '' as IntlString,
+    NeedChanges: '' as IntlString,
+    Approved: '' as IntlString,
+    Cancelled: '' as IntlString,
+    IdentifierPlaceholder: '' as IntlString,
+    Identifier: '' as IntlString,
+    CreateActionItem: '' as IntlString,
+    Chart: '' as IntlString,
+    AssignedKRAs: '' as IntlString,
+    ConcludeReviewSession: '' as IntlString,
+    ConcludeReviewSessionMessage: '' as IntlString,
+    ConcludeReviewSessionConfirm: '' as IntlString,
     NoDraftingReviewSession: '' as IntlString,
     WeightWarningPopupTitle: '' as IntlString,
     StartReviewSession: '' as IntlString,
@@ -86,12 +103,20 @@ export default mergeIds(performanceId, performance, {
     InputScore: '' as IntlString,
     ReviewContentPlaceholder: '' as IntlString,
     SubmitReview: '' as IntlString,
-    ReviewerScore: '' as IntlString
+    ReviewerScore: '' as IntlString,
+    StartDateFilter: '' as IntlString,
+    EndDateFilter: '' as IntlString,
+    StartDateFilterDetail: '' as IntlString,
+    EndDateFilterDetail: '' as IntlString,
+    ResetFilters: '' as IntlString,
+    EmployeeScore: '' as IntlString,
+    RemainingWeight: '' as IntlString
   },
   category: {
     ReviewSessionType: '' as IntlString
   },
   component: {
+    KRAStatusPresenter: '' as AnyComponent,
     KRAWeightEditorWithPopup: '' as AnyComponent,
     PerformanceApplication: '' as AnyComponent,
     MyKRAs: '' as AnyComponent,
@@ -120,6 +145,7 @@ export default mergeIds(performanceId, performance, {
     // ReviewSessionStatusRefPresenter: '' as AnyComponent,
     ReviewSessionStatusEditor: '' as AnyComponent,
     ReviewPresenter: '' as AnyComponent,
+    EmployeeKRATotalWeightStat: '' as AnyComponent,
     ReviewEditor: '' as AnyComponent
   },
   function: {
@@ -127,6 +153,7 @@ export default mergeIds(performanceId, performance, {
     IsActiveReviewSessionOfCurrentTeam: '' as Resource<(space: Space) => Promise<boolean>>,
     IsInactiveReviewSessionOfCurrentTeam: '' as Resource<(space: Space) => Promise<boolean>>,
     GetAllKRAStates: '' as GetAllValuesFunc,
-    KRAStatusSort: '' as SortFunc
+    ShowEmptyGroups: '' as ViewCategoryAction,
+    GetAllKRAs: '' as GetAllValuesFunc
   }
 })

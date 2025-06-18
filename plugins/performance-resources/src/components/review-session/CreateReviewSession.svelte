@@ -20,9 +20,10 @@
   const dispatch = createEventDispatcher()
   const client = getClient()
   let name: string = ''
-  let description: string = ''
+  const description: string = ''
   let startDate: Timestamp
   let endDate: Timestamp
+  let identifier: string = ''
   let currentTeam: Ref<Space> | undefined = $currentTeamStore
 
   $: if (team !== undefined) {
@@ -31,7 +32,7 @@
 
   $: canSave = name !== '' && startDate !== undefined && endDate !== undefined && currentTeam !== undefined
 
-  async function create (): Promise<void> {
+  async function create(): Promise<void> {
     if (currentTeam !== undefined) {
       await createReviewSession(
         client,
@@ -40,13 +41,16 @@
         startDate,
         endDate,
         currentTeam,
-        performance.ids.ClassingProjectType
+        performance.ids.ClassingProjectType,
+        identifier !== '' ? identifier : 'KRA'
       )
     }
     dispatch('close', name)
   }
 
   const manager = createFocusManager()
+
+  $: identifier = identifier.toLocaleUpperCase().replaceAll('-', '_').replaceAll(' ', '_').substring(0, 7)
 </script>
 
 <FocusHandler {manager} />
@@ -76,7 +80,7 @@
     />
   </svelte:fragment>
 
-  <div class="flex-row-center m-3 clear-mins">
+  <div class="flex-row-center m-3 clear-mins items-end">
     <EditBox
       label={performance.string.ReviewSessionName}
       placeholder={performance.string.ReviewSessionNamePlaceholder}
@@ -84,7 +88,19 @@
       kind={'large-style'}
       autoFocus
       focusIndex={1}
+      on:input={() => {
+        identifier = name.toLocaleUpperCase().replaceAll('-', '_').replaceAll(' ', '_').substring(0, 8)
+      }}
     />
+    <div class="max-w-40">
+      <EditBox
+        placeholder={performance.string.Identifier}
+        bind:value={identifier}
+        kind="underline"
+        focusIndex={2}
+        uppercase
+      />
+    </div>
   </div>
   <svelte:fragment slot="pool">
     <div class="flex-row-center clear-mins">

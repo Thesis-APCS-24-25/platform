@@ -56,6 +56,7 @@ export interface Goal extends Doc {
   reports: CollectionSize<Report>
   progress?: number
   unit: Ref<Unit>
+  isTemplate?: boolean
 }
 
 export interface Report extends AttachedDoc {
@@ -241,8 +242,6 @@ export interface Issue extends Task {
   todos?: CollectionSize<ToDo>
 
   goal?: Ref<Goal>
-
-  kra: Ref<KRA>
 }
 
 /**
@@ -470,7 +469,9 @@ const pluginState = plugin(kraId, {
     RedCircle: '' as Asset,
 
     Goal: '' as Asset,
-    WriteReport: '' as Asset
+    WriteReport: '' as Asset,
+    StarFilled: '' as Asset,
+    Star: '' as Asset
   },
   category: {
     Other: '' as Ref<TagCategory>,

@@ -1,84 +1,31 @@
-import core, { type AttachedData, type DocumentQuery, type Rank, SortingOrder, type Space, type Status, type Ref, type TxOperations, type Class } from '@hcengineering/core'
-import { type MeasureProgress, type KRA, type KRAStatus, type ReviewSession } from '@hcengineering/performance'
+import core, {
+  type AttachedData,
+  type DocumentQuery,
+  type Rank,
+  SortingOrder,
+  type Space,
+  type Status,
+  type Ref,
+  type TxOperations,
+  type Class,
+  type Attribute,
+  type Doc,
+  type Client,
+  type QuerySelector,
+  type ObjQueryType
+} from '@hcengineering/core'
+import {
+  type MeasureProgress,
+  type KRA,
+  type EmployeeKRA,
+  type WithKRA
+} from '@hcengineering/performance'
 import performance from '../plugin'
-import task, { getStatusIndex, makeRank, type Task, type ProjectType } from '@hcengineering/task'
-import { type ViewletDescriptor } from '@hcengineering/view'
-import { taskTypeStore } from '@hcengineering/task-resources'
-import { get } from 'svelte/store'
-import { statusStore } from '@hcengineering/view-resources'
+import task, { makeRank, type Task } from '@hcengineering/task'
 import { getClient } from '@hcengineering/presentation'
 import hcTask from '@hcengineering/task'
 import { getResource } from '@hcengineering/platform'
-
-export const listKRAStatusOrder = [
-  performance.kraStatus.Approved,
-  performance.kraStatus.NeedChanges,
-  performance.kraStatus.Drafting,
-  performance.kraStatus.Cancelled
-] as const
-
-export async function kraStatusSort (
-  client: TxOperations,
-  value: Array<Ref<KRAStatus>>,
-  space: Ref<ReviewSession> | undefined,
-  viewletDescriptorId?: Ref<ViewletDescriptor>
-): Promise<Array<Ref<KRAStatus>>> {
-  let type: ProjectType | undefined
-  if (space !== undefined) {
-    const _space = await client.findOne(
-      performance.class.ReviewSession,
-      { _id: space },
-      {
-        lookup: {
-          type: task.class.ProjectType
-        }
-      }
-    )
-    type = _space?.$lookup?.type
-  }
-  const taskTypes = get(taskTypeStore)
-  const statuses = get(statusStore).byId
-  // TODO: How we track category updates.
-
-  //   if (viewletDescriptorId === tracker.viewlet.Kanban) {
-  //     value.sort((a, b) => {
-  //       const aVal = statuses.get(a)
-  //       const bVal = statuses.get(b)
-  //       const res =
-  //         listIssueKanbanStatusOrder.indexOf(aVal?.category as Ref<StatusCategory>) -
-  //         listIssueKanbanStatusOrder.indexOf(bVal?.category as Ref<StatusCategory>)
-  //       if (res === 0) {
-  //         if (type != null) {
-  //           const aIndex = getStatusIndex(type, taskTypes, a)
-  //           const bIndex = getStatusIndex(type, taskTypes, b)
-  //           return aIndex - bIndex
-  //         } else {
-  //           return (aVal?.name ?? '').localeCompare(bVal?.name ?? '')
-  //         }
-  //       }
-  //       return res
-  //     })
-  //   } else {
-  value.sort((a, b) => {
-    const aVal = statuses.get(a) as KRAStatus
-    const bVal = statuses.get(b) as KRAStatus
-    const res =
-        listKRAStatusOrder.indexOf(aVal._id) -
-        listKRAStatusOrder.indexOf(bVal._id)
-    if (res === 0) {
-      if (type != null) {
-        const aIndex = getStatusIndex(type, taskTypes, a)
-        const bIndex = getStatusIndex(type, taskTypes, b)
-        return aIndex - bIndex
-      } else if (aVal != null && bVal != null) {
-        return aVal.name.localeCompare(bVal.name)
-      }
-    }
-    return res
-  })
-  //   }
-  return value
-}
+import type { Member } from '@hcengineering/kra-team'
 
 export async function getFirstRank (
   client: TxOperations,
@@ -116,24 +63,34 @@ export async function createKRA (
   const object: AttachedData<KRA> = {
     title,
     status,
-    kraStatus: performance.kraStatus.Drafting,
     dueDate: null,
     number,
     rank,
     assignee: null,
+    assignedTo: [],
     identifier: `KRA-${number}`,
     description,
     ...attributes
   }
 
-  return await client.addCollection(performance.class.KRA, space, space, performance.class.ReviewSession, 'kras', object)
+  return await client.addCollection(
+    performance.class.KRA,
+    space,
+    space,
+    performance.class.ReviewSession,
+    'kras',
+    object
+  )
 }
 
 export async function calculateCompletionLevel (task: Ref<Task> | Task): Promise<number | undefined> {
   const client = getClient()
   const hierarchy = client.getHierarchy()
   async function calculate (task: Task): Promise<number | undefined> {
-    const measure = hierarchy.classHierarchyMixin<Class<Task>, MeasureProgress>(task._class, performance.mixin.MeasureProgress)
+    const measure = hierarchy.classHierarchyMixin<Class<Task>, MeasureProgress>(
+      task._class,
+      performance.mixin.MeasureProgress
+    )
     if (measure !== undefined) {
       const fn = await getResource(measure.calculate)
       const d = await fn?.(task._id)
@@ -153,4 +110,42 @@ export async function calculateCompletionLevel (task: Ref<Task> | Task): Promise
     }
   }
   return undefined
+}
+
+async function getKRAsOfEmployeeKRA (client: Client, query: DocumentQuery<EmployeeKRA>): Promise<Array<Ref<KRA>>> {
+  const res = (await client.findAll(performance.class.KRA, query as DocumentQuery<KRA>)).map((kra) => kra._id)
+  return res
+}
+
+async function getKRAsOfTask (client: Client, query: DocumentQuery<WithKRA>): Promise<Array<Ref<KRA>>> {
+  // TODO: Refactor when `assignedTo` in `KRA` is added
+  let kraQuery: ObjQueryType<Ref<KRA>> = {}
+  if (query.kra === undefined) return []
+  if (typeof query.kra !== 'string' && query.kra.$in !== undefined) {
+    kraQuery = query.kra as QuerySelector<Ref<KRA>>
+  }
+  const space = await client
+    .findOne(performance.class.KRA, { _id: kraQuery }, { projection: { space: 1 } })
+    .then((kra) => kra?.space)
+  const assignee = query.assignee as QuerySelector<Ref<Member>>
+  const res = (await client.findAll(performance.class.EmployeeKRA, { space, kra: kraQuery, assignee })).map((kra) => kra.kra)
+
+  console.log('getKRAsOfTask', res, query, space)
+  return res
+}
+
+export async function getAllKRAs (
+  query: DocumentQuery<Doc<Space>> | undefined,
+  _onUpdate: () => void,
+  _queryId: Ref<Doc<Space>>,
+  attr: Attribute<Status>
+): Promise<Array<Ref<KRA>>> {
+  const client = getClient()
+  const hierarchy = client.getHierarchy()
+  if (hierarchy.isDerived(attr.attributeOf, performance.class.EmployeeKRA)) {
+    return await getKRAsOfEmployeeKRA(client, query as DocumentQuery<EmployeeKRA>)
+  } else if (hierarchy.isDerived(attr.attributeOf, task.class.Task)) {
+    return await getKRAsOfTask(client, query as DocumentQuery<WithKRA>)
+  }
+  return []
 }

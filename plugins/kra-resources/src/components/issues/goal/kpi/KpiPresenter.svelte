@@ -5,6 +5,7 @@
   import { ButtonKind, ButtonSize, eventToHTMLElement, showPopup } from '@hcengineering/ui'
   import KpiReportsPopup from './KpiReportsPopup.svelte'
   import { WithLookup } from '@hcengineering/core'
+  import kra from '../../../../plugin'
 
   export let value: WithLookup<Kpi>
   export let issue: WithLookup<Issue>
@@ -28,7 +29,12 @@
   }
 </script>
 
-<GoalPresenterContainer disabled={readonly} {kind} {size} onClick={handleOpenEditor.bind(null, sum ?? 0)}>
+<GoalPresenterContainer disabled={readonly} {kind} {size} onClick={handleOpenEditor.bind(null, sum ?? 0)} showTooltip={{
+  label: kra.string.KpiName,
+  props: {
+    name: value.name
+  }
+}}>
   {#if value.target > 0}
     <KpiProgressCircle value={sum ?? 0} max={value.target} />
   {/if}

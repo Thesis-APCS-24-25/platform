@@ -2,17 +2,17 @@
   import { Button, ButtonSize, EditBox, eventToHTMLElement, showPopup } from '@hcengineering/ui'
   import { NumberPresenter } from '@hcengineering/view-resources'
   import KraWeightEditBoxPopup from './KRAWeightEditBoxPopup.svelte'
-  import { PersonAccount } from '@hcengineering/contact'
-  import { Data, getCurrentAccount, Ref, WithLookup } from '@hcengineering/core'
+  import { AttachedData, Data, getCurrentAccount, Ref, WithLookup } from '@hcengineering/core'
   import { createQuery, getClient } from '@hcengineering/presentation'
   import { EmployeeKRA, ReviewSession } from '@hcengineering/performance'
   import KraWeightPresenter from './KRAWeightPresenter.svelte'
   import performance from '../../plugin'
   import { canAssignKRAs } from '../../utils/team'
+  import { Member } from '@hcengineering/kra-team'
 
   export let value: EmployeeKRA | Data<EmployeeKRA> | WithLookup<EmployeeKRA>
   export let space: Ref<ReviewSession> | undefined = undefined
-  const employee: Ref<PersonAccount> = value.employee
+  const assignee: Ref<Member> = value.assignee
 
   const client = getClient()
   const _id: Ref<EmployeeKRA> | undefined = '_id' in value ? value._id : undefined
@@ -25,7 +25,7 @@
   export let doUpdate: boolean = true
   export let validateFunction: (value: number | undefined) => boolean = () => true
   export let onUpdate: (value: number) => void = () => {}
-  export let doCheckPermission: boolean = false
+  export let doCheckPermission: boolean = true
 
   async function updateWeight (newWeight: number): Promise<void> {
     if (Number.isFinite(newWeight) && validateFunction(newWeight)) {
@@ -51,13 +51,13 @@
       canAssign = res
     })
   }
-  $: readonly = readonly || (doCheckPermission && !canAssign && value.employee !== getCurrentAccount()._id)
+  $: readonly = readonly || (doCheckPermission && !canAssign && value.assignee !== getCurrentAccount().person)
   let otherWeights: EmployeeKRA[] = []
   const weightQ = createQuery()
   $: weightQ.query(
     performance.class.EmployeeKRA,
     {
-      employee,
+      assignee,
       space: (space ?? '') as Ref<ReviewSession>,
       _id: {
         $ne: _id
@@ -88,7 +88,6 @@
           KraWeightEditBoxPopup,
           {
             otherWeights,
-            employee,
             value: value.weight
           },
           eventToHTMLElement(ev),

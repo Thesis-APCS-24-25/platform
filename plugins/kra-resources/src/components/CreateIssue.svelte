@@ -17,7 +17,7 @@
   import { Analytics } from '@hcengineering/analytics'
   import { Attachment } from '@hcengineering/attachment'
   import { AttachmentPresenter, AttachmentStyledBox } from '@hcengineering/attachment-resources'
-  import { Employee, Person, PersonAccount } from '@hcengineering/contact'
+  import { Employee, Person } from '@hcengineering/contact'
   import core, {
     Account,
     Class,
@@ -90,15 +90,14 @@
   import ParentIssue from './issues/ParentIssue.svelte'
   import PriorityEditor from './issues/PriorityEditor.svelte'
   import StatusEditor from './issues/StatusEditor.svelte'
-  import EstimationEditor from './issues/timereport/EstimationEditor.svelte'
   import ProjectPresenter from './projects/ProjectPresenter.svelte'
   import AddGoalPopup from './issues/goal/AddGoalPopup.svelte'
   import CreateIssueGoalDisplay from './issues/goal/CreateIssueGoalDisplay.svelte'
-  import { personAccountByPersonId } from '@hcengineering/contact-resources'
 
   export let space: Ref<Project> | undefined
   export let status: Ref<IssueStatus> | undefined = undefined
   export let priority: IssuePriority | undefined = undefined
+  export let kra: Ref<KRA> | undefined = undefined
   export let assignee: Ref<Employee> | null = null
   export let relatedTo: Doc | undefined
   export let shouldSaveDraft: boolean = true
@@ -186,7 +185,7 @@
       labels: [],
       parentIssue: parentIssue?._id,
       subIssues: [],
-      kra: performance.ids.NoKRARef
+      kra: kra ?? performance.ids.NoKRARef
     }
     if (originalIssue !== undefined && !ignoreOriginal) {
       const res: IssueDraft = {
@@ -498,14 +497,13 @@
             : [],
         reportedTime: 0,
         remainingTime: 0,
-        estimation: object.estimation,
+        estimation: 0,
         reports: 0,
         relations: relatedTo !== undefined ? [{ _id: relatedTo._id, _class: relatedTo._class }] : [],
         childInfo: [],
         kind,
         identifier,
-        goal: object.goal,
-        kra: object.kra
+        goal: object.goal
       }
 
       if (!isEmptyMarkup(object.description)) {
@@ -544,7 +542,9 @@
           }
         }
       }
-      await operations.createMixin<Task, WithKRA>(_id, tracker.class.Issue, object.space, performance.mixin.WithKRA, {})
+      await operations.createMixin<Task, WithKRA>(_id, tracker.class.Issue, object.space, performance.mixin.WithKRA, {
+        kra: object.kra ?? performance.ids.NoKRARef
+      })
 
       await descriptionBox?.createAttachments(_id, operations)
       const result = await operations.commit()
@@ -762,15 +762,17 @@
   let krasOfAssignee: Ref<KRA>[] | undefined
   let kraDocQuery: DocumentQuery<KRA> = { _id: { $in: [performance.ids.NoKRARef] } }
 
+  $: if (assignee != null) {
+    updateKRAs(assignee)
+  }
+
   function updateKRAs (assignee: Ref<Person>): void {
-    const personAccount = ($personAccountByPersonId.get(assignee) ?? [{ _id: '' as Ref<PersonAccount> }])[0]._id
     void client.findAll(
       performance.class.EmployeeKRA,
       {
-        employee: personAccount
+        assignee
       }
     ).then((result) => {
-      console.log(result)
       if (result !== undefined && result.length > 0) {
         krasOfAssignee = result.map(it => it.kra)
         kraDocQuery = {
@@ -994,9 +996,6 @@
         object.labels = object.labels.filter((it) => it._id !== evt.detail)
       }}
     />
-    <div id="estimation-editor" class="new-line">
-      <EstimationEditor focusIndex={8} kind={'regular'} size={'large'} value={object} />
-    </div>
     <div id="duedate-editor" class="new-line">
       <DatePresenter
         focusIndex={10}

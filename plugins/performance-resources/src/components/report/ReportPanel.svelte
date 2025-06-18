@@ -1,5 +1,5 @@
 <script lang="ts">
-  import performance, { PerformanceReport, ReviewSession } from '@hcengineering/performance'
+  import { PerformanceReport, ReviewSession } from '@hcengineering/performance'
   import { ViewletContentView, ViewletSettingButton } from '@hcengineering/view-resources'
   // import { DatePresenter, ListView } from '@hcengineering/ui'
   import { personAccountByIdStore, personAccountPersonByIdStore, UserInfo } from '@hcengineering/contact-resources'
@@ -11,6 +11,8 @@
   import { Viewlet, ViewOptions } from '@hcengineering/view'
   import ViewletSelector from '@hcengineering/view-resources/src/components/ViewletSelector.svelte'
   import ReviewEditor from './ReviewEditor.svelte'
+  import { IconChevronRight, Label } from '@hcengineering/ui'
+  import performance from '../../plugin'
 
   const client = getClient()
   const dispatch = createEventDispatcher()
@@ -75,15 +77,23 @@
       <ViewletSettingButton bind:viewOptions bind:viewlet />
       {#if person !== undefined}
       <div class="title not-active report-title">
+        <Label label={performance.string.PerformanceReport}/>
+        <IconChevronRight size={'small'}/>
+        <span>{reviewSession?.name}</span>
+        <IconChevronRight size={'small'}/>
         <UserInfo
           value={person}
           size={'small'}
-          />
-          <span>'s {reviewSession?.name} Report</span>
+        />
       </div>
       {/if}
     </svelte:fragment>
     {#if viewlet !== undefined && viewOptions}
+      {#if value.scorePreview !== undefined}
+        <span class="heading-ui-H2">
+          <Label label={performance.string.EmployeeScore}/>: {value.scorePreview}
+        </span>
+      {/if}
       <ViewletContentView
         _class={performance.mixin.WithKRA}
         space={undefined}
@@ -105,6 +115,7 @@
     display: flex;
     flex-direction: row;
     justify-content: center;
+    align-items: center;
 
     span {
       align-content: center;

@@ -297,8 +297,10 @@
     "AddNamePlaceholder": "Add name\u2026",
     "AddGoal": "Add goal",
     "RatingScale": "Rating scale",
+    "RatingScaleName": "Rating scale: {name}",
     "AddUnit": "Add unit",
     "Kpi": "KPI",
+    "KpiName": "KPI: {name}",
     "Prefix": "Prefix",
     "AddSymbolPlaceholder": "Add symbol\u2026",
     "Report": "Report",
@@ -313,6 +315,12 @@
     "Value": "Value",
     "RemoveGoal": "Remove goal",
     "EditGoal": "Edit goal",
+    "ChooseTemplate": "Choose template",
+    "Template": "Template",
+    "CreateFrom": "Create from template",
+    "AddKpi": "Add KPI",
+    "AddRatingScale": "Add rating scale",
+    "UseAsTemplate": "Use as template",
     "SetAssigneeFirst": "Set assignee before choosing KRA"
   },
   "status": {}

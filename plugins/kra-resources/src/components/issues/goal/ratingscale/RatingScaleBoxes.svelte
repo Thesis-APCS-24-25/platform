@@ -1,6 +1,9 @@
 <script lang="ts">
+  import { Icon } from '@hcengineering/ui'
+  import kra from '@hcengineering/kra'
+  import { Asset } from '@hcengineering/platform'
+
   const ratingColors = [
-    'var(--theme-rating-very-poor)', // dummy value
     'var(--theme-rating-very-poor)',
     'var(--theme-rating-poor)',
     'var(--theme-rating-average)',
@@ -16,10 +19,25 @@
   value = value ?? 0
 
   let hoveringIndex = -1
+
+  $: fillAndIcon = (index: number): [Asset, string | undefined] => {
+    if (hoveringIndex !== -1) {
+      if (hoveringIndex >= index) {
+        return [kra.icon.StarFilled, ratingColors[hoveringIndex]]
+      } else {
+        return [kra.icon.Star, 'var(--theme-rating-empty)']
+      }
+    }
+    if (value >= index + 1) {
+      return [kra.icon.StarFilled, ratingColors[value]]
+    }
+    return [kra.icon.Star, 'var(--theme-rating-empty)']
+  }
 </script>
 
 <div class="rating-container {size}">
   {#each Array(5) as _, i}
+    {@const [icon, fill] = fillAndIcon(i)}
     <button
       on:pointerenter={() => {
         if (editable) {
@@ -36,11 +54,11 @@
           onBoxClick?.(i + 1)
         }
       }}
-      class="rating-box {size}"
+      class="m-0-5 rating-box {size}"
       class:filled={i < (value ?? 0)}
-      class:highlight={i <= hoveringIndex}
-      style={i < (value ?? 0) ? `background-color: ${ratingColors[value ?? 0]};` : ''}
-    ></button>
+    >
+      <Icon {icon} size="large" {fill} />
+    </button>
   {/each}
 </div>
 
@@ -59,16 +77,6 @@
   }
 
   .rating-box {
-    width: 1rem;
-    height: 1.5rem;
-    border-radius: 0.25rem;
-    background-color: #f5f5f5;
-    cursor: pointer;
-    transition:
-      background-color 0.3s ease,
-      border 0.2s ease,
-      box-shadow 0.2s ease;
-
     &.highlight {
       // background-color: rgba(77, 182, 255, 0.3); // Light blue tint
       border: 2.5px solid rgba(77, 182, 255, 0.8); // Sky blue border

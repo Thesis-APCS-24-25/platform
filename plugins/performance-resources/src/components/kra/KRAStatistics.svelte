@@ -13,17 +13,40 @@
 // limitations under the License.
 -->
 <script lang="ts">
-  import { floorFractionDigits, tooltip } from '@hcengineering/ui'
-  import { FixedColumn } from '@hcengineering/view-resources'
+  import { floorFractionDigits, Icon, tooltip } from '@hcengineering/ui'
   import { calculateCompletionLevel } from '../../utils/kra'
   import { Task } from '@hcengineering/task'
-  import performance from '@hcengineering/performance'
+  import { KRA } from '@hcengineering/performance'
+  import { Ref } from '@hcengineering/core'
+  import { getClient } from '@hcengineering/presentation'
+  import { personAccountByPersonId } from '@hcengineering/contact-resources'
+  import { Person } from '@hcengineering/contact'
+  import performance from '../../plugin'
 
+  const client = getClient()
+
+  export let value: Ref<KRA>
   export let docs: Task[] | undefined = undefined
   export let category: string | undefined = undefined
 
   let completionLevel: number | undefined
+  let weight: number | undefined
 
+  $: if (docs !== undefined && docs.length > 0) {
+    const account = $personAccountByPersonId.get(docs[0].assignee ?? '' as Ref<Person>)
+    console.log(value)
+    if (account !== undefined && account.length > 0) {
+      void client.findOne(
+        performance.class.EmployeeKRA,
+        {
+          kra: value,
+          employee: account[0]._id
+        }
+      ).then((res) => {
+        weight = res?.weight
+      })
+    }
+  }
   $: count = docs?.length ?? 0
   $: void Promise.all((docs ?? [{} as unknown as Task])
     .map(async (it) => {
@@ -40,6 +63,11 @@
     class="flex-row-center flex-no-shrink h-6"
     use:tooltip={{ label: performance.string.KRACompletionLevel }}
   >
+    {#if weight !== undefined}
+      <Icon icon={performance.icon.Weight} size={'inline'}/>
+      {weight}%
+      x
+    {/if}
     {completionLevel}%
   </div>
   <!-- </FixedColumn> -->

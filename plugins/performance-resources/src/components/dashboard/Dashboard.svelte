@@ -5,10 +5,20 @@
   import { concatLink, Doc, Hierarchy, Ref } from '@hcengineering/core'
   import performance from '../../plugin'
   import { PersonAccount } from '@hcengineering/contact'
-  import { getPanelURI, locationToUrl, navigate, parseLocation } from '@hcengineering/ui'
+  import {
+    Breadcrumb,
+    getPanelURI,
+    Header,
+    IModeSelector,
+    locationToUrl,
+    ModeSelector,
+    navigate,
+    parseLocation
+  } from '@hcengineering/ui'
   import view from '@hcengineering/view'
   import { getObjectLinkFragment } from '@hcengineering/view-resources'
   import { getMetadata } from '@hcengineering/platform'
+  import Tasks from './Tasks.svelte'
 
   const client = getClient()
   const hierarchy = client.getHierarchy()
@@ -26,9 +36,9 @@
   async function handleSegmentClick (event: { detail: { employee: PersonAccount, kra: KRA } }): Promise<void> {
     const { kra } = event.detail
     let href: string | undefined =
-    kra !== undefined
-      ? '#' + getPanelURI(performance.component.EditKRA, kra._id, Hierarchy.mixinOrClass(kra), 'content')
-      : undefined
+      kra !== undefined
+        ? '#' + getPanelURI(performance.component.EditKRA, kra._id, Hierarchy.mixinOrClass(kra), 'content')
+        : undefined
     href = await getHref(kra)
     try {
       const url = new URL(href)
@@ -40,18 +50,41 @@
       }
     } catch {}
   }
+
+  const modes: IModeSelector = {
+    mode: 'chart',
+    config: [
+      ['chart', performance.string.Chart, {}],
+      ['tasks', performance.string.Tasks, {}]
+    ],
+    onChange (mode) {
+      modes.mode = mode
+      currentMode = mode
+    }
+  }
+
+  let currentMode = modes.mode
 </script>
 
-<div class='dashboard'>
-  {#if currentSpace !== undefined}
-    <div class='dashboard-content'>
-      <Chart
-        on:segmentClick={handleSegmentClick}
-          space={currentSpace}
-      />
-    </div>
-  {/if}
-</div>
+<Header>
+  <Breadcrumb icon={performance.icon.KRA} label={performance.string.PerformanceDashboard} size={'large'} isCurrent />
+
+  <svelte:fragment slot="actions">
+    <ModeSelector props={modes} kind="subtle" />
+  </svelte:fragment>
+</Header>
+
+{#if currentMode === 'chart'}
+  <div class="dashboard">
+    {#if currentSpace !== undefined}
+      <div class="dashboard-content">
+        <Chart on:segmentClick={handleSegmentClick} space={currentSpace} />
+      </div>
+    {/if}
+  </div>
+{:else if currentMode === 'tasks' && currentSpace !== undefined}
+  <Tasks space={currentSpace}/>
+{/if}
 
 <style>
   .dashboard {

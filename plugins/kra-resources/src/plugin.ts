@@ -20,6 +20,7 @@ import { type Task, type ProjectType } from '@hcengineering/task'
 import tracker, { kraId, type IssueDraft, type Issue, type GoalAggregateFunction } from '@hcengineering/kra'
 import { type AnyComponent, type Location } from '@hcengineering/ui'
 import {
+  type ViewActionAvailabilityFunction,
   type CreateAggregationManagerFunc,
   type GetAllValuesFunc,
   type GrouppingManagerResource,
@@ -43,6 +44,14 @@ export default mergeIds(kraId, tracker, {
     IssueCategory: '' as Ref<ObjectSearchCategory>
   },
   string: {
+    UseAsTemplate: '' as IntlString,
+    AddKpi: '' as IntlString,
+    AddRatingScale: '' as IntlString,
+    Template: '' as IntlString,
+    ChooseTemplate: '' as IntlString,
+    CreateFrom: '' as IntlString,
+    KpiName: '' as IntlString,
+    RatingScaleName: '' as IntlString,
     EditGoal: '' as IntlString,
     SetGoal: '' as IntlString,
     RemoveGoal: '' as IntlString,
@@ -338,6 +347,8 @@ export default mergeIds(kraId, tracker, {
     SetAssigneeFirst: '' as IntlString
   },
   component: {
+    AddGoalActionPopup: '' as AnyComponent,
+    AddGoalPopup: '' as AnyComponent,
     GoalObjectPresenter: '' as AnyComponent,
     UnitPresenter: '' as AnyComponent,
     AddUnitPopup: '' as AnyComponent,
@@ -416,6 +427,7 @@ export default mergeIds(kraId, tracker, {
     CreateIssueDraft: '' as Metadata<IssueDraft>
   },
   function: {
+    CanAddGoal: '' as Resource<ViewActionAvailabilityFunction<Issue>>,
     CalculateGoal: '' as Resource<(task: Ref<Task>) => Promise<number | undefined>>,
     KpiAggregator: '' as Resource<GoalAggregateFunction>,
     RatingScaleAggregator: '' as Resource<GoalAggregateFunction>,

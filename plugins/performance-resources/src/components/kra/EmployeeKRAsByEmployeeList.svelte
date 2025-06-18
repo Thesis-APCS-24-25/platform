@@ -1,17 +1,20 @@
 <script lang="ts">
-  import { checkPermission, getCurrentAccount, Ref, TypedSpace, WithLookup } from '@hcengineering/core'
+  import { checkPermission, getCurrentAccount, Ref, SortingOrder, TypedSpace, WithLookup } from '@hcengineering/core'
   import { EmployeeKRA } from '@hcengineering/performance'
   import GroupedList from '../ui/GroupedList.svelte'
-  import { PersonAccount } from '@hcengineering/contact'
+  import { Person, PersonAccount } from '@hcengineering/contact'
   import { PersonAccountRefPresenter } from '@hcengineering/contact-resources'
-  import { FixedColumn } from '@hcengineering/view-resources'
+  import { FixedColumn, List, ListSelectionProvider } from '@hcengineering/view-resources'
   import KraWeightEditorWithPopup from './KRAWeightEditorWithPopup.svelte'
   import KraRefPresenter from './KRARefPresenter.svelte'
   import KraWeightPresenter from './KRAWeightPresenter.svelte'
   import { Icon, tooltip } from '@hcengineering/ui'
   import performance from '../../plugin'
+  import view from '@hcengineering/view'
+  import AssignKraPopup from './AssignKRAPopup.svelte'
+  import { Member } from '@hcengineering/kra-team'
 
-  export let employees: Ref<PersonAccount>[]
+  export let members: Ref<Member>[]
   export let space: Ref<TypedSpace>
   export let canAssign: boolean = false
 
@@ -19,75 +22,76 @@
     return value === undefined || Math.abs(value - 1) > 0.0001
   }
 
-  $: employees = employees.sort((a, b) => {
-    const me = getCurrentAccount()
-    if (a === me._id) return -1
-    if (b === me._id) return 1
+  $: members = members.sort((a, b) => {
+    const me = getCurrentAccount().person
+    if (a === me) return -1
+    if (b === me) return 1
     return 0
   })
   export let employeeKras: WithLookup<EmployeeKRA>[]
-  let sums = new Map<Ref<PersonAccount>, number>()
+  let sums = new Map<Ref<Member>, number>()
   $: {
     sums = employeeKras.reduce((acc, employeeKra) => {
-      if (employeeKra.employee !== undefined && employeeKra.weight !== undefined) {
-        const currentSum = acc.get(employeeKra.employee) ?? 0
-        acc.set(employeeKra.employee, currentSum + employeeKra.weight)
+      if (employeeKra.assignee !== undefined && employeeKra.weight !== undefined) {
+        const currentSum = acc.get(employeeKra.assignee) ?? 0
+        acc.set(employeeKra.assignee, currentSum + employeeKra.weight)
       }
       return acc
-    }, new Map<Ref<PersonAccount>, number>())
+    }, new Map<Ref<Member>, number>())
   }
+  const listProvider = new ListSelectionProvider((offset: 1 | -1 | 0) => {})
 </script>
 
-<GroupedList categories={employees} items={employeeKras} key="employee">
-  <svelte:fragment slot="header" let:category>
-    <div class="flex-row-center flex-grow flex-gap-3" style:color={'inherit'}>
-      <FixedColumn key="person" justify="left">
-        <PersonAccountRefPresenter value={category} />
-      </FixedColumn>
-      <FixedColumn key="total-kra" justify="left">
-        <div
-          class="flex-row-center flex-gap-1 total-weight"
-          use:tooltip={shouldWarn(sums.get(category))
-            ? { label: performance.string.KRAWeightNotFullWarning }
-            : { label: performance.string.KRAWeightFull }}
-        >
-          <Icon
-            icon={performance.icon.KRA}
-            size="medium"
-            iconProps={{
-              ...(shouldWarn(sums.get(category))
-                ? { fill: 'var(--theme-warning-color)' }
-                : {
-                    fill: 'var(--theme-won-color)'
-                  })
-            }}
-          />
-          <KraWeightPresenter value={sums.get(category) ?? 0} showPercent />
-        </div>
-      </FixedColumn>
-    </div>
-  </svelte:fragment>
-  <svelte:fragment slot="item" let:item>
-    <div class="m-1 flex-row-center p-text-2 clear-mins flex-gap-4">
-      <FixedColumn key="person" justify="left">
-        <KraRefPresenter value={item.kra} kind="list" />
-      </FixedColumn>
-      <FixedColumn key="kra" justify="left">
-        <KraWeightEditorWithPopup
-          value={item}
-          {space}
-          kind="list"
-          readonly={!canAssign && item.employee !== getCurrentAccount()._id}
-        />
-      </FixedColumn>
-    </div>
-  </svelte:fragment>
-</GroupedList>
-
-<style lang="scss">
-  .total-weight {
-    background-color: var(--theme-button-hovered);
-    padding: 0.25rem 0.5rem;
-    border-radius: 0.25rem;
-  }
-</style>
+<List
+  {listProvider}
+  config={[
+    {
+      key: 'kra',
+      props: {
+        shrink: 0
+      }
+    },
+    {
+      key: '',
+      presenter: view.component.GrowPresenter
+    },
+    {
+      key: 'comments',
+      displayProps: {
+        key: 'comments'
+      }
+    },
+    {
+      key: '',
+      presenter: KraWeightEditorWithPopup,
+      props: {
+        readonly: !canAssign
+      },
+      displayProps: {
+        key: 'weight',
+        dividerBefore: true,
+        fixed: 'right',
+        align: 'right'
+      }
+    }
+  ]}
+  configurations={undefined}
+  query={{
+    space
+  }}
+  viewOptionsConfig={[
+    {
+      key: 'shouldShowAll',
+      type: 'toggle',
+      defaultValue: true,
+      actionTarget: 'category',
+      action: performance.function.ShowEmptyGroups,
+      label: view.string.View
+    }
+  ]}
+  viewOptions={{
+    groupBy: ['assignee'],
+    orderBy: ['kra', SortingOrder.Ascending]
+  }}
+  _class={performance.class.EmployeeKRA}
+/>

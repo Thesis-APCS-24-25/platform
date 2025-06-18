@@ -227,6 +227,7 @@ export async function getAllStates (
   attr: Attribute<Status>,
   filterDone: boolean = true
 ): Promise<any[]> {
+  console.log('getAllStates', query, queryId, attr, filterDone)
   const typeId = get(selectedTypeStore)
   const type = typeId !== undefined ? get(typeStore).get(typeId) : undefined
   const taskTypeId = get(selectedTaskTypeStore)
