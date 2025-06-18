@@ -9,7 +9,8 @@
     deviceOptionsStore as deviceInfo,
     NavItem,
     Label,
-    Component
+    Component,
+    restoreLocation
   } from '@hcengineering/ui'
   import { SpacesNavModel, SpecialNavModel } from '@hcengineering/workbench'
   import { onDestroy } from 'svelte'
@@ -18,7 +19,7 @@
   import Navigator from './Navigator.svelte'
   import performance from '../../plugin'
   import TeamSwitchHeader from '../navigator/TeamSwitchHeader.svelte'
-  import { ReviewSession } from '@hcengineering/performance'
+  import { performanceId, ReviewSession } from '@hcengineering/performance'
   import { navigatorModel } from '../../navigation'
   import kraTeam from '@hcengineering/kra-team'
   import { createQuery } from '@hcengineering/presentation'
@@ -28,6 +29,8 @@
   let currentSpace: Ref<ReviewSession> | undefined = undefined
 
   let replacedPanel: HTMLElement
+
+  let needRestoreLoc = true
 
   let specials: SpecialNavModel[] = $navigatorModel.specials ?? []
   let spaces: SpacesNavModel[] = $navigatorModel.spaces ?? []
@@ -47,9 +50,17 @@
   })
 
   function syncLocation (loc: Location): void {
-    if (loc.path[2] !== 'performance') {
+    if (loc.path[2] !== performanceId) {
       return
     }
+
+    if (needRestoreLoc) {
+      needRestoreLoc = false
+      restoreLocation(loc, performanceId)
+      return
+    }
+
+    needRestoreLoc = false
 
     const special = specials?.find((s) => s.id === loc.path[3])
     if (special !== undefined) {

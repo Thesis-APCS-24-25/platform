@@ -1,6 +1,7 @@
 <script lang="ts">
-  import { getCurrentAccount, Ref } from '@hcengineering/core'
+  import { Ref } from '@hcengineering/core'
   import { NavLink } from '@hcengineering/view-resources'
+  import { type Plugin } from '@hcengineering/platform'
   import {
     defineSeparators,
     location,
@@ -9,9 +10,10 @@
     deviceOptionsStore as deviceInfo,
     NavItem,
     Label,
-    Component
+    Component,
+    restoreLocation
   } from '@hcengineering/ui'
-  import workbench, { SpecialNavModel } from '@hcengineering/workbench'
+  import { SpecialNavModel } from '@hcengineering/workbench'
   import { onDestroy } from 'svelte'
   import { decodeObjectURI } from '@hcengineering/view'
   import TeamNavigator from './TeamNavigator.svelte'
@@ -27,6 +29,8 @@
   let currentSpecial: SpecialNavModel | undefined
 
   let currentSpace: Ref<Team> | undefined = undefined
+
+  let needRestoreLoc = true
 
   let replacedPanel: HTMLElement
 
@@ -57,6 +61,12 @@
       return
     }
 
+    if (needRestoreLoc) {
+      needRestoreLoc = false
+      restoreLocation(loc, 'kra-team' as Plugin)
+    }
+    needRestoreLoc = false
+
     const special = specials.find((s) => s.id === loc.path[3])
     if (special !== undefined) {
       currentSpecial = special
@@ -65,9 +75,16 @@
       return
     }
 
+    if (loc.path[3] === undefined) {
+      currentSpecial = undefined
+      currentSpace = undefined
+      $currentTeam = undefined
+      return
+    }
+
     const [id] = decodeObjectURI(loc.path[3])
-    currentSpace = id as Ref<Team>
     $currentTeam = id as Ref<Team>
+    currentSpace = $currentTeam
     currentSpecial = undefined
   }
 
@@ -138,6 +155,40 @@
       <Members {currentSpace} />
     {:else if currentSpecial !== undefined}
       <Component is={currentSpecial.component} props={currentSpecial.componentProps} />
+    {:else}
+      <div class="hulyComponent flex justify-stretch items-center placeholder">
+        <div class="upper-gap" />
+        <span class="title">
+          <Label label={kraTeam.string.NoTeamSelected} />
+        </span>
+        <div class="lower-gap" />
+      </div>
     {/if}
   </div>
 </div>
+
+<style lang="scss">
+  .placeholder {
+    .title {
+      height: 100%;
+      width: 60%;
+      font-size: 2rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: stretch;
+      font-weight: bold;
+      color: var(--theme-trans-color);
+      text-align: center;
+      flex-grow: 1;
+    }
+    .upper-gap {
+      height: 100%;
+      flex-grow: 4;
+    }
+    .lower-gap {
+      height: 100%;
+      flex-grow: 6;
+    }
+  }
+</style>
