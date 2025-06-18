@@ -34,6 +34,8 @@
 
   let replacedPanel: HTMLElement
 
+  $: $currentTeam = currentSpace
+
   const myTeamQ = createQuery()
 
   $: myTeamQ.query(kraTeam.class.Team, {}, (res) => {
@@ -61,6 +63,9 @@
       return
     }
 
+    currentSpace = undefined
+    currentSpecial = undefined
+
     if (needRestoreLoc) {
       needRestoreLoc = false
       restoreLocation(loc, 'kra-team' as Plugin)
@@ -70,22 +75,15 @@
     const special = specials.find((s) => s.id === loc.path[3])
     if (special !== undefined) {
       currentSpecial = special
-      currentSpace = undefined
-      $currentTeam = undefined
       return
     }
 
     if (loc.path[3] === undefined) {
-      currentSpecial = undefined
-      currentSpace = undefined
-      $currentTeam = undefined
       return
     }
 
     const [id] = decodeObjectURI(loc.path[3])
-    $currentTeam = id as Ref<Team>
-    currentSpace = $currentTeam
-    currentSpecial = undefined
+    currentSpace = id as Ref<Team>
   }
 
   defineSeparators('kra-team', [
