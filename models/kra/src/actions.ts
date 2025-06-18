@@ -275,7 +275,7 @@ export function createActions(builder: Builder, issuesId: string, myIssuesId: st
   createAction(builder, {
     action: view.actionImpl.ShowPopup,
     actionProps: {
-      component: kra.component.AddGoalPopup,
+      component: kra.component.AddGoalActionPopup,
       element: 'top',
       fillProps: {
         _objects: 'value'
@@ -390,27 +390,6 @@ export function createActions(builder: Builder, issuesId: string, myIssuesId: st
       group: 'create'
     },
     override: [view.action.Open]
-  })
-
-  createAction(builder, {
-    action: view.actionImpl.ShowPopup,
-    actionProps: {
-      component: kra.component.TimeSpendReportPopup,
-      fillProps: {
-        _object: 'issue'
-      }
-    },
-    label: kra.string.TimeSpendReportAdd,
-    icon: kra.icon.TimeReport,
-    input: 'focus',
-    keyBinding: ['keyT'],
-    category: kra.category.Tracker,
-    target: kra.class.Issue,
-    context: {
-      mode: ['context', 'browser'],
-      application: kra.app.Tracker,
-      group: 'edit'
-    }
   })
 
   createAction(

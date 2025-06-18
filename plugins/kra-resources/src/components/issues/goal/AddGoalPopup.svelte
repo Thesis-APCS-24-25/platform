@@ -1,6 +1,6 @@
 <script lang="ts">
   import kra from '../../../plugin'
-  import { Card } from '@hcengineering/presentation'
+  import { Card, getClient } from '@hcengineering/presentation'
   import { ObjectBox } from '@hcengineering/view-resources'
   import { Goal, Issue, Project, Kpi, RatingScale } from '@hcengineering/kra'
   import { DropdownIntlItem, DropdownLabelsIntl, Label } from '@hcengineering/ui'
@@ -9,8 +9,7 @@
   import { Ref } from '@hcengineering/core'
   import { createEventDispatcher } from 'svelte'
 
-  export let value: Issue | undefined = undefined
-  export let issue: Ref<Issue> | undefined = value !== undefined ? value._id : undefined
+  export let issue: Ref<Issue>
   export let space: Ref<Project>
   export let canEditIssue: boolean = true
 

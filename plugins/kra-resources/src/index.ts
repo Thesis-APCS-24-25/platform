@@ -134,6 +134,7 @@ import RatingScaleObjectPresenter from './components/issues/goal/ratingscale/Rat
 import './styles/_colors.scss'
 import KRAEditor from './components/kra/KRAEditor.svelte'
 import AddGoalPopup from './components/issues/goal/AddGoalPopup.svelte'
+import AddGoalActionPopup from './components/issues/goal/AddGoalActionPopup.svelte'
 
 export { default as AssigneeEditor } from './components/issues/AssigneeEditor.svelte'
 export { default as SubIssueList } from './components/issues/edit/SubIssueList.svelte'
@@ -288,6 +289,7 @@ export default async (): Promise<Resources> => ({
     EditIssue,
     NewIssueHeader,
     SetDueDateActionPopup,
+    AddGoalActionPopup,
     SetParentIssueActionPopup,
     IssuesView,
     KanbanView,
