@@ -4,7 +4,6 @@
   import { Asset } from '@hcengineering/platform'
 
   const ratingColors = [
-    'var(--theme-rating-very-poor)', // dummy value
     'var(--theme-rating-very-poor)',
     'var(--theme-rating-poor)',
     'var(--theme-rating-average)',
@@ -26,13 +25,13 @@
       if (hoveringIndex >= index) {
         return [kra.icon.StarFilled, ratingColors[hoveringIndex]]
       } else {
-        return [kra.icon.Star, 'var(--theme-rating-empty)'] // Default empty color
+        return [kra.icon.Star, 'var(--theme-rating-empty)']
       }
     }
     if (value >= index + 1) {
       return [kra.icon.StarFilled, ratingColors[value]]
     }
-    return [kra.icon.Star,  'var(--theme-rating-empty)'] // Default empty color
+    return [kra.icon.Star, 'var(--theme-rating-empty)']
   }
 </script>
 
