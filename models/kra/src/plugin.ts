@@ -27,6 +27,7 @@ import { type Application } from '@hcengineering/workbench'
 
 export default mergeIds(kraId, kra, {
   string: {
+    IsTemplate: '' as IntlString,
     Progress: '' as IntlString,
     Unit: '' as IntlString,
     Symbol: '' as IntlString,

@@ -50,6 +50,7 @@
           description: data.description,
           target: data.target ?? 0,
           unit: data.unit,
+          isTemplate: useAsTemplate,
           reports: 0
         })
       } else if (kpi !== undefined) {
@@ -106,7 +107,7 @@
       label={kra.string.ChooseTemplate}
       value={template?._id}
       showNavigate={false}
-      docQuery={{ space }}
+      docQuery={{ space, isTemplate: true }}
       on:object={handleTemplateSelected}
     ></ObjectBox>
   </svelte:fragment>

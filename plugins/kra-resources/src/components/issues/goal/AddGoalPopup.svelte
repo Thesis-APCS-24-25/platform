@@ -44,9 +44,9 @@
   </div>
 
   {#if selected === 'kpi'}
-    <EditKpi {space} bind:canSave={canSaveKpi} {issue} {canEditIssue} />
+    <EditKpi {space} bind:canSave={canSaveKpi} {issue} {canEditIssue} on:close/>
   {:else if selected === 'rating-scale'}
-    <EditRatingScale {space} bind:canSave={canSaveRatingScale} {issue} {canEditIssue} />
+    <EditRatingScale {space} bind:canSave={canSaveRatingScale} {issue} {canEditIssue} on:close/>
   {/if}
 </div>
 

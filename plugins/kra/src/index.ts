@@ -56,6 +56,7 @@ export interface Goal extends Doc {
   reports: CollectionSize<Report>
   progress?: number
   unit: Ref<Unit>
+  isTemplate?: boolean
 }
 
 export interface Report extends AttachedDoc {

@@ -37,6 +37,7 @@
           name: data.name,
           description: data.description,
           reports: 0,
+          isTemplate: useAsTemplate,
           unit: kra.ids.RatingScaleUnit
         })
       } else if (ratingScale !== undefined) {
@@ -97,7 +98,7 @@
       label={kra.string.ChooseTemplate}
       value={template?._id}
       showNavigate={false}
-      docQuery={{ space }}
+      docQuery={{ space, isTemplate: true }}
       on:object={handleTemplateSelected}
     ></ObjectBox>
   </svelte:fragment>

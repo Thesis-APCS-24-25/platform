@@ -103,6 +103,10 @@ export class TGoal extends TDoc implements Goal {
 
   @Prop(TypeNumber(), kra.string.Progress)
     progress!: number
+
+  @Prop(TypeBoolean(), kra.string.IsTemplate)
+  @Hidden()
+    isTemplate!: boolean
 }
 
 @Model(kra.class.Unit, core.class.Type, DOMAIN_KRA)
