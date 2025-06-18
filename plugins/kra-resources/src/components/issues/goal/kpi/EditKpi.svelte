@@ -109,6 +109,11 @@
       showNavigate={false}
       docQuery={{ space, isTemplate: true }}
       on:object={handleTemplateSelected}
+      on:change={(e) => {
+        if (e.detail === null) {
+          template = undefined
+        }
+      }}
       allowDeselect
     />
   </svelte:fragment>
