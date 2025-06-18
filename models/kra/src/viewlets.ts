@@ -31,9 +31,7 @@ export const issuesOptions = (kanban: boolean): ViewOptionsModel => ({
     'priority',
     'createdBy',
     'modifiedBy',
-    'remainingTime',
-    'reportedTime',
-    'kra'
+    'remainingTime'
   ],
   orderBy: [
     ['modifiedOn', SortingOrder.Descending],
@@ -43,8 +41,7 @@ export const issuesOptions = (kanban: boolean): ViewOptionsModel => ({
     ['createdOn', SortingOrder.Descending],
     ['dueDate', SortingOrder.Ascending],
     ['rank', SortingOrder.Ascending],
-    ['remainingTime', SortingOrder.Descending],
-    ['reportedTime', SortingOrder.Descending]
+    ['remainingTime', SortingOrder.Descending]
   ],
   other: [
     {

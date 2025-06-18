@@ -57,7 +57,7 @@ import { taskId } from '@hcengineering/task'
 import { templatesId } from '@hcengineering/templates'
 // import { testManagementId } from '@hcengineering/test-management'
 import textEditor, { textEditorId } from '@hcengineering/text-editor'
-// import { timeId } from '@hcengineering/time'
+import { timeId } from '@hcengineering/time'
 // import tracker, { trackerId } from '@hcengineering/tracker'
 import kra, { kraId } from '@hcengineering/kra'
 import kraTeam, { kraTeamId } from '@hcengineering/kra-team'
@@ -307,7 +307,7 @@ function configureI18n(): void {
   // )
   addStringsLoader(diffviewId, async (lang: string) => await import(`@hcengineering/diffview-assets/lang/${lang}.json`))
   addStringsLoader(documentId, async (lang: string) => await import(`@hcengineering/document-assets/lang/${lang}.json`))
-  // addStringsLoader(timeId, async (lang: string) => await import(`@hcengineering/time-assets/lang/${lang}.json`))
+  addStringsLoader(timeId, async (lang: string) => await import(`@hcengineering/time-assets/lang/${lang}.json`))
   // addStringsLoader(githubId, async (lang: string) => await import(`@hcengineering/github-assets/lang/${lang}.json`))
   addStringsLoader(
     documentsId,
@@ -483,7 +483,7 @@ export async function configurePlatform() {
   addLocation(tagsId, () => import(/* webpackChunkName: "tags" */ '@hcengineering/tags-resources'))
   addLocation(calendarId, () => import(/* webpackChunkName: "calendar" */ '@hcengineering/calendar-resources'))
   addLocation(diffviewId, () => import(/* webpackChunkName: "diffview" */ '@hcengineering/diffview-resources'))
-  // addLocation(timeId, () => import(/* webpackChunkName: "time" */ '@hcengineering/time-resources'))
+  addLocation(timeId, () => import(/* webpackChunkName: "time" */ '@hcengineering/time-resources'))
   // addLocation(
   //   desktopPreferencesId,
   //   () => import(/* webpackChunkName: "desktop-preferences" */ '@hcengineering/desktop-preferences-resources')

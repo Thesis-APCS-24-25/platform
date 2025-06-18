@@ -20,7 +20,7 @@ import { activityId, createModel as activityModel } from '@hcengineering/model-a
 import { attachmentId, createModel as attachmentModel } from '@hcengineering/model-attachment'
 // import bitrix, { bitrixId, createModel as bitrixModel } from '@hcengineering/model-bitrix'
 import board, { boardId, createModel as boardModel } from '@hcengineering/model-board'
-// import calendar, { calendarId, createModel as calendarModel } from '@hcengineering/model-calendar'
+import calendar, { calendarId, createModel as calendarModel } from '@hcengineering/model-calendar'
 import chunter, { chunterId, createModel as chunterModel } from '@hcengineering/model-chunter'
 import contact, { contactId, createModel as contactModel } from '@hcengineering/model-contact'
 import { createModel as coreModel } from '@hcengineering/model-core'
@@ -37,7 +37,7 @@ import { requestId, createModel as requestModel } from '@hcengineering/model-req
 // import { aiBotId, createModel as aiBotModel } from '@hcengineering/model-ai-bot'
 import { serverActivityId, createModel as serverActivityModel } from '@hcengineering/model-server-activity'
 import { serverAttachmentId, createModel as serverAttachmentModel } from '@hcengineering/model-server-attachment'
-// import { serverCalendarId, createModel as serverCalendarModel } from '@hcengineering/model-server-calendar'
+import { serverCalendarId, createModel as serverCalendarModel } from '@hcengineering/model-server-calendar'
 import { serverChunterId, createModel as serverChunterModel } from '@hcengineering/model-server-chunter'
 import {
   serverCollaborationId,
@@ -108,7 +108,7 @@ import {
   createModel as serverDocumentsModel
 } from '@hcengineering/model-server-controlled-documents'
 import { serverFulltextId, createModel as serverFulltextModel } from '@hcengineering/model-server-fulltext'
-// import { surveyId, createModel as surveyModel } from '@hcengineering/model-survey'
+import { surveyId, createModel as surveyModel } from '@hcengineering/model-survey'
 import { presenceId, createModel as presenceModel } from '@hcengineering/model-presence'
 import { performanceId, createModel as performanceModel } from '@hcengineering/model-performance'
 import { serverPerformanceId, createModel as serverPerformanceModel } from '@hcengineering/model-server-performance'
@@ -188,18 +188,18 @@ export default function buildModel (enabled: string[] = ['*'], disabled: string[
       }
     ],
     [taskModel, taskId],
-    // [
-    //   calendarModel,
-    //   calendarId,
-    //   {
-    //     label: calendar.string.ConfigLabel,
-    //     description: calendar.string.ConfigDescription,
-    //     enabled: true,
-    //     beta: true,
-    //     icon: calendar.icon.Calendar,
-    //     classFilter: defaultFilter
-    //   }
-    // ],
+    [
+      calendarModel,
+      calendarId,
+      {
+        label: calendar.string.ConfigLabel,
+        description: calendar.string.ConfigDescription,
+        enabled: true,
+        beta: true,
+        icon: calendar.icon.Calendar,
+        classFilter: defaultFilter
+      }
+    ],
     [
       recruitModel,
       recruitId,
@@ -446,7 +446,7 @@ export default function buildModel (enabled: string[] = ['*'], disabled: string[
     //     classFilter: defaultFilter
     //   }
     // ],
-    // [surveyModel, surveyId],
+    [surveyModel, surveyId],
     [presenceModel, presenceId],
 
     [serverCoreModel, serverCoreId],
@@ -460,7 +460,7 @@ export default function buildModel (enabled: string[] = ['*'], disabled: string[
     [serverTagsModel, serverTagsId],
     [serverTaskModel, serverTaskId],
     [serverTrackerModel, serverTrackerId],
-    // [serverCalendarModel, serverCalendarId],
+    [serverCalendarModel, serverCalendarId],
     [serverRecruitModel, serverRecruitId],
     // [serverGmailModel, serverGmailId],
     [serverTemplatesModel, serverTemplatesId],
