@@ -109,7 +109,8 @@
       showNavigate={false}
       docQuery={{ space, isTemplate: true }}
       on:object={handleTemplateSelected}
-    ></ObjectBox>
+      allowDeselect
+    />
   </svelte:fragment>
   <div class="m-1">
     <EditBox

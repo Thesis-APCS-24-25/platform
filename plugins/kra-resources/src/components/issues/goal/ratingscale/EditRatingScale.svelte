@@ -30,7 +30,7 @@
 
   const client = getClient()
 
-  async function save (): Promise<void> {
+  async function save(): Promise<void> {
     if (canSave) {
       if (space !== undefined && issue !== undefined) {
         id = await client.createDoc(kra.class.RatingScale, space, {
@@ -50,11 +50,11 @@
   }
   let template: RatingScale | undefined = undefined
 
-  function handleIssueChange (evt: CustomEvent<Ref<Issue>>): void {
+  function handleIssueChange(evt: CustomEvent<Ref<Issue>>): void {
     issue = evt.detail
   }
 
-  function handleTemplateSelected (evt: CustomEvent<RatingScale | undefined>): void {
+  function handleTemplateSelected(evt: CustomEvent<RatingScale | undefined>): void {
     if (evt.detail === undefined) {
       return
     }
@@ -100,6 +100,7 @@
       showNavigate={false}
       docQuery={{ space, isTemplate: true }}
       on:object={handleTemplateSelected}
+      allowDeselect
     ></ObjectBox>
   </svelte:fragment>
   <div class="m-1">
@@ -113,6 +114,6 @@
     />
   </div>
   <svelte:fragment slot="pool">
-      <ToggleWithLabel disabled={template !== undefined} bind:on={useAsTemplate} label={kra.string.UseAsTemplate}/>
+    <ToggleWithLabel disabled={template !== undefined} bind:on={useAsTemplate} label={kra.string.UseAsTemplate} />
   </svelte:fragment>
 </Card>
