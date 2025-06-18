@@ -2008,16 +2008,16 @@
       "projectFolder": "models/server-training",
       "shouldPublish": false
     },
-    {
-      "packageName": "@hcengineering/desktop",
-      "projectFolder": "desktop",
-      "shouldPublish": false
-    },
-    {
-      "packageName": "desktop",
-      "projectFolder": "desktop-package",
-      "shouldPublish": false
-    },
+//    {
+//      "packageName": "@hcengineering/desktop",
+//      "projectFolder": "desktop",
+//      "shouldPublish": false
+//    },
+//    {
+//      "packageName": "desktop",
+//      "projectFolder": "desktop-package",
+//      "shouldPublish": false
+//    },
     {
       "packageName": "@hcengineering/diffview",
       "projectFolder": "plugins/diffview",
