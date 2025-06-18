@@ -127,7 +127,6 @@ function defineKRA (builder: Builder): void {
     presenter: performance.component.KRAStatusPresenter
   })
 
-
   builder.mixin(performance.class.EmployeeKRA, core.class.Class, view.mixin.ListHeaderExtra, {
     presenters: [performance.component.EmployeeKRATotalWeightStat]
   })

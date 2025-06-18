@@ -27,8 +27,9 @@ export const reviewSessionStatusAssets: Record<ReviewSessionStatus, { icon: Asse
 export const defaultKRAStatuses = [
   KRAStatus.Drafting,
   KRAStatus.NeedChanges,
-  KRAStatus.Approved,
-  KRAStatus.Cancelled
+  KRAStatus.Approved
+  // NOTE: We do not know what to do with Cancelled KRAs yet, so we do not include them in the default statuses
+  // KRAStatus.Cancelled
 ]
 
 export const kraStatusAssets: Record<KRAStatus, { icon: Asset, label: IntlString }> = {

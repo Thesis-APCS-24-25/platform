@@ -1,10 +1,10 @@
 <script lang="ts">
   import { createEventDispatcher } from 'svelte'
   import { Data } from '@hcengineering/core'
-  import { EmployeeKRA } from '@hcengineering/performance'
+  import { EmployeeKRA, KRAStatus } from '@hcengineering/performance'
   import { getClient } from '@hcengineering/presentation'
-  import { tooltip } from '@hcengineering/ui'
   import {
+    tooltip,
     Button,
     ButtonKind,
     ButtonSize,
@@ -15,7 +15,8 @@
     Label
   } from '@hcengineering/ui'
   import { defaultKRAStatuses, kraStatusAssets } from '../../types'
-  import testManagement from '../../plugin'
+  import performance from '../../plugin'
+  import LeaveKRACommentPopup from './LeaveKRACommentPopup.svelte'
 
   export let value: EmployeeKRA['status'] | undefined
   export let object: EmployeeKRA | Data<EmployeeKRA>
@@ -39,14 +40,31 @@
   function handlePopupOpen (event: MouseEvent): void {
     showPopup(
       SelectPopup,
-      { value: itemsInfo, placeholder: testManagement.string.SetStatus },
+      { value: itemsInfo, placeholder: performance.string.SetStatus },
       eventToHTMLElement(event),
-      changeStatus
+      changeStatus.bind(null, event)
     )
   }
 
-  async function changeStatus (newStatus: EmployeeKRA['status'] | null | undefined): Promise<void> {
+  async function changeStatus (event: MouseEvent, newStatus: EmployeeKRA['status'] | null | undefined): Promise<void> {
     if (disabled || newStatus == null || value === newStatus) {
+      return
+    }
+
+    if (newStatus === value) {
+      return
+    } else if (newStatus === KRAStatus.NeedChanges) {
+      showPopup(LeaveKRACommentPopup, { object }, eventToHTMLElement(event), async (e) => {
+        const submitted = e
+        if (submitted === true) {
+          value = newStatus
+          dispatch('change', value)
+
+          if ('_id' in object) {
+            await client.update(object, { status: newStatus })
+          }
+        }
+      })
       return
     }
 
@@ -58,8 +76,8 @@
     }
   }
 
-  $: icon = value === undefined ? testManagement.icon.StatusDrafting : kraStatusAssets[value].icon
-  $: label = value === undefined ? testManagement.string.Drafting : kraStatusAssets[value].label
+  $: icon = value === undefined ? performance.icon.StatusDrafting : kraStatusAssets[value].icon
+  $: label = value === undefined ? performance.string.Drafting : kraStatusAssets[value].label
 </script>
 
 {#if kind === 'list'}
@@ -69,7 +87,7 @@
     on:click={handlePopupOpen}
     use:tooltip={{ label }}
   >
-    <Icon {icon} {size}/>
+    <Icon {icon} {size} />
   </button>
 {:else if kind === 'list-header'}
   <div class="flex-row-center pl-0-5">
@@ -87,7 +105,7 @@
     {size}
     {width}
     {disabled}
-    showTooltip={{ label: testManagement.string.SetStatus }}
+    showTooltip={{ label: performance.string.SetStatus }}
     on:click={handlePopupOpen}
   />
 {/if}
