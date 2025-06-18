@@ -318,6 +318,9 @@
     "ChooseTemplate": "Choose template",
     "Template": "Template",
     "CreateFrom": "Create from template",
+    "AddKpi": "Add KPI",
+    "AddRatingScale": "Add rating scale",
+    "UseAsTemplate": "Use as template",
     "SetAssigneeFirst": "Set assignee before choosing KRA"
   },
   "status": {}

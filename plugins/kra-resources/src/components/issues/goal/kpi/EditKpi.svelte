@@ -138,6 +138,6 @@
   </div>
 
   <svelte:fragment slot="pool">
-      <ToggleWithLabel bind:on={useAsTemplate} label={kra.string.UseAsTemplate}/>
+      <ToggleWithLabel bind:on={useAsTemplate} label={kra.string.UseAsTemplate} />
   </svelte:fragment>
 </Card>
