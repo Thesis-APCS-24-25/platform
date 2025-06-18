@@ -1,7 +1,7 @@
 <script lang="ts">
   import { Ref, SortingOrder, Space, getCurrentAccount } from '@hcengineering/core'
   import { Breadcrumb, Header, Scroller } from '@hcengineering/ui'
-  import { createQuery, getClient } from '@hcengineering/presentation'
+  import { createQuery } from '@hcengineering/presentation'
   import performance from '../../plugin'
   import { PersonAccount } from '@hcengineering/contact'
   import { KRA, WithKRA } from '@hcengineering/performance'
@@ -9,7 +9,6 @@
   import ProgressPresenter from './ProgressPresenter.svelte'
   import view from '@hcengineering/view'
   import AssignTaskPopup from './AssignTaskPopup.svelte'
-  import task from '@hcengineering/task'
   import { personIdByAccountId } from '@hcengineering/contact-resources'
 
   export let currentSpace: Ref<Space>

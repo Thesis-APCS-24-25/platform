@@ -1,32 +1,16 @@
 <script lang="ts">
   import kra from '../../../plugin'
-  import { Card, getClient } from '@hcengineering/presentation'
-  import { ObjectBox } from '@hcengineering/view-resources'
   import { Goal, Issue, Project, Kpi, RatingScale } from '@hcengineering/kra'
-  import { DropdownIntlItem, DropdownLabelsIntl, Label } from '@hcengineering/ui'
+  import { DropdownIntlItem, Label } from '@hcengineering/ui'
   import EditKpi from './kpi/EditKpi.svelte'
   import EditRatingScale from './ratingscale/EditRatingScale.svelte'
   import { Ref } from '@hcengineering/core'
-  import { createEventDispatcher } from 'svelte'
 
   export let issue: Ref<Issue>
   export let space: Ref<Project>
   export let canEditIssue: boolean = true
 
-  let template: Goal | undefined = undefined
-  $: templateKpi = (template?._class === kra.class.Kpi ? template : undefined) as Kpi | undefined
-  $: templateRatingScale = (template?._class === kra.class.RatingScale ? template : undefined) as
-    | RatingScale
-    | undefined
-
-  let kpiForm: EditKpi | undefined
-  let ratingScaleForm: EditRatingScale | undefined
-
   const items: DropdownIntlItem[] = [
-    {
-      id: 'none',
-      label: kra.string.SelectGoalType
-    },
     {
       id: 'kpi',
       label: kra.string.Kpi
@@ -37,105 +21,85 @@
     }
   ]
 
-  const dispatch = createEventDispatcher()
-
-  let selected: DropdownIntlItem['id'] = 'none'
+  let selected: DropdownIntlItem['id'] = 'kpi'
 
   let canSaveKpi = false
   let canSaveRatingScale = false
-  $: canSave = selected !== 'none' && issue !== undefined && (canSaveKpi || canSaveRatingScale)
-
-  let id: Ref<Goal> | undefined = undefined
-
-  function handleIssueChange (evt: CustomEvent<Ref<Issue>>): void {
-    issue = evt.detail
-  }
-
-  async function save (): Promise<void> {
-    if (!canSave) {
-      return
-    }
-
-    if (selected === 'kpi' && kpiForm !== undefined) {
-      id = await kpiForm.save()
-    } else if (selected === 'rating-scale' && ratingScaleForm !== undefined) {
-      id = await ratingScaleForm.save()
-    }
-  }
-
-  function handleTemplateSelected (evt: CustomEvent<Goal | undefined>): void {
-    if (evt.detail === undefined) {
-      return
-    }
-    const goal = evt.detail
-    if (goal._class === kra.class.Kpi) {
-      selected = 'kpi'
-      template = goal
-    } else if (goal._class === kra.class.RatingScale) {
-      selected = 'rating-scale'
-      template = goal
-    } else {
-      selected = 'none'
-    }
-  }
 </script>
 
-<Card
-  label={kra.string.AddGoal}
-  okAction={save}
-  {canSave}
-  width="small"
-  on:close={() => {
-    dispatch('close', id)
-  }}
->
-  <svelte:fragment slot="header">
-    {#if canEditIssue}
-      <ObjectBox
-        docQuery={{
-          goal: undefined
+<div class="container">
+  <div class="header">
+    {#each items as item}
+      {@const isSelected = item.id === selected}
+      <button
+        class="header-item"
+        class:selected={isSelected}
+        on:click={() => {
+          selected = item.id
         }}
-        size="small"
-        kind="regular"
-        showNavigate={false}
-        icon={kra.icon.Issue}
-        value={issue}
-        on:change={handleIssueChange}
-        _class={kra.class.Issue}
-        label={kra.string.Issue}
-      />
-    {/if}
-    <DropdownLabelsIntl {items} label={kra.string.ChooseGoal} bind:selected />
-  </svelte:fragment>
-
-  <svelte:fragment slot="subheader">
-    <Label label={kra.string.Template} />
-    <span class="m-1">:</span>
-    <ObjectBox
-      kind='regular'
-      _class={kra.class.Goal}
-      label={kra.string.ChooseTemplate}
-      value={template?._id}
-      showNavigate={false}
-      docQuery={{ space }}
-      on:object={handleTemplateSelected}
-    >
-    </ObjectBox>
-  </svelte:fragment>
-
-  <svelte:fragment slot="pool">
-    <slot name="pool" />
-  </svelte:fragment>
+      >
+        <Label label={item.label} />
+      </button>
+    {/each}
+  </div>
 
   {#if selected === 'kpi'}
-    <EditKpi {space} bind:canSave={canSaveKpi} bind:this={kpiForm} {issue} kpi={templateKpi} />
+    <EditKpi {space} bind:canSave={canSaveKpi} {issue} {canEditIssue} />
   {:else if selected === 'rating-scale'}
-    <EditRatingScale
-      {space}
-      bind:canSave={canSaveRatingScale}
-      bind:this={ratingScaleForm}
-      {issue}
-      ratingScale={templateRatingScale}
-    />
+    <EditRatingScale {space} bind:canSave={canSaveRatingScale} {issue} {canEditIssue} />
   {/if}
-</Card>
+</div>
+
+<style lang="scss">
+  .container {
+    display: flex;
+    flex-direction: column;
+    border-radius: 0.5rem;
+    background-color: var(--theme-bg-color);
+  }
+
+  //
+  // .header {
+  //   display: flex;
+  //   justify-content: flex-start;
+  //   margin-bottom: -0.5rem;
+  //   padding-bottom: 0.5rem;
+  //   padding-left: 0.5rem;
+  //   padding-right: 0.5rem;
+  //   border-top-left-radius: 0.25rem;
+  //   border-top-right-radius: 0.25rem;
+  //   background-color: var(--theme-bg-dark-color);
+  // }
+  .header {
+    display: flex;
+    flex-direction: row;
+    justify-items: center;
+    padding: 0 1rem;
+    background-color: var(--hc-color-background-secondary);
+    border-bottom: 1px solid var(--hc-color-border);
+  }
+
+  .header-item {
+    padding: 0.5rem 1rem;
+    border: none;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+
+    &.selected {
+      background-color: var(--theme-button-pressed);
+      border-bottom: 2px solid grey;
+    }
+
+    &:hover {
+      border-bottom: 2px solid grey;
+    }
+  }
+
+  .content {
+    flex-grow: 1;
+  }
+
+  .hidden {
+    display: none;
+  }
+</style>
