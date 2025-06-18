@@ -97,7 +97,6 @@
         placeholder={performance.string.Identifier}
         bind:value={identifier}
         kind="underline"
-        autoFocus
         focusIndex={2}
         uppercase
       />
