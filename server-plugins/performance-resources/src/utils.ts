@@ -40,18 +40,18 @@ export async function prepareReport (
     performance.class.EmployeeKRA,
     {
       space: reviewSession._id,
-      employee: assignee._id
+      assignee: assignee.person
     }
   ))
   const kras = employeeKras.map(v => v.kra)
   const tasks = (await control.findAll(control.ctx, kra.class.Issue,
     {
       assignee: assignee.person,
-      createdOn: {
-        $gte: reviewSession.reviewSessionStart,
-        // Add an extra day to include tasks at the end of review session date
-        $lt: reviewSession.reviewSessionEnd + 86400
-      },
+      // createdOn: {
+      //   $gte: reviewSession.reviewSessionStart,
+      //   // Add an extra day to include tasks at the end of review session date
+      //   $lt: reviewSession.reviewSessionEnd + 86400
+      // },
       'performance:mixin:WithKRA.kra': { $in: kras }
     }
   ))
