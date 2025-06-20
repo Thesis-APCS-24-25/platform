@@ -7,20 +7,14 @@
   import performance from '../../plugin'
   import { KRA, ReviewSession, WithKRA } from '@hcengineering/performance'
   import { createQuery } from '@hcengineering/presentation'
-  import { Person, PersonAccount } from '@hcengineering/contact'
-  import { personIdByAccountId } from '@hcengineering/contact-resources'
 
   export let space: Ref<ReviewSession>
-
-  const userId = getCurrentAccount()._id as Ref<PersonAccount>
-  const me = $personIdByAccountId.get(userId)
 
   let assignedKRAs: Ref<KRA>[] = []
   const assignedKRAsQuery = createQuery()
   $: assignedKRAsQuery.query(
     performance.class.EmployeeKRA,
     {
-      assignee: me ?? ('' as Ref<Person>),
       space
     },
     (res) => {
