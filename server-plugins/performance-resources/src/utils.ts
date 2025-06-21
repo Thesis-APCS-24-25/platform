@@ -4,17 +4,21 @@ import { TriggerControl } from '@hcengineering/server-core'
 import contact from '@hcengineering/contact'
 import kra, { Goal, Issue, Kpi } from '@hcengineering/kra'
 
-export function addUpdates (control: TriggerControl, member: Ref<Account>, reviewSessions: ReviewSession[]): Tx[] {
+export function addUpdates (
+  control: TriggerControl,
+  member: Ref<Account>,
+  reviewSessions: ReviewSession[],
+  isPull: boolean
+): Tx[] {
   const result: Tx[] = []
 
   for (const rs of reviewSessions) {
     if (!rs.members.includes(member)) continue
-    const pullTx = control.txFactory.createTxUpdateDoc(rs._class, rs.space, rs._id, {
-      $pull: {
-        members: member
-      }
-    })
-    result.push(pullTx)
+    const payload = isPull
+      ? { $pull: { members: member } }
+      : { $push: { members: member } }
+    const updateTx = control.txFactory.createTxUpdateDoc(rs._class, rs.space, rs._id, payload)
+    result.push(updateTx)
   }
   return result
 }

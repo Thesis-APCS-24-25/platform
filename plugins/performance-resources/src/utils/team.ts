@@ -40,5 +40,5 @@ export const canAssignKRAs = async (
   if (reviewSS === undefined) {
     return false
   }
-  return await checkPermission(getClient(), kraTeam.permission.ApproveKra, reviewSS.space as Ref<TypedSpace>)
+  return await checkPermission(getClient(), kraTeam.permission.AssignWeightForAll, reviewSS.space as Ref<TypedSpace>)
 }

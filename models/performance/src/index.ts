@@ -177,7 +177,7 @@ function defineKRA (builder: Builder): void {
         label: performance.string.AssignedTo,
         presenter: performance.component.KRAWeightEditorWithPopup,
         props: {
-          readonly: true
+          // readonly: true
         }
       },
       'description'
@@ -198,7 +198,7 @@ function defineKRA (builder: Builder): void {
         label: performance.string.AssignedTo,
         presenter: performance.component.KRAWeightEditorWithPopup,
         props: {
-          readonly: true
+          // readonly: true
         }
       },
       {
@@ -207,7 +207,7 @@ function defineKRA (builder: Builder): void {
           fixed: 'left'
         },
         props: {
-          readonly: true
+          // readonly: true
         }
       }
     ]

@@ -2,7 +2,7 @@
   import { Button, ButtonSize, EditBox, eventToHTMLElement, showPopup } from '@hcengineering/ui'
   import { NumberPresenter } from '@hcengineering/view-resources'
   import KraWeightEditBoxPopup from './KRAWeightEditBoxPopup.svelte'
-  import { AttachedData, Data, getCurrentAccount, Ref, WithLookup } from '@hcengineering/core'
+  import { Data, getCurrentAccount, Ref, WithLookup } from '@hcengineering/core'
   import { createQuery, getClient } from '@hcengineering/presentation'
   import { EmployeeKRA, ReviewSession } from '@hcengineering/performance'
   import KraWeightPresenter from './KRAWeightPresenter.svelte'
@@ -45,13 +45,15 @@
     await updateWeight(newWeight)
   }
 
-  let canAssign = false
   $: if (space !== undefined) {
-    void canAssignKRAs(client, space).then((res) => {
-      canAssign = res
-    })
+    if (value.assignee !== getCurrentAccount().person) {
+      void canAssignKRAs(client, space).then((res) => {
+        readonly = readonly || (doCheckPermission && !res)
+      })
+    } else {
+      readonly = false
+    }
   }
-  $: readonly = readonly || (doCheckPermission && !canAssign && value.assignee !== getCurrentAccount().person)
   let otherWeights: EmployeeKRA[] = []
   const weightQ = createQuery()
   $: weightQ.query(
