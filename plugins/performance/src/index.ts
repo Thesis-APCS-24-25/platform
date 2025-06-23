@@ -86,8 +86,7 @@ export enum ReviewSessionStatus {
 export enum KRAStatus {
   Drafting,
   NeedChanges,
-  Approved,
-  Cancelled
+  Approved
 }
 
 export interface ReviewSession extends Project {

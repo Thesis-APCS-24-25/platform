@@ -1,23 +1,16 @@
 <script lang="ts">
-  import { PersonAccountRefPresenter } from '@hcengineering/contact-resources'
-  import { checkPermission, getCurrentAccount, Ref, SortingOrder, TypedSpace, WithLookup } from '@hcengineering/core'
+  import { Ref, SortingOrder, WithLookup } from '@hcengineering/core'
   import { EmployeeKRA, KRA, ReviewSession } from '@hcengineering/performance'
-  import { Button, getPlatformColorDef, showPopup, themeStore } from '@hcengineering/ui'
-  import { FixedColumn, List, ListSelectionProvider, ListView } from '@hcengineering/view-resources'
+  import { List, ListSelectionProvider } from '@hcengineering/view-resources'
   import KraWeightEditorWithPopup from './KRAWeightEditorWithPopup.svelte'
   import performance from '../../plugin'
   import AssignKraPopup from './AssignKRAPopup.svelte'
-  import KraRefPresenter from './KRARefPresenter.svelte'
-  import GroupedList from '../ui/GroupedList.svelte'
-  import KraPresenter from './KRAPresenter.svelte'
-  import Dummy from './Dummy.svelte'
   import view from '@hcengineering/view'
-  import GrowPresenter from '../list/GrowPresenter.svelte'
 
   export let kras: KRA[]
   export let employeeKras: WithLookup<EmployeeKRA>[]
   export let space: Ref<ReviewSession>
-  export let canAssign: boolean = false
+  // export let canAssign: boolean = false
 
   let kraById: Map<Ref<KRA>, KRA> = new Map<Ref<KRA>, KRA>()
   $: {
@@ -65,9 +58,6 @@
       {
         key: '',
         presenter: KraWeightEditorWithPopup,
-        props: {
-          readonly: !canAssign
-        },
         displayProps: {
           key: 'weight',
           optional: false,

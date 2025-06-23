@@ -1,22 +1,15 @@
 <script lang="ts">
-  import { checkPermission, getCurrentAccount, Ref, SortingOrder, TypedSpace, WithLookup } from '@hcengineering/core'
+  import { getCurrentAccount, Ref, SortingOrder, TypedSpace, WithLookup } from '@hcengineering/core'
   import { EmployeeKRA } from '@hcengineering/performance'
-  import GroupedList from '../ui/GroupedList.svelte'
-  import { Person, PersonAccount } from '@hcengineering/contact'
-  import { PersonAccountRefPresenter } from '@hcengineering/contact-resources'
-  import { FixedColumn, List, ListSelectionProvider } from '@hcengineering/view-resources'
+  import { List, ListSelectionProvider } from '@hcengineering/view-resources'
   import KraWeightEditorWithPopup from './KRAWeightEditorWithPopup.svelte'
-  import KraRefPresenter from './KRARefPresenter.svelte'
-  import KraWeightPresenter from './KRAWeightPresenter.svelte'
-  import { Icon, tooltip } from '@hcengineering/ui'
   import performance from '../../plugin'
   import view from '@hcengineering/view'
-  import AssignKraPopup from './AssignKRAPopup.svelte'
   import { Member } from '@hcengineering/kra-team'
 
   export let members: Ref<Member>[]
   export let space: Ref<TypedSpace>
-  export let canAssign: boolean = false
+  // export let canAssign: boolean = false
 
   const shouldWarn = (value: number | undefined): boolean => {
     return value === undefined || Math.abs(value - 1) > 0.0001
@@ -64,9 +57,9 @@
     {
       key: '',
       presenter: KraWeightEditorWithPopup,
-      props: {
-        readonly: !canAssign
-      },
+      // props: {
+      //   readonly: !canAssign
+      // },
       displayProps: {
         key: 'weight',
         dividerBefore: true,

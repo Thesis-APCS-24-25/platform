@@ -1,11 +1,10 @@
 <script lang="ts">
-  import { Ref, Doc, Space, DocumentQuery, WithLookup, checkPermission, TypedSpace } from '@hcengineering/core'
+  import { Ref, Doc, DocumentQuery, WithLookup } from '@hcengineering/core'
   import { Asset, IntlString } from '@hcengineering/platform'
   import {
     Breadcrumb,
     Button,
     Header,
-    Icon,
     IconAdd,
     IModeSelector,
     ModeSelector,
@@ -13,13 +12,12 @@
     showPopup
   } from '@hcengineering/ui'
   import performance from '../../plugin'
-  import { createQuery, getClient } from '@hcengineering/presentation'
+  import { createQuery } from '@hcengineering/presentation'
   import CreateKra from './CreateKRA.svelte'
   import EmployeeKRAsByEmployeeList from './EmployeeKRAsByEmployeeList.svelte'
   import { EmployeeKRA, KRA, ReviewSession, ReviewSessionStatus } from '@hcengineering/performance'
   import { PersonAccount } from '@hcengineering/contact'
   import EmployeeKrAsByKraList from './EmployeeKRAsByKRAList.svelte'
-  import { canAssignKRAs } from '../../utils/team'
   import { Member } from '@hcengineering/kra-team'
   import { personIdByAccountId } from '@hcengineering/contact-resources'
 
@@ -39,7 +37,7 @@
       ['per-kra', performance.string.PerKRA, {}],
       ['per-employee', performance.string.PerMember, {}]
     ],
-    onChange(mode) {
+    onChange (mode) {
       modes.mode = mode
       currentMode = mode
     }
@@ -91,10 +89,10 @@
     }
   )
 
-  let canAssign = false
-  $: void canAssignKRAs(getClient(), currentSpace).then((result) => {
-    canAssign = result
-  })
+  // let canAssign = false
+  // $: void canAssignKRAs(getClient(), currentSpace).then((result) => {
+  //   canAssign = result
+  // })
 
   $: canCreateKRA = reviewSession?.status === ReviewSessionStatus.Drafting
 </script>
@@ -133,9 +131,9 @@
   <Scroller bind:this={scroll} bind:divScroll padding={'0 1rem'} noFade checkForHeaders>
     <div class="flex-col-stretch flex-gap-2">
       {#if currentMode === 'per-kra'}
-        <EmployeeKrAsByKraList {kras} {employeeKras} {canAssign} space={currentSpace} />
+        <EmployeeKrAsByKraList {kras} {employeeKras} space={currentSpace} />
       {:else if currentMode === 'per-employee'}
-        <EmployeeKRAsByEmployeeList {members} {employeeKras} space={currentSpace} {canAssign} />
+        <EmployeeKRAsByEmployeeList {members} {employeeKras} space={currentSpace} />
       {/if}
     </div>
   </Scroller>

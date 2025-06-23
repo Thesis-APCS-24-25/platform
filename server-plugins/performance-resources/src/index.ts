@@ -29,19 +29,31 @@ export async function OnTeamMemberUpdate (txes: Tx[], control: TriggerControl): 
 
   for (const tx of txes) {
     const updateTx = tx as TxUpdateDoc<Team>
-    const oldMembers = updateTx.operations.$pull?.members
-    if (oldMembers !== undefined) {
-      const reviewSessions = await control.findAll(control.ctx, performance.class.ReviewSession, {
-        space: updateTx.objectId
-      })
-      const { $in } = oldMembers as PullArray<Ref<Account>>
-      if ($in !== undefined) { // Multiple updates
-        for (const mem in oldMembers) {
-          result.push(...addUpdates(control, mem as Ref<Account>, reviewSessions))
+    if (updateTx.operations.$pull != null) {
+      const oldMembers = updateTx.operations.$pull.members
+      if (oldMembers !== undefined) {
+        const reviewSessions = await control.findAll(control.ctx, performance.class.ReviewSession, {
+          space: updateTx.objectId,
+          status: ReviewSessionStatus.Drafting
+        })
+        const { $in } = oldMembers as PullArray<Ref<Account>>
+        if ($in !== undefined) { // Multiple updates
+          for (const mem in oldMembers) {
+            result.push(...addUpdates(control, mem as Ref<Account>, reviewSessions, true))
+          }
+        } else {
+          const oldMember = oldMembers as Ref<Account>
+          result.push(...addUpdates(control, oldMember, reviewSessions, true))
         }
-      } else {
-        const oldMember = oldMembers as Ref<Account>
-        result.push(...addUpdates(control, oldMember, reviewSessions))
+      }
+    } else if (updateTx.operations.$push != null) {
+      const newMember = updateTx.operations.$push.members
+      if (newMember !== undefined) {
+        const reviewSessions = await control.findAll(control.ctx, performance.class.ReviewSession, {
+          space: updateTx.objectId,
+          status: ReviewSessionStatus.Drafting
+        })
+        result.push(...addUpdates(control, newMember as Ref<Account>, reviewSessions, false))
       }
     }
   }

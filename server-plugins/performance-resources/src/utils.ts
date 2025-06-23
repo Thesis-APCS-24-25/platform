@@ -6,24 +6,27 @@ import performance, {
   PerformanceReport,
   Progress,
   ReviewSession,
-  WithKRA,
   Kpi
 } from '@hcengineering/performance'
 import { TriggerControl } from '@hcengineering/server-core'
 import contact from '@hcengineering/contact'
 import taskPlugin from '@hcengineering/task'
 
-export function addUpdates (control: TriggerControl, member: Ref<Account>, reviewSessions: ReviewSession[]): Tx[] {
+export function addUpdates (
+  control: TriggerControl,
+  member: Ref<Account>,
+  reviewSessions: ReviewSession[],
+  isPull: boolean
+): Tx[] {
   const result: Tx[] = []
 
   for (const rs of reviewSessions) {
     if (!rs.members.includes(member)) continue
-    const pullTx = control.txFactory.createTxUpdateDoc(rs._class, rs.space, rs._id, {
-      $pull: {
-        members: member
-      }
-    })
-    result.push(pullTx)
+    const payload = isPull
+      ? { $pull: { members: member } }
+      : { $push: { members: member } }
+    const updateTx = control.txFactory.createTxUpdateDoc(rs._class, rs.space, rs._id, payload)
+    result.push(updateTx)
   }
   return result
 }
@@ -32,31 +35,38 @@ export async function prepareReport (
   control: TriggerControl,
   createTx: TxCreateDoc<PerformanceReport>
 ): Promise<TxUpdateDoc<PerformanceReport>> {
-  const assignee = (
-    await control.findAll(control.ctx, contact.class.PersonAccount, { _id: createTx.attributes.reviewee }, { limit: 1 })
-  )[0]
-  const reviewSession = (
-    await control.findAll(
-      control.ctx,
-      performance.class.ReviewSession,
-      { _id: createTx.attributes.reviewSession },
-      { limit: 1 }
-    )
-  )[0]
-  const employeeKras = await control.findAll(control.ctx, performance.class.EmployeeKRA, {
-    space: reviewSession._id,
-    employee: assignee._id
-  })
-  const kras = employeeKras.map((v) => v.kra)
-  const tasks = await control.findAll(control.ctx, performance.class.PTask, {
-    assignee: assignee.person,
-    createdOn: {
-      $gte: reviewSession.reviewSessionStart,
-      // Add an extra day to include tasks at the end of review session date
-      $lt: reviewSession.reviewSessionEnd + 86400
-    },
-    kra: { $in: kras }
-  })
+  const assignee = (await control.findAll(
+    control.ctx,
+    contact.class.PersonAccount,
+    { _id: createTx.attributes.reviewee },
+    { limit: 1 }
+  ))[0]
+  const reviewSession = (await control.findAll(
+    control.ctx,
+    performance.class.ReviewSession,
+    { _id: createTx.attributes.reviewSession },
+    { limit: 1 }
+  ))[0]
+  const employeeKras = (await control.findAll(
+    control.ctx,
+    performance.class.EmployeeKRA,
+    {
+      space: reviewSession._id,
+      assignee: assignee.person
+    }
+  ))
+  const kras = employeeKras.map(v => v.kra)
+  const tasks = (await control.findAll(control.ctx, performance.class.PTask,
+    {
+      assignee: assignee.person,
+      // createdOn: {
+      //   $gte: reviewSession.reviewSessionStart,
+      //   // Add an extra day to include tasks at the end of review session date
+      //   $lt: reviewSession.reviewSessionEnd + 86400
+      // },
+      'performance:mixin:WithKRA.kra': { $in: kras }
+    }
+  ))
 
   const score = await calculateScore(control, tasks, employeeKras)
 
