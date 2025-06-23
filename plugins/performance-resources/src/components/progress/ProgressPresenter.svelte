@@ -7,10 +7,9 @@
   import performance from '../../plugin'
   import KpiPresenter from './kpi/KpiPresenter.svelte'
   import task from '@hcengineering/task'
-  import KpiProgressBar from './kpi/KpiProgressBar.svelte'
+  import ProgressBar from './ProgressBar.svelte'
   import GoalPresenterContainer from './GoalPresenterContainer.svelte'
   import ReportsPopup from './ReportsPopup.svelte'
-  import KraRefPresenter from '../kra/KRARefPresenter.svelte'
 
   export let value: WithLookup<PTask>
 
@@ -81,7 +80,7 @@
     {#if _value.target > 0}
       <div class="bar">
         <!-- TODO: Turn this into progress bar component -->
-        <KpiProgressBar value={_value.progress ?? 0} />
+        <ProgressBar value={_value.progress ?? 0} />
       </div>
     {/if}
     <div class="separator"></div>

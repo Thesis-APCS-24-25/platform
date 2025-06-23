@@ -209,6 +209,7 @@ export default plugin(performanceId, {
     NoKRARef: '' as Ref<KRA>
   },
   icon: {
+    Kpi: '' as Asset,
     TimeLeft: '' as Asset,
     EmployeeKRA: '' as Asset,
     ConcludeReviewSession: '' as Asset,

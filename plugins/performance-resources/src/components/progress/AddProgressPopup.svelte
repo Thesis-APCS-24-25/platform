@@ -4,7 +4,6 @@
   import { Card, getClient } from '@hcengineering/presentation'
   import { Progress, PTask } from '@hcengineering/performance'
   import { Ref } from '@hcengineering/core'
-  import UnitBox from './unit/UnitBox.svelte'
   import { createEventDispatcher, onMount } from 'svelte'
   import { ObjectBox } from '@hcengineering/view-resources'
   import taskPlugin, { Project } from '@hcengineering/task'

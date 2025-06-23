@@ -22,5 +22,6 @@ loadMetadata(performance.icon, {
   StartReviewSession: `${icons}#start-review-session`,
   ConcludeReviewSession: `${icons}#conclude-review-session`,
   EmployeeKRA: `${icons}#employee-kra`,
-  TimeLeft: `${icons}#time-left`
+  TimeLeft: `${icons}#time-left`,
+  Kpi: `${icons}#kpi`
 })

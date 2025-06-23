@@ -82,7 +82,7 @@
 
   import { generateIssueShortLink, updateIssueRelation } from '../issues'
   import tracker from '../plugin'
-  import performance, { KRA } from '@hcengineering/performance'
+  import performance, { KRA, Progress } from '@hcengineering/performance'
   import SetParentIssueActionPopup from './SetParentIssueActionPopup.svelte'
   import SubIssues from './SubIssues.svelte'
   import AssigneeEditor from './issues/AssigneeEditor.svelte'
@@ -93,6 +93,7 @@
   import ProjectPresenter from './projects/ProjectPresenter.svelte'
   import { AddProgressPopup, KRABox, KRAEditor } from '@hcengineering/performance-resources'
   import CreateIssueProgressDisplay from './issues/goal/CreateIssueProgressDisplay.svelte'
+  import CreateIssueAddProgressButton from './CreateIssueAddProgressButton.svelte'
 
   export let space: Ref<Project> | undefined
   export let status: Ref<IssueStatus> | undefined = undefined
@@ -134,6 +135,8 @@
 
   let template: IssueTemplate | undefined = undefined
   const templateQuery = createQuery()
+
+  let progressClass: Ref<Class<Progress>> = performance.class.Progress
 
   function objectChange (object: IssueDraft, empty: any): void {
     if (shouldSaveDraft) {
@@ -734,23 +737,6 @@
     preferences
   }
 
-  function setProgress (): void {
-    showPopup(
-      AddProgressPopup,
-      {
-        task: object._id,
-        space: object.space,
-        canChangeTask: false
-      },
-      'top',
-      (progress) => {
-        if (progress !== undefined) {
-          object.progress = progress
-        }
-      }
-    )
-  }
-
   async function clearProgress (): Promise<void> {
     if (object.progress === undefined) {
       return
@@ -896,7 +882,7 @@
   {/if}
   {#if object.progress !== undefined}
     <div id="progress-editor">
-      <CreateIssueProgressDisplay progress={object.progress} onRemove={clearProgress} />
+      <CreateIssueProgressDisplay progress={object.progress} onRemove={clearProgress} _class={progressClass}/>
     </div>
   {/if}
   <DocCreateExtComponent manager={docCreateManager} kind={'body'} space={currentProject} props={extraProps} />
@@ -1002,14 +988,14 @@
       />
     </div>
     <div id="progress-editor" class="new-line">
-      <Button
+      <CreateIssueAddProgressButton
+        bind:value={object.progress}
+        bind:_class={progressClass}
+        task={object._id}
+        space={object.space}
         focusIndex={13}
         icon={performance.icon.Progress}
         label={object.progress != null ? performance.string.RemoveProgress : performance.string.SetProgress}
-        kind={'regular'}
-        size={'large'}
-        notSelected={object.progress === undefined}
-        on:click={object.progress != null ? clearProgress : setProgress}
       />
       <DocCreateExtComponent manager={docCreateManager} kind={'pool'} space={currentProject} props={extraProps} />
     </div>

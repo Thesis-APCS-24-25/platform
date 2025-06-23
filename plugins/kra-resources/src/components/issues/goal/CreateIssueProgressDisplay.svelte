@@ -1,12 +1,13 @@
 <script lang="ts">
   import { createQuery } from '@hcengineering/presentation'
   import kra from '../../../plugin'
-  import { Ref } from '@hcengineering/core'
+  import { Class, Ref } from '@hcengineering/core'
   import IconKpi from './IconKpi.svelte'
   import performance, { Progress } from '@hcengineering/performance'
-  import { Button, IconClose, Label } from '@hcengineering/ui'
+  import { Button, Icon, IconClose, Label } from '@hcengineering/ui'
 
   export let progress: Ref<Progress>
+  export let _class: Ref<Class<Progress>> = performance.class.Progress
   export let onRemove: () => void = () => {}
 
   let unnamed = false
@@ -33,12 +34,14 @@
       }
     }
   )
+
+  $: icon = _class === performance.class.Progress ? performance.icon.Progress : performance.icon.Kpi
 </script>
 
 {#if _progress}
   <div class="container">
     <div class="icon">
-      <IconKpi size="medium" />
+      <Icon {icon} size={'small'} />
     </div>
     <div class="title">
       {#if unnamed}

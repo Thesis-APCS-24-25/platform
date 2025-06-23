@@ -1,6 +1,6 @@
 <script lang="ts">
   import kra from '../../../../plugin'
-  import { Unit } from '@hcengineering/kra'
+  import performance, { Unit } from '@hcengineering/performance'
   import { ObjectCreate } from '@hcengineering/presentation'
   import ObjectBox from '@hcengineering/view-resources/src/components/ObjectBox.svelte'
   import { Ref, Space } from '@hcengineering/core'
@@ -28,9 +28,8 @@
   {size}
   {kind}
   {width}
-  excluded={[kra.ids.RatingScaleUnit]}
   label={kra.string.SelectUnit}
-  _class={kra.class.Unit}
+  _class={performance.class.Unit}
   placeholder={kra.string.AddUnit}
   showNavigate={false}
   icon={kra.icon.Issue}

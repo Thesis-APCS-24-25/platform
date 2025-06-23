@@ -2,11 +2,13 @@
   import { createFocusManager, EditBox, FocusHandler, ToggleWithLabel } from '@hcengineering/ui'
   import kra from '../../../../plugin'
   import { Card, getClient } from '@hcengineering/presentation'
-  import { Goal, Issue, Kpi } from '@hcengineering/kra'
+  import { Issue } from '@hcengineering/kra'
+  import { Kpi, Progress } from '@hcengineering/performance'
   import { Ref, Space } from '@hcengineering/core'
   import UnitBox from '../unit/UnitBox.svelte'
   import { createEventDispatcher, onMount } from 'svelte'
   import { ObjectBox } from '@hcengineering/view-resources'
+  import performance from '@hcengineering/performance'
 
   export let canSave = false
   export let issue: Ref<Issue> | undefined = undefined
@@ -33,24 +35,21 @@
       return
     }
     template = evt.detail
-    data.name = template.name
-    data.description = template.description
     data.unit = template.unit
   }
 
   $: canSave = data.name.length > 0 && Number.isFinite(data.target) && data.unit !== undefined
 
-  let id: Ref<Goal> | undefined = kpi?._id
+  let id: Ref<Kpi> | undefined = kpi?._id
 
   async function save (): Promise<void> {
     if (canSave) {
       if (issue !== undefined && data.unit !== undefined && space !== undefined) {
-        id = await client.createDoc(kra.class.Kpi, space, {
+        id = await client.createDoc(performance.class.Kpi, space, {
           name: data.name,
           description: data.description,
           target: data.target ?? 0,
           unit: data.unit,
-          isTemplate: useAsTemplate,
           reports: 0
         })
       } else if (kpi !== undefined) {
@@ -66,7 +65,6 @@
   function handleIssueChange (evt: CustomEvent<Ref<Issue>>): void {
     issue = evt.detail
   }
-
 
   const focusManager = createFocusManager()
   onMount(() => {
@@ -101,21 +99,21 @@
         label={kra.string.Issue}
       />
     {/if}
-    <ObjectBox
-      kind="regular"
-      _class={kra.class.Kpi}
-      label={kra.string.ChooseTemplate}
-      value={template?._id}
-      showNavigate={false}
-      docQuery={{ space, isTemplate: true }}
-      on:object={handleTemplateSelected}
-      on:change={(e) => {
-        if (e.detail === null) {
-          template = undefined
-        }
-      }}
-      allowDeselect
-    />
+    <!-- <ObjectBox -->
+    <!--   kind="regular" -->
+    <!--   _class={performance.class.Kpi} -->
+    <!--   label={kra.string.ChooseTemplate} -->
+    <!--   value={template?._id} -->
+    <!--   showNavigate={false} -->
+    <!--   docQuery={{ space, isTemplate: true }} -->
+    <!--   on:object={handleTemplateSelected} -->
+    <!--   on:change={(e) => { -->
+    <!--     if (e.detail === null) { -->
+    <!--       template = undefined -->
+    <!--     } -->
+    <!--   }} -->
+    <!--   allowDeselect -->
+    <!-- /> -->
   </svelte:fragment>
   <div class="m-1">
     <EditBox
