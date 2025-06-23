@@ -4,11 +4,11 @@
   import KraWeightEditBoxPopup from './KRAWeightEditBoxPopup.svelte'
   import { Data, getCurrentAccount, Ref, WithLookup } from '@hcengineering/core'
   import { createQuery, getClient } from '@hcengineering/presentation'
-  import { EmployeeKRA, ReviewSession } from '@hcengineering/performance'
+  import { EmployeeKRA, KRAStatus, ReviewSession } from '@hcengineering/performance'
   import KraWeightPresenter from './KRAWeightPresenter.svelte'
   import performance from '../../plugin'
-  import { canAssignKRAs } from '../../utils/team'
-  import { Member } from '@hcengineering/kra-team'
+  import { checkTeamPermission } from '../../utils/team'
+  import kraTeam, { Member } from '@hcengineering/kra-team'
 
   export let value: EmployeeKRA | Data<EmployeeKRA> | WithLookup<EmployeeKRA>
   export let space: Ref<ReviewSession> | undefined = undefined
@@ -46,8 +46,10 @@
   }
 
   $: if (space !== undefined) {
-    if (value.assignee !== getCurrentAccount().person) {
-      void canAssignKRAs(client, space).then((res) => {
+    if (value.status === KRAStatus.Approved) {
+      readonly = true
+    } else if (value.assignee !== getCurrentAccount().person) {
+      void checkTeamPermission(client, space, kraTeam.permission.AssignWeightForAll).then((res) => {
         readonly = readonly || (doCheckPermission && !res)
       })
     } else {

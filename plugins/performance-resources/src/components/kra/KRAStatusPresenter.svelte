@@ -1,7 +1,7 @@
 <script lang="ts">
   import { createEventDispatcher } from 'svelte'
-  import { Data } from '@hcengineering/core'
-  import { EmployeeKRA, KRAStatus } from '@hcengineering/performance'
+  import { Ref } from '@hcengineering/core'
+  import { EmployeeKRA, KRAStatus, ReviewSession } from '@hcengineering/performance'
   import { getClient } from '@hcengineering/presentation'
   import {
     tooltip,
@@ -17,14 +17,16 @@
   import { defaultKRAStatuses, kraStatusAssets } from '../../types'
   import performance from '../../plugin'
   import LeaveKRACommentPopup from './LeaveKRACommentPopup.svelte'
+  import kraTeam from '@hcengineering/kra-team'
+  import { checkTeamPermission } from '../../utils/team'
 
   export let value: EmployeeKRA['status'] | undefined
-  export let object: EmployeeKRA | Data<EmployeeKRA>
+  export let object: EmployeeKRA
   export let kind: ButtonKind = 'link'
   export let size: ButtonSize = 'medium'
   export let justify: 'left' | 'center' = 'left'
   export let width: string | undefined = undefined
-  export let disabled = false
+  export let disabled = true
   export let shouldShowAvatar: boolean = true
   export let accent: boolean = false
 
@@ -36,6 +38,12 @@
     isSelected: value === status,
     ...kraStatusAssets[status]
   }))
+
+  $: void checkTeamPermission(
+    client,
+    object.space as Ref<ReviewSession>,
+    kraTeam.permission.ApproveKra
+  ).then((res) => { disabled = !res })
 
   function handlePopupOpen (event: MouseEvent): void {
     showPopup(
@@ -53,6 +61,10 @@
 
     if (newStatus === value) {
       return
+    } else if (newStatus === KRAStatus.Approved) {
+      if (object.weight === 0) {
+        return // TODO: handle this
+      }
     } else if (newStatus === KRAStatus.NeedChanges) {
       showPopup(LeaveKRACommentPopup, { object }, eventToHTMLElement(event), async (e) => {
         const submitted = e
