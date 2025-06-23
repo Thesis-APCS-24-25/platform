@@ -17,8 +17,9 @@
   export let shrink: number = 1
   export let width: string | undefined = undefined
   export let object: Task
+  export let focusIndex: number = -1
 
-  async function handleChange(kra: KRA): Promise<void> {
+  async function handleChange (kra: KRA): Promise<void> {
     if (onChange !== undefined && kra !== undefined) {
       await onChange(kra._id)
     }
@@ -55,6 +56,7 @@
 
 {#if kind === 'list'}
   <Button
+    {focusIndex}
     {kind}
     {size}
     {width}

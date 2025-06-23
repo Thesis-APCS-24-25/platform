@@ -321,7 +321,8 @@
     "AddKpi": "Add KPI",
     "AddRatingScale": "Add rating scale",
     "UseAsTemplate": "Use as template",
-    "SetAssigneeFirst": "Set assignee before choosing KRA"
+    "SetAssigneeFirst": "Set assignee before choosing KRA",
+    "UnnamedProgress": "(Unnamed)"
   },
   "status": {}
 }

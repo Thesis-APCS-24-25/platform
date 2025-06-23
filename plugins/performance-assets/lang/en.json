@@ -1,8 +1,14 @@
 {
   "string": {
+    "StartDate": "Start Date",
+    "Progress": "Progress",
     "LeaveComment": "Leave a comment",
     "ReviewSubmitted": "Review Submitted",
     "EmployeeKRA": "Employee KRA",
+    "SetProgress": "Set Progress",
+    "AddProgress": "Add Progress",
+    "RemoveProgress": "Remove Progress",
+    "AddProgressNamePlaceholder": "(Optional) Add Progress Name\u2026",
     "CannotStartReviewSession": "Cannoy start review session",
     "StartReviewSessionNotAllKRAApproved": "There are some KRAs that are not approved yet. Please approve all KRAs before starting the review session.",
     "NeedChanges": "Need Changes",
@@ -95,6 +101,8 @@
     "PerformanceReport": "Report",
     "EmployeeScore": "Score",
     "ConcludeReviewSessionConfirm": "Make sure the Review session's End date is met.",
-    "RemainingWeight": "Remaining"
+    "RemainingWeight": "Remaining",
+    "PassedDays": "{days} Days Passed",
+    "RemainingDays": "{days} Days Remaining"
   }
 }

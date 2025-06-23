@@ -64,20 +64,6 @@ export function definePresenters (builder: Builder): void {
   })
 
   //
-  // Kpi Report
-  //
-  builder.mixin(kra.class.Report, core.class.Class, view.mixin.ObjectPresenter, {
-    presenter: kra.component.Report
-  })
-
-  //
-  // Unit
-  //
-  builder.mixin(kra.class.Unit, core.class.Class, view.mixin.ObjectPresenter, {
-    presenter: kra.component.UnitPresenter
-  })
-
-  //
   // Type Issue Priority
   //
   builder.mixin(kra.class.TypeIssuePriority, core.class.Class, view.mixin.ObjectPresenter, {
@@ -122,31 +108,5 @@ export function definePresenters (builder: Builder): void {
     kra.class.TypeRemainingTime,
     kra.component.TimePresenter,
     kra.component.EstimationValueEditor
-  )
-
-  classPresenter(
-    builder,
-    kra.class.Goal,
-    kra.component.GoalPresenter
-  )
-
-  builder.mixin(kra.class.Goal, core.class.Class, view.mixin.ObjectPresenter, {
-    presenter: kra.component.GoalObjectPresenter
-  })
-
-  builder.mixin(kra.class.RatingScale, core.class.Class, view.mixin.ObjectPresenter, {
-    presenter: kra.component.RatingScaleObjectPresenter
-  })
-
-  classPresenter(builder, kra.class.Kpi, kra.component.KpiPresenter, kra.component.KpiEditor)
-  builder.mixin(kra.class.Kpi, core.class.Class, view.mixin.ObjectPresenter, {
-    presenter: kra.component.KpiObjectPresenter
-  })
-
-  classPresenter(
-    builder,
-    kra.class.RatingScale,
-    kra.component.RatingScalePresenter,
-    kra.component.RatingScaleEditor
   )
 }

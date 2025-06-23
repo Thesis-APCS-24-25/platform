@@ -9,7 +9,7 @@ import task from '@hcengineering/task'
 import { type Status, type Ref, type StatusCategory } from '@hcengineering/core'
 import core from '@hcengineering/model-core'
 import workbench, { type Application } from '@hcengineering/model-workbench'
-import view from '@hcengineering/model-view'
+import view, { classPresenter } from '@hcengineering/model-view'
 import {
   DOMAIN_PERFORMANCE,
   TDefaultKRAData,
@@ -23,13 +23,19 @@ import {
   TProgressPresenter,
   TPerformanceReview,
   TActionItemFactory,
-  TTypeKRAStatus
+  TTypeKRAStatus,
+  TProgress,
+  TProgressReport,
+  TPTask,
+  TUnit,
+  TKpi
 } from './types'
 import { defineViewlets } from './viewlets'
 
 export { performanceId } from '@hcengineering/performance'
 export { performance as default }
 export { performanceOperation } from './migration'
+export { TPTask }
 
 function defineTeam (builder: Builder): void {
   builder.mixin(kraTeam.class.Team, core.class.Class, view.mixin.SpacePresenter, {
@@ -37,9 +43,29 @@ function defineTeam (builder: Builder): void {
   })
 }
 
-function defineReviewSession (builder: Builder): void {
-  builder.createModel(TReviewSession, TDefaultReviewSessionData, TTypeReviewSessionStatus)
+function defineProgress (builder: Builder): void {
+  //
+  // Unit
+  //
+  builder.mixin(performance.class.Unit, core.class.Class, view.mixin.ObjectPresenter, {
+    presenter: performance.component.UnitPresenter
+  })
 
+  classPresenter(builder, performance.class.Progress, performance.component.ProgressPresenter)
+
+  classPresenter(
+    builder,
+    performance.class.Progress,
+    performance.component.ProgressPresenter,
+    performance.component.ProgressEditor
+  )
+
+  builder.mixin(performance.class.Progress, core.class.Class, view.mixin.ObjectPresenter, {
+    presenter: performance.component.ProgressObjectPresenter
+  })
+}
+
+function defineReviewSession (builder: Builder): void {
   builder.mixin(performance.class.ReviewSession, core.class.Class, view.mixin.SpacePresenter, {
     presenter: performance.component.ReviewSessionSpacePresenter
   })
@@ -81,12 +107,18 @@ function defineReviewSession (builder: Builder): void {
     configOptions: {
       hiddenKeys: ['modifiedOn', 'modifiedBy', 'createdOn', 'createdBy', 'type', 'private', 'owners', 'autojoin']
     },
-    config: ['name', 'reviewSessionStart', 'reviewSessionEnd', 'members', {
-      key: 'status',
-      props: {
-        readonly: true
+    config: [
+      'name',
+      'reviewSessionStart',
+      'reviewSessionEnd',
+      'members',
+      {
+        key: 'status',
+        props: {
+          readonly: true
+        }
       }
-    }],
+    ],
     viewOptions: {
       groupBy: [],
       orderBy: [],
@@ -121,8 +153,6 @@ function defineReviewSession (builder: Builder): void {
 }
 
 function defineKRA (builder: Builder): void {
-  builder.createModel(TKRA, TEmployeeKRA, TDefaultKRAData, TActionItemFactory)
-
   builder.mixin(performance.class.TypeKRAStatus, core.class.Class, view.mixin.AttributePresenter, {
     presenter: performance.component.KRAStatusPresenter
   })
@@ -215,8 +245,6 @@ function defineKRA (builder: Builder): void {
 }
 
 function defineReport (builder: Builder): void {
-  builder.createModel(TPerformanceReport, TPerformanceReview)
-
   builder.mixin(performance.class.PerformanceReport, core.class.Class, view.mixin.ObjectPresenter, {
     presenter: performance.component.ReportPresenter
   })
@@ -374,17 +402,36 @@ function defineActivity (builder: Builder): void {
 }
 
 export function createModel (builder: Builder): void {
-  builder.createModel(TTypeKRAStatus)
-  builder.createModel(TMeasureProgress)
-  builder.createModel(TProgressPresenter)
+  builder.createModel(
+    TProgress,
+    TKpi,
+    TProgressReport,
+    TPTask,
+    TUnit,
+    TTypeKRAStatus,
+    TPerformanceReport,
+    TPerformanceReview,
+    TKRA,
+    TEmployeeKRA,
+    TDefaultKRAData,
+    TActionItemFactory,
+    TTypeKRAStatus,
+    TReviewSession,
+    TDefaultReviewSessionData,
+    TTypeReviewSessionStatus
+  )
   defineTeam(builder)
   defineReviewSession(builder)
+  defineProgress(builder)
   defineKRA(builder)
-  defineReport(builder)
   defineActivity(builder)
   defineViewlets(builder)
 
   defineApplication(builder)
+
+  builder.mixin(performance.class.Unit, core.class.Class, view.mixin.ObjectFactory, {
+    component: performance.component.AddUnitPopup
+  })
 
   builder.createDoc(core.class.DomainIndexConfiguration, core.space.Model, {
     domain: DOMAIN_PERFORMANCE,

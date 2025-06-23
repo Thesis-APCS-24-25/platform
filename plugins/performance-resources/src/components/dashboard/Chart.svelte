@@ -75,7 +75,7 @@
 
   $: if (kraRefs !== undefined) {
     taskQ.query(
-      performance.mixin.WithKRA,
+      performance.class.PTask,
       {
         kra: { $in: kraRefs },
         createdOn: {

@@ -6,6 +6,7 @@
 
   export let value: Ref<KRA> | undefined = undefined
   export let docQuery: DocumentQuery<KRA> = { }
+  export let allowDeselect: boolean = false
 </script>
 
 <ObjectPopup
@@ -14,6 +15,7 @@
   width="large"
   {docQuery}
   closeAfterSelect
+  {allowDeselect}
   selected={value}
   _class={performance.class.KRA}
   searchMode="spotlight"

@@ -53,13 +53,22 @@ import ReviewPresenter from './components/report/ReviewPresenter.svelte'
 import EmployeeKRATotalWeightStat from './components/kra/EmployeeKRATotalWeightStat.svelte'
 import { showEmptyGroups } from '@hcengineering/view-resources'
 import KRAStatusPresenter from './components/kra/KRAStatusPresenter.svelte'
+import ProgressPresenter from './components/progress/ProgressPresenter.svelte'
+import AddProgressPopup from './components/progress/AddProgressPopup.svelte'
+import AddUnitPopup from './components/progress/unit/AddUnitPopup.svelte'
+import KRABox from './components/kra/KRABox.svelte'
+import UnitPresenter from './components/progress/unit/UnitPresenter.svelte'
+import ProgressObjectPresenter from './components/progress/ProgressObjectPresenter.svelte'
 
-export { KRAPresenter, KRAEditor }
+export { KRAPresenter, KRAEditor, AddProgressPopup, KRABox }
 
 export default async (): Promise<Resources> => ({
   component: {
+    ProgressObjectPresenter,
+    UnitPresenter,
     EmployeeKRATotalWeightStat,
     MyKRAs,
+    ProgressPresenter,
     KRAAssigneesEditor,
     KRAAssigneesPresenter,
     CreateReviewSession,
@@ -84,6 +93,7 @@ export default async (): Promise<Resources> => ({
     PerformanceApplication: Performance,
     KRAStatistics,
     KRAStatusPresenter,
+    AddUnitPopup,
     ReviewPresenter
   },
   function: {

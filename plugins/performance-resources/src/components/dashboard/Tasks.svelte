@@ -84,7 +84,7 @@
           groupBy: ['assignee', 'kra'],
           orderBy: ['assignee', SortingOrder.Ascending]
         }}
-        _class={performance.mixin.WithKRA}
+        _class={ performance.class.PTask}
       />
     </div>
   </Scroller>

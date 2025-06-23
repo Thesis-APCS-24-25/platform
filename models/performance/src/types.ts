@@ -6,6 +6,7 @@ import {
   Mixin,
   Model,
   Prop,
+  TypeBoolean,
   TypeDate,
   TypeNumber,
   TypeRef,
@@ -14,7 +15,7 @@ import {
 } from '@hcengineering/model'
 
 import performance from './plugin'
-import core, { TClass, TDoc, TType } from '@hcengineering/model-core'
+import core, { TAttachedDoc, TClass, TDoc, TType } from '@hcengineering/model-core'
 import type {
   ActionItemFactory,
   EmployeeKRA,
@@ -26,7 +27,12 @@ import type {
   ProgressPresenter,
   ReviewSession,
   ReviewSessionStatus,
-  WithKRA
+  Unit,
+  PTask,
+  Progress,
+  ProgressReport,
+  WithKRA,
+  Kpi
 } from '@hcengineering/performance'
 import { TProject, TTask } from '@hcengineering/model-task'
 import task, { type Task } from '@hcengineering/task'
@@ -36,18 +42,93 @@ import {
   type Domain,
   IndexKind,
   Ref,
+  type RelatedDocument,
   type Role,
   type RolesAssignment,
   type Timestamp,
   type Type
 } from '@hcengineering/core'
-import contact, { type PersonAccount } from '@hcengineering/contact'
+import contact, { type Person, type PersonAccount } from '@hcengineering/contact'
 import { type Resource } from '@hcengineering/platform'
 import { type AnyComponent } from '@hcengineering/ui'
 import kraTeam, { type Member } from '@hcengineering/kra-team'
 import chunter from '@hcengineering/model-chunter'
 
 export const DOMAIN_PERFORMANCE = 'performance' as Domain
+
+@Model(performance.class.Unit, core.class.Doc, DOMAIN_PERFORMANCE)
+export class TUnit extends TDoc implements Unit {
+  @Prop(TypeString(), performance.string.Symbol)
+    symbol!: string
+
+  @Prop(TypeBoolean(), performance.string.Unit)
+    prefix!: boolean
+
+  @Prop(TypeString(), performance.string.Name)
+    name!: string
+}
+
+@Model(performance.class.PTask, task.class.Task)
+export class TPTask extends TTask implements PTask {
+  @Prop(TypeString(), performance.string.Title)
+  @Index(IndexKind.FullText)
+    title!: string
+
+  @Prop(TypeDate(), performance.string.StartDate)
+    startDate!: number | null
+
+  @Prop(TypeRef(performance.class.KRA), performance.string.KRA)
+    kra?: Ref<KRA> | undefined
+
+  @Prop(TypeRef(performance.class.Progress), performance.string.Progress)
+    progress?: Ref<Progress> | undefined
+
+  @Prop(ArrOf(TypeRef(core.class.TypeRelatedDocument)), performance.string.BlockedBy)
+    blockedBy!: RelatedDocument[]
+
+  @Prop(ArrOf(TypeRef(core.class.TypeRelatedDocument)), performance.string.RelatedTo)
+  @Index(IndexKind.Indexed)
+    relations!: RelatedDocument[]
+}
+
+@Model(performance.class.Progress, core.class.Doc, DOMAIN_PERFORMANCE)
+export class TProgress extends TDoc implements Progress {
+  @Prop(TypeString(), performance.string.Name)
+    name!: string
+
+  @Prop(TypeString(), performance.string.Description)
+    description!: string
+
+  @Prop(TypeNumber(), performance.string.Value)
+    reports!: number
+
+  @Prop(TypeRef(performance.class.Unit), performance.string.Unit)
+    unit!: Ref<Unit>
+
+  @Prop(TypeNumber(), performance.string.Progress)
+    progress!: number
+
+  @Prop(TypeNumber(), performance.string.Target)
+    target!: number
+}
+
+@Model(performance.class.ProgressReport, core.class.AttachedDoc, DOMAIN_PERFORMANCE)
+export class TProgressReport extends TAttachedDoc implements ProgressReport {
+  @Prop(TypeRef(performance.class.Progress), performance.string.Goal)
+  declare attachedTo: Ref<Progress>
+
+  @Prop(TypeDate(), performance.string.Date)
+    date!: Timestamp
+
+  @Prop(TypeNumber(), performance.string.Value)
+    value!: number
+
+  @Prop(TypeRef(contact.mixin.Employee), contact.string.Employee)
+    reportBy!: Ref<Person>
+
+  @Prop(TypeString(), performance.string.Comment)
+    note!: string
+}
 
 export function TypeReviewSessionStatus (): Type<ReviewSessionStatus> {
   return { _class: performance.class.TypeReviewSessionStatus, label: performance.string.ReviewSessionStatus }
@@ -90,7 +171,7 @@ export class TReviewSession extends TProject implements ReviewSession {
     identifier!: string
 }
 
-@Model(performance.class.KRA, task.class.Task, DOMAIN_PERFORMANCE)
+@Model(performance.class.KRA, task.class.Task)
 export class TKRA extends TTask implements KRA {
   @Prop(TypeString(), performance.string.Title)
   @Index(IndexKind.FullText)
@@ -138,8 +219,8 @@ export class TPerformanceReport extends TDoc implements PerformanceReport {
   @Prop(TypeRef(performance.class.ReviewSession), performance.string.ReviewSession)
     reviewSession!: Ref<ReviewSession>
 
-  @Prop(ArrOf(TypeRef(performance.mixin.WithKRA)), performance.string.Tasks)
-    tasks?: Arr<Ref<WithKRA>>
+  @Prop(ArrOf(TypeRef(performance.class.PTask)), performance.string.Tasks)
+    tasks?: Arr<Ref<PTask>>
 
   @Prop(TypeNumber(), performance.string.ScorePreview)
     scorePreview?: number
@@ -164,3 +245,6 @@ export class TDefaultReviewSessionData extends TReviewSession implements RolesAs
 
 @Mixin(performance.mixin.DefaultKRAData, performance.class.KRA)
 export class TDefaultKRAData extends TKRA { }
+
+@Model(performance.class.Kpi, performance.class.Progress)
+export class TKpi extends TProgress implements Kpi {}

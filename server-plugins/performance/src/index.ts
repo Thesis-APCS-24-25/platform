@@ -30,6 +30,8 @@ export default plugin(serverPerformanceId, {
     OnTeamMemberUpdate: '' as Resource<TriggerFunc>,
     OnCreateReport: '' as Resource<TriggerFunc>,
     OnReviewSessionConclusion: '' as Resource<TriggerFunc>,
-    OnCreateReviewSession: '' as Resource<TriggerFunc>
+    OnCreateReviewSession: '' as Resource<TriggerFunc>,
+    OnProgressUpdate: '' as Resource<TriggerFunc>,
+    OnProgressRemove: '' as Resource<TriggerFunc>
   }
 })

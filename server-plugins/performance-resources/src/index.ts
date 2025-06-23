@@ -19,6 +19,7 @@ import performance, { PerformanceReport, ReviewSession, ReviewSessionStatus } fr
 import kraTeam, { Team } from '@hcengineering/kra-team'
 import { PersonAccount } from '@hcengineering/contact'
 import { addUpdates, prepareReport } from './utils'
+import { OnProgressRemove, OnProgressUpdate } from './progress'
 
 /**
  * @public
@@ -117,6 +118,8 @@ export default async () => ({
     OnTeamMemberUpdate,
     OnCreateReport,
     OnReviewSessionConclusion,
-    OnCreateReviewSession
+    OnCreateReviewSession,
+    OnProgressUpdate,
+    OnProgressRemove
   }
 })

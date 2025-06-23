@@ -1,12 +1,9 @@
 <script lang="ts">
-  import { Class, Doc, Ref, Space } from '@hcengineering/core'
-  import { getClient, hasResource } from '@hcengineering/presentation'
-  import performance, { ProgressPresenter } from '@hcengineering/performance'
-  import { Component } from '@hcengineering/ui'
-  import { Task } from '@hcengineering/task'
+  import { Class, Doc, Ref, WithLookup } from '@hcengineering/core'
+  import { PTask } from '@hcengineering/performance'
+  import ProgressPresenter from '../progress/ProgressPresenter.svelte'
 
-  export let value: Doc<Space> | undefined = undefined
-  export let _class: Ref<Class<Doc>> | undefined = value?._class
+  export let value: WithLookup<PTask> | undefined = undefined
   export let props: Record<string, any> = {}
   export let inline: boolean = false
   export let accent: boolean = false
@@ -16,32 +13,19 @@
   export let disabled: boolean = false
   export let shouldShowName: boolean = true
   export let shrink: boolean = false
-
-  const client = getClient()
-  const hierarchy = client.getHierarchy()
-  $: presenterMixin =
-    _class !== undefined
-      ? hierarchy.classHierarchyMixin<Class<Task>, ProgressPresenter>(_class, performance.mixin.ProgressPresenter)
-      : undefined
 </script>
 
-{#if presenterMixin}
-  <Component
-    is={presenterMixin.presenter}
-    props={{
-      _class,
-      value,
-      inline,
-      accent,
-      colorInherit,
-      shouldShowAvatar,
-      noUnderline,
-      disabled,
-      readonly: disabled,
-      editable: !disabled,
-      shouldShowName,
-      shrink,
-      ...props
-    }}
+{#if value}
+  <ProgressPresenter
+    {value}
+    {props}
+    {inline}
+    {accent}
+    {colorInherit}
+    {shouldShowAvatar}
+    {noUnderline}
+    {disabled}
+    {shouldShowName}
+    {shrink}
   />
 {/if}

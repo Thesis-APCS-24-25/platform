@@ -72,7 +72,7 @@
     <svelte:fragment slot="title">
       <ViewletSelector
         bind:viewlet
-        viewletQuery={{ attachTo: performance.mixin.WithKRA }}
+        viewletQuery={{ attachTo: performance.class.PTask }}
       />
       <ViewletSettingButton bind:viewOptions bind:viewlet />
       {#if person !== undefined}
@@ -95,7 +95,7 @@
         </span>
       {/if}
       <ViewletContentView
-        _class={performance.mixin.WithKRA}
+        _class={performance.class.PTask}
         space={undefined}
         {viewlet}
         {viewOptions}

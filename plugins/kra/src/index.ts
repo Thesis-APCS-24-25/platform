@@ -38,7 +38,6 @@ import { ToDo } from '@hcengineering/time'
 import {
   ProjectType,
   ProjectTypeDescriptor,
-  Task,
   Project as TaskProject,
   TaskStatusFactory,
   TaskType,
@@ -46,61 +45,9 @@ import {
 } from '@hcengineering/task'
 import { AnyComponent, ComponentExtensionId, Location, ResolvedLocation } from '@hcengineering/ui'
 import { Action, ActionCategory, IconProps } from '@hcengineering/view'
-import { KRA } from '@hcengineering/performance'
+import { KRA, Progress, PTask } from '@hcengineering/performance'
 
 export * from './analytics'
-
-export interface Goal extends Doc {
-  name: string
-  description: string
-  reports: CollectionSize<Report>
-  progress?: number
-  unit: Ref<Unit>
-  isTemplate?: boolean
-}
-
-export interface Report extends AttachedDoc {
-  attachedTo: Ref<Goal>
-  attachedToClass: Ref<Class<Goal>>
-  date: Timestamp | null
-  employee: Ref<Employee> | null
-  value: number
-  note: string
-}
-
-export interface Kpi extends Goal {
-  target: number
-}
-
-export interface Unit extends Doc {
-  name: string
-  symbol: string
-  prefix: boolean
-}
-
-export interface RatingScale extends Goal {
-  unit: Ref<Unit>
-}
-
-/**
- * @public
- *
- * Extensions to create a Goal reporter for Goal subclass.
- */
-export interface GoalReporter extends Class<Goal> {
-  reporter: AnyComponent
-}
-
-export type GoalAggregateFunction = (reports: Report[]) => number
-
-/**
- * @public
- *
- * Tell how to calculate the goal value.
- */
-export interface ReportAggregator extends Class<Goal> {
-  aggregator: Resource<GoalAggregateFunction>
-}
 
 /**
  * @public
@@ -204,7 +151,7 @@ export enum IssuesDateModificationPeriod {
 /**
  * @public
  */
-export interface Issue extends Task {
+export interface Issue extends PTask {
   attachedTo: Ref<Issue>
   title: string
   description: MarkupBlobRef | null
@@ -240,8 +187,6 @@ export interface Issue extends Task {
   }
 
   todos?: CollectionSize<ToDo>
-
-  goal?: Ref<Goal>
 }
 
 /**
@@ -270,8 +215,9 @@ export interface IssueDraft {
     // Child id in template
     childId?: string
   }
-  goal?: Ref<Goal>
-  kra: Ref<KRA>
+  startDate: Timestamp | null
+  progress?: Ref<Progress>
+  kra?: Ref<KRA>
 }
 
 /**
@@ -370,11 +316,6 @@ export * from './analytics'
 
 const pluginState = plugin(kraId, {
   class: {
-    Report: '' as Ref<Class<Report>>,
-    Unit: '' as Ref<Class<Unit>>,
-    Goal: '' as Ref<Class<Goal>>,
-    Kpi: '' as Ref<Class<Kpi>>,
-    RatingScale: '' as Ref<Class<RatingScale>>,
     Project: '' as Ref<Class<Project>>,
     Issue: '' as Ref<Class<Issue>>,
     IssueTemplate: '' as Ref<Class<IssueTemplate>>,
@@ -390,14 +331,12 @@ const pluginState = plugin(kraId, {
   mixin: {
     ClassicProjectTypeData: '' as Ref<Mixin<Project>>,
     IssueTypeData: '' as Ref<Mixin<Issue>>,
-    ReportAggregator: '' as Ref<Mixin<ReportAggregator>>
   },
   ids: {
     NoParent: '' as Ref<Issue>,
     IssueDraft: '',
     IssueDraftChild: '',
     ClassingProjectType: '' as Ref<ProjectType>,
-    RatingScaleUnit: '' as Ref<Unit>
   },
   status: {
     Backlog: '' as Ref<Status>,

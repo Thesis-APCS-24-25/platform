@@ -4,20 +4,21 @@
   import { createQuery } from '@hcengineering/presentation'
   import performance from '../../plugin'
   import { PersonAccount } from '@hcengineering/contact'
-  import { KRA, WithKRA } from '@hcengineering/performance'
+  import { KRA, PTask } from '@hcengineering/performance'
   import { List, ListSelectionProvider } from '@hcengineering/view-resources'
-  import ProgressPresenter from './ProgressPresenter.svelte'
   import view from '@hcengineering/view'
   import AssignTaskPopup from './AssignTaskPopup.svelte'
   import { personIdByAccountId } from '@hcengineering/contact-resources'
+  import ProgressPresenter from '../progress/ProgressPresenter.svelte'
+  import ProgressSummaryPresenter from '../progress/ProgressSummaryPresenter.svelte'
 
   export let currentSpace: Ref<Space>
 
   const userId = getCurrentAccount()._id as Ref<PersonAccount>
   const me = $personIdByAccountId.get(getCurrentAccount()._id as Ref<PersonAccount>)
   const actionItemQuery = createQuery()
-  let tasks: WithKRA[] = []
-  $: actionItemQuery.query(performance.mixin.WithKRA, {}, (res) => {
+  let tasks: PTask[] = []
+  $: actionItemQuery.query(performance.class.PTask, {}, (res) => {
     if (res !== undefined) {
       tasks = res
     }
@@ -36,6 +37,7 @@
       if (res !== undefined) {
         const kraSet = new Set(res.map((item) => item.kra))
         assignedKRAs = Array.from(kraSet)
+        console.log('assignedKRAs', assignedKRAs)
       }
     }
   )
@@ -59,9 +61,15 @@
         createItemDialogProps={{
           assignee: me
         }}
-        _class={performance.mixin.WithKRA}
+        _class={performance.class.PTask}
         config={[
-          '',
+          {
+            key: '',
+            displayProps: {
+              fixed: 'right',
+              key: 'id'
+            }
+          },
           {
             key: 'title'
           },
@@ -71,10 +79,7 @@
           },
           {
             key: '',
-            presenter: ProgressPresenter,
-            props: {
-              readonly: true
-            }
+            presenter: ProgressSummaryPresenter
           }
         ]}
         configurations={undefined}

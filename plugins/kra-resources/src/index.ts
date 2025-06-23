@@ -97,7 +97,6 @@ import EditIssueTemplate from './components/templates/EditIssueTemplate.svelte'
 import TemplateEstimationEditor from './components/templates/EstimationEditor.svelte'
 import {
   activeProjects,
-  calculateCompletionLevel,
   getAllPriority,
   getIssueChatTitle,
   getIssueStatusCategories,
@@ -367,14 +366,7 @@ export default async (): Promise<Resources> => ({
     GetVisibleFilters: getVisibleFilters,
     IssueChatTitleProvider: getIssueChatTitle,
     IsProjectJoined: async (project: Project) => project.members.includes(getCurrentAccount()._id),
-    GetIssueStatusCategories: getIssueStatusCategories,
-    CalculateGoal: calculateCompletionLevel,
-    CanAddGoal: async (issue: Issue | undefined): Promise<boolean> => {
-      console.debug('CanAddGoal', issue)
-      if (issue === undefined) return false
-      if (issue.goal != null) return false
-      return true
-    }
+    GetIssueStatusCategories: getIssueStatusCategories
   },
   actionImpl: {
     Move: move,

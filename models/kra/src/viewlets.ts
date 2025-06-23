@@ -143,8 +143,8 @@ export function issueConfig (
     },
     {
       key: '',
-      label: kra.string.Goal,
-      presenter: kra.component.GoalPresenter,
+      label: performance.string.Progress,
+      presenter: performance.component.ProgressPresenter,
       props: { kind: 'list', size: 'small' },
       displayProps: {
         fixed: 'right',
@@ -384,122 +384,5 @@ export function defineViewlets (builder: Builder): void {
       }
     },
     kra.viewlet.ProjectList
-  )
-
-  builder.createDoc(
-    view.class.Viewlet,
-    core.space.Model,
-    {
-      attachTo: performance.mixin.WithKRA,
-      descriptor: performance.viewlet.TaskList,
-      configOptions: {
-        strict: true,
-        hiddenKeys: [
-          'title',
-          'blockedBy',
-          'relations',
-          'description',
-          'number',
-          'priority',
-          'estimation',
-          'status',
-          'dueDate',
-          'attachedTo',
-          'createdBy',
-          'modifiedBy',
-          'goal',
-          'kra'
-        ]
-      },
-      config: [
-        {
-          key: '',
-          label: kra.string.Priority,
-          presenter: kra.component.PriorityEditor,
-          props: { type: 'priority', kind: 'list', size: 'small' },
-          displayProps: { key: 'priority' }
-        },
-        {
-          key: '',
-          label: kra.string.Identifier,
-          presenter: kra.component.IssuePresenter,
-          displayProps: { key: 'issue', fixed: 'left' }
-        },
-        {
-          key: '',
-          label: kra.string.Status,
-          presenter: kra.component.StatusEditor,
-          props: { kind: 'list', size: 'small', justify: 'center' },
-          displayProps: { key: 'status' }
-        },
-        {
-          key: '',
-          label: kra.string.Title,
-          presenter: kra.component.TitlePresenter,
-          props: {},
-          displayProps: { key: 'title' }
-        },
-        {
-          key: '',
-          label: kra.string.SubIssues,
-          presenter: kra.component.SubIssuesSelector,
-          props: {}
-        },
-        { key: 'comments', displayProps: { key: 'comments', suffix: true } },
-        { key: 'attachments', displayProps: { key: 'attachments', suffix: true } },
-        { key: '', displayProps: { grow: true } },
-        {
-          key: 'labels',
-          presenter: tags.component.LabelsPresenter,
-          displayProps: { compression: true },
-          props: { kind: 'list', full: false }
-        },
-        {
-          key: '',
-          label: kra.string.Extensions,
-          presenter: kra.component.IssueExtra,
-          displayProps: { compression: true },
-          props: { kind: 'list', full: false }
-        },
-        {
-          key: '',
-          label: kra.string.DueDate,
-          presenter: kra.component.DueDatePresenter,
-          displayProps: { key: 'dueDate', compression: true },
-          props: { kind: 'list' }
-        },
-        {
-          key: '',
-          label: kra.string.Goal,
-          presenter: kra.component.GoalPresenter,
-          props: { kind: 'list', size: 'small' },
-          displayProps: {
-            key: 'goal',
-            fixed: 'right',
-            optional: true
-          }
-        },
-        {
-          key: 'modifiedOn',
-          presenter: kra.component.ModificationDatePresenter,
-          displayProps: { key: 'modified', fixed: 'left', dividerBefore: true }
-        }
-      ],
-      viewOptions: {
-        groupDepth: 1,
-        groupBy: ['kra'],
-        orderBy: [
-          ['modifiedOn', SortingOrder.Descending],
-          ['status', SortingOrder.Ascending],
-          ['kind', SortingOrder.Ascending],
-          ['priority', SortingOrder.Ascending],
-          ['createdOn', SortingOrder.Descending],
-          ['dueDate', SortingOrder.Ascending],
-          ['rank', SortingOrder.Ascending]
-        ],
-        other: []
-      }
-    },
-    performance.viewlet.WithKRAList
   )
 }

@@ -7,7 +7,6 @@ import core, {
   type Status,
   type Ref,
   type TxOperations,
-  type Class,
   type Attribute,
   type Doc,
   type Client,
@@ -15,16 +14,14 @@ import core, {
   type ObjQueryType
 } from '@hcengineering/core'
 import {
-  type MeasureProgress,
   type KRA,
   type EmployeeKRA,
-  type WithKRA
+  type WithKRA,
+  type PTask
 } from '@hcengineering/performance'
 import performance from '../plugin'
-import task, { makeRank, type Task } from '@hcengineering/task'
+import task, { makeRank } from '@hcengineering/task'
 import { getClient } from '@hcengineering/presentation'
-import hcTask from '@hcengineering/task'
-import { getResource } from '@hcengineering/platform'
 import type { Member } from '@hcengineering/kra-team'
 
 export async function getFirstRank (
@@ -83,27 +80,24 @@ export async function createKRA (
   )
 }
 
-export async function calculateCompletionLevel (task: Ref<Task> | Task): Promise<number | undefined> {
+export async function calculateCompletionLevel (task: Ref<PTask> | PTask): Promise<number | undefined> {
   const client = getClient()
-  const hierarchy = client.getHierarchy()
-  async function calculate (task: Task): Promise<number | undefined> {
-    const measure = hierarchy.classHierarchyMixin<Class<Task>, MeasureProgress>(
-      task._class,
-      performance.mixin.MeasureProgress
-    )
-    if (measure !== undefined) {
-      const fn = await getResource(measure.calculate)
-      const d = await fn?.(task._id)
-      return d
+  async function calculate (task: PTask): Promise<number | undefined> {
+    if (task.progress !== undefined) {
+      const p = await client.findOne(performance.class.Progress, { _id: task.progress })
+      if (p === undefined) {
+        return undefined
+      }
+      const rs = (p.progress ?? 0) / p.target
+      return isFinite(rs) ? rs : undefined
     }
-    return undefined
   }
 
   if (typeof task === 'object') {
     const d = await calculate(task)
     return d
   } else {
-    const _task = await client.findOne(hcTask.class.Task, { _id: task })
+    const _task = await client.findOne(performance.class.PTask, { _id: task })
     if (_task !== undefined) {
       const d = await calculate(_task)
       return d
