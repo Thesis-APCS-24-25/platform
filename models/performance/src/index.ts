@@ -17,10 +17,8 @@ import {
   TEmployeeKRA,
   TKRA,
   TReviewSession,
-  TMeasureProgress,
   TPerformanceReport,
   TTypeReviewSessionStatus,
-  TProgressPresenter,
   TPerformanceReview,
   TActionItemFactory,
   TTypeKRAStatus,
@@ -426,6 +424,7 @@ export function createModel (builder: Builder): void {
   defineKRA(builder)
   defineActivity(builder)
   defineViewlets(builder)
+  defineReport(builder)
 
   defineApplication(builder)
 

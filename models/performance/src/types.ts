@@ -31,7 +31,6 @@ import type {
   PTask,
   Progress,
   ProgressReport,
-  WithKRA,
   Kpi
 } from '@hcengineering/performance'
 import { TProject, TTask } from '@hcengineering/model-task'
