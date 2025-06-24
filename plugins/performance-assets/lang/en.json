@@ -79,7 +79,7 @@
     "ConcludedReviewSessions": "Concluded Review Sessions",
     "NotDraftingCannotCreateKRA": "You can only create KRA when the review session is in Drafting status",
     "StartReviewSession": "Start Review Session",
-    "StartReviewSessionConfirm": "Are you sure you want to start this review session? Doing this will set all other review sessions to Drafting!",
+    "StartReviewSessionConfirm": "Are you sure you want to start this review session? There can only be one Active Review Session. Doing this will set all other review sessions to Drafting!",
     "WeightWarningPopupTitle": "Weight assigned to the following members is not 100%: ",
     "KRACompletionLevel": "% KRA Completed",
     "ReviewSessionStartDetail": "Start date of the Review Session",
@@ -100,7 +100,7 @@
     "ResetFilters": "Reset filters",
     "PerformanceReport": "Report",
     "EmployeeScore": "Score",
-    "ConcludeReviewSessionConfirm": "Make sure the Review session's End date is met.",
+    "ConcludeReviewSessionConfirm": "This will create Reports for each employee consisting of tasks that have the employee's corresponding KRAs and/or their time overlap with the review session's time period.",
     "RemainingWeight": "Remaining",
     "PassedDays": "{days} Days Passed",
     "RemainingDays": "{days} Days Remaining",
@@ -111,6 +111,6 @@
     "KRAWeightFull": "Total weight is full",
     "ScorePreview": "Score",
     "UpdateReport": "Update Report",
-    "UpdateReportConfirm": "Are you sure you want to update this report?"
+    "UpdateReportConfirm": "Are you sure you want to update this report? This will add new tasks to the report if they have the corresponding KRAs or if they overlap with the Review Session's period."
   }
 }
