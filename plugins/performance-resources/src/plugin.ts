@@ -133,7 +133,9 @@ export default mergeIds(performanceId, performance, {
     EmployeeScore: '' as IntlString,
     RemainingWeight: '' as IntlString,
     TotalWeightOverflow: '' as IntlString,
-    WeightIsZero: '' as IntlString
+    WeightIsZero: '' as IntlString,
+    UpdateReport: '' as IntlString,
+    UpdateReportConfirm: '' as IntlString
   },
   category: {
     ReviewSessionType: '' as IntlString,
@@ -179,7 +181,8 @@ export default mergeIds(performanceId, performance, {
     ReviewPresenter: '' as AnyComponent,
     EmployeeKRATotalWeightStat: '' as AnyComponent,
     ReviewEditor: '' as AnyComponent,
-    AssignKraPopup: '' as AnyComponent
+    AssignKraPopup: '' as AnyComponent,
+    ScorePresenter: '' as AnyComponent
   },
   function: {
     IsReviewSessionOfCurrentTeam: '' as Resource<(space: Space) => Promise<boolean>>,

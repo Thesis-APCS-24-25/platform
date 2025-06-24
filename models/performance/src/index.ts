@@ -288,6 +288,11 @@ function defineReport (builder: Builder): void {
         key: '',
         presenter: performance.component.ReportPresenter,
         label: performance.string.Reviewee
+      },
+      {
+        key: '',
+        presenter: performance.component.ScorePresenter,
+        label: performance.string.ScorePreview
       }
     ],
     viewOptions: {

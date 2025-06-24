@@ -108,6 +108,9 @@
     "ApproveKRA": "Approve KRA",
     "WeightIsZero": "Cannot approve KRA when weight is zero.",
     "KRAWeightNotFullWarning": "Total weight is not 100%",
-    "KRAWeightFull": "Total weight is full"
+    "KRAWeightFull": "Total weight is full",
+    "ScorePreview": "Score",
+    "UpdateReport": "Update Report",
+    "UpdateReportConfirm": "Are you sure you want to update this report?"
   }
 }

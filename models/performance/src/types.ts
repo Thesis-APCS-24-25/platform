@@ -33,7 +33,7 @@ import type {
   ProgressReport,
   Kpi
 } from '@hcengineering/performance'
-import { TProject, TTask } from '@hcengineering/model-task'
+import modelTask, { TProject, TTask } from '@hcengineering/model-task'
 import task, { type Task } from '@hcengineering/task'
 import {
   Account,
@@ -74,9 +74,15 @@ export class TPTask extends TTask implements PTask {
     title!: string
 
   @Prop(TypeDate(), performance.string.StartDate)
+  @Index(IndexKind.Indexed)
     startDate!: number | null
 
+  @Prop(TypeDate(), task.string.DueDate, { editor: modelTask.component.DueDateEditor })
+  @Index(IndexKind.Indexed)
+  declare dueDate: Timestamp | null
+
   @Prop(TypeRef(performance.class.KRA), performance.string.KRA)
+  @Index(IndexKind.Indexed)
     kra?: Ref<KRA> | undefined
 
   @Prop(TypeRef(performance.class.Progress), performance.string.Progress)

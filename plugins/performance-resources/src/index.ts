@@ -62,6 +62,7 @@ import ProgressObjectPresenter from './components/progress/ProgressObjectPresent
 import AssignKraPopup from './components/kra/AssignKRAPopup.svelte'
 import { canApproveKRA } from './visibilityTester'
 import { approveKRA } from './actionImpl'
+import ScorePresenter from './components/report/ScorePresenter.svelte'
 
 export { KRAPresenter, KRAEditor, AddProgressPopup, KRABox }
 
@@ -101,7 +102,8 @@ export default async (): Promise<Resources> => ({
     KRAStatusPresenter,
     AddUnitPopup,
     ReviewPresenter,
-    AssignKraPopup
+    AssignKraPopup,
+    ScorePresenter
   },
   function: {
     GetAllKRAStates: async (
