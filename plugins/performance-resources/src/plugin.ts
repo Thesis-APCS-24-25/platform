@@ -13,11 +13,11 @@
 // limitations under the License.
 //
 
-import { type Space } from '@hcengineering/core'
+import { type Doc, type Ref, type Space } from '@hcengineering/core'
 import performance, { performanceId } from '@hcengineering/performance'
 import { type IntlString, mergeIds, type Resource } from '@hcengineering/platform'
 import { type AnyComponent } from '@hcengineering/ui'
-import { type ViewCategoryAction, type GetAllValuesFunc } from '@hcengineering/view'
+import { type ViewCategoryAction, type GetAllValuesFunc, type ActionCategory } from '@hcengineering/view'
 
 export default mergeIds(performanceId, performance, {
   string: {
@@ -131,10 +131,13 @@ export default mergeIds(performanceId, performance, {
     EndDateFilterDetail: '' as IntlString,
     ResetFilters: '' as IntlString,
     EmployeeScore: '' as IntlString,
-    RemainingWeight: '' as IntlString
+    RemainingWeight: '' as IntlString,
+    TotalWeightOverflow: '' as IntlString,
+    WeightIsZero: '' as IntlString
   },
   category: {
-    ReviewSessionType: '' as IntlString
+    ReviewSessionType: '' as IntlString,
+    Performance: '' as Ref<ActionCategory>
   },
   component: {
     AddUnitPopup: '' as AnyComponent,
@@ -175,7 +178,8 @@ export default mergeIds(performanceId, performance, {
     ReviewSessionStatusEditor: '' as AnyComponent,
     ReviewPresenter: '' as AnyComponent,
     EmployeeKRATotalWeightStat: '' as AnyComponent,
-    ReviewEditor: '' as AnyComponent
+    ReviewEditor: '' as AnyComponent,
+    AssignKraPopup: '' as AnyComponent
   },
   function: {
     IsReviewSessionOfCurrentTeam: '' as Resource<(space: Space) => Promise<boolean>>,
@@ -183,6 +187,7 @@ export default mergeIds(performanceId, performance, {
     IsInactiveReviewSessionOfCurrentTeam: '' as Resource<(space: Space) => Promise<boolean>>,
     GetAllKRAStates: '' as GetAllValuesFunc,
     ShowEmptyGroups: '' as ViewCategoryAction,
-    GetAllKRAs: '' as GetAllValuesFunc
+    GetAllKRAs: '' as GetAllValuesFunc,
+    CanApproveKRA: '' as Resource<(doc?: Doc | Doc[]) => Promise<boolean>>
   }
 })

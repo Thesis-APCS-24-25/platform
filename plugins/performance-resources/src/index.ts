@@ -59,10 +59,16 @@ import AddUnitPopup from './components/progress/unit/AddUnitPopup.svelte'
 import KRABox from './components/kra/KRABox.svelte'
 import UnitPresenter from './components/progress/unit/UnitPresenter.svelte'
 import ProgressObjectPresenter from './components/progress/ProgressObjectPresenter.svelte'
+import AssignKraPopup from './components/kra/AssignKRAPopup.svelte'
+import { canApproveKRA } from './visibilityTester'
+import { approveKRA } from './actionImpl'
 
 export { KRAPresenter, KRAEditor, AddProgressPopup, KRABox }
 
 export default async (): Promise<Resources> => ({
+  actionImpl: {
+    ApproveKRA: approveKRA
+  },
   component: {
     ProgressObjectPresenter,
     UnitPresenter,
@@ -94,7 +100,8 @@ export default async (): Promise<Resources> => ({
     KRAStatistics,
     KRAStatusPresenter,
     AddUnitPopup,
-    ReviewPresenter
+    ReviewPresenter,
+    AssignKraPopup
   },
   function: {
     GetAllKRAStates: async (
@@ -107,6 +114,7 @@ export default async (): Promise<Resources> => ({
     ShowEmptyGroups: showEmptyGroups,
     IsReviewSessionOfCurrentTeam,
     IsActiveReviewSessionOfCurrentTeam,
-    IsInactiveReviewSessionOfCurrentTeam
+    IsInactiveReviewSessionOfCurrentTeam,
+    CanApproveKRA: canApproveKRA
   }
 })

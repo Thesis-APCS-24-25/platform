@@ -103,6 +103,11 @@
     "ConcludeReviewSessionConfirm": "Make sure the Review session's End date is met.",
     "RemainingWeight": "Remaining",
     "PassedDays": "{days} Days Passed",
-    "RemainingDays": "{days} Days Remaining"
+    "RemainingDays": "{days} Days Remaining",
+    "TotalWeightOverflow": "Total Weight must be 100%",
+    "ApproveKRA": "Approve KRA",
+    "WeightIsZero": "Cannot approve KRA when weight is zero.",
+    "KRAWeightNotFullWarning": "Total weight is not 100%",
+    "KRAWeightFull": "Total weight is full"
   }
 }

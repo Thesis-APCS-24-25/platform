@@ -9,7 +9,7 @@ import task from '@hcengineering/task'
 import { type Status, type Ref, type StatusCategory } from '@hcengineering/core'
 import core from '@hcengineering/model-core'
 import workbench, { type Application } from '@hcengineering/model-workbench'
-import view, { classPresenter } from '@hcengineering/model-view'
+import view, { classPresenter, createAction } from '@hcengineering/model-view'
 import {
   DOMAIN_PERFORMANCE,
   TDefaultKRAData,
@@ -240,6 +240,31 @@ function defineKRA (builder: Builder): void {
       }
     ]
   })
+
+  createAction(
+    builder,
+    {
+      action: performance.actionImpl.ApproveKRA,
+      label: performance.string.ApproveKRA,
+      icon: performance.icon.StatusApproved,
+      input: 'any',
+      category: performance.category.Performance,
+      target: performance.class.EmployeeKRA,
+      context: {
+        mode: ['context', 'browser'],
+        group: 'edit'
+      },
+      visibilityTester: performance.function.CanApproveKRA
+    },
+    performance.action.ApproveKRA
+  )
+
+  builder.createDoc(
+    view.class.ActionCategory,
+    core.space.Model,
+    { label: performance.string.PerformanceApplication, visible: true },
+    performance.category.Performance
+  )
 }
 
 function defineReport (builder: Builder): void {

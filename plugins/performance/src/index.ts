@@ -33,7 +33,7 @@ import { Member } from '@hcengineering/kra-team'
 import { Asset, IntlString, plugin, Plugin, Resource } from '@hcengineering/platform'
 import type { Project, ProjectType, Task, TaskType, TaskTypeDescriptor } from '@hcengineering/task'
 import { AnyComponent } from '@hcengineering/ui'
-import { Viewlet, ViewletDescriptor } from '@hcengineering/view'
+import { Action, ViewAction, Viewlet, ViewletDescriptor } from '@hcengineering/view'
 import { ChatMessageViewlet } from '@hcengineering/chunter'
 
 export enum TimeReportDayType {
@@ -186,7 +186,8 @@ export default plugin(performanceId, {
     KRACompletionLevel: '' as IntlString,
     ScorePreview: '' as IntlString,
     PerformanceReport: '' as IntlString,
-    ReviewContent: '' as IntlString
+    ReviewContent: '' as IntlString,
+    ApproveKRA: '' as IntlString
   },
   viewlet: {
     TaskList: '' as Ref<ViewletDescriptor>,
@@ -202,6 +203,12 @@ export default plugin(performanceId, {
   },
   taskTypes: {
     KRA: '' as Ref<TaskType>
+  },
+  action: {
+    ApproveKRA: '' as Ref<Action<Doc, Record<string, any>>>
+  },
+  actionImpl: {
+    ApproveKRA: '' as ViewAction
   },
   ids: {
     ClassingProjectType: '' as Ref<ProjectType>,
