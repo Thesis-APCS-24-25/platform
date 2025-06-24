@@ -63,14 +63,30 @@ import AssignKraPopup from './components/kra/AssignKRAPopup.svelte'
 import { canApproveKRA } from './visibilityTester'
 import { approveKRA } from './actionImpl'
 import ScorePresenter from './components/report/ScorePresenter.svelte'
+import KpiReportEditPopup from './components/progress/kpi/KpiReportEditPopup.svelte'
+import ProgressReportEditPopup from './components/progress/ProgressReportEditPopup.svelte'
+import SetProgressMenu from './components/progress/SetProgressMenu.svelte'
+import { type PTask } from '@hcengineering/performance'
+import RemoveProgressPopup from './components/progress/RemoveProgressPopup.svelte'
 
-export { KRAPresenter, KRAEditor, AddProgressPopup, KRABox }
+export {
+  KRAPresenter,
+  KRAEditor,
+  AddProgressPopup,
+  KRABox,
+  ProgressObjectPresenter,
+  UnitPresenter,
+  KpiReportEditPopup,
+  ProgressReportEditPopup
+}
 
 export default async (): Promise<Resources> => ({
   actionImpl: {
     ApproveKRA: approveKRA
   },
   component: {
+    RemoveProgressPopup,
+    SetProgressMenu,
     ProgressObjectPresenter,
     UnitPresenter,
     EmployeeKRATotalWeightStat,
@@ -106,6 +122,8 @@ export default async (): Promise<Resources> => ({
     ScorePresenter
   },
   function: {
+    CanRemoveProgress: async (task: PTask | undefined): Promise<boolean> => task?.progress !== undefined,
+    CanAddProgress: async (task: PTask | undefined): Promise<boolean> => task?.progress === undefined,
     GetAllKRAStates: async (
       query: DocumentQuery<Doc<Space>> | undefined,
       onUpdate: () => void,

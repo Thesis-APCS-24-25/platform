@@ -8,15 +8,13 @@
   export let task: PTask
   export let kpi: WithLookup<Kpi>
 
-  const sum: number | undefined = kpi.progress
-
   function addReport (event: MouseEvent): void {
     showPopup(
       KpiReportEditPopup,
       {
-        sum,
-        task,
-        kpi
+        space: task.space,
+        attachedTo: kpi._id,
+        assignee: task.assignee
       },
       eventToHTMLElement(event)
     )

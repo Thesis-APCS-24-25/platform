@@ -111,6 +111,15 @@
     "KRAWeightFull": "Total weight is full",
     "ScorePreview": "Score",
     "UpdateReport": "Update Report",
-    "UpdateReportConfirm": "Are you sure you want to update this report? This will add new tasks to the report if they have the corresponding KRAs or if they overlap with the Review Session's period."
+    "UpdateReportConfirm": "Are you sure you want to update this report? This will add new tasks to the report if they have the corresponding KRAs or if they overlap with the Review Session's period.",
+    "Reports": "Reports",
+    "UnnamedProgress": "(Unnamed)",
+    "SetKpi": "Set KPI",
+    "RemoveProgressDialogTitle": "Do you want to remove the progress?",
+    "RemoveProgressDialogMessage": "Remove progress will remove all related reports and cannot be undone",
+    "CurrentWorkDay": "Current Work Day",
+    "PreviousWorkDay": "Previous Work Day",
+    "TimeReportDayTypeLabel": "Report Day Type",
+    "Note": "Note"
   }
 }

@@ -71,8 +71,8 @@ export interface ProgressReport extends AttachedDoc {
 export interface PTask extends Task {
   title: string
   startDate: Timestamp | null
-  kra?: Ref<KRA>
-  progress?: Ref<Progress>
+  kra: Ref<KRA> | null
+  progress: Ref<Progress> | null
   blockedBy?: RelatedDocument[]
   relations?: RelatedDocument[]
 }
@@ -128,14 +128,10 @@ export interface ActionItemFactory extends Class<Task> {
   component: AnyComponent
 }
 
-export interface WithKRA extends Task {
-  kra?: Ref<KRA>
-}
-
 export interface PerformanceReport extends Doc {
   reviewee: Ref<PersonAccount>
   reviewSession: Ref<ReviewSession>
-  tasks?: Arr<Ref<WithKRA>>
+  tasks?: Arr<Ref<PTask>>
   scorePreview?: number
 }
 
@@ -163,6 +159,8 @@ export default plugin(performanceId, {
     TypeReviewSessionStatus: '' as Ref<Class<Type<ReviewSessionStatus>>>
   },
   string: {
+    Progress: '' as IntlString,
+    Reports: '' as IntlString,
     PassedDays: '' as IntlString,
     RemainingDays: '' as IntlString,
     KRA: '' as IntlString,
@@ -197,7 +195,6 @@ export default plugin(performanceId, {
     ActionItemFactory: '' as Ref<Mixin<ActionItemFactory>>,
     DefaultReviewSessionData: '' as Ref<Mixin<ReviewSession>>,
     DefaultKRAData: '' as Ref<Mixin<KRA>>,
-    WithKRA: '' as Ref<Mixin<WithKRA>>,
     MeasureProgress: '' as Ref<Mixin<MeasureProgress>>,
     ProgressPresenter: '' as Ref<Mixin<ProgressPresenter>>
   },
@@ -216,6 +213,7 @@ export default plugin(performanceId, {
     NoKRARef: '' as Ref<KRA>
   },
   icon: {
+    Kpi: '' as Asset,
     TimeLeft: '' as Asset,
     EmployeeKRA: '' as Asset,
     ConcludeReviewSession: '' as Asset,

@@ -1,81 +1,129 @@
 <script lang="ts">
-  import { getClient } from '@hcengineering/presentation'
   import kra from '../../../plugin'
-  import { PTask, Kpi, ProgressReport } from '@hcengineering/performance'
+  import { createQuery, getClient } from '@hcengineering/presentation'
+  import { AttachedData, Ref, Space } from '@hcengineering/core'
+  import { EditBox, createFocusManager, FocusHandler } from '@hcengineering/ui'
+  import { onMount } from 'svelte'
   import KpiProgressBar from './KpiProgressBar.svelte'
-  import { createEventDispatcher } from 'svelte'
-  import { Employee } from '@hcengineering/contact'
-  import { AttachedData, Ref, Space, WithLookup } from '@hcengineering/core'
-  import ReportEditPopup from './../ReportEditPopup.svelte'
-  import { EditBox } from '@hcengineering/ui'
+  import ReportEditPopupBase from '../ReportEditPopupBase.svelte'
+  import performance, { Kpi, ProgressReport, Unit } from '@hcengineering/performance'
+  import { Person } from '@hcengineering/contact'
 
-  export let task: PTask | undefined = undefined
-  export let kpi: WithLookup<Kpi>
-  export let sum: number
+  export let value: ProgressReport | undefined = undefined
 
-  const space: Ref<Space> | undefined = task?.space
+  // Only needed for creating new reports
+  export let space: Ref<Space> | undefined = undefined
+  export let attachedTo: Ref<Kpi> | undefined = undefined
+  export let assignee: Ref<Person> | undefined | null = undefined
 
-  const kpiId = kpi._id
-  const kpiClass = kpi._class
-  const dispatch = createEventDispatcher()
+  const kpiQuery = createQuery()
+  let unit: Unit | undefined = undefined
+  let kpi: Kpi | undefined = undefined
+  $: kpiQuery.query(
+    performance.class.Kpi,
+    { _id: attachedTo },
+    (res) => {
+      if (res.length > 0) {
+        unit = res[0].$lookup?.unit as Unit | undefined
+        kpi = res[0]
+      } else {
+        unit = undefined
+      }
+    },
+    { limit: 1, lookup: { unit: performance.class.Unit } }
+  )
+
+  const object: Partial<AttachedData<ProgressReport>> = {
+    value: value?.value,
+    date: value?.date,
+    reportBy: value?.reportBy ?? assignee,
+    note: value?.note
+  }
+
+  function validate (object: Partial<AttachedData<ProgressReport>>): AttachedData<ProgressReport> | undefined {
+    const { value, date, reportBy, note } = object
+    if (value === undefined || date === undefined || reportBy === undefined) {
+      return undefined
+    }
+    return {
+      value,
+      date,
+      reportBy,
+      note: note ?? ''
+    }
+  }
+
   const client = getClient()
 
-  let assignee: Ref<Employee> | null | undefined = task?.assignee as Ref<Employee>
-  let value = undefined as number | undefined
-  let reportDate: number | undefined = undefined
-  let note = ''
-
-  function getData (): AttachedData<ProgressReport> | undefined {
-    if (value !== undefined && reportDate !== undefined && assignee !== undefined) {
-      return {
-        value,
-        date: reportDate,
-        reportBy: assignee,
-        note
-      }
-    }
-    return undefined
-  }
-
-  $: canSave = value !== undefined && Number.isFinite(value) && value >= 0 && space !== undefined
-
   async function save (): Promise<void> {
-    const data = getData()
-    if (canSave && data !== undefined && space !== undefined) {
+    if (value === undefined && space !== undefined && attachedTo !== undefined) {
+      const validatedObject = validate(object)
+      if (validatedObject === undefined) {
+        return
+      }
       await client.addCollection(
-        kra.class.ProgressReport,
+        performance.class.ProgressReport,
         space,
-        kpiId,
-        kpiClass,
+        attachedTo,
+        performance.class.Kpi,
         'goal-reports',
-        data
+        validatedObject
+      )
+      return
+    }
+    if (value !== undefined) {
+      await client.updateCollection(
+        performance.class.ProgressReport,
+        value.space,
+        value._id,
+        value.attachedTo,
+        performance.class.Kpi,
+        'goal-reports',
+        object
       )
     }
-    dispatch('close')
   }
+
+  $: canSave =
+    object.value !== undefined &&
+    Number.isFinite(object.value) &&
+    object.value >= 0 &&
+    object.date !== undefined &&
+    object.reportBy !== undefined
+  const manager = createFocusManager()
+  onMount(() => {
+    manager.setFocus(1)
+  })
 </script>
 
-<ReportEditPopup okAction={save} {canSave} bind:assignee bind:reportDate>
-  <svelte:fragment slot="header">
-  </svelte:fragment>
+<FocusHandler {manager} />
+
+<ReportEditPopupBase bind:assignee={object.reportBy} bind:reportDate={object.date} okAction={save} {canSave} on:close>
   <svelte:fragment slot="content">
     <div class="kpi-value">
       <div>
-        <span class="mr-1"> {sum} + </span>
+        <span class="mr-1">{kpi?.progress ?? 0} +</span>
       </div>
       <div class="clear-mins">
-        <EditBox bind:value={value} format="number" placeholder={kra.string.Goal} />
+        <EditBox
+          kind="default-large"
+          bind:value={object.value}
+          format="number"
+          focusIndex={1}
+        />
       </div>
-      <span class="unit">/ {kpi.target} ({kpi.$lookup?.unit?.name})</span>
+      <span class="unit">/ {kpi?.target} ({unit?.name})</span>
     </div>
-    <div class="mt-4">
-      <EditBox placeholder={kra.string.Comment} bind:value={note} />
+    <div class="mt-3">
+      <EditBox
+        label={kra.string.Note}
+        kind="default" bind:value={object.note} format="text" focusIndex={2} />
     </div>
     <div class="mt-4 mb-4">
-      <KpiProgressBar value={sum} max={kpi.target} additionalValue={value} />
+      <KpiProgressBar value={kpi?.progress ?? 0} max={kpi?.target} additionalValue={object.value} />
     </div>
   </svelte:fragment>
-</ReportEditPopup>
+</ReportEditPopupBase>
 
 <style>
   .kpi-value {
@@ -85,7 +133,7 @@
   }
 
   .unit {
-    border: 1px solid var(--theme-secondary-color, #e2e8f0);
+    margin-left: 0.5rem;
     padding: 0.5rem 0.75rem;
     border-radius: 0.25rem;
     font-size: 0.8rem;

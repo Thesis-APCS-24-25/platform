@@ -52,7 +52,7 @@
   import CopyToClipboard from './CopyToClipboard.svelte'
   import SubIssueSelector from './SubIssueSelector.svelte'
   import SubIssues from './SubIssues.svelte'
-  import Goal from '../goal/Goal.svelte'
+  import EditProgress from '../progress/EditProgress.svelte'
 
   export let _id: Ref<Issue> | string
   export let _class: Ref<Class<Issue>>
@@ -332,7 +332,7 @@
     </div>
     <div class="space-divider" />
     <div class="mt-6">
-      <Goal {issue} />
+      <EditProgress {issue} />
     </div>
 
     <RelationsEditor object={issue} {readonly} />

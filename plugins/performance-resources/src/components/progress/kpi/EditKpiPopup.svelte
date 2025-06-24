@@ -1,27 +1,147 @@
 <script lang="ts">
-  import { Kpi } from '@hcengineering/kra'
-  import { Card } from '@hcengineering/presentation'
-  import kra from '../../../../plugin'
-  import EditKpi from './EditKpi.svelte'
+  import { createFocusManager, EditBox, FocusHandler, ToggleWithLabel } from '@hcengineering/ui'
+  import performance from '../../../plugin'
+  import { Card, getClient } from '@hcengineering/presentation'
+  import { Progress, Kpi, PTask } from '@hcengineering/performance'
+  import { Ref, Space } from '@hcengineering/core'
+  import UnitBox from '../unit/UnitBox.svelte'
+  import { createEventDispatcher, onMount } from 'svelte'
+  import { ObjectBox } from '@hcengineering/view-resources'
 
-  export let kpi: Kpi
+  export let canSave = false
+  export let issue: Ref<PTask> | undefined = undefined
+  export let space: Ref<Space> | undefined = undefined
+  export let kpi: Kpi | undefined = undefined
+  export let canChangeTask: boolean = true
 
-  let canSave = false
-  let editKpi: EditKpi | undefined
+  let useAsTemplate: boolean = false
+
+  const data = {
+    name: kpi?.name ?? '',
+    description: kpi?.description ?? '',
+    target: kpi?.target,
+    unit: kpi?.unit ?? undefined
+  }
+
+  let template: Kpi | undefined = undefined
+
+  space = space ?? kpi?.space
+  const client = getClient()
+  const dispatch = createEventDispatcher()
+  function handleTemplateSelected (evt: CustomEvent<Kpi | undefined>): void {
+    if (evt.detail === undefined) {
+      return
+    }
+    template = evt.detail
+    data.name = template.name
+    data.description = template.description
+    data.unit = template.unit
+  }
+
+  $: canSave = data.name.length > 0 && Number.isFinite(data.target) && data.unit !== undefined
+
+  let id: Ref<Progress> | undefined = kpi?._id
+
   async function save (): Promise<void> {
-    if (editKpi !== undefined) {
-      await editKpi.save()
+    if (canSave) {
+      if (issue !== undefined && data.unit !== undefined && space !== undefined) {
+        id = await client.createDoc(performance.class.Kpi, space, {
+          name: data.name,
+          description: data.description,
+          target: data.target ?? 0,
+          unit: data.unit,
+          reports: 0
+        })
+      } else if (kpi !== undefined) {
+        await client.update(kpi, {
+          name: data.name,
+          description: data.description,
+          target: data.target,
+          unit: data.unit
+        })
+      }
     }
   }
+  function handleIssueChange (evt: CustomEvent<Ref<PTask>>): void {
+    issue = evt.detail
+  }
+
+  const focusManager = createFocusManager()
+  onMount(() => {
+    focusManager.setFocusPos(1)
+  })
 </script>
 
+<FocusHandler manager={focusManager} />
+
 <Card
-  label={kra.string.EditKpi}
+  label={performance.string.AddKpi}
   okAction={save}
-  okLabel={kra.string.Save}
   {canSave}
   width="small"
-  on:close
+  on:close={() => {
+    dispatch('close', id)
+  }}
 >
-  <EditKpi {kpi} bind:canSave bind:this={editKpi}/>
+  <svelte:fragment slot="header">
+    {#if canChangeTask}
+      <ObjectBox
+        docQuery={{
+          progress: undefined
+        }}
+        size="small"
+        kind="regular"
+        showNavigate={false}
+        icon={performance.icon.Issue}
+        value={issue}
+        on:change={handleIssueChange}
+        _class={performance.class.PTask}
+        label={performance.string.Issue}
+      />
+    {/if}
+    <ObjectBox
+      kind="regular"
+      _class={performance.class.Kpi}
+      label={performance.string.ChooseTemplate}
+      value={template?._id}
+      showNavigate={false}
+      docQuery={{ space, isTemplate: true }}
+      on:object={handleTemplateSelected}
+      on:change={(e) => {
+        if (e.detail === null) {
+          template = undefined
+        }
+      }}
+      allowDeselect
+    />
+  </svelte:fragment>
+  <div class="m-1">
+    <EditBox
+      label={performance.string.Name}
+      kind="default-large"
+      fullSize
+      bind:value={data.name}
+      placeholder={performance.string.AddNamePlaceholder}
+      focusIndex={1}
+    />
+  </div>
+
+  <div class="m-1 flex-row-baseline items-end justify-between">
+    <EditBox
+      label={performance.string.Target}
+      kind="default-large"
+      format="number"
+      maxWidth="15rem"
+      bind:value={data.target}
+      placeholder={performance.string.AddTargetPlaceholder}
+      focusIndex={3}
+    />
+    {#if space !== undefined}
+      <UnitBox size="large" {space} bind:value={data.unit} focusIndex={4} />
+    {/if}
+  </div>
+
+  <svelte:fragment slot="pool">
+      <ToggleWithLabel disabled={template !== undefined} bind:on={useAsTemplate} label={performance.string.UseAsTemplate} />
+  </svelte:fragment>
 </Card>

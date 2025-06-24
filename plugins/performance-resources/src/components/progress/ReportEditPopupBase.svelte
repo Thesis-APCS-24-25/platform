@@ -1,22 +1,23 @@
 <script lang="ts">
   import { Card } from '@hcengineering/presentation'
-  import performance from '../../plugin'
-  import { PTask, TimeReportDayType } from '@hcengineering/performance'
+  import kra from '../../plugin'
+  import { TimeReportDayType } from '@hcengineering/performance'
   import { DatePresenter } from '@hcengineering/ui'
   import { getTimeReportDate, getTimeReportDayType } from '../../utils'
   import { UserBox } from '@hcengineering/contact-resources'
-  import contact, { Employee } from '@hcengineering/contact'
+  import contact, { Person } from '@hcengineering/contact'
   import TimeReportDayDropdown from '../timereport/TimeReportDayDropdown.svelte'
   import { Ref } from '@hcengineering/core'
   import { IntlString } from '@hcengineering/platform'
   import { createEventDispatcher } from 'svelte'
 
-  export let issue: PTask | undefined = undefined
   export let label: IntlString | undefined = undefined
   export let okAction: () => void = () => {}
+  export let width: 'large' | 'medium' | 'small' | 'x-small' | 'menu' = 'medium'
+  export let okLabel: IntlString = kra.string.Save
   export let canSave: boolean = false
-  export let assignee: Ref<Employee> | null | undefined = issue?.assignee as Ref<Employee>
-  export let reportDate: number = getTimeReportDate(TimeReportDayType.CurrentWorkDay)
+  export let assignee: Ref<Person> | null | undefined
+  export let reportDate: number | undefined | null = getTimeReportDate(TimeReportDayType.CurrentWorkDay)
 
   let timeReportDateType: TimeReportDayType | undefined = TimeReportDayType.CurrentWorkDay
 
@@ -24,8 +25,9 @@
 </script>
 
 <Card
-  width="medium"
-  label={label ?? performance.string.Goal}
+  {width}
+  {okLabel}
+  label={label ?? kra.string.Goal}
   {okAction}
   {canSave}
   on:close={() => {

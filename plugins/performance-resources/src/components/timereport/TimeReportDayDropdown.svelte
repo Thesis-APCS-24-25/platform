@@ -16,10 +16,10 @@
   import { TimeReportDayType } from '@hcengineering/performance'
   import { DropdownIntlItem, DropdownLabelsIntl } from '@hcengineering/ui'
   import type { ButtonKind, ButtonSize } from '@hcengineering/ui'
-  import tracker from '../../plugin'
+  import performance from '../../plugin'
   import TimeReportDayIcon from './TimeReportDayIcon.svelte'
 
-  export let label = tracker.string.TimeReportDayTypeLabel
+  export let label = performance.string.TimeReportDayTypeLabel
   export let selected: TimeReportDayType | undefined
   export let kind: ButtonKind = 'link-bordered'
   export let size: ButtonSize = 'small'
@@ -27,11 +27,11 @@
   const workDaysDropdownItems: DropdownIntlItem[] = [
     {
       id: TimeReportDayType.CurrentWorkDay,
-      label: tracker.string.CurrentWorkDay
+      label: performance.string.CurrentWorkDay
     },
     {
       id: TimeReportDayType.PreviousWorkDay,
-      label: tracker.string.PreviousWorkDay
+      label: performance.string.PreviousWorkDay
     }
   ]
 </script>

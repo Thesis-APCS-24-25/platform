@@ -7,10 +7,9 @@
   import performance from '../../plugin'
   import KpiPresenter from './kpi/KpiPresenter.svelte'
   import task from '@hcengineering/task'
-  import KpiProgressBar from './kpi/KpiProgressBar.svelte'
+  import ProgressBar from './ProgressBar.svelte'
   import GoalPresenterContainer from './GoalPresenterContainer.svelte'
-  import ReportsPopup from './ReportsPopup.svelte'
-  import KraRefPresenter from '../kra/KRARefPresenter.svelte'
+  import ProgressReportsPopup from './ProgressReportsPopup.svelte'
 
   export let value: WithLookup<PTask>
 
@@ -31,7 +30,7 @@
 
   let _value: Progress | undefined = value.$lookup?.progress
 
-  $: if (_value === undefined) {
+  $: if (_value === undefined && value.progress != null) {
     progressQuery.query(
       performance.class.Progress,
       {
@@ -43,11 +42,6 @@
         } else {
           _value = undefined
         }
-      },
-      {
-        lookup: {
-          unit: performance.class.Unit
-        }
       }
     )
   }
@@ -55,10 +49,11 @@
   function handleOpenEditor (sum: number, e: MouseEvent): void {
     e.stopPropagation()
     showPopup(
-      ReportsPopup,
+      ProgressReportsPopup,
       {
-        task,
-        kpi: value
+        task: value,
+        progress: _value,
+        sum
       },
       eventToHTMLElement(e)
     )
@@ -81,7 +76,7 @@
     {#if _value.target > 0}
       <div class="bar">
         <!-- TODO: Turn this into progress bar component -->
-        <KpiProgressBar value={_value.progress ?? 0} />
+        <ProgressBar value={_value.progress ?? 0} />
       </div>
     {/if}
     <div class="separator"></div>
