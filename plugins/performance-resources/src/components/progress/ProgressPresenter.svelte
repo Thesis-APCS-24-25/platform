@@ -9,7 +9,7 @@
   import task from '@hcengineering/task'
   import ProgressBar from './ProgressBar.svelte'
   import GoalPresenterContainer from './GoalPresenterContainer.svelte'
-  import ReportsPopup from './ReportsPopup.svelte'
+  import ProgressReportsPopup from './ProgressReportsPopup.svelte'
 
   export let value: WithLookup<PTask>
 
@@ -42,11 +42,6 @@
         } else {
           _value = undefined
         }
-      },
-      {
-        lookup: {
-          unit: performance.class.Unit
-        }
       }
     )
   }
@@ -54,10 +49,11 @@
   function handleOpenEditor (sum: number, e: MouseEvent): void {
     e.stopPropagation()
     showPopup(
-      ReportsPopup,
+      ProgressReportsPopup,
       {
-        task,
-        kpi: value
+        task: value,
+        progress: _value,
+        sum
       },
       eventToHTMLElement(e)
     )

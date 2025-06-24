@@ -9,7 +9,6 @@
   import view from '@hcengineering/view'
   import AssignTaskPopup from './AssignTaskPopup.svelte'
   import { personIdByAccountId } from '@hcengineering/contact-resources'
-  import ProgressPresenter from '../progress/ProgressPresenter.svelte'
   import ProgressSummaryPresenter from '../progress/ProgressSummaryPresenter.svelte'
 
   export let currentSpace: Ref<Space>

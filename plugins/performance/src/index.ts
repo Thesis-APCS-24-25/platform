@@ -163,6 +163,7 @@ export default plugin(performanceId, {
     TypeReviewSessionStatus: '' as Ref<Class<Type<ReviewSessionStatus>>>
   },
   string: {
+    Reports: '' as IntlString,
     PassedDays: '' as IntlString,
     RemainingDays: '' as IntlString,
     KRA: '' as IntlString,

@@ -21,6 +21,11 @@ import { type ViewCategoryAction, type GetAllValuesFunc } from '@hcengineering/v
 
 export default mergeIds(performanceId, performance, {
   string: {
+    TimeReportDayTypeLabel: '' as IntlString,
+    CurrentWorkDay: '' as IntlString,
+    PreviousWorkDay: '' as IntlString,
+    Note: '' as IntlString,
+    UnnamedProgress: '' as IntlString,
     AddProgress: '' as IntlString,
     AddProgressNamePlaceholder: '' as IntlString,
     NoKRASelected: '' as IntlString,
@@ -137,6 +142,7 @@ export default mergeIds(performanceId, performance, {
     ReviewSessionType: '' as IntlString
   },
   component: {
+    KpiPresenter: '' as AnyComponent,
     AddUnitPopup: '' as AnyComponent,
     UnitPresenter: '' as AnyComponent,
     ProgressPresenter: '' as AnyComponent,

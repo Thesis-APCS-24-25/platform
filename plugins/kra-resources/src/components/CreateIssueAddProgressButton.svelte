@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { AddProgressPopup } from '@hcengineering/performance-resources'
+  import { AddProgressPopup, EditKpi } from '@hcengineering/performance-resources'
   import { Button, eventToHTMLElement, SelectPopup, SelectPopupValueType, showPopup } from '@hcengineering/ui'
   import performance, { Progress, PTask } from '@hcengineering/performance'
   import { Asset, IntlString } from '@hcengineering/platform'
@@ -8,7 +8,6 @@
   import { Project } from '@hcengineering/task'
   import { getClient } from '@hcengineering/presentation'
   import kra from '../plugin'
-  import EditKpi from './issues/goal/kpi/EditKpi.svelte'
 
   export let value: Ref<Progress> | undefined = undefined
   export let _class: Ref<Class<Progress>> = performance.class.Progress

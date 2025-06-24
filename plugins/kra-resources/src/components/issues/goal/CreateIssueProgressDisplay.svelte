@@ -45,7 +45,7 @@
     </div>
     <div class="title">
       {#if unnamed}
-        <Label label={kra.string.UnnamedProgress} />
+        <Label label={performance.string.UnnamedProgress} />
       {:else}
         <div>{_progress.name}</div>
       {/if}

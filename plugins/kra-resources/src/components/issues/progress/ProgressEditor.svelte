@@ -10,29 +10,40 @@ distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRAN
 // See the License for the specific language governing permissions and limitations under the License.
 -->
 <script lang="ts">
-  import { Kpi } from '@hcengineering/kra'
-  import KpiProgressBar from './KpiProgressBar.svelte'
+  import performance, { Progress, ProgressReport } from '@hcengineering/performance'
   import { WithLookup } from '@hcengineering/core'
+  import { ProgressObjectPresenter } from '@hcengineering/performance-resources'
+  import { createQuery } from '@hcengineering/presentation'
+  import ReportsBreakdown from './ReportsBreakdown.svelte'
 
-  export let kpi: WithLookup<Kpi>
-  $: sum = kpi.progress
+  export let progress: WithLookup<Progress>
+  $: sum = progress.progress
+
+  const progressQuery = createQuery()
+  let reports: ProgressReport[] | undefined = undefined
+  $: progressQuery.query(
+    performance.class.ProgressReport,
+    {
+      attachedTo: progress._id
+    },
+    (res) => {
+      reports = res
+    }
+  )
 </script>
 
-<div class="flex-row-center p-4 gap-4">
-  <div class="flex-col header">
-    <div class="fs-title text-xl">
-      {kpi.name}
+<div class="flex-col">
+  <div class="flex-row-center p-4 flex-gap-4">
+    <div class="flex-col header">
+      <div class="fs-title text-xl">
+        <ProgressObjectPresenter value={progress} />
+      </div>
     </div>
-  </div>
-
-  <div class="kpi-box flex-col items-end">
     <div class="value">
-      <span class="value-value">{sum}</span>
-      <span class="value-target"> / {kpi.target}</span>
-      <span class="unit"> {kpi.$lookup?.unit?.name}</span>
+      <span class="value-value">{sum}</span> / <span class="value-target">100</span>
     </div>
-    <KpiProgressBar value={sum ?? 0} max={kpi.target} />
   </div>
+  <ReportsBreakdown {reports} />
 </div>
 
 <style>

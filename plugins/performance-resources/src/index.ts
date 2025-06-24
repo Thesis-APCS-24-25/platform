@@ -59,8 +59,19 @@ import AddUnitPopup from './components/progress/unit/AddUnitPopup.svelte'
 import KRABox from './components/kra/KRABox.svelte'
 import UnitPresenter from './components/progress/unit/UnitPresenter.svelte'
 import ProgressObjectPresenter from './components/progress/ProgressObjectPresenter.svelte'
+import KpiReportEditPopup from './components/progress/kpi/KpiReportEditPopup.svelte'
+import ProgressReportEditPopup from './components/progress/ProgressReportEditPopup.svelte'
 
-export { KRAPresenter, KRAEditor, AddProgressPopup, KRABox }
+export {
+  KRAPresenter,
+  KRAEditor,
+  AddProgressPopup,
+  KRABox,
+  ProgressObjectPresenter,
+  UnitPresenter,
+  KpiReportEditPopup,
+  ProgressReportEditPopup
+}
 
 export default async (): Promise<Resources> => ({
   component: {

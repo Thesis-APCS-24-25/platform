@@ -103,6 +103,8 @@
     "ConcludeReviewSessionConfirm": "Make sure the Review session's End date is met.",
     "RemainingWeight": "Remaining",
     "PassedDays": "{days} Days Passed",
-    "RemainingDays": "{days} Days Remaining"
+    "RemainingDays": "{days} Days Remaining",
+    "Reports": "Reports",
+    "UnnamedProgress": "(Unnamed)"
   }
 }
