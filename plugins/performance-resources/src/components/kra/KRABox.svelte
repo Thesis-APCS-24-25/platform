@@ -37,26 +37,31 @@
   let kraDocQuery: DocumentQuery<KRA> = { _id: { $in: [performance.ids.NoKRARef] } }
 
   const employeeKRAQuery = createQuery()
-  $: employeeKRAQuery.query(
-    performance.class.EmployeeKRA,
-    {
-      assignee
-    },
-    async (result) => {
-      if (result !== undefined && result.length > 0) {
-        const krasOfAssignee: Ref<KRA>[] | undefined = result.map((it) => it.kra)
-        if (!krasOfAssignee.includes(value)) {
-          dispatch('change', performance.ids.NoKRARef)
+  $: if (assignee != null) {
+    employeeKRAQuery.query(
+      performance.class.EmployeeKRA,
+      {
+        assignee
+      },
+      async (result) => {
+        if (result !== undefined && result.length > 0) {
+          const krasOfAssignee: Ref<KRA>[] | undefined = result.map((it) => it.kra)
+          if (value !== undefined && !krasOfAssignee.includes(value)) {
+            dispatch('change', null)
+          }
+          kraDocQuery = {
+            _id: { $in: krasOfAssignee }
+          }
+        } else {
+          dispatch('change', null)
+          kraDocQuery = {}
         }
-        kraDocQuery = {
-          _id: { $in: krasOfAssignee }
-        }
-      } else {
-        dispatch('change', performance.ids.NoKRARef)
-        kraDocQuery = { _id: { $in: [performance.ids.NoKRARef] } }
       }
-    }
-  )
+    )
+  } else {
+    dispatch('change', null)
+    kraDocQuery = {}
+  }
 </script>
 
 <Button
@@ -81,7 +86,7 @@
   }}
 >
   <svelte:fragment slot="content">
-    {#if value !== undefined}
+    {#if value != null}
       <KraRefPresenter {value} type="text" {shrink} shouldShowAvatar />
     {:else}
       <Label label={placeholder} />

@@ -17,13 +17,12 @@
   import { Analytics } from '@hcengineering/analytics'
   import { Attachment } from '@hcengineering/attachment'
   import { AttachmentPresenter, AttachmentStyledBox } from '@hcengineering/attachment-resources'
-  import { Employee, Person } from '@hcengineering/contact'
+  import { Employee } from '@hcengineering/contact'
   import core, {
     Account,
     Class,
     Doc,
     DocData,
-    DocumentQuery,
     Ref,
     SortingOrder,
     fillDefaults,
@@ -49,7 +48,7 @@
     getMarkup
   } from '@hcengineering/presentation'
   import tags, { TagElement, TagReference } from '@hcengineering/tags'
-  import { Task, TaskType, makeRank } from '@hcengineering/task'
+  import { TaskType, makeRank } from '@hcengineering/task'
   import { TaskKindSelector } from '@hcengineering/task-resources'
   import { EmptyMarkup, isEmptyMarkup } from '@hcengineering/text'
   import {
@@ -91,8 +90,8 @@
   import PriorityEditor from './issues/PriorityEditor.svelte'
   import StatusEditor from './issues/StatusEditor.svelte'
   import ProjectPresenter from './projects/ProjectPresenter.svelte'
-  import { AddProgressPopup, KRABox, KRAEditor } from '@hcengineering/performance-resources'
-  import CreateIssueProgressDisplay from './issues/goal/CreateIssueProgressDisplay.svelte'
+  import { KRABox } from '@hcengineering/performance-resources'
+  import CreateIssueProgressDisplay from './issues/progress/CreateIssueProgressDisplay.svelte'
   import CreateIssueAddProgressButton from './CreateIssueAddProgressButton.svelte'
 
   export let space: Ref<Project> | undefined
@@ -189,7 +188,7 @@
       labels: [],
       parentIssue: parentIssue?._id,
       subIssues: [],
-      kra: kra ?? performance.ids.NoKRARef
+      kra
     }
     if (originalIssue !== undefined && !ignoreOriginal) {
       const res: IssueDraft = {
@@ -319,7 +318,7 @@
                 .filter((p) => p !== undefined) as TagReference[])
             : [],
         status: currentProject?.defaultIssueStatus,
-        kra: performance.ids.NoKRARef
+        kra: null
       }
     })
 
