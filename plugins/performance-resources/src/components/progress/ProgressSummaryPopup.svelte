@@ -15,15 +15,17 @@
 
   let progress: Progress | undefined = value.$lookup?.progress
   const progressQ = createQuery()
-  $: progressQ.query(
-    performance.class.Progress,
-    {
-      _id: value.progress
-    },
-    (res) => {
-      progress = res[0]
-    }
-  )
+  $: if (value.progress != null) {
+    progressQ.query(
+      performance.class.Progress,
+      {
+        _id: value.progress
+      },
+      (res) => {
+        progress = res[0]
+      }
+    )
+  }
 
   const getPassedDays = (date: Date): number => {
     const today = new Date()
@@ -51,10 +53,7 @@
 <div class="commentPopup-container">
   <!-- svelte-ignore a11y-no-static-element-interactions -->
   <div class="time-passed">
-    <div
-      class="item"
-      style="width: {occupiedPercentage()}%"
-    />
+    <div class="item" style="width: {occupiedPercentage()}%" />
   </div>
   <div
     class="flex-between header"

@@ -3,7 +3,7 @@ import performance from '@hcengineering/performance'
 
 const icons = require('../assets/icons.svg') as string // eslint-disable-line
 loadMetadata(performance.icon, {
-  // Copy some of this from kra
+  Unit: `${icons}#unit`,
   WriteReport: `${icons}#write-report`,
   Progress: `${icons}#progress`,
   EditReview: `${icons}#edit-review`,

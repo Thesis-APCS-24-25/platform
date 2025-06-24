@@ -41,7 +41,7 @@
   />
   <Button
     icon={IconAdd}
-    label={performance.string.SetKpi}
+    label={kra.string.SetKpi}
     kind="ghost"
     size="small"
     on:click={() => {

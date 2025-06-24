@@ -2,7 +2,7 @@
   import { FindOptions, Ref, SortingOrder } from '@hcengineering/core'
   import view from '@hcengineering/view'
   import { ListView } from '@hcengineering/view-resources'
-  import ProgressPresenter from '../kra/ProgressPresenter.svelte'
+  import ProgressPresenter from '../progress/ProgressPresenter.svelte'
   import performance from '../../plugin'
   import { KRA, PTask, ReviewSession } from '@hcengineering/performance'
   import { createQuery } from '@hcengineering/presentation'

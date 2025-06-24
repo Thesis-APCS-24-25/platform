@@ -32,7 +32,7 @@
   _class={performance.class.Unit}
   placeholder={performance.string.AddUnit}
   showNavigate={false}
-  icon={performance.icon.Issue}
+  icon={performance.icon.Unit}
   bind:value
   {create}
   {focusIndex}

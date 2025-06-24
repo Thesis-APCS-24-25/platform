@@ -97,6 +97,7 @@
             label: performance.string.UpdateReport,
             message: performance.string.UpdateReportConfirm,
             action: async () => {
+              if (value?.reviewSession === undefined) return
               await client.createDoc(
                 performance.class.PerformanceReport,
                 value?.reviewSession,

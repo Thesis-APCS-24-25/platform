@@ -10,11 +10,12 @@
   import { Ref } from '@hcengineering/core'
   import { IntlString } from '@hcengineering/platform'
   import { createEventDispatcher } from 'svelte'
+  import view from '@hcengineering/view'
 
   export let label: IntlString | undefined = undefined
   export let okAction: () => void = () => {}
   export let width: 'large' | 'medium' | 'small' | 'x-small' | 'menu' = 'medium'
-  export let okLabel: IntlString = kra.string.Save
+  export let okLabel: IntlString = view.string.Save
   export let canSave: boolean = false
   export let assignee: Ref<Person> | null | undefined
   export let reportDate: number | undefined | null = getTimeReportDate(TimeReportDayType.CurrentWorkDay)

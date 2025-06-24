@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Unit } from '@hcengineering/kra'
+  import { Unit } from '@hcengineering/performance'
 
   export let value: Unit
 </script>

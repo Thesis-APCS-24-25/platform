@@ -1,6 +1,6 @@
 <script lang="ts">
   import { ButtonKind, ButtonSize, Component, eventToHTMLElement, Loading, showPopup } from '@hcengineering/ui'
-  import { Progress, PTask } from '@hcengineering/performance'
+  import { Kpi, Progress, PTask } from '@hcengineering/performance'
   import { createQuery, getClient } from '@hcengineering/presentation'
   import view, { AttributePresenter } from '@hcengineering/view'
   import { Doc, Space, WithLookup } from '@hcengineering/core'
@@ -29,6 +29,10 @@
   const progressQuery = createQuery()
 
   let _value: Progress | undefined = value.$lookup?.progress
+
+  function asKpi (doc: Doc): Kpi | undefined {
+    return doc._class === performance.class.Kpi ? undefined : (doc as Kpi)
+  }
 
   $: if (_value === undefined && value.progress != null) {
     progressQuery.query(
@@ -60,6 +64,7 @@
   }
 </script>
 
+<!-- TODO: Separate into ProgressPresenter and KpiPresenter -->
 {#if _value !== undefined && _value._class === performance.class.Progress}
   <GoalPresenterContainer
     disabled={readonly}
@@ -73,37 +78,37 @@
       }
     }}
   >
-    {#if _value.target > 0}
-      <div class="bar">
-        <!-- TODO: Turn this into progress bar component -->
-        <ProgressBar value={_value.progress ?? 0} />
-      </div>
-    {/if}
+    <div class="bar">
+      <ProgressBar value={_value.progress ?? 0} />
+    </div>
     <div class="separator"></div>
     <span class="kpi-num">{_value.progress ?? 0}%</span>
   </GoalPresenterContainer>
 {:else if _value !== undefined && _value._class === performance.class.Kpi}
-  <KpiPresenter task={value} value={_value} {size} {kind} {readonly} />
+  {@const kpi = asKpi(_value)}
+  {#if kpi}
+    <KpiPresenter task={value} value={kpi} {size} {kind} {readonly} />
+  {/if}
 {/if}
 
-  <style lang="scss">
-    .separator {
-      width: 1px;
-      height: 16px;
-      margin: 0 8px;
-      background-color: var(--theme-divider-color, #e0e0e0);
-    }
+<style lang="scss">
+  .separator {
+    width: 1px;
+    height: 16px;
+    margin: 0 8px;
+    background-color: var(--theme-divider-color, #e0e0e0);
+  }
 
-    .unit-symbol {
-      margin: 0 0.25rem;
-      color: var(--theme-halfcontent-color);
-    }
+  .unit-symbol {
+    margin: 0 0.25rem;
+    color: var(--theme-halfcontent-color);
+  }
 
-    .kpi-num {
-      color: var(--theme-halfcontent-color);
-    }
+  .kpi-num {
+    color: var(--theme-halfcontent-color);
+  }
 
-    .bar {
-      min-width: 4rem;
-    }
-  </style>
+  .bar {
+    min-width: 4rem;
+  }
+</style>

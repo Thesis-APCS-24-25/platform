@@ -308,6 +308,7 @@
         space: _space as Ref<Project>,
         subIssues: [],
         dueDate: null,
+        startDate: null,
         labels:
           p.labels !== undefined
             ? (p.labels
@@ -317,8 +318,7 @@
                 })
                 .filter((p) => p !== undefined) as TagReference[])
             : [],
-        status: currentProject?.defaultIssueStatus,
-        kra: null
+        status: currentProject?.defaultIssueStatus
       }
     })
 

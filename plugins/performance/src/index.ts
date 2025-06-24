@@ -159,6 +159,8 @@ export default plugin(performanceId, {
     TypeReviewSessionStatus: '' as Ref<Class<Type<ReviewSessionStatus>>>
   },
   string: {
+    UnnamedProgress: '' as IntlString,
+    NoKRASelected: '' as IntlString,
     Progress: '' as IntlString,
     AddUnit: '' as IntlString,
     AddNamePlaceholder: '' as IntlString,
@@ -226,6 +228,7 @@ export default plugin(performanceId, {
     NoKRARef: '' as Ref<KRA>
   },
   icon: {
+    Unit: '' as Asset,
     Kpi: '' as Asset,
     TimeLeft: '' as Asset,
     EmployeeKRA: '' as Asset,

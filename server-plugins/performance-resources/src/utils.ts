@@ -123,6 +123,7 @@ async function calculateScore (control: TriggerControl, tasks: PTask[], employee
     const entry = tasksByKras[ekra.kra]
     if (entry.tasks.length === 0) continue
     for (const task of entry.tasks) {
+      if (task.progress == null) continue
       const find = await control.findAll(control.ctx, performance.class.Progress, { _id: task.progress }, { limit: 1 })
       const progress = find !== undefined && find.length > 0 ? find[0] : undefined
       sum += await getScore(control, task, progress)

@@ -2,7 +2,7 @@
   import { WithLookup } from '@hcengineering/core'
   import performance, { Progress, PTask } from '@hcengineering/performance'
   import { StatePresenter } from '@hcengineering/task-resources'
-  import { ButtonKind, ButtonSize, Button, Label, Icon } from '@hcengineering/ui'
+  import { ButtonKind, ButtonSize, Button, Icon } from '@hcengineering/ui'
   import { statusStore } from '@hcengineering/view-resources'
   import ProgressSummaryPopup from './ProgressSummaryPopup.svelte'
   import KpiProgressBar from './kpi/KpiProgressBar.svelte'
@@ -21,16 +21,17 @@
   const status = $statusStore.byId.get(value.status)
   let progress: Progress | undefined = value.$lookup?.progress
   const progressQ = createQuery()
-  $: progressQ.query(
-    performance.class.Progress,
-    {
-      _id: value.progress
-    },
-    (res) => {
-      progress = res[0]
-    }
-  )
-
+  $: if (value.progress != null) {
+    progressQ.query(
+      performance.class.Progress,
+      {
+        _id: value.progress
+      },
+      (res) => {
+        progress = res[0]
+      }
+    )
+  }
   const getPassedDays = (date: Date): number => {
     const today = new Date()
     const pastDays = Math.floor((today.getTime() - date.getTime()) / (1000 * 60 * 60 * 24))

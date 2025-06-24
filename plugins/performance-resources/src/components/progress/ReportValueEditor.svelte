@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { WithLookup } from '@hcengineering/core'
+  import { Ref, WithLookup } from '@hcengineering/core'
   import { ProgressReport, Unit } from '@hcengineering/performance'
   import { createQuery, getClient } from '@hcengineering/presentation'
   import performance from '../../plugin'
@@ -32,11 +32,15 @@
 
   let unit: Unit | undefined = undefined
   const unitQuery = createQuery()
-  unitQuery.query(performance.class.Unit, { _id: attachedTo?.unit }, (res) => {
-    if (res.length > 0) {
-      unit = res[0]
-    }
-  })
+  // TODO: This should be moved to a more generic place, such as viewlet definition
+  $: if (attachedTo !== undefined && 'unit' in attachedTo) {
+    const _id = attachedTo.unit as Ref<Unit>
+    unitQuery.query(performance.class.Unit, { _id }, (res) => {
+      if (res.length > 0) {
+        unit = res[0]
+      }
+    })
+  }
 
   async function _onchange (ev: Event): Promise<void> {
     const value = (ev.target as HTMLInputElement).valueAsNumber

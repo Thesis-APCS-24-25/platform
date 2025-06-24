@@ -7,6 +7,7 @@
   import UnitBox from '../unit/UnitBox.svelte'
   import { createEventDispatcher, onMount } from 'svelte'
   import { ObjectBox } from '@hcengineering/view-resources'
+  import task from '@hcengineering/task'
 
   export let canSave = false
   export let issue: Ref<PTask> | undefined = undefined
@@ -33,8 +34,6 @@
       return
     }
     template = evt.detail
-    data.name = template.name
-    data.description = template.description
     data.unit = template.unit
   }
 
@@ -92,11 +91,11 @@
         size="small"
         kind="regular"
         showNavigate={false}
-        icon={performance.icon.Issue}
+        icon={task.icon.Task}
         value={issue}
         on:change={handleIssueChange}
         _class={performance.class.PTask}
-        label={performance.string.Issue}
+        label={performance.string.Task}
       />
     {/if}
     <ObjectBox
