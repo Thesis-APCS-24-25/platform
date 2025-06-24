@@ -44,6 +44,8 @@ export default mergeIds(kraId, tracker, {
     IssueCategory: '' as Ref<ObjectSearchCategory>
   },
   string: {
+    Edit: '' as IntlString,
+    RemoveProgress: '' as IntlString,
     EmptyEditProgressContent: '' as IntlString,
     NoProgressAttached: '' as IntlString,
     Note: '' as IntlString,

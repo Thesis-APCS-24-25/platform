@@ -356,12 +356,6 @@ export function createModel (builder: Builder): void {
     component: kra.component.CreateIssue
   })
 
-  builder.mixin(kra.class.Issue, core.class.Class, performance.mixin.MeasureProgress, {
-    calculate: kra.function.CalculateGoal
-  })
-  builder.mixin(kra.class.Issue, core.class.Class, performance.mixin.ProgressPresenter, {
-    presenter: kra.component.GoalPresenter
-  })
   builder.mixin(kra.class.Issue, core.class.Class, performance.mixin.ActionItemFactory, {
     component: kra.component.CreateIssue
   })

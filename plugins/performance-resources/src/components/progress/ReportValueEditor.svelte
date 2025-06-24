@@ -6,7 +6,7 @@
   import { Button, ButtonSize, EditBox, eventToHTMLElement, Label, showPopup } from '@hcengineering/ui'
   import { IntlString } from '@hcengineering/platform'
   import { EditBoxPopup, NumberPresenter } from '@hcengineering/view-resources'
-  import ValueWithUnit from './ValueWithUnit.svelte'
+  import ValueWithUnit from './unit/ValueWithUnit.svelte'
 
   export let value: WithLookup<ProgressReport>
   export let readonly: boolean = false

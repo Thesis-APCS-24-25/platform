@@ -68,8 +68,10 @@ import ProgressReportEditPopup from './components/progress/ProgressReportEditPop
 import SetProgressMenu from './components/progress/SetProgressMenu.svelte'
 import { type PTask } from '@hcengineering/performance'
 import RemoveProgressPopup from './components/progress/RemoveProgressPopup.svelte'
+import EditKpiPopup from './components/progress/kpi/EditKpiPopup.svelte'
 
 export {
+  EditKpiPopup,
   KRAPresenter,
   KRAEditor,
   AddProgressPopup,
@@ -77,6 +79,7 @@ export {
   ProgressObjectPresenter,
   UnitPresenter,
   KpiReportEditPopup,
+  ProgressPresenter,
   ProgressReportEditPopup
 }
 

@@ -121,9 +121,8 @@ import { settingId } from '@hcengineering/setting'
 import { getAllStates } from '@hcengineering/task-resources'
 import EstimationValueEditor from './components/issues/timereport/EstimationValueEditor.svelte'
 import TimePresenter from './components/issues/timereport/TimePresenter.svelte'
-import Report from './components/issues/goal/Report.svelte'
 import './styles/_colors.scss'
-import KRAEditor from '@hcengineering/performance-resources/src/components/kra/KRAEditor.svelte'
+import KRAEditor from './components/kra/KRAEditor.svelte'
 
 export { default as AssigneeEditor } from './components/issues/AssigneeEditor.svelte'
 export { default as SubIssueList } from './components/issues/edit/SubIssueList.svelte'
@@ -318,7 +317,6 @@ export default async (): Promise<Resources> => ({
     IssueExtra,
     IssueStatusPresenter,
     LabelsView,
-    Report,
     KRAEditor
   },
   completion: {

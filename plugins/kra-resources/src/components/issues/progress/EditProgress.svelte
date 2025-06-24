@@ -1,9 +1,9 @@
 <script lang="ts">
   import { Issue } from '@hcengineering/kra'
-  import { ButtonIcon, Icon, IconAdd, IconDelete, IconEdit, Label, showPopup } from '@hcengineering/ui'
+  import { ButtonIcon, Icon, IconDelete, IconEdit, Label, showPopup } from '@hcengineering/ui'
   import kra from '../../../plugin'
   import performance, { Kpi, Progress } from '@hcengineering/performance'
-  import { createQuery, getClient } from '@hcengineering/presentation'
+  import { createQuery } from '@hcengineering/presentation'
   import KpiEditor from './kpi/KpiEditor.svelte'
   import ProgressEditor from './ProgressEditor.svelte'
   import RemoveProgressPopup from '@hcengineering/performance-resources/src/components/progress/RemoveProgressPopup.svelte'
@@ -16,8 +16,6 @@
 
   export let progress: Progress | undefined = undefined
   console.log('EditProgress', issue, progress)
-  const client = getClient()
-
   const progressQuery = createQuery()
   $: if (issue.progress != null) {
     progressQuery.query(performance.class.Progress, { _id: issue.progress }, (res) => {
@@ -64,7 +62,7 @@
           size="small"
           inheritColor
           tooltip={{
-            label: kra.string.Edit,
+            label: kra.string.Edit
           }}
           on:click={() => {
             if (progress?._class === performance.class.Kpi) {
@@ -88,7 +86,7 @@
           size="small"
           inheritColor
           tooltip={{
-            label: kra.string.RemoveGoal
+            label: kra.string.RemoveProgress
           }}
           on:click={() => {
             showPopup(RemoveProgressPopup, {

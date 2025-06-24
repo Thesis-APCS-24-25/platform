@@ -470,8 +470,8 @@ export function defineViewlets (builder: Builder): void {
         },
         {
           key: '',
-          label: kra.string.Goal,
-          presenter: kra.component.GoalPresenter,
+          label: kra.string.Progress,
+          presenter: performance.component.ProgressPresenter,
           props: { kind: 'list', size: 'small' },
           displayProps: {
             key: 'goal',

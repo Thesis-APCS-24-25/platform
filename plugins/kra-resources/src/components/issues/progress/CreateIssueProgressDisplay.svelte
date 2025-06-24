@@ -1,67 +1,57 @@
 <script lang="ts">
-  import { Goal, Kpi, RatingScale } from '@hcengineering/kra'
-  import { Button, IconClose } from '@hcengineering/ui'
   import { createQuery } from '@hcengineering/presentation'
   import kra from '../../../plugin'
-  import { Ref, WithLookup } from '@hcengineering/core'
-  import IconKpi from './IconKpi.svelte'
-  import IconRatingScale from './IconRatingScale.svelte'
+  import { Class, Ref } from '@hcengineering/core'
+  import performance, { Progress } from '@hcengineering/performance'
+  import { Button, Icon, IconClose, Label } from '@hcengineering/ui'
 
-  export let goal: Ref<Goal>
+  export let progress: Ref<Progress>
+  export let _class: Ref<Class<Progress>> = performance.class.Progress
   export let onRemove: () => void = () => {}
 
-  const goalQuery = createQuery()
+  let unnamed = false
 
-  let _goal: Goal | null = null
+  const progressQuery = createQuery()
 
-  $: goalQuery.query(
-    kra.class.Goal,
+  let _progress: Progress | null = null
+
+  $: progressQuery.query(
+    performance.class.Progress,
     {
-      _id: goal
+      _id: progress
     },
     (res) => {
       if (res.length > 0) {
-        _goal = res[0]
+        _progress = res[0]
+        if (_progress.name === undefined || _progress.name.trim() === '') {
+          unnamed = true
+        } else {
+          unnamed = false
+        }
       } else {
-        _goal = null
-      }
-    },
-    {
-      lookup: {
-        unit: kra.class.Unit
+        _progress = null
       }
     }
   )
 
-  let kpi: WithLookup<Kpi> | null = null
-  let ratingScale: RatingScale | null = null
-
-  $: if (_goal !== null) {
-    if (_goal._class === kra.class.Kpi) {
-      kpi = _goal as WithLookup<Kpi>
-      ratingScale = null
-    } else if (_goal._class === kra.class.RatingScale) {
-      ratingScale = _goal as RatingScale
-      kpi = null
-    }
-  }
+  $: icon = _class === performance.class.Progress ? performance.icon.Progress : performance.icon.Kpi
 </script>
 
-{#if _goal}
+{#if _progress}
   <div class="container">
     <div class="icon">
-      {#if kpi}
-        <IconKpi size="medium" />
-      {:else if ratingScale}
-        <IconRatingScale size="medium" />
-      {/if}
+      <Icon {icon} size={'small'} />
     </div>
     <div class="title">
-      <div>{_goal?.name}</div>
+      {#if unnamed}
+        <Label label={performance.string.UnnamedProgress} />
+      {:else}
+        <div>{_progress.name}</div>
+      {/if}
     </div>
     <Button
       icon={IconClose}
-      showTooltip={{ label: kra.string.RemoveGoal, direction: 'bottom' }}
+      showTooltip={{ label: kra.string.RemoveProgress, direction: 'bottom' }}
       kind={'ghost'}
       size={'small'}
       on:click={onRemove}

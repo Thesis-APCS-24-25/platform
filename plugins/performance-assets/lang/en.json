@@ -120,6 +120,20 @@
     "CurrentWorkDay": "Current Work Day",
     "PreviousWorkDay": "Previous Work Day",
     "TimeReportDayTypeLabel": "Report Day Type",
-    "Note": "Note"
+    "Note": "Note",
+    "AddUnit": "Add Unit",
+    "AddNamePlaceholder": "Add Name Placeholder",
+    "AddSymbolPlaceholder": "Add Symbol Placeholder",
+    "Prefix": "Prefix",
+    "SelectUnit": "Select Unit",
+    "Issue": "Issue",
+    "AddKpi": "Add KPI",
+    "ChooseTemplate": "Choose Template",
+    "AddTargetPlaceholder": "Add Target Placeholder",
+    "UseAsTemplate": "Use as Template",
+    "NoKRASelected": "No KRA Selected",
+    "Edit": "Edit",
+    "RemoveGoal": "Remove Goal",
+    "Task": "Task"
   }
 }

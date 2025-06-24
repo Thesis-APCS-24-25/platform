@@ -21,15 +21,13 @@ import { type ViewCategoryAction, type GetAllValuesFunc, type ActionCategory, ty
 
 export default mergeIds(performanceId, performance, {
   string: {
-    SetKpi: '' as IntlString,
+    NoKRASelected: '' as IntlString,
     TimeReportDayTypeLabel: '' as IntlString,
     CurrentWorkDay: '' as IntlString,
     PreviousWorkDay: '' as IntlString,
     Note: '' as IntlString,
-    UnnamedProgress: '' as IntlString,
     AddProgress: '' as IntlString,
     AddProgressNamePlaceholder: '' as IntlString,
-    NoKRASelected: '' as IntlString,
     ProgressReport: '' as IntlString,
     RemoveProgressDialogTitle: '' as IntlString,
     RemoveProgressDialogMessage: '' as IntlString,

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { AddProgressPopup, EditKpi } from '@hcengineering/performance-resources'
+  import { AddProgressPopup, EditKpiPopup } from '@hcengineering/performance-resources'
   import { Button, eventToHTMLElement, SelectPopup, SelectPopupValueType, showPopup } from '@hcengineering/ui'
   import performance, { Progress, PTask } from '@hcengineering/performance'
   import { Asset, IntlString } from '@hcengineering/platform'
@@ -62,7 +62,7 @@
 
   function setKpi (): void {
     showPopup(
-      EditKpi,
+      EditKpiPopup,
       {
         kpi: value,
         issue: task,
