@@ -61,6 +61,9 @@ import UnitPresenter from './components/progress/unit/UnitPresenter.svelte'
 import ProgressObjectPresenter from './components/progress/ProgressObjectPresenter.svelte'
 import KpiReportEditPopup from './components/progress/kpi/KpiReportEditPopup.svelte'
 import ProgressReportEditPopup from './components/progress/ProgressReportEditPopup.svelte'
+import SetProgressMenu from './components/progress/SetProgressMenu.svelte'
+import { type PTask } from '@hcengineering/performance'
+import RemoveProgressPopup from './components/progress/RemoveProgressPopup.svelte'
 
 export {
   KRAPresenter,
@@ -75,6 +78,8 @@ export {
 
 export default async (): Promise<Resources> => ({
   component: {
+    RemoveProgressPopup,
+    SetProgressMenu,
     ProgressObjectPresenter,
     UnitPresenter,
     EmployeeKRATotalWeightStat,
@@ -108,6 +113,8 @@ export default async (): Promise<Resources> => ({
     ReviewPresenter
   },
   function: {
+    CanRemoveProgress: async (task: PTask | undefined): Promise<boolean> => task?.progress !== undefined,
+    CanAddProgress: async (task: PTask | undefined): Promise<boolean> => task?.progress === undefined,
     GetAllKRAStates: async (
       query: DocumentQuery<Doc<Space>> | undefined,
       onUpdate: () => void,

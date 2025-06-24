@@ -71,8 +71,8 @@ export interface ProgressReport extends AttachedDoc {
 export interface PTask extends Task {
   title: string
   startDate: Timestamp | null
-  kra?: Ref<KRA>
-  progress?: Ref<Progress>
+  kra: Ref<KRA> | null
+  progress: Ref<Progress> | null
   blockedBy?: RelatedDocument[]
   relations?: RelatedDocument[]
 }
@@ -163,6 +163,7 @@ export default plugin(performanceId, {
     TypeReviewSessionStatus: '' as Ref<Class<Type<ReviewSessionStatus>>>
   },
   string: {
+    Progress: '' as IntlString,
     Reports: '' as IntlString,
     PassedDays: '' as IntlString,
     RemainingDays: '' as IntlString,

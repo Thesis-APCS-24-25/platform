@@ -3,31 +3,43 @@
   import { ButtonIcon, Icon, IconAdd, IconDelete, IconEdit, Label, showPopup } from '@hcengineering/ui'
   import kra from '../../../plugin'
   import performance, { Kpi, Progress } from '@hcengineering/performance'
-  import { createQuery } from '@hcengineering/presentation'
+  import { createQuery, getClient } from '@hcengineering/presentation'
   import KpiEditor from './kpi/KpiEditor.svelte'
   import ProgressEditor from './ProgressEditor.svelte'
+  import RemoveProgressPopup from '@hcengineering/performance-resources/src/components/progress/RemoveProgressPopup.svelte'
+  import { ProgressReportEditPopup } from '@hcengineering/performance-resources'
+  import AddProgressPopup from '@hcengineering/performance-resources/src/components/progress/AddProgressPopup.svelte'
+  import EditProgressEmptyContent from './EditProgressEmptyContent.svelte'
+  import EditKpiPopup from '@hcengineering/performance-resources/src/components/progress/kpi/EditKpiPopup.svelte'
 
   export let issue: Issue
 
   export let progress: Progress | undefined = undefined
+  console.log('EditProgress', issue, progress)
+  const client = getClient()
 
   const progressQuery = createQuery()
-  $: progressQuery.query(performance.class.Progress, { _id: issue.progress }, (res) => {
-    if (res.length > 0) {
-      progress = res[0]
-    } else {
-      progress = undefined
-    }
-  })
-
-  const asKpi = (progress: Progress): Kpi => (progress as Kpi)
-  let isCollapsed = false
+  $: if (issue.progress != null) {
+    progressQuery.query(performance.class.Progress, { _id: issue.progress }, (res) => {
+      if (res.length > 0) {
+        progress = res[0]
+      } else {
+        progress = undefined
+      }
+    })
+  }
+  const asKpi = (progress: Progress): Kpi => progress as Kpi
+  const isCollapsed = false
 </script>
 
 <div class="goal-section">
   <div class="header" class:collapsed={isCollapsed}>
-    <Icon icon={kra.icon.Goal} size="medium" />
-    <Label label={kra.string.Goal} />
+    <div class="flex-row-center flex-gap-2">
+      <Icon icon={performance.icon.Progress} size="medium" />
+      <span class="font-bold-14">
+        <Label label={performance.string.Progress} />
+      </span>
+    </div>
     {#if progress}
       <div>
         <ButtonIcon
@@ -38,6 +50,13 @@
           tooltip={{
             label: kra.string.Report
           }}
+          on:click={() => {
+            showPopup(ProgressReportEditPopup, {
+              space: issue.space,
+              attachedTo: issue.progress,
+              assignee: issue.assignee
+            })
+          }}
         />
         <ButtonIcon
           icon={IconEdit}
@@ -45,7 +64,22 @@
           size="small"
           inheritColor
           tooltip={{
-            label: kra.string.EditGoal
+            label: kra.string.Edit,
+          }}
+          on:click={() => {
+            if (progress?._class === performance.class.Kpi) {
+              showPopup(EditKpiPopup, {
+                kpi: asKpi(progress),
+                issue: issue._id,
+                space: issue.space,
+                canChangeTask: false
+              })
+              return
+            }
+            showPopup(AddProgressPopup, {
+              progress,
+              canChangeTask: false
+            })
           }}
         />
         <ButtonIcon
@@ -56,32 +90,26 @@
           tooltip={{
             label: kra.string.RemoveGoal
           }}
+          on:click={() => {
+            showPopup(RemoveProgressPopup, {
+              object: issue
+            }, 'top')
+          }}
         />
       </div>
-    {:else}
-      <ButtonIcon
-        icon={IconAdd}
-        kind="tertiary"
-        size="small"
-        inheritColor
-        tooltip={{
-          label: kra.string.AddGoal
-        }}
-      />
-    {/if}
+    {:else}{/if}
   </div>
+
   <div class="content">
     {#if progress}
       {#if progress._class === performance.class.Kpi}
         {@const kpi = asKpi(progress)}
         <KpiEditor {kpi} />
-      {:else }
+      {:else}
         <ProgressEditor {progress} />
       {/if}
     {:else}
-      <div class="empty-state">
-        <Label label={kra.string.NoGoalAttached} />
-      </div>
+      <EditProgressEmptyContent {issue} />
     {/if}
   </div>
 </div>

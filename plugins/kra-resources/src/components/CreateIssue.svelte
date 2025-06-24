@@ -508,8 +508,8 @@
         childInfo: [],
         kind,
         identifier,
-        kra: object.kra,
-        progress: object.progress,
+        kra: object.kra ?? null,
+        progress: object.progress ?? null,
         startDate: object.startDate
       }
 

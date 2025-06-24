@@ -17,10 +17,11 @@ import { type Space } from '@hcengineering/core'
 import performance, { performanceId } from '@hcengineering/performance'
 import { type IntlString, mergeIds, type Resource } from '@hcengineering/platform'
 import { type AnyComponent } from '@hcengineering/ui'
-import { type ViewCategoryAction, type GetAllValuesFunc } from '@hcengineering/view'
+import { type ViewCategoryAction, type GetAllValuesFunc, ViewActionAvailabilityFunction } from '@hcengineering/view'
 
 export default mergeIds(performanceId, performance, {
   string: {
+    SetKpi: '' as IntlString,
     TimeReportDayTypeLabel: '' as IntlString,
     CurrentWorkDay: '' as IntlString,
     PreviousWorkDay: '' as IntlString,
@@ -40,7 +41,6 @@ export default mergeIds(performanceId, performance, {
     Symbol: '' as IntlString,
     Unit: '' as IntlString,
     StartDate: '' as IntlString,
-    Progress: '' as IntlString,
     BlockedBy: '' as IntlString,
     RelatedTo: '' as IntlString,
     Value: '' as IntlString,
@@ -142,6 +142,8 @@ export default mergeIds(performanceId, performance, {
     ReviewSessionType: '' as IntlString
   },
   component: {
+    RemoveProgressPopup: '' as AnyComponent,
+    SetProgressMenu: '' as AnyComponent,
     KpiPresenter: '' as AnyComponent,
     AddUnitPopup: '' as AnyComponent,
     UnitPresenter: '' as AnyComponent,
@@ -184,6 +186,8 @@ export default mergeIds(performanceId, performance, {
     ReviewEditor: '' as AnyComponent
   },
   function: {
+    CanRemoveProgress: '' as Resource<ViewActionAvailabilityFunction>,
+    CanAddProgress: '' as Resource<ViewActionAvailabilityFunction>,
     IsReviewSessionOfCurrentTeam: '' as Resource<(space: Space) => Promise<boolean>>,
     IsActiveReviewSessionOfCurrentTeam: '' as Resource<(space: Space) => Promise<boolean>>,
     IsInactiveReviewSessionOfCurrentTeam: '' as Resource<(space: Space) => Promise<boolean>>,

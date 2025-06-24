@@ -54,7 +54,7 @@
           '$lookup.attachedTo',
           {
             key: '',
-            label: performance.string.ProgressReport,
+            label: performance.string.Report,
             props: {
               kind: 'link',
               justify: 'left'

@@ -9,10 +9,11 @@
   import taskPlugin, { Project } from '@hcengineering/task'
 
   export let canSave = false
-  export let task: Ref<PTask> | undefined = undefined
-  export let space: Ref<Project> | undefined = undefined
   export let progress: Progress | undefined = undefined
   export let canChangeTask: boolean = true
+
+  export let task: Ref<PTask> | undefined = undefined
+  export let space: Ref<Project> | undefined = undefined
 
   const data = {
     name: progress?.name ?? '',

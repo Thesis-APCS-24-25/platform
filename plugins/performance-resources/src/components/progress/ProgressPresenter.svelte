@@ -30,7 +30,7 @@
 
   let _value: Progress | undefined = value.$lookup?.progress
 
-  $: if (_value === undefined) {
+  $: if (_value === undefined && value.progress != null) {
     progressQuery.query(
       performance.class.Progress,
       {

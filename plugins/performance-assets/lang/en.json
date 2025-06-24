@@ -105,6 +105,13 @@
     "PassedDays": "{days} Days Passed",
     "RemainingDays": "{days} Days Remaining",
     "Reports": "Reports",
-    "UnnamedProgress": "(Unnamed)"
+    "UnnamedProgress": "(Unnamed)",
+    "SetKpi": "Set KPI",
+    "RemoveProgressDialogTitle": "Do you want to remove the progress?",
+    "RemoveProgressDialogMessage": "Remove progress will remove all related reports and cannot be undone",
+    "CurrentWorkDay": "Current Work Day",
+    "PreviousWorkDay": "Previous Work Day",
+    "TimeReportDayTypeLabel": "Report Day Type",
+    "Note": "Note"
   }
 }

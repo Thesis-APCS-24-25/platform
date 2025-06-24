@@ -17,10 +17,8 @@ import {
   TEmployeeKRA,
   TKRA,
   TReviewSession,
-  TMeasureProgress,
   TPerformanceReport,
   TTypeReviewSessionStatus,
-  TProgressPresenter,
   TPerformanceReview,
   TActionItemFactory,
   TTypeKRAStatus,
@@ -31,6 +29,7 @@ import {
   TKpi
 } from './types'
 import { defineViewlets } from './viewlets'
+import { defineActions } from './actions'
 
 export { performanceId } from '@hcengineering/performance'
 export { performance as default }
@@ -426,6 +425,7 @@ export function createModel (builder: Builder): void {
   defineKRA(builder)
   defineActivity(builder)
   defineViewlets(builder)
+  defineActions(builder)
 
   defineApplication(builder)
 

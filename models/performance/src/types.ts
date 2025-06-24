@@ -78,10 +78,10 @@ export class TPTask extends TTask implements PTask {
     startDate!: number | null
 
   @Prop(TypeRef(performance.class.KRA), performance.string.KRA)
-    kra?: Ref<KRA> | undefined
+    kra!: Ref<KRA> | null
 
   @Prop(TypeRef(performance.class.Progress), performance.string.Progress)
-    progress?: Ref<Progress> | undefined
+    progress!: Ref<Progress> | null
 
   @Prop(ArrOf(TypeRef(core.class.TypeRelatedDocument)), performance.string.BlockedBy)
     blockedBy!: RelatedDocument[]
