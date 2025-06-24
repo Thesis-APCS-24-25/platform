@@ -19,6 +19,7 @@
   import LeaveKRACommentPopup from './LeaveKRACommentPopup.svelte'
   import kraTeam from '@hcengineering/kra-team'
   import { checkTeamPermission } from '../../utils/team'
+  import { approveKRA } from '../../actionImpl'
 
   export let value: EmployeeKRA['status'] | undefined
   export let object: EmployeeKRA
@@ -62,8 +63,9 @@
     if (newStatus === value) {
       return
     } else if (newStatus === KRAStatus.Approved) {
+      await approveKRA(object)
       if (object.weight === 0) {
-        return // TODO: handle this
+        return
       }
     } else if (newStatus === KRAStatus.NeedChanges) {
       showPopup(LeaveKRACommentPopup, { object }, eventToHTMLElement(event), async (e) => {

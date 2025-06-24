@@ -159,6 +159,10 @@ function defineKRA (builder: Builder): void {
     presenters: [performance.component.EmployeeKRATotalWeightStat]
   })
 
+  builder.mixin(performance.class.EmployeeKRA, core.class.Class, view.mixin.IgnoreActions, {
+    actions: [view.action.Open, view.action.OpenInNewTab]
+  })
+
   builder.mixin(performance.class.KRA, core.class.Class, view.mixin.AttributePresenter, {
     presenter: performance.component.KRARefPresenter
   })
