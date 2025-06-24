@@ -5,13 +5,13 @@
   import { personAccountByIdStore, personAccountPersonByIdStore, UserInfo } from '@hcengineering/contact-resources'
   import { Class, Ref, WithLookup } from '@hcengineering/core'
   import { Person, PersonAccount } from '@hcengineering/contact'
-  import { getClient } from '@hcengineering/presentation'
+  import { getClient, MessageBox } from '@hcengineering/presentation'
   import { createEventDispatcher } from 'svelte'
   import { Panel } from '@hcengineering/panel'
   import { Viewlet, ViewOptions } from '@hcengineering/view'
   import ViewletSelector from '@hcengineering/view-resources/src/components/ViewletSelector.svelte'
   import ReviewEditor from './ReviewEditor.svelte'
-  import { IconChevronRight, Label } from '@hcengineering/ui'
+  import { Button, closePanel, IconChevronRight, Label, showPopup } from '@hcengineering/ui'
   import performance from '../../plugin'
 
   const client = getClient()
@@ -63,7 +63,7 @@
     selectedAside={false}
     isAside={false}
     isPresence={false}
-    isHeader={false}
+    isHeader={true}
     useMaxWidth={true}
     {withoutInput}
     bind:content
@@ -87,6 +87,29 @@
         />
       </div>
       {/if}
+    </svelte:fragment>
+    <svelte:fragment slot="header">
+      <Button
+        label={performance.string.UpdateReport}
+        on:click={() => {
+          if (value === undefined) return
+          showPopup(MessageBox, {
+            label: performance.string.UpdateReport,
+            message: performance.string.UpdateReportConfirm,
+            action: async () => {
+              await client.createDoc(
+                performance.class.PerformanceReport,
+                value?.reviewSession,
+                {
+                  reviewee: value?.reviewee,
+                  reviewSession: value?.reviewSession
+                }
+              )
+              closePanel()
+            }
+          })
+        }}
+      />
     </svelte:fragment>
     {#if viewlet !== undefined && viewOptions}
       {#if value.scorePreview !== undefined}

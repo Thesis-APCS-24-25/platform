@@ -17,17 +17,24 @@
 
   const dispatch = createEventDispatcher()
 
+  $: remaining = calculateRemaining(typeof value === 'number' ? value : 0)
+
+  function onSubmit (): void {
+    if (remaining < 0) return
+    dispatch('close', value)
+  }
+
   function _onkeypress (ev: KeyboardEvent): void {
-    if (ev.key === 'Enter') dispatch('close', value)
+    if (ev.key === 'Enter') {
+      onSubmit()
+    }
   }
 
   function calculateRemaining (value: number): number {
     const total = otherWeights.reduce((acc, item) => acc + item.weight, 0)
     const result = 100 - total - value
-    return result < 0 ? 0 : result
+    return result
   }
-
-  $: remaining = calculateRemaining(typeof value === 'number' ? value : 0)
 </script>
 
 <div class="antiCard" use:resizeObserver={() => dispatch('changeContent')}>
@@ -46,7 +53,7 @@
       />
     </div>
     <div class="ml-2">
-      <Button icon={IconCheck} size={'small'} on:click={() => dispatch('close', value)} />
+      <Button icon={IconCheck} disabled={remaining < 0} size={'small'} on:click={onSubmit} />
     </div>
   </div>
   <ListView items={otherWeights} count={otherWeights.length}>
@@ -63,10 +70,17 @@
       </div>
     </svelte:fragment>
   </ListView>
-  <div class="flex-col items-end m-4">
+  <div class="flex-col items-end m-4 text-right">
     <span>
       <Label label={performance.string.RemainingWeight}/>:
       <KraWeightPresenter value={remaining} showPercent />
+      <span class="error-color">
+        {#if remaining < 0}
+          <Label
+            label={performance.string.TotalWeightOverflow}
+          />
+        {/if}
+      </span>
     </span>
   </div>
 </div>

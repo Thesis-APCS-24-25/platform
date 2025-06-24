@@ -131,6 +131,7 @@
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    color: var(--theme-text-primary-color);
   }
 
   .icon {

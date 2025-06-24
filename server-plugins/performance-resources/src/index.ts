@@ -63,11 +63,43 @@ export async function OnTeamMemberUpdate (txes: Tx[], control: TriggerControl): 
 
 export async function OnCreateReport (txes: Tx[], control: TriggerControl): Promise<Tx[]> {
   const result: Tx[] = []
-  console.log(txes)
+
   for (const tx of txes) {
     const createTx = tx as TxCreateDoc<PerformanceReport>
 
     result.push(await prepareReport(control, createTx))
+
+    const allReports = await control.findAll(
+      control.ctx,
+      performance.class.PerformanceReport,
+      {
+        reviewee: createTx.attributes.reviewee,
+        reviewSession: createTx.attributes.reviewSession
+      }
+    )
+    const previousReport = allReports
+      .filter((value) => value._id !== createTx.objectId)
+    result.push(...previousReport.map((value) => control.txFactory.createTxRemoveDoc(
+      value._class,
+      value.space,
+      value._id
+    )))
+    for (const value of previousReport) {
+      const reviews = (await control.findAll(
+        control.ctx,
+        performance.class.PerformanceReview,
+        {
+          report: value._id
+        }
+      ))
+
+      result.push(...reviews.map((value) => control.txFactory.createTxUpdateDoc(
+        performance.class.PerformanceReview,
+        value.space,
+        value._id,
+        { report: createTx.objectId }
+      )))
+    }
   }
 
   return result

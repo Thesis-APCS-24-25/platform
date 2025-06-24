@@ -44,9 +44,9 @@ export const kraStatusAssets: Record<KRAStatus, { icon: Asset, label: IntlString
   [KRAStatus.Approved]: {
     icon: performance.icon.StatusApproved,
     label: performance.string.Approved
-  },
-  [KRAStatus.Cancelled]: {
-    icon: performance.icon.StatusCancelled,
-    label: performance.string.Cancelled
   }
+  // [KRAStatus.Cancelled]: {
+  //   icon: performance.icon.StatusCancelled,
+  //   label: performance.string.Cancelled
+  // }
 }

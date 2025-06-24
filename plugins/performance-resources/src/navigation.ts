@@ -139,7 +139,7 @@ export const navigatorModel = derived([currentTeam, permissionsStore], ([team, p
             component: performance.component.AllKRAs
           },
           {
-            id: 'my-reports',
+            id: 'reports',
             position: 'bottom',
             label: performance.string.PerformanceReports,
             component: performance.component.PerformanceReports,

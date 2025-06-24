@@ -16,8 +16,8 @@ import core, {
 import {
   type KRA,
   type EmployeeKRA,
-  type WithKRA,
-  type PTask
+  type PTask,
+  type Kpi
 } from '@hcengineering/performance'
 import performance from '../plugin'
 import task, { makeRank } from '@hcengineering/task'
@@ -83,12 +83,12 @@ export async function createKRA (
 export async function calculateCompletionLevel (task: Ref<PTask> | PTask): Promise<number | undefined> {
   const client = getClient()
   async function calculate (task: PTask): Promise<number | undefined> {
-    if (task.progress !== undefined) {
+    if (task.progress != null) {
       const p = await client.findOne(performance.class.Progress, { _id: task.progress })
       if (p === undefined) {
         return undefined
       }
-      const rs = (p.progress ?? 0) / p.target
+      const rs = (p.progress ?? 0) / (p._class === performance.class.Kpi ? (p as Kpi).target : 100)
       return isFinite(rs) ? rs : undefined
     }
   }
@@ -111,10 +111,10 @@ async function getKRAsOfEmployeeKRA (client: Client, query: DocumentQuery<Employ
   return res
 }
 
-async function getKRAsOfTask (client: Client, query: DocumentQuery<WithKRA>): Promise<Array<Ref<KRA>>> {
+async function getKRAsOfTask (client: Client, query: DocumentQuery<PTask>): Promise<Array<Ref<KRA>>> {
   // TODO: Refactor when `assignedTo` in `KRA` is added
   let kraQuery: ObjQueryType<Ref<KRA>> = {}
-  if (query.kra === undefined) return []
+  if (query.kra == null) return []
   if (typeof query.kra !== 'string' && query.kra.$in !== undefined) {
     kraQuery = query.kra as QuerySelector<Ref<KRA>>
   }
@@ -139,7 +139,7 @@ export async function getAllKRAs (
   if (hierarchy.isDerived(attr.attributeOf, performance.class.EmployeeKRA)) {
     return await getKRAsOfEmployeeKRA(client, query as DocumentQuery<EmployeeKRA>)
   } else if (hierarchy.isDerived(attr.attributeOf, task.class.Task)) {
-    return await getKRAsOfTask(client, query as DocumentQuery<WithKRA>)
+    return await getKRAsOfTask(client, query as DocumentQuery<PTask>)
   }
   return []
 }

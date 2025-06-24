@@ -4,6 +4,7 @@
   import { Ref, WithLookup } from '@hcengineering/core'
   import { PerformanceReview } from '@hcengineering/performance'
   import { MarkupPresenter } from '@hcengineering/view-resources'
+  import ScorePresenter from './ScorePresenter.svelte'
 
   export let value: WithLookup<PerformanceReview>
 
@@ -33,41 +34,16 @@
       </div>
     </div>
 
-    <div class="review-box flex-col items-stretch">
-      <div class="value">
-        <span class="value-value">{value.score}</span>
-        <span class="value-target">/100</span>
-      </div>
-      <!-- <KpiProgressBar value={sum ?? 0} max={review.target} /> -->
-    </div>
+    <ScorePresenter value={value.score}/>
   </div>
 {/if}
 
 <style>
-  .value {
-    font-size: 1.25rem;
-    font-weight: 500;
-  }
-
   .right-divider {
     margin-right: 1rem;
   }
 
   .content {
     flex-grow: 3;
-  }
-
-  .value-value {
-    color: var(--theme-primary-color, #4c6ef5);
-  }
-
-  .review-box {
-    flex-grow: 1;
-    border: 1px solid transparent;
-    padding: 0.25rem;
-    border-radius: 0.25rem;
-    gap: 0.5rem;
-    min-width: 10rem;
-    color: var(--theme-content-color, #333);
   }
 </style>

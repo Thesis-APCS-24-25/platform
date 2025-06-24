@@ -1,10 +1,9 @@
 <script lang="ts">
   import { Ref, SortingOrder, WithLookup } from '@hcengineering/core'
   import { EmployeeKRA, KRA, ReviewSession } from '@hcengineering/performance'
-  import { List, ListSelectionProvider } from '@hcengineering/view-resources'
+  import { ListView } from '@hcengineering/view-resources'
   import KraWeightEditorWithPopup from './KRAWeightEditorWithPopup.svelte'
   import performance from '../../plugin'
-  import AssignKraPopup from './AssignKRAPopup.svelte'
   import view from '@hcengineering/view'
 
   export let kras: KRA[]
@@ -12,10 +11,10 @@
   export let space: Ref<ReviewSession>
   // export let canAssign: boolean = false
 
-  let kraById: Map<Ref<KRA>, KRA> = new Map<Ref<KRA>, KRA>()
-  $: {
-    kraById = new Map(kras.map((kra) => [kra._id, kra]))
-  }
+  // let kraById: Map<Ref<KRA>, KRA> = new Map<Ref<KRA>, KRA>()
+  // $: {
+  //   kraById = new Map(kras.map((kra) => [kra._id, kra]))
+  // }
 
   let mapping = new Map<Ref<KRA>, WithLookup<EmployeeKRA>[]>()
   $: {
@@ -29,17 +28,25 @@
       }
     }
   }
-  const listProvider = new ListSelectionProvider((offset: 1 | -1 | 0) => {})
+
+  // let list: List
+  // const listProvider = new ListSelectionProvider((
+  //   offset: 1 | -1 | 0, of?: Doc, dir?: SelectDirection, noScroll?: boolean
+  // ) => {
+  //   if (dir === 'vertical') {
+  //     // Select next
+  //     list?.select(offset, of, noScroll)
+  //   }
+  // })
 </script>
 
 {#key kras.length}
-  <List
+  <ListView
     props={{
       type: 'link'
     }}
-    createItemDialog={AssignKraPopup}
+    createItemDialog={performance.component.AssignKraPopup}
     createItemLabel={performance.string.AssignKRA}
-    {listProvider}
     config={[
       {
         key: 'assignee',
@@ -66,7 +73,20 @@
         }
       }
     ]}
+    viewlet={{
+      viewOptions: [
+        {
+          key: 'shouldShowAll',
+          type: 'toggle',
+          defaultValue: true,
+          actionTarget: 'category',
+          action: performance.function.ShowEmptyGroups,
+          label: view.string.View
+        }
+      ]
+    }}
     configurations={undefined}
+    createItemEvent={undefined}
     query={{
       space
     }}

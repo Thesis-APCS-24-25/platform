@@ -56,17 +56,21 @@ export async function prepareReport (
     }
   ))
   const kras = employeeKras.map(v => v.kra)
-  const tasks = (await control.findAll(control.ctx, performance.class.PTask,
+  const tasks1 = (await control.findAll(control.ctx, performance.class.PTask,
     {
       assignee: assignee.person,
-      // createdOn: {
-      //   $gte: reviewSession.reviewSessionStart,
-      //   // Add an extra day to include tasks at the end of review session date
-      //   $lt: reviewSession.reviewSessionEnd + 86400
-      // },
-      'performance:mixin:WithKRA.kra': { $in: kras }
+      startDate: { $lte: reviewSession.reviewSessionEnd + 86400 },
+      dueDate: { $gte: reviewSession.reviewSessionStart }
     }
   ))
+  const tasks2 = (await control.findAll(control.ctx, performance.class.PTask,
+    {
+      assignee: assignee.person,
+      kra: { $in: kras }
+    }
+  ))
+  const tasksSet = new Set([...tasks1, ...tasks2])
+  const tasks = Array.from(tasksSet)
 
   const score = await calculateScore(control, tasks, employeeKras)
 
@@ -111,7 +115,7 @@ async function calculateScore (control: TriggerControl, tasks: PTask[], employee
     }
   }
   for (const task of tasks) {
-    if (task.kra === undefined) continue
+    if (task.kra == null || task.kra === performance.ids.NoKRARef) continue
     tasksByKras[task.kra].tasks.push(task)
   }
   for (const ekra of employeeKras) {

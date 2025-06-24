@@ -59,6 +59,10 @@ import AddUnitPopup from './components/progress/unit/AddUnitPopup.svelte'
 import KRABox from './components/kra/KRABox.svelte'
 import UnitPresenter from './components/progress/unit/UnitPresenter.svelte'
 import ProgressObjectPresenter from './components/progress/ProgressObjectPresenter.svelte'
+import AssignKraPopup from './components/kra/AssignKRAPopup.svelte'
+import { canApproveKRA } from './visibilityTester'
+import { approveKRA } from './actionImpl'
+import ScorePresenter from './components/report/ScorePresenter.svelte'
 import KpiReportEditPopup from './components/progress/kpi/KpiReportEditPopup.svelte'
 import ProgressReportEditPopup from './components/progress/ProgressReportEditPopup.svelte'
 import SetProgressMenu from './components/progress/SetProgressMenu.svelte'
@@ -77,6 +81,9 @@ export {
 }
 
 export default async (): Promise<Resources> => ({
+  actionImpl: {
+    ApproveKRA: approveKRA
+  },
   component: {
     RemoveProgressPopup,
     SetProgressMenu,
@@ -110,7 +117,9 @@ export default async (): Promise<Resources> => ({
     KRAStatistics,
     KRAStatusPresenter,
     AddUnitPopup,
-    ReviewPresenter
+    ReviewPresenter,
+    AssignKraPopup,
+    ScorePresenter
   },
   function: {
     CanRemoveProgress: async (task: PTask | undefined): Promise<boolean> => task?.progress !== undefined,
@@ -125,6 +134,7 @@ export default async (): Promise<Resources> => ({
     ShowEmptyGroups: showEmptyGroups,
     IsReviewSessionOfCurrentTeam,
     IsActiveReviewSessionOfCurrentTeam,
-    IsInactiveReviewSessionOfCurrentTeam
+    IsInactiveReviewSessionOfCurrentTeam,
+    CanApproveKRA: canApproveKRA
   }
 })
