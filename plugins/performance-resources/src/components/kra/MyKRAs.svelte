@@ -58,7 +58,8 @@
         createItemLabel={performance.string.CreateActionItem}
         createItemDialog={AssignTaskPopup}
         createItemDialogProps={{
-          assignee: me
+          assignee: me,
+          shouldSaveDraft: false
         }}
         _class={performance.class.PTask}
         config={[
