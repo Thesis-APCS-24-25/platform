@@ -160,6 +160,10 @@ function defineKRA (builder: Builder): void {
     presenters: [performance.component.EmployeeKRATotalWeightStat]
   })
 
+  builder.mixin(performance.class.PTask, core.class.Class, view.mixin.ListHeaderExtra, {
+    presenters: [performance.component.PTaskKRAStat]
+  })
+
   builder.mixin(performance.class.EmployeeKRA, core.class.Class, view.mixin.IgnoreActions, {
     actions: [view.action.Open, view.action.OpenInNewTab]
   })

@@ -69,6 +69,7 @@ import SetProgressMenu from './components/progress/SetProgressMenu.svelte'
 import { type PTask } from '@hcengineering/performance'
 import RemoveProgressPopup from './components/progress/RemoveProgressPopup.svelte'
 import EditKpiPopup from './components/progress/kpi/EditKpiPopup.svelte'
+import PTaskKRAStat from './components/task/PTaskKRAStat.svelte'
 
 export {
   EditKpiPopup,
@@ -88,6 +89,7 @@ export default async (): Promise<Resources> => ({
     ApproveKRA: approveKRA
   },
   component: {
+    PTaskKRAStat,
     RemoveProgressPopup,
     SetProgressMenu,
     ProgressObjectPresenter,

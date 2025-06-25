@@ -145,6 +145,7 @@ export default mergeIds(performanceId, performance, {
     Performance: '' as Ref<ActionCategory>
   },
   component: {
+    PTaskKRAStat: '' as AnyComponent,
     RemoveProgressPopup: '' as AnyComponent,
     SetProgressMenu: '' as AnyComponent,
     KpiPresenter: '' as AnyComponent,

@@ -36,7 +36,7 @@ import { AnyComponent } from '@hcengineering/ui'
 import { Action, ViewAction, Viewlet, ViewletDescriptor } from '@hcengineering/view'
 import { ChatMessageViewlet } from '@hcengineering/chunter'
 
-export enum TimeReportDayType {
+export enum ReportDayType {
   CurrentWorkDay = 'CurrentWorkDay',
   PreviousWorkDay = 'PreviousWorkDay'
 }
