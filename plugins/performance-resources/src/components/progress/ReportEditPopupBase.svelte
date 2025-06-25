@@ -3,7 +3,7 @@
   import kra from '../../plugin'
   import { TimeReportDayType } from '@hcengineering/performance'
   import { DatePresenter } from '@hcengineering/ui'
-  import { getTimeReportDate, getTimeReportDayType } from '../../utils'
+  import { getReportDate, getReportDayType } from '../../utils/progress-report'
   import { UserBox } from '@hcengineering/contact-resources'
   import contact, { Person } from '@hcengineering/contact'
   import TimeReportDayDropdown from '../timereport/TimeReportDayDropdown.svelte'
@@ -18,7 +18,7 @@
   export let okLabel: IntlString = view.string.Save
   export let canSave: boolean = false
   export let assignee: Ref<Person> | null | undefined
-  export let reportDate: number | undefined | null = getTimeReportDate(TimeReportDayType.CurrentWorkDay)
+  export let reportDate: number | undefined | null = getReportDate(TimeReportDayType.CurrentWorkDay)
 
   let timeReportDateType: TimeReportDayType | undefined = TimeReportDayType.CurrentWorkDay
 
@@ -50,14 +50,14 @@
       kind={'regular'}
       size={'large'}
       on:change={({ detail }) => {
-        timeReportDateType = getTimeReportDayType(detail)
+        timeReportDateType = getReportDayType(detail)
       }}
     />
     <TimeReportDayDropdown
       kind={'regular'}
       size={'large'}
       bind:selected={timeReportDateType}
-      on:selected={({ detail }) => (reportDate = getTimeReportDate(detail))}
+      on:selected={({ detail }) => (reportDate = getReportDate(detail))}
     />
     <UserBox
       _class={contact.mixin.Employee}
