@@ -2,10 +2,11 @@
   import { FindOptions, Ref, SortingOrder } from '@hcengineering/core'
   import view from '@hcengineering/view'
   import { ListView } from '@hcengineering/view-resources'
-  import ProgressPresenter from '../progress/ProgressPresenter.svelte'
   import performance from '../../plugin'
   import { KRA, PTask, ReviewSession } from '@hcengineering/performance'
   import { createQuery } from '@hcengineering/presentation'
+  import ProgressSummaryPresenter from '../progress/ProgressSummaryPresenter.svelte'
+  import { Component } from '@hcengineering/ui'
 
   export let space: Ref<ReviewSession>
 
@@ -64,7 +65,7 @@
       },
       {
         key: '',
-        presenter: ProgressPresenter
+        presenter: ProgressSummaryPresenter
       }
     ]}
     configurations={undefined}

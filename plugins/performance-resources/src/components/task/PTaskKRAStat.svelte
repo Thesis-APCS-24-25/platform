@@ -21,7 +21,7 @@
     <FixedColumn key="kra">
       <div class="flex-row-center flex-gap-1 total-weight">
         <Icon icon={performance.icon.GoalFlag} size="small" iconProps={{}} />
-        <KpiProgressCircle value={Math.round(total)}/>
+        <KpiProgressCircle value={Math.round(total)} />
         <span class="text-bold">{Math.round(total)}%</span>
       </div>
     </FixedColumn>
