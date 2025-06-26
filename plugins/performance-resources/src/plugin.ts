@@ -21,6 +21,7 @@ import { type ViewCategoryAction, type GetAllValuesFunc, type ActionCategory, ty
 
 export default mergeIds(performanceId, performance, {
   string: {
+    Score: '' as IntlString,
     TimeReportDayTypeLabel: '' as IntlString,
     CurrentWorkDay: '' as IntlString,
     PreviousWorkDay: '' as IntlString,
