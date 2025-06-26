@@ -78,7 +78,7 @@ export async function prepareReport (
 
   return control.txFactory.createTxUpdateDoc(createTx.objectClass, createTx.objectSpace, createTx.objectId, {
     tasks: taskRefs,
-    scorePreview: score
+    scorePreview: Number(Number(score).toFixed(0))
   })
 }
 
