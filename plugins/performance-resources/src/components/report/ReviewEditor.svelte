@@ -127,7 +127,7 @@
       <FixedColumn key="person" addClass="flex-shrink">
         <PersonAccountPresenter value={getCurrentAccount()} shouldShowName={false} />
       </FixedColumn>
-      <FixedColumn key="comment" addClass="flex-shrink">
+      <FixedColumn key="comment" addClass="flex-grow">
         <StyledTextBox
           bind:content
           alwaysEdit
@@ -160,7 +160,7 @@
               <PersonRefPresenter value={null} />
             {/if}
           </FixedColumn>
-          <FixedColumn key="comment" addClass="flex-shrink">
+          <FixedColumn key="comment" addClass="flex-grow">
             <MarkupPresenter value={review.content} />
           </FixedColumn>
           <FixedColumn key="score">
