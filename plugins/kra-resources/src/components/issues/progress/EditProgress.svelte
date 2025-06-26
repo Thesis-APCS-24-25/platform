@@ -34,7 +34,7 @@
   <div class="header" class:collapsed={isCollapsed}>
     <div class="flex-row-center flex-gap-2">
       <Icon icon={performance.icon.Progress} size="medium" />
-      <span class="font-bold-14">
+      <span class="font-bold-14 progress-title">
         <Label label={performance.string.Progress} />
       </span>
     </div>
@@ -95,7 +95,7 @@
           }}
         />
       </div>
-    {:else}{/if}
+    {/if}
   </div>
 
   <div class="content">
@@ -113,6 +113,10 @@
 </div>
 
 <style lang="scss">
+  .progress-title {
+    color: white;
+  }
+
   .goal-section {
     margin-bottom: 1rem;
     border: 1px solid var(--button-border-color);
@@ -131,13 +135,9 @@
       border-radius: 0.25rem;
     }
   }
+
   .content {
     padding: 0.75rem;
     padding-top: 0.5rem;
-  }
-  .empty-state {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
   }
 </style>

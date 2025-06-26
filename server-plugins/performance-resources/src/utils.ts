@@ -11,6 +11,7 @@ import performance, {
 import { TriggerControl } from '@hcengineering/server-core'
 import contact from '@hcengineering/contact'
 import taskPlugin from '@hcengineering/task'
+import { floorFractionDigits } from '../../../packages/ui/src'
 
 export function addUpdates (
   control: TriggerControl,
@@ -78,7 +79,7 @@ export async function prepareReport (
 
   return control.txFactory.createTxUpdateDoc(createTx.objectClass, createTx.objectSpace, createTx.objectId, {
     tasks: taskRefs,
-    scorePreview: score
+    scorePreview: floorFractionDigits(score, 0)
   })
 }
 
