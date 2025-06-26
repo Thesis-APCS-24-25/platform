@@ -1,7 +1,7 @@
 <script lang="ts">
   import { Card } from '@hcengineering/presentation'
-  import kra from '../../plugin'
-  import { TimeReportDayType } from '@hcengineering/performance'
+  import performance from '../../plugin'
+  import { ReportDayType } from '@hcengineering/performance'
   import { DatePresenter } from '@hcengineering/ui'
   import { getReportDate, getReportDayType } from '../../utils/progress-report'
   import { UserBox } from '@hcengineering/contact-resources'
@@ -18,9 +18,9 @@
   export let okLabel: IntlString = view.string.Save
   export let canSave: boolean = false
   export let assignee: Ref<Person> | null | undefined
-  export let reportDate: number | undefined | null = getReportDate(TimeReportDayType.CurrentWorkDay)
+  export let reportDate: number | undefined | null = getReportDate(ReportDayType.CurrentWorkDay)
 
-  let timeReportDateType: TimeReportDayType | undefined = TimeReportDayType.CurrentWorkDay
+  let timeReportDateType: ReportDayType | undefined = ReportDayType.CurrentWorkDay
 
   const dispatch = createEventDispatcher()
 </script>
@@ -28,7 +28,7 @@
 <Card
   {width}
   {okLabel}
-  label={label ?? kra.string.Goal}
+  label={label ?? performance.string.ProgressReport}
   {okAction}
   {canSave}
   on:close={() => {

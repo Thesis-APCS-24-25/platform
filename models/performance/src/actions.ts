@@ -3,14 +3,14 @@ import view from '@hcengineering/view'
 import performance from './plugin'
 import { type Builder } from '@hcengineering/model'
 
-export function defineActions(builder: Builder): void {
+export function defineActions (builder: Builder): void {
   createAction(builder, {
     action: view.actionImpl.ValueSelector,
     actionPopup: performance.component.SetProgressMenu,
     actionProps: {
       attribute: ''
     },
-    label: performance.string.SetProgress,
+    label: performance.string.TrackProgress,
     icon: performance.icon.Progress,
     input: 'none',
     query: {

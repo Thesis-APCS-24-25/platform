@@ -18,7 +18,7 @@
   </div>
   <Button
     icon={IconAdd}
-    label={performance.string.SetProgress}
+    label={performance.string.TrackCompletionLevel}
     kind="ghost"
     size="small"
     on:click={() => {
@@ -41,7 +41,7 @@
   />
   <Button
     icon={IconAdd}
-    label={kra.string.SetKpi}
+    label={performance.string.TrackKpi}
     kind="ghost"
     size="small"
     on:click={() => {

@@ -13,24 +13,24 @@
 // limitations under the License.
 -->
 <script lang="ts">
-  import { TimeReportDayType } from '@hcengineering/performance'
+  import { ReportDayType } from '@hcengineering/performance'
   import { DropdownIntlItem, DropdownLabelsIntl } from '@hcengineering/ui'
   import type { ButtonKind, ButtonSize } from '@hcengineering/ui'
   import performance from '../../plugin'
   import TimeReportDayIcon from './TimeReportDayIcon.svelte'
 
   export let label = performance.string.TimeReportDayTypeLabel
-  export let selected: TimeReportDayType | undefined
+  export let selected: ReportDayType | undefined
   export let kind: ButtonKind = 'link-bordered'
   export let size: ButtonSize = 'small'
 
   const workDaysDropdownItems: DropdownIntlItem[] = [
     {
-      id: TimeReportDayType.CurrentWorkDay,
+      id: ReportDayType.CurrentWorkDay,
       label: performance.string.CurrentWorkDay
     },
     {
-      id: TimeReportDayType.PreviousWorkDay,
+      id: ReportDayType.PreviousWorkDay,
       label: performance.string.PreviousWorkDay
     }
   ]

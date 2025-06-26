@@ -24,6 +24,7 @@
     unit: kpi?.unit ?? undefined
   }
 
+  $: console.log(data.unit)
   let template: Kpi | undefined = undefined
 
   space = space ?? kpi?.space
@@ -37,7 +38,7 @@
     data.unit = template.unit
   }
 
-  $: canSave = data.name.length > 0 && Number.isFinite(data.target) && data.unit !== undefined
+  $: canSave = Number.isFinite(data.target) && data.unit != null
 
   let id: Ref<Progress> | undefined = kpi?._id
 
@@ -113,18 +114,8 @@
       }}
       allowDeselect
     />
-  </svelte:fragment>
-  <div class="m-1">
-    <EditBox
-      label={performance.string.Name}
-      kind="default-large"
-      fullSize
-      bind:value={data.name}
-      placeholder={performance.string.AddNamePlaceholder}
-      focusIndex={1}
-    />
-  </div>
 
+  </svelte:fragment>
   <div class="m-1 flex-row-baseline items-end justify-between">
     <EditBox
       label={performance.string.Target}
@@ -133,14 +124,29 @@
       maxWidth="15rem"
       bind:value={data.target}
       placeholder={performance.string.AddTargetPlaceholder}
-      focusIndex={3}
+      focusIndex={1}
     />
     {#if space !== undefined}
-      <UnitBox size="large" {space} bind:value={data.unit} focusIndex={4} />
+      <UnitBox size="large" {space} bind:value={data.unit} focusIndex={2} />
     {/if}
   </div>
 
+  <div class="m-1">
+    <EditBox
+      label={performance.string.Name}
+      kind="default-large"
+      fullSize
+      bind:value={data.name}
+      placeholder={performance.string.AddProgressNamePlaceholder}
+      focusIndex={3}
+    />
+  </div>
+
   <svelte:fragment slot="pool">
-      <ToggleWithLabel disabled={template !== undefined} bind:on={useAsTemplate} label={performance.string.UseAsTemplate} />
+    <ToggleWithLabel
+      disabled={template !== undefined}
+      bind:on={useAsTemplate}
+      label={performance.string.UseAsTemplate}
+    />
   </svelte:fragment>
 </Card>

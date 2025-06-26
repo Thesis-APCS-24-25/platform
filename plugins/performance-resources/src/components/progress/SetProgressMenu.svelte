@@ -11,7 +11,7 @@
 
   const client = getClient()
 
-  async function addProgressToTask(id: Ref<Progress>) {
+  async function addProgressToTask (id: Ref<Progress>) {
     await client.update(value, {
       progress: id
     })
@@ -19,7 +19,7 @@
 
   const actions: Action[] = [
     {
-      label: performance.string.SetProgress,
+      label: performance.string.TrackCompletionLevel,
       icon: performance.icon.Progress,
       inline: true,
       action: function (props: any, ev: Event): Promise<void> {
@@ -37,7 +37,7 @@
       }
     },
     {
-      label: performance.string.SetKpi,
+      label: performance.string.TrackKpi,
       icon: performance.icon.Kpi,
       action: function (props: any, ev: Event): Promise<void> {
         showPopup(

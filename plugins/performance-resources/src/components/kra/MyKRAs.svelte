@@ -10,6 +10,7 @@
   import AssignTaskPopup from './AssignTaskPopup.svelte'
   import { personIdByAccountId } from '@hcengineering/contact-resources'
   import ProgressSummaryPresenter from '../progress/ProgressSummaryPresenter.svelte'
+  import BlockedByPresenter from '../task/BlockedByPresenter.svelte'
 
   export let currentSpace: Ref<Space>
 
@@ -76,6 +77,10 @@
           {
             key: '',
             presenter: view.component.GrowPresenter
+          },
+          {
+            key: 'blockedBy',
+            presenter: BlockedByPresenter
           },
           {
             key: '',

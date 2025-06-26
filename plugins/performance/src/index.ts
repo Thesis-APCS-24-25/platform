@@ -159,6 +159,14 @@ export default plugin(performanceId, {
     TypeReviewSessionStatus: '' as Ref<Class<Type<ReviewSessionStatus>>>
   },
   string: {
+    TrackProgress: '' as IntlString,
+    CompletionLevelTracking: '' as IntlString,
+    KpiTracking: '' as IntlString,
+    TrackCompletionLevel: '' as IntlString,
+    TrackKpi: '' as IntlString,
+    SetKpi: '' as IntlString,
+    BlockedTasks: '' as IntlString,
+    FinishedBlockedTasks: '' as IntlString,
     UnnamedProgress: '' as IntlString,
     NoKRASelected: '' as IntlString,
     Progress: '' as IntlString,
@@ -228,6 +236,7 @@ export default plugin(performanceId, {
     NoKRARef: '' as Ref<KRA>
   },
   icon: {
+    BlockedTask: '' as Asset,
     Unit: '' as Asset,
     Kpi: '' as Asset,
     TimeLeft: '' as Asset,
