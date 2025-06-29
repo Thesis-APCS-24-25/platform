@@ -43,9 +43,8 @@
         class="flex-row-center flex-gap-1 total-weight"
         use:tooltip={{ label: performance.string.KRACompletionLevel }}
       >
-        <Icon icon={performance.icon.GoalFlag} size="inline" iconProps={{}} />
-        <KpiProgressCircle value={Math.round(total)} size={'small'}/>
-        <span class="text-bold">{Math.round(total)}%</span>
+        <KpiProgressCircle value={Math.round(total * 100)} size={'small'}/>
+        <span class="text-bold">{Math.round(total * 100)}%</span>
         {#if weight !== undefined}
           x
           <span class="flex-row-center">
