@@ -39,9 +39,10 @@ import task, { type Task } from '@hcengineering/task'
 import {
   Account,
   type Arr,
+  DateRangeMode,
   type Domain,
   IndexKind,
-  Markup,
+  type Markup,
   Ref,
   type RelatedDocument,
   type Role,
@@ -75,11 +76,11 @@ export class TPTask extends TTask implements PTask {
   @Index(IndexKind.FullText)
     title!: string
 
-  @Prop(TypeDate(), performance.string.StartDate)
+  @Prop(TypeDate(DateRangeMode.DATETIME), performance.string.StartDate)
   @Index(IndexKind.Indexed)
-    startDate!: number | null
+    startDate!: Timestamp | null
 
-  @Prop(TypeDate(), task.string.DueDate, { editor: modelTask.component.DueDateEditor })
+  @Prop(TypeDate(DateRangeMode.DATETIME), task.string.DueDate, { editor: modelTask.component.DueDateEditor })
   @Index(IndexKind.Indexed)
   declare dueDate: Timestamp | null
 

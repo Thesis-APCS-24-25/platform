@@ -203,8 +203,8 @@ export class TIssue extends TPTask implements Issue {
   @ReadOnly()
   declare space: Ref<Project>
 
-  @Prop(TypeDate(DateRangeMode.DATETIME), kra.string.DueDate)
-  declare dueDate: Timestamp | null
+  // @Prop(TypeDate(DateRangeMode.DATETIME), kra.string.DueDate)
+  // declare dueDate: Timestamp | null
 
   @Prop(TypeEstimation(), kra.string.Estimation)
     estimation!: number
