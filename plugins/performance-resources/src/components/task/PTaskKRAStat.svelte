@@ -18,20 +18,23 @@
   let weight: number | undefined
 
   $: if (category === 'kra' && docs !== undefined && docs.length > 0 && value != null) {
-    void client.findOne(
-      performance.class.EmployeeKRA,
-      {
+    void client
+      .findOne(performance.class.EmployeeKRA, {
         kra: value,
         assignee: docs[0].assignee as Ref<Member>
-      }
-    ).then((res) => {
-      weight = res?.weight
-    })
+      })
+      .then((res) => {
+        weight = res?.weight
+      })
   }
 
-  $: total = Promise.all(docs !== undefined ? docs.map(calculateCompletionLevel) : []).then((progresses) =>
-    progresses.reduce((acc, progress) => (acc ?? 0) + (progress ?? 0), 0)
-  )
+  $: total = Promise.all(docs !== undefined ? docs.map(calculateCompletionLevel) : [])
+    .then((progresses) => progresses.filter((progress) => progress !== undefined && progress !== null))
+    .then((progresses) =>
+      docs !== undefined && docs.length > 0
+        ? (progresses.reduce((acc, progress) => (acc ?? 0) + (progress ?? 0), 0) ?? 0) / progresses.length
+        : 0
+    )
 </script>
 
 {#await total}
@@ -43,12 +46,12 @@
         class="flex-row-center flex-gap-1 total-weight"
         use:tooltip={{ label: performance.string.KRACompletionLevel }}
       >
-        <KpiProgressCircle value={Math.round(total * 100)} size={'small'}/>
+        <KpiProgressCircle value={Math.round(total * 100)} size={'small'} />
         <span class="text-bold">{Math.round(total * 100)}%</span>
         {#if weight !== undefined}
           x
           <span class="flex-row-center">
-            <Icon icon={performance.icon.Weight} size={'inline'}/>
+            <Icon icon={performance.icon.Weight} size={'inline'} />
             {weight}%
           </span>
         {/if}

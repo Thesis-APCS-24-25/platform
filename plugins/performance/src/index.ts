@@ -27,6 +27,7 @@ import type {
   RelatedDocument,
   SpaceType,
   SpaceTypeDescriptor,
+  StatusCategory,
   Timestamp,
   Type
 } from '@hcengineering/core'
@@ -36,6 +37,7 @@ import type { Project, ProjectType, Task, TaskType, TaskTypeDescriptor } from '@
 import { AnyComponent } from '@hcengineering/ui'
 import { Action, ViewAction, Viewlet, ViewletDescriptor } from '@hcengineering/view'
 import { ChatMessageViewlet } from '@hcengineering/chunter'
+import task from '@hcengineering/task'
 
 export enum ReportDayType {
   CurrentWorkDay = 'CurrentWorkDay',
@@ -43,10 +45,11 @@ export enum ReportDayType {
 }
 
 export interface Progress extends Doc {
+  task: Ref<PTask>
   name?: string
   description?: string
   reports: CollectionSize<Report>
-  progress?: number
+  progress: number | null
 }
 
 export interface Kpi extends Progress {
@@ -123,6 +126,26 @@ export interface ProgressPresenter extends Class<Task> {
   presenter: AnyComponent
 }
 
+export function taskCompletionLevelFormula (
+  taskStatusCategory: Ref<StatusCategory>,
+  progress: Progress | null
+): number | null {
+  if (taskStatusCategory === task.statusCategory.Lost) {
+    return null
+  }
+  if (progress?._class === performancePlugin.class.Progress) {
+    return (progress.progress ?? 0) / 100
+  }
+  if (progress?._class === performancePlugin.class.Kpi) {
+    return (progress.progress ?? 0) / (progress as Kpi).target
+  }
+
+  if (progress == null && taskStatusCategory === task.statusCategory.Won) {
+    return 1 // Task is won, no progress is set, so we assume it's completed
+  }
+  return null
+}
+
 /**
  * Allow to create new action items for KRA
  * `component` will be created with `kra` and `assignee` props
@@ -150,7 +173,7 @@ export interface PerformanceReport extends Doc {
 //
 export const performanceId = 'performance' as Plugin
 
-export default plugin(performanceId, {
+const performancePlugin = plugin(performanceId, {
   class: {
     Kpi: '' as Ref<Class<Kpi>>,
     Progress: '' as Ref<Class<Progress>>,
@@ -276,3 +299,5 @@ export default plugin(performanceId, {
     ReviewSessionType: '' as Ref<SpaceType>
   }
 })
+
+export default performancePlugin

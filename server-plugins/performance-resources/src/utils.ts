@@ -6,11 +6,13 @@ import performance, {
   PerformanceReport,
   Progress,
   ReviewSession,
-  Kpi
+  Kpi,
+  taskCompletionLevelFormula
 } from '@hcengineering/performance'
 import { TriggerControl } from '@hcengineering/server-core'
 import contact from '@hcengineering/contact'
 import taskPlugin from '@hcengineering/task'
+import { stat } from 'fs/promises'
 
 export function addUpdates (
   control: TriggerControl,
@@ -22,9 +24,7 @@ export function addUpdates (
 
   for (const rs of reviewSessions) {
     if (!rs.members.includes(member)) continue
-    const payload = isPull
-      ? { $pull: { members: member } }
-      : { $push: { members: member } }
+    const payload = isPull ? { $pull: { members: member } } : { $push: { members: member } }
     const updateTx = control.txFactory.createTxUpdateDoc(rs._class, rs.space, rs._id, payload)
     result.push(updateTx)
   }
@@ -35,40 +35,31 @@ export async function prepareReport (
   control: TriggerControl,
   createTx: TxCreateDoc<PerformanceReport>
 ): Promise<TxUpdateDoc<PerformanceReport>> {
-  const assignee = (await control.findAll(
-    control.ctx,
-    contact.class.PersonAccount,
-    { _id: createTx.attributes.reviewee },
-    { limit: 1 }
-  ))[0]
-  const reviewSession = (await control.findAll(
-    control.ctx,
-    performance.class.ReviewSession,
-    { _id: createTx.attributes.reviewSession },
-    { limit: 1 }
-  ))[0]
-  const employeeKras = (await control.findAll(
-    control.ctx,
-    performance.class.EmployeeKRA,
-    {
-      space: reviewSession._id,
-      assignee: assignee.person
-    }
-  ))
-  const kras = employeeKras.map(v => v.kra)
-  const tasks1 = (await control.findAll(control.ctx, performance.class.PTask,
-    {
-      assignee: assignee.person,
-      startDate: { $lte: reviewSession.reviewSessionEnd + 86400 },
-      dueDate: { $gte: reviewSession.reviewSessionStart }
-    }
-  ))
-  const tasks2 = (await control.findAll(control.ctx, performance.class.PTask,
-    {
-      assignee: assignee.person,
-      kra: { $in: kras }
-    }
-  ))
+  const assignee = (
+    await control.findAll(control.ctx, contact.class.PersonAccount, { _id: createTx.attributes.reviewee }, { limit: 1 })
+  )[0]
+  const reviewSession = (
+    await control.findAll(
+      control.ctx,
+      performance.class.ReviewSession,
+      { _id: createTx.attributes.reviewSession },
+      { limit: 1 }
+    )
+  )[0]
+  const employeeKras = await control.findAll(control.ctx, performance.class.EmployeeKRA, {
+    space: reviewSession._id,
+    assignee: assignee.person
+  })
+  const kras = employeeKras.map((v) => v.kra)
+  const tasks1 = await control.findAll(control.ctx, performance.class.PTask, {
+    assignee: assignee.person,
+    startDate: { $lte: reviewSession.reviewSessionEnd + 86400 },
+    dueDate: { $gte: reviewSession.reviewSessionStart }
+  })
+  const tasks2 = await control.findAll(control.ctx, performance.class.PTask, {
+    assignee: assignee.person,
+    kra: { $in: kras }
+  })
   const tasksSet = new Set([...tasks1, ...tasks2])
   const tasks = Array.from(tasksSet)
 
@@ -82,25 +73,12 @@ export async function prepareReport (
   })
 }
 
-async function getScore (control: TriggerControl, ptask: PTask, progress: Progress | undefined): Promise<number> {
+async function getScore (control: TriggerControl, ptask: PTask, progress: Progress | undefined): Promise<number | null> {
   // TODO: Handle this commented case properly
   if (progress === undefined) {
     const [status] = await control.queryFind(control.ctx, core.class.Status, { _id: ptask.status }, { limit: 1 })
-    if (status?.category === taskPlugin.statusCategory.Won) {
-      return 1
-    } else {
-      return 0
-    }
-    // return ptask.status === performance.status.Done ? 1 : 0
-  }
-  if (progress._class === performance.class.Progress) {
-    return (progress.progress ?? 0) / 100
-  } else if (progress._class === performance.class.Kpi) {
-    const kpi = progress as Kpi
-    const rs = (kpi.progress ?? 0) / (kpi.target ?? 1)
-    if (isFinite(rs)) {
-      return rs
-    }
+    if (status?.category === undefined) return 0
+    return taskCompletionLevelFormula(status.category, progress ?? null) ?? 0
   }
   return 0
 }
@@ -122,13 +100,16 @@ async function calculateScore (control: TriggerControl, tasks: PTask[], employee
     let sum = 0
     const entry = tasksByKras[ekra.kra]
     if (entry.tasks.length === 0) continue
+    let includedTasks = 0
     for (const task of entry.tasks) {
       if (task.progress == null) continue
       const find = await control.findAll(control.ctx, performance.class.Progress, { _id: task.progress }, { limit: 1 })
       const progress = find !== undefined && find.length > 0 ? find[0] : undefined
-      sum += await getScore(control, task, progress)
+      const score = await getScore(control, task, progress)
+      sum += score ?? 0
+      includedTasks += score !== null ? 1 : 0
     }
-    score += (sum / entry.tasks.length) * entry.weight
+    score += (sum / includedTasks) * entry.weight
   }
   return score
 }
