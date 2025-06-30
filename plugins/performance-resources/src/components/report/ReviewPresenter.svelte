@@ -2,7 +2,6 @@
   import { Person, PersonAccount } from '@hcengineering/contact'
   import { personAccountByIdStore, personByIdStore, UserInfo } from '@hcengineering/contact-resources'
   import { Ref, WithLookup } from '@hcengineering/core'
-  import { PerformanceReview } from '@hcengineering/performance'
   import { MarkupPresenter } from '@hcengineering/view-resources'
   import ScorePresenter from './ScorePresenter.svelte'
 

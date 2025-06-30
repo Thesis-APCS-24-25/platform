@@ -8,6 +8,7 @@ import {
   Prop,
   TypeBoolean,
   TypeDate,
+  TypeMarkup,
   TypeNumber,
   TypeRef,
   TypeString,
@@ -23,7 +24,7 @@ import type {
   KRAStatus,
   MeasureProgress,
   PerformanceReport,
-  PerformanceReview,
+  // PerformanceReview,
   ProgressPresenter,
   ReviewSession,
   ReviewSessionStatus,
@@ -40,6 +41,7 @@ import {
   type Arr,
   type Domain,
   IndexKind,
+  Markup,
   Ref,
   type RelatedDocument,
   type Role,
@@ -221,6 +223,9 @@ export class TPerformanceReport extends TDoc implements PerformanceReport {
   @Prop(TypeRef(contact.class.PersonAccount), performance.string.Reviewee)
     reviewee!: Ref<PersonAccount>
 
+  @Prop(TypeRef(contact.class.PersonAccount), performance.string.Reviewer)
+    reviewer!: Ref<PersonAccount> | null
+
   @Prop(TypeRef(performance.class.ReviewSession), performance.string.ReviewSession)
     reviewSession!: Ref<ReviewSession>
 
@@ -229,20 +234,26 @@ export class TPerformanceReport extends TDoc implements PerformanceReport {
 
   @Prop(TypeNumber(), performance.string.ScorePreview)
     scorePreview?: number
+
+  @Prop(TypeNumber(), performance.string.Score)
+    score!: number | null
+
+  @Prop(TypeMarkup(), performance.string.ReviewContent)
+    content!: Markup | null
 }
 
-@Model(performance.class.PerformanceReview, core.class.Doc, DOMAIN_PERFORMANCE)
-export class TPerformanceReview extends TDoc implements PerformanceReview {
-  @Prop(TypeRef(performance.class.PerformanceReport), performance.string.PerformanceReport)
-    report!: Ref<PerformanceReport>
-
-  @Prop(TypeString(), performance.string.ReviewContent)
-    content!: string
-
-  @Prop(TypeNumber(), performance.string.ReviewScore)
-    score!: number
-}
-
+// @Model(performance.class.PerformanceReview, core.class.Doc, DOMAIN_PERFORMANCE)
+// export class TPerformanceReview extends TDoc implements PerformanceReview {
+//   @Prop(TypeRef(performance.class.PerformanceReport), performance.string.PerformanceReport)
+//     report!: Ref<PerformanceReport>
+//
+//   @Prop(TypeString(), performance.string.ReviewContent)
+//     content!: string
+//
+//   @Prop(TypeNumber(), performance.string.ReviewScore)
+//     score!: number
+// }
+//
 @Mixin(performance.mixin.DefaultReviewSessionData, performance.class.ReviewSession)
 export class TDefaultReviewSessionData extends TReviewSession implements RolesAssignment {
   [key: Ref<Role>]: Ref<Account>[]

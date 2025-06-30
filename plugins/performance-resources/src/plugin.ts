@@ -17,10 +17,22 @@ import { type Doc, type Ref, type Space } from '@hcengineering/core'
 import performance, { performanceId } from '@hcengineering/performance'
 import { type IntlString, mergeIds, type Resource } from '@hcengineering/platform'
 import { type AnyComponent } from '@hcengineering/ui'
-import { type ViewCategoryAction, type GetAllValuesFunc, type ActionCategory, type ViewActionAvailabilityFunction } from '@hcengineering/view'
+import {
+  type ViewCategoryAction,
+  type GetAllValuesFunc,
+  type ActionCategory,
+  type ViewActionAvailabilityFunction
+} from '@hcengineering/view'
 
 export default mergeIds(performanceId, performance, {
   string: {
+    ScoreIsRequired: '' as IntlString,
+    AddPerformanceReviewDescription: '' as IntlString,
+    NoReviewsYet: '' as IntlString,
+    AreYouSureYouWantToRemovePerformanceReview: '' as IntlString,
+    Reviewer: '' as IntlString,
+    Cancel: '' as IntlString,
+    AllowMembersToCommentOnReport: '' as IntlString,
     Score: '' as IntlString,
     TimeReportDayTypeLabel: '' as IntlString,
     CurrentWorkDay: '' as IntlString,
@@ -145,6 +157,7 @@ export default mergeIds(performanceId, performance, {
     Performance: '' as Ref<ActionCategory>
   },
   component: {
+    ReportUpdateMessage: '' as AnyComponent,
     PTaskKRAStat: '' as AnyComponent,
     RemoveProgressPopup: '' as AnyComponent,
     SetProgressMenu: '' as AnyComponent,

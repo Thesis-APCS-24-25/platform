@@ -5,7 +5,7 @@
   import { personAccountByIdStore, personAccountPersonByIdStore, UserInfo } from '@hcengineering/contact-resources'
   import { Class, Ref, WithLookup } from '@hcengineering/core'
   import { Person, PersonAccount } from '@hcengineering/contact'
-  import { getClient, MessageBox } from '@hcengineering/presentation'
+  import { getClient, MessageBox, createQuery } from '@hcengineering/presentation'
   import { createEventDispatcher } from 'svelte'
   import { Panel } from '@hcengineering/panel'
   import { Viewlet, ViewOptions } from '@hcengineering/view'
@@ -29,21 +29,23 @@
   let viewlet: WithLookup<Viewlet> | undefined = undefined
   let viewOptions: ViewOptions | undefined
 
+  const reportQuery = createQuery()
   $: if (_id !== undefined && _class !== undefined) {
-    void client.findOne(
+    reportQuery.query(
       _class,
       { _id },
+      (result) => {
+        if (result !== undefined) {
+          value = result[0]
+          reviewSession = result[0].$lookup?.reviewSession
+        }
+      },
       {
         lookup: {
           reviewSession: performance.class.ReviewSession
         }
       }
-    ).then((result) => {
-      if (result !== undefined) {
-        value = result
-        reviewSession = result.$lookup?.reviewSession
-      }
-    })
+    )
   }
 
   let content: HTMLElement
@@ -67,25 +69,21 @@
     useMaxWidth={true}
     {withoutInput}
     bind:content
-    on:close={() => { dispatch('close') }}
+    on:close={() => {
+      dispatch('close')
+    }}
   >
     <svelte:fragment slot="title">
-      <ViewletSelector
-        bind:viewlet
-        viewletQuery={{ attachTo: performance.class.PTask }}
-      />
+      <ViewletSelector bind:viewlet viewletQuery={{ attachTo: performance.class.PTask }} />
       <ViewletSettingButton bind:viewOptions bind:viewlet />
       {#if person !== undefined}
-      <div class="title not-active report-title">
-        <Label label={performance.string.PerformanceReport}/>
-        <IconChevronRight size={'small'}/>
-        <span>{reviewSession?.name}</span>
-        <IconChevronRight size={'small'}/>
-        <UserInfo
-          value={person}
-          size={'small'}
-        />
-      </div>
+        <div class="title not-active report-title">
+          <Label label={performance.string.PerformanceReport} />
+          <IconChevronRight size={'small'} />
+          <span>{reviewSession?.name}</span>
+          <IconChevronRight size={'small'} />
+          <UserInfo value={person} size={'small'} />
+        </div>
       {/if}
     </svelte:fragment>
     <svelte:fragment slot="header">
@@ -98,14 +96,10 @@
             message: performance.string.UpdateReportConfirm,
             action: async () => {
               if (value?.reviewSession === undefined) return
-              await client.createDoc(
-                performance.class.PerformanceReport,
-                value?.reviewSession,
-                {
-                  reviewee: value?.reviewee,
-                  reviewSession: value?.reviewSession
-                }
-              )
+              await client.createDoc(performance.class.PerformanceReport, value?.reviewSession, {
+                reviewee: value?.reviewee,
+                reviewSession: value?.reviewSession
+              })
               closePanel()
             }
           })
@@ -115,7 +109,7 @@
     {#if viewlet !== undefined && viewOptions}
       {#if value.scorePreview !== undefined}
         <span class="heading-ui-H2">
-          <Label label={performance.string.EmployeeScore}/>: {value.scorePreview}
+          <Label label={performance.string.EmployeeScore} />: {value.scorePreview}
         </span>
       {/if}
       <ViewletContentView
@@ -129,7 +123,7 @@
           }
         }}
       />
-      <ReviewEditor object={value}/>
+      <ReviewEditor object={value} />
     {/if}
   </Panel>
 {/if}

@@ -84,22 +84,23 @@ export async function OnCreateReport (txes: Tx[], control: TriggerControl): Prom
       value.space,
       value._id
     )))
-    for (const value of previousReport) {
-      const reviews = (await control.findAll(
-        control.ctx,
-        performance.class.PerformanceReview,
-        {
-          report: value._id
-        }
-      ))
 
-      result.push(...reviews.map((value) => control.txFactory.createTxUpdateDoc(
-        performance.class.PerformanceReview,
-        value.space,
-        value._id,
-        { report: createTx.objectId }
-      )))
-    }
+    // for (const value of previousReport) {
+    //   const reviews = (await control.findAll(
+    //     control.ctx,
+    //     performance.class.PerformanceReview,
+    //     {
+    //       report: value._id
+    //     }
+    //   ))
+    //
+    //   result.push(...reviews.map((value) => control.txFactory.createTxUpdateDoc(
+    //     performance.class.PerformanceReview,
+    //     value.space,
+    //     value._id,
+    //     { report: createTx.objectId }
+    //   )))
+    // }
   }
 
   return result
@@ -121,7 +122,10 @@ export async function OnReviewSessionConclusion (txes: Tx[], control: TriggerCon
         rs._id,
         {
           reviewee: member as Ref<PersonAccount>,
-          reviewSession: rs._id
+          reviewSession: rs._id,
+          reviewer: null,
+          content: null,
+          score: null
         }
       )
       result.push(report)

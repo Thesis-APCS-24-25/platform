@@ -1,177 +1,185 @@
 <script lang="ts">
-  import { Label, ButtonIcon, Icon, IconCheck, NumberInput, Component } from '@hcengineering/ui'
-  import { createQuery, getClient } from '@hcengineering/presentation'
-  import performance from '../../plugin'
-  import { Data, generateId, getCurrentAccount, Ref, WithLookup } from '@hcengineering/core'
-  import { PerformanceReport, PerformanceReview } from '@hcengineering/performance'
-  import { StyledTextBox } from '@hcengineering/text-editor-resources'
-  import view from '@hcengineering/view'
-  import { FixedColumn, MarkupPresenter } from '@hcengineering/view-resources'
   import {
-    PersonAccountPresenter,
-    PersonAccountRefPresenter,
-    PersonRefPresenter
-  } from '@hcengineering/contact-resources'
-  import ScorePresenter from './ScorePresenter.svelte'
+    Label,
+    ButtonIcon,
+    Icon,
+    IconCheck,
+    IconClose,
+    IconDelete,
+    IconAdd,
+    EditBox,
+    showPopup
+  } from '@hcengineering/ui'
+  import { getClient, MessageBox } from '@hcengineering/presentation'
+  import performance from '../../plugin'
+  import { checkPermission, getCurrentAccount, Markup, Ref, WithLookup } from '@hcengineering/core'
+  import { PerformanceReport } from '@hcengineering/performance'
+  import { PersonAccount } from '@hcengineering/contact'
+  import kraTeam from '@hcengineering/kra-team'
+  import { currentTeam } from '../../utils/team'
+  import ReviewEditorValueEdit from './ReviewEditorValueEdit.svelte'
+  import { IntlString } from '@hcengineering/platform'
 
   const client = getClient()
 
   export let object: WithLookup<PerformanceReport>
 
-  let reviews: WithLookup<PerformanceReview>[] | undefined = undefined
   const isCollapsed = false
 
-  const reviewQuery = createQuery()
+  const reviewer: Ref<PersonAccount> | undefined = getCurrentAccount()._id as Ref<PersonAccount>
 
-  let score: number | undefined = undefined
-  let content: string = ''
-  const emptyReview: Data<PerformanceReview> = {
-    content: '',
-    score: 0,
-    report: object._id
-  }
-  let yourReview: Data<PerformanceReview> | PerformanceReview = emptyReview
-  reviewQuery.query(
-    performance.class.PerformanceReview,
-    {
-      report: object._id
-    },
-    (result) => {
-      reviews = result
-      yourReview = (reviews?.find((v) => v.createdBy === getCurrentAccount()._id) ?? emptyReview) as
-        | Data<PerformanceReview>
-        | PerformanceReview
-      score = yourReview?.score
-      content = yourReview?.content ?? ''
-    }
-  )
+  let canReview = false
+  currentTeam.subscribe((team) => {
+    if (team === undefined) return
+    void checkPermission(client, kraTeam.permission.GradeReport, team).then((result) => {
+      canReview = result
+    })
+  })
 
-  // async function onRemovePerformanceReview (review: Ref<PerformanceReview>): Promise<void> {
-  //   await client.removeDoc(performance.class.PerformanceReview, object.space, review)
-  // }
-  //
-  // function handleCreatePerformanceReview (): void {
-  //   showPopup(AddReviewPopup, { type: 'add', report: object._id, space: object.space }, 'top')
-  // }
-  //
-  // function handleRemovePerformanceReview (): void {
-  //   if (yourReview !== undefined) {
-  //     void onRemovePerformanceReview(yourReview._id)
-  //   }
-  // }
-  //
-  // function handleEditPerformanceReview (): void {
-  //   showPopup(
-  //     AddReviewPopup,
-  //     {
-  //       type: 'edit',
-  //       report: object._id,
-  //       space: object.space,
-  //       _id: yourReview?._id,
-  //       content: yourReview?.content,
-  //       score: yourReview?.score
-  //     },
-  //     'top'
-  //   )
-  // }
-  //
   let editting = false
-  $: if (score !== undefined && isFinite(score) && score > 0 && score <= 100) {
-    if (yourReview !== undefined) yourReview.score = score
-  }
+
+  $: notReviewYet = object.reviewer == null || object.score == null
+
+  $: canSave = object.score != null
+
+  $: isReviewer = getCurrentAccount()._id === object.reviewer
+
+  let error: IntlString | null = null
 </script>
 
 <div class="review-section">
   <div class="header" class:collapsed={isCollapsed}>
     <Icon icon={performance.icon.PerformanceReview} size={'medium'} />
     <Label label={performance.string.Reviews} />
-    {#if editting}
-      <div>
-        <ButtonIcon
-          icon={IconCheck}
-          kind="tertiary"
-          size="small"
-          on:click={async () => {
-            if ('_id' in yourReview) {
-              await client.updateDoc(performance.class.PerformanceReview, object.space, yourReview._id, {
-                ...yourReview
+    {#if canReview && (isReviewer || notReviewYet)}
+      {#if editting}
+        <div class="flex-row-center flex-gap-1">
+          <ButtonIcon
+            icon={IconClose}
+            kind="tertiary"
+            size="small"
+            on:click={async () => {
+              editting = false
+            }}
+            inheritColor
+            tooltip={{
+              label: performance.string.Cancel
+            }}
+          />
+          <ButtonIcon
+            icon={IconCheck}
+            kind="tertiary"
+            size="small"
+            on:click={async () => {
+              if (!canSave) {
+                error = performance.string.ScoreIsRequired
+                setTimeout(() => {
+                  error = null
+                }, 3000)
+
+                return
+              }
+              await client.updateDoc(performance.class.PerformanceReport, object.space, object._id, {
+                content: object.content,
+                score: object.score,
+                reviewer
               })
-            } else {
-              await client.createDoc(performance.class.PerformanceReview, object.space, yourReview)
-            }
-            editting = false
-          }}
-          inheritColor
-          tooltip={{
-            label: performance.string.AddPerformanceReview
-          }}
-        />
-      </div>
+              editting = false
+            }}
+            inheritColor
+            tooltip={{
+              label: performance.string.AddPerformanceReview
+            }}
+          />
+        </div>
+      {:else}
+        <div class="flex-row-center flex-gap-1">
+          {#if notReviewYet}
+            <ButtonIcon
+              icon={IconAdd}
+              kind="tertiary"
+              size="small"
+              on:click={() => {
+                editting = true
+              }}
+              inheritColor
+              tooltip={{
+                label: performance.string.AddPerformanceReview
+              }}
+            />
+          {:else}
+            <ButtonIcon
+              icon={IconDelete}
+              kind="tertiary"
+              size="small"
+              on:click={async () => {
+                showPopup(
+                  MessageBox,
+                  {
+                    label: performance.string.RemovePerformanceReview,
+                    message: performance.string.AreYouSureYouWantToRemovePerformanceReview
+                  },
+                  'top',
+                  async (confirm) => {
+                    if (confirm === true) {
+                      object.content = ''
+                      object.score = null
+                      object.reviewer = null
+                      await client.update(object, {
+                        content: object.content,
+                        score: object.score,
+                        reviewer: object.reviewer
+                      })
+                    }
+                  }
+                )
+              }}
+              inheritColor
+              tooltip={{
+                label: performance.string.Remove
+              }}
+            />
+            <ButtonIcon
+              icon={performance.icon.PerformanceReview}
+              kind="tertiary"
+              size="small"
+              on:click={() => {
+                editting = true
+              }}
+              inheritColor
+              tooltip={{
+                label: performance.string.EditPerformanceReview
+              }}
+            />
+          {/if}
+        </div>
+      {/if}
     {:else}
-      <ButtonIcon
-        icon={performance.icon.PerformanceReview}
-        kind="tertiary"
-        size="small"
-        on:click={() => {
-          editting = true
-        }}
-        inheritColor
-        tooltip={{
-          label: performance.string.EditPerformanceReview
-        }}
+      <did />
+    {/if}
+  </div>
+
+  <div class="content m-3">
+    {#if notReviewYet && !editting}
+      {#if canReview}
+        <Label label={performance.string.AddPerformanceReviewDescription} />
+      {:else}
+        <Label label={performance.string.NoReviewsYet} />
+      {/if}
+    {:else}
+      <ReviewEditorValueEdit
+        readonly={!editting}
+        bind:content={object.content}
+        bind:score={object.score}
+        bind:reviewer={object.reviewer}
       />
     {/if}
   </div>
-  <div class="content m-3">
-    <div class="flex-row-center justify-between flex-gap-2 review-input items-start">
-      <FixedColumn key="person" addClass="flex-shrink">
-        <PersonAccountPresenter value={getCurrentAccount()} shouldShowName={false} />
-      </FixedColumn>
-      <FixedColumn key="comment" addClass="flex-grow">
-        <StyledTextBox
-          bind:content
-          alwaysEdit
-          placeholder={performance.string.ReviewContentPlaceholder}
-          enableBackReferences={true}
-          readonly={!editting}
-          on:value={(e) => {
-            yourReview.content = e.detail
-          }}
-        />
-      </FixedColumn>
-      <FixedColumn key="score">
-        <div class="score">
-          <div class="flex-row-center flex-gap-1">
-            <input datatype="number" class="score-input" bind:value={score} disabled={!editting} />
-            <span class="score-postfix">/100</span>
-          </div>
-        </div>
-      </FixedColumn>
-    </div>
-    {#if reviews !== undefined && reviews.length > 0}
-      <div class="divider" />
-      {@const filteredReviews = reviews.filter((review) => '_id' in yourReview && review._id !== yourReview._id)}
-      {#each filteredReviews as review}
-        <div class="flex-row-center justify-between flex-gap-2">
-          <FixedColumn key="person" addClass="flex-shrink">
-            {#if review.createdBy}
-              <PersonAccountRefPresenter value={review.createdBy} shouldShowName={false} />
-            {:else}
-              <PersonRefPresenter value={null} />
-            {/if}
-          </FixedColumn>
-          <FixedColumn key="comment" addClass="flex-grow">
-            <MarkupPresenter value={review.content} />
-          </FixedColumn>
-          <FixedColumn key="score">
-            <ScorePresenter value={review.score} />
-          </FixedColumn>
-        </div>
-        <!-- <Component is={view.component.ObjectPresenter} props={{ value: review }} /> -->
-      {/each}
-    {:else}
-      <div class="empty-state">
-        <Label label={performance.string.NoReviews} />
+
+  <div class="error">
+    {#if error}
+      <div>
+        <Label label={error} />
       </div>
     {/if}
   </div>
@@ -182,6 +190,13 @@
     margin-bottom: 1rem;
     border: 1px solid var(--button-border-color);
     border-radius: 0.25rem;
+  }
+
+  .review-section .error {
+    color: var(--theme-error-color);
+    margin: 0.5rem;
+    display: flex;
+    align-items: center;
   }
 
   .divider {

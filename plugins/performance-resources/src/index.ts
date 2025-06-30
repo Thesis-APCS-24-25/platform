@@ -70,6 +70,7 @@ import { type PTask } from '@hcengineering/performance'
 import RemoveProgressPopup from './components/progress/RemoveProgressPopup.svelte'
 import EditKpiPopup from './components/progress/kpi/EditKpiPopup.svelte'
 import PTaskKRAStat from './components/task/PTaskKRAStat.svelte'
+import ReportUpdateMessage from './components/report/ReportUpdateMessage.svelte'
 
 export {
   EditKpiPopup,
@@ -124,7 +125,8 @@ export default async (): Promise<Resources> => ({
     AddUnitPopup,
     ReviewPresenter,
     AssignKraPopup,
-    ScorePresenter
+    ScorePresenter,
+    ReportUpdateMessage
   },
   function: {
     CanRemoveProgress: async (task: PTask | undefined): Promise<boolean> => task?.progress !== undefined,

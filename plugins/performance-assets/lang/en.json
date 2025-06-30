@@ -1,5 +1,9 @@
 {
   "string": {
+    "ReviewContent": "Review Content",
+    "Reviewer": "Reviewer",
+    "Comment": "Comment",
+    "Score": "Score",
     "StartDate": "Start Date",
     "Progress": "Progress",
     "LeaveComment": "Leave a comment",

@@ -48,4 +48,13 @@ export function definePermissions (builder: Builder): void {
     },
     kraTeam.permission.ViewDashboard
   )
+  builder.createDoc(
+    core.class.Permission,
+    core.space.Model,
+    {
+      label: kraTeam.string.GradeReport,
+      description: kraTeam.string.GradeReportDescription
+    },
+    kraTeam.permission.GradeReport
+  )
 }

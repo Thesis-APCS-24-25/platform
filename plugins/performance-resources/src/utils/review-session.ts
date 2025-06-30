@@ -28,7 +28,8 @@ export async function createReviewSession (
   reviewSessionEnd: Timestamp,
   team: Ref<Space>,
   type: Ref<ProjectType>,
-  identifier: string
+  identifier: string,
+  allowMembersToCommentOnReport?: boolean
 ): Promise<Ref<ReviewSession>> {
   const reviewSessionRef = await client.createDoc(performance.class.ReviewSession, team, {
     sequence: 0,
@@ -41,7 +42,8 @@ export async function createReviewSession (
     private: false,
     archived: false,
     members: [],
-    type
+    type,
+    allowMembersToCommentOnReport
   })
 
   return reviewSessionRef

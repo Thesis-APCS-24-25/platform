@@ -19,7 +19,7 @@ import {
   TReviewSession,
   TPerformanceReport,
   TTypeReviewSessionStatus,
-  TPerformanceReview,
+  // TPerformanceReview,
   TActionItemFactory,
   TTypeKRAStatus,
   TProgress,
@@ -298,6 +298,11 @@ function defineReport (builder: Builder): void {
         key: '',
         presenter: performance.component.ScorePresenter,
         label: performance.string.ScorePreview
+      },
+      {
+        key: 'score',
+        presenter: performance.component.ScorePresenter,
+        label: performance.string.Score
       }
     ],
     viewOptions: {
@@ -310,10 +315,10 @@ function defineReport (builder: Builder): void {
   builder.mixin(performance.class.PerformanceReport, core.class.Class, view.mixin.IgnoreActions, {
     actions: [view.action.Delete, tracker.action.EditRelatedTargets, tracker.action.NewRelatedIssue]
   })
-
-  builder.mixin(performance.class.PerformanceReview, core.class.Class, view.mixin.ObjectPresenter, {
-    presenter: performance.component.ReviewPresenter
-  })
+  //
+  // builder.mixin(performance.class.PerformanceReview, core.class.Class, view.mixin.ObjectPresenter, {
+  //   presenter: performance.component.ReviewPresenter
+  // })
 }
 
 function defineSpaceType (builder: Builder): void {
@@ -420,6 +425,28 @@ function defineActivity (builder: Builder): void {
     valueAttr: 'kra'
   })
 
+  builder.createDoc(activity.class.DocUpdateMessageViewlet, core.space.Model, {
+    objectClass: performance.class.PerformanceReport,
+    action: 'update'
+    // config: {
+    //   reviewer: {
+    //     icon: performance.icon.Reviewer,
+    //   },
+    //   content: {
+    //     icon: performance.icon.Review,
+    //   },
+    //   score: {
+    //     icon: performance.icon.Score,
+    //   }
+    // }
+    // component: performance.component.ReportUpdateMessage
+  })
+
+  builder.createDoc(activity.class.ActivityExtension, core.space.Model, {
+    ofClass: performance.class.PerformanceReport,
+    components: { input: { component: chunter.component.ChatMessageInput } }
+  })
+
   builder.createDoc(
     chunter.class.ChatMessageViewlet,
     core.space.Model,
@@ -429,6 +456,17 @@ function defineActivity (builder: Builder): void {
       label: chunter.string.LeftComment
     },
     performance.ids.EmployeeKRAMessageViewlet
+  )
+
+  builder.createDoc(
+    chunter.class.ChatMessageViewlet,
+    core.space.Model,
+    {
+      messageClass: chunter.class.ChatMessage,
+      objectClass: performance.class.PerformanceReport,
+      label: chunter.string.LeftComment
+    },
+    performance.ids.PerformanceReportMessageViewlet
   )
 
   builder.createDoc(activity.class.DocUpdateMessageViewlet, core.space.Model, {
@@ -447,7 +485,7 @@ export function createModel (builder: Builder): void {
     TUnit,
     TTypeKRAStatus,
     TPerformanceReport,
-    TPerformanceReview,
+    // TPerformanceReview,
     TKRA,
     TEmployeeKRA,
     TDefaultKRAData,

@@ -1,14 +1,19 @@
 <script lang="ts">
-  import { PerformanceReport } from '@hcengineering/performance'
+  import performance, { PerformanceReport } from '@hcengineering/performance'
+  import { Label } from '@hcengineering/ui'
 
-  export let value: PerformanceReport | number
+  export let value: PerformanceReport | number | null = null
   export let target: number = 100
 </script>
 
 <div class="review-box flex-col items-stretch">
   <div class="value">
-    <span class="value-value">{typeof value === 'object' ? value.scorePreview : value}</span>
-    <span class="value-target">/ {target}</span>
+    {#if value}
+      <span class="value-value">{typeof value === 'object' ? value.scorePreview : value}</span>
+      <span class="value-target">/ {target}</span>
+    {:else}
+      <Label label={performance.string.NotGiven} />
+    {/if}
   </div>
 </div>
 

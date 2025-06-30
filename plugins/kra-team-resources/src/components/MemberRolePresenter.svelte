@@ -7,9 +7,7 @@
   import { decodeObjectURI } from '@hcengineering/view'
   import { onDestroy } from 'svelte'
   import { ObjectBox } from '@hcengineering/view-resources'
-  import { deepEqual } from 'fast-equals'
   import { personAccountByPersonId } from '@hcengineering/contact-resources'
-  import { Person } from '@hcengineering/contact'
 
   export let value: Member | undefined
 

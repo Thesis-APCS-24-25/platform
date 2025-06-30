@@ -21,6 +21,7 @@ import type {
   Class,
   CollectionSize,
   Doc,
+  Markup,
   Mixin,
   Ref,
   RelatedDocument,
@@ -95,6 +96,8 @@ export interface ReviewSession extends Project {
   identifier: string
   status?: ReviewSessionStatus
   sequence: number
+
+  allowMembersToCommentOnReport?: boolean
 }
 
 export interface KRA extends Task {
@@ -132,15 +135,19 @@ export interface PerformanceReport extends Doc {
   reviewee: Ref<PersonAccount>
   reviewSession: Ref<ReviewSession>
   tasks?: Arr<Ref<PTask>>
-  scorePreview?: number
+  scorePreview?: number // calculated score preview
+
+  score: number | null // final score
+  content: Markup | null // final report content
+  reviewer: Ref<PersonAccount> | null // person who wrote the report
 }
 
-export interface PerformanceReview extends Doc {
-  report: Ref<PerformanceReport>
-  content: string
-  score: number
-}
-
+// export interface PerformanceReview extends Doc {
+//   report: Ref<PerformanceReport>
+//   content: string
+//   score: number
+// }
+//
 export const performanceId = 'performance' as Plugin
 
 export default plugin(performanceId, {
@@ -154,11 +161,12 @@ export default plugin(performanceId, {
     KRA: '' as Ref<Class<KRA>>,
     EmployeeKRA: '' as Ref<Class<EmployeeKRA>>,
     PerformanceReport: '' as Ref<Class<PerformanceReport>>,
-    PerformanceReview: '' as Ref<Class<PerformanceReview>>,
+    // PerformanceReview: '' as Ref<Class<PerformanceReview>>,
     TypeKRAStatus: '' as Ref<Class<Type<KRAStatus>>>,
     TypeReviewSessionStatus: '' as Ref<Class<Type<ReviewSessionStatus>>>
   },
   string: {
+    NotGiven: '' as IntlString,
     TrackProgress: '' as IntlString,
     CompletionLevelTracking: '' as IntlString,
     KpiTracking: '' as IntlString,
@@ -233,6 +241,7 @@ export default plugin(performanceId, {
   ids: {
     ClassingProjectType: '' as Ref<ProjectType>,
     EmployeeKRAMessageViewlet: '' as Ref<ChatMessageViewlet>,
+    PerformanceReportMessageViewlet: '' as Ref<ChatMessageViewlet>,
     NoKRARef: '' as Ref<KRA>
   },
   icon: {
