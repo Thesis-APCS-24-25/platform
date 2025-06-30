@@ -157,6 +157,7 @@
     "Cancel": "Cancel",
     "AddPerformanceReviewDescription": "Write a review for this employee",
     "NotGiven": "Not Given",
-    "GradedScore": "Reviewed Score"
+    "GradedScore": "Reviewed Score",
+    "NoReviewsYet": "No reviews yet"
   }
 }
