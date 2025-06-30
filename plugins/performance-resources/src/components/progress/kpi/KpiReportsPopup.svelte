@@ -1,9 +1,10 @@
 <script lang="ts">
-  import { WithLookup } from '@hcengineering/core'
+  import { Ref, WithLookup } from '@hcengineering/core'
   import { PTask, Kpi } from '@hcengineering/performance'
   import { eventToHTMLElement, showPopup } from '@hcengineering/ui'
   import KpiReportEditPopup from './KpiReportEditPopup.svelte'
   import ReportsPopup from '../ReportsPopup.svelte'
+  import { Person } from '@hcengineering/contact'
 
   export let task: PTask
   export let kpi: WithLookup<Kpi>
@@ -12,7 +13,7 @@
     showPopup(
       KpiReportEditPopup,
       {
-        space: task.space,
+        space: kpi.space,
         attachedTo: kpi._id,
         assignee: task.assignee
       },

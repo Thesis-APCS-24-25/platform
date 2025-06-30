@@ -1,14 +1,14 @@
 <script lang="ts">
   import { WithLookup } from '@hcengineering/core'
-  import performance, { Progress, PTask } from '@hcengineering/performance'
+  import performance, { Kpi, Progress, PTask } from '@hcengineering/performance'
   import { StatePresenter } from '@hcengineering/task-resources'
   import { ButtonKind, ButtonSize, Button, Icon } from '@hcengineering/ui'
   import { statusStore } from '@hcengineering/view-resources'
   import ProgressSummaryPopup from './ProgressSummaryPopup.svelte'
-  import KpiProgressBar from './kpi/KpiProgressBar.svelte'
   import { createQuery } from '@hcengineering/presentation'
   import task from '@hcengineering/task'
   import ProgressBar from './ProgressBar.svelte'
+  import KpiProgressBar from './kpi/KpiProgressBar.svelte'
 
   export let value: WithLookup<PTask>
   export let kind: ButtonKind
@@ -21,6 +21,7 @@
   export let doDueDateWarning: boolean = true
 
   const status = $statusStore.byId.get(value.status)
+  let kpi: Kpi | undefined
   let progress: Progress | undefined = value.$lookup?.progress
   const progressQ = createQuery()
   $: if (value.progress != null) {
@@ -31,6 +32,11 @@
       },
       (res) => {
         progress = res[0]
+        if (res[0]._class === performance.class.Kpi) {
+          kpi = res[0] as Kpi
+        } else {
+          kpi = undefined
+        }
       }
     )
   }
@@ -64,12 +70,16 @@
   }}
 >
   <div slot="content" class="flex flex-row-center gap-1">
-    {#if isWon || isLost}
+    {#if isLost}
       <StatePresenter value={status} shouldShowAvatar shouldShowName disabled />
     {:else}
       <StatePresenter value={status} shouldShowAvatar shouldShowName={false} disabled />
       <div class="min-w-28">
-        <ProgressBar value={progress?.progress ?? 0} />
+        {#if kpi}
+          <KpiProgressBar value={kpi} />
+        {:else if progress}
+          <ProgressBar value={progress} />
+        {/if}
       </div>
       {#if showDateInformation}
         {@const passedDays = value.startDate != null ? getPassedDays(new Date(value.startDate)) : undefined}

@@ -121,16 +121,16 @@ export class TProgress extends TDoc implements Progress {
 
 @Model(performance.class.ProgressReport, core.class.AttachedDoc, DOMAIN_PERFORMANCE)
 export class TProgressReport extends TAttachedDoc implements ProgressReport {
-  @Prop(TypeRef(performance.class.Progress), performance.string.Goal)
+  @Prop(TypeRef(performance.class.Progress), performance.string.Progress)
   declare attachedTo: Ref<Progress>
 
-  @Prop(TypeDate(), performance.string.Date)
+  @Prop(TypeDate(), performance.string.ReportDate)
     date!: Timestamp
 
   @Prop(TypeNumber(), performance.string.Value)
     value!: number
 
-  @Prop(TypeRef(contact.mixin.Employee), contact.string.Employee)
+  @Prop(TypeRef(contact.mixin.Employee), performance.string.ReportBy)
     reportBy!: Ref<Person>
 
   @Prop(TypeString(), performance.string.Comment)

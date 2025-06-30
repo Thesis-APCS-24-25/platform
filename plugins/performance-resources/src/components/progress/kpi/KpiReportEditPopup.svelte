@@ -4,7 +4,7 @@
   import { AttachedData, Ref, Space } from '@hcengineering/core'
   import { EditBox, createFocusManager, FocusHandler } from '@hcengineering/ui'
   import { onMount } from 'svelte'
-  import KpiProgressBar from './KpiProgressBar.svelte'
+  import ProgressBar from '../../ui/ProgressBar.svelte'
   import ReportEditPopupBase from '../ReportEditPopupBase.svelte'
   import performance, { Kpi, ProgressReport, Unit } from '@hcengineering/performance'
   import { Person } from '@hcengineering/contact'
@@ -120,7 +120,7 @@
         kind="default" bind:value={object.note} format="text" focusIndex={2} />
     </div>
     <div class="mt-4 mb-4">
-      <KpiProgressBar value={kpi?.progress ?? 0} max={kpi?.target} additionalValue={object.value} />
+      <ProgressBar value={kpi?.progress ?? 0} max={kpi?.target} additionalValue={object.value} />
     </div>
   </svelte:fragment>
 </ReportEditPopupBase>

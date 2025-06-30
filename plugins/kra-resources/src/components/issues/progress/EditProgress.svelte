@@ -7,7 +7,7 @@
   import KpiEditor from './kpi/KpiEditor.svelte'
   import ProgressEditor from './ProgressEditor.svelte'
   import RemoveProgressPopup from '@hcengineering/performance-resources/src/components/progress/RemoveProgressPopup.svelte'
-  import { ProgressReportEditPopup } from '@hcengineering/performance-resources'
+  import { KpiReportEditPopup, ProgressReportEditPopup } from '@hcengineering/performance-resources'
   import AddProgressPopup from '@hcengineering/performance-resources/src/components/progress/AddProgressPopup.svelte'
   import EditProgressEmptyContent from './EditProgressEmptyContent.svelte'
   import EditKpiPopup from '@hcengineering/performance-resources/src/components/progress/kpi/EditKpiPopup.svelte'
@@ -49,7 +49,7 @@
             label: kra.string.Report
           }}
           on:click={() => {
-            showPopup(ProgressReportEditPopup, {
+            showPopup(progress?._class === performance.class.Kpi ? KpiReportEditPopup : ProgressReportEditPopup, {
               space: issue.space,
               attachedTo: issue.progress,
               assignee: issue.assignee

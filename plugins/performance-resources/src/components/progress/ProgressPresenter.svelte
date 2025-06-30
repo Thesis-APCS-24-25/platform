@@ -3,11 +3,12 @@
   import { Kpi, Progress, PTask } from '@hcengineering/performance'
   import { createQuery, getClient } from '@hcengineering/presentation'
   import view, { AttributePresenter } from '@hcengineering/view'
-  import { Doc, Space, WithLookup } from '@hcengineering/core'
+  import { Doc as Progress, Space, WithLookup } from '@hcengineering/core'
   import performance from '../../plugin'
   import KpiPresenter from './kpi/KpiPresenter.svelte'
   import task from '@hcengineering/task'
   import ProgressBar from './ProgressBar.svelte'
+  import ProgressCircle from './ProgressCircle.svelte'
   import GoalPresenterContainer from './GoalPresenterContainer.svelte'
   import ProgressReportsPopup from './ProgressReportsPopup.svelte'
 
@@ -30,8 +31,8 @@
 
   let _value: Progress | undefined = value.$lookup?.progress
 
-  function asKpi (doc: Doc): Kpi | undefined {
-    return doc._class === performance.class.Kpi ? undefined : (doc as Kpi)
+  function asKpi (p: Progress): Kpi | undefined {
+    return p._class === performance.class.Kpi ? (p as Kpi) : undefined
   }
 
   $: if (_value === undefined && value.progress != null) {
@@ -78,9 +79,7 @@
       }
     }}
   >
-    <div class="bar">
-      <ProgressBar value={_value.progress ?? 0} />
-    </div>
+    <ProgressCircle value={_value} />
     <div class="separator"></div>
     <span class="kpi-num">{_value.progress ?? 0}%</span>
   </GoalPresenterContainer>

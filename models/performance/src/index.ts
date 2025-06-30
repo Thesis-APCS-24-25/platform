@@ -302,7 +302,7 @@ function defineReport (builder: Builder): void {
       {
         key: 'score',
         presenter: performance.component.ScorePresenter,
-        label: performance.string.Score
+        label: performance.string.GradedScore
       }
     ],
     viewOptions: {

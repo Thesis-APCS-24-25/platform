@@ -1,5 +1,9 @@
 {
   "string": {
+    "ReportBy": "Report By",
+    "ReportDate": "Report Date",
+    "Report": "Report",
+    "KpiName": "Kpi: {name}",
     "ReviewContent": "Review Content",
     "Reviewer": "Reviewer",
     "Comment": "Comment",

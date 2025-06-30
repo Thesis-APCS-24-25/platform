@@ -7,6 +7,7 @@
   import { IntlString } from '@hcengineering/platform'
   import { EditBoxPopup, NumberPresenter } from '@hcengineering/view-resources'
   import ValueWithUnit from './unit/ValueWithUnit.svelte'
+  import { unitStore } from '../../stores'
 
   export let value: WithLookup<ProgressReport>
   export let readonly: boolean = false
@@ -31,15 +32,9 @@
   const attachedTo = value.$lookup?.attachedTo
 
   let unit: Unit | undefined = undefined
-  const unitQuery = createQuery()
   // TODO: This should be moved to a more generic place, such as viewlet definition
   $: if (attachedTo !== undefined && 'unit' in attachedTo) {
-    const _id = attachedTo.unit as Ref<Unit>
-    unitQuery.query(performance.class.Unit, { _id }, (res) => {
-      if (res.length > 0) {
-        unit = res[0]
-      }
-    })
+    unit = $unitStore.get(attachedTo.unit as Ref<Unit>)
   }
 
   async function _onchange (ev: Event): Promise<void> {
@@ -58,7 +53,7 @@
     {size}
     {justify}
     {width}
-    padding={kind === 'link' ? '0' : '0 .75rem'}
+    padding={kind === 'link' ? '0.25rem' : '0 .75rem'}
     disabled={readonly}
     on:click={(ev) => {
       if (!shown && !readonly) {
@@ -84,6 +79,8 @@
         <span class="unit m-1">
           {unit.symbol}
         </span>
+      {:else}
+        %
       {/if}
     </svelte:fragment>
 
@@ -114,6 +111,8 @@
     <span class="unit m-1">
       {unit?.symbol}
     </span>
+  {:else}
+    %
   {/if}
 {/if}
 

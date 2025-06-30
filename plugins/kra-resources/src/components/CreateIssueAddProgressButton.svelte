@@ -94,12 +94,12 @@
   const dropdownItems: SelectPopupValueType[] = [
     {
       id: 'progress',
-      label: kra.string.SetProgress,
+      label: performance.string.TrackProgress,
       icon: performance.icon.Progress
     },
     {
       id: 'kpi',
-      label: kra.string.SetKpi,
+      label: performance.string.TrackKpi,
       icon: performance.icon.Kpi
     }
   ]
