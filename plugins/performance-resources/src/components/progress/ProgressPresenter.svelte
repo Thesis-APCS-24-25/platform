@@ -1,24 +1,16 @@
 <script lang="ts">
-  import { ButtonKind, ButtonSize, Component, eventToHTMLElement, Loading, showPopup } from '@hcengineering/ui'
+  import { ButtonKind, ButtonSize } from '@hcengineering/ui'
   import { Kpi, Progress, PTask } from '@hcengineering/performance'
-  import { createQuery, getClient } from '@hcengineering/presentation'
-  import view, { AttributePresenter } from '@hcengineering/view'
-  import { Doc as Progress, Space, WithLookup } from '@hcengineering/core'
+  import { createQuery } from '@hcengineering/presentation'
   import performance from '../../plugin'
   import KpiPresenter from './kpi/KpiPresenter.svelte'
-  import task from '@hcengineering/task'
-  import ProgressBar from './ProgressBar.svelte'
-  import ProgressCircle from './ProgressCircle.svelte'
-  import GoalPresenterContainer from './GoalPresenterContainer.svelte'
-  import ProgressReportsPopup from './ProgressReportsPopup.svelte'
+  import ProgressPresenter from './BaseProgressPresenter.svelte'
+  import { WithLookup } from '@hcengineering/core'
 
   export let value: WithLookup<PTask>
 
   export let kind: ButtonKind
   export let size: ButtonSize = 'small'
-  export let justify: 'left' | 'center' = 'left'
-  export let width: string | undefined = undefined
-  export let focusIndex: number | undefined = undefined
   export let disabled: boolean | undefined = false
   export let readonly: boolean | undefined = false
 
@@ -50,39 +42,10 @@
       }
     )
   }
-
-  function handleOpenEditor (sum: number, e: MouseEvent): void {
-    e.stopPropagation()
-    showPopup(
-      ProgressReportsPopup,
-      {
-        task: value,
-        progress: _value,
-        sum
-      },
-      eventToHTMLElement(e)
-    )
-  }
 </script>
 
-<!-- TODO: Separate into ProgressPresenter and KpiPresenter -->
 {#if _value !== undefined && _value._class === performance.class.Progress}
-  <GoalPresenterContainer
-    disabled={readonly}
-    {kind}
-    {size}
-    onClick={handleOpenEditor.bind(null, _value.progress ?? 0)}
-    showTooltip={{
-      label: performance.string.Name,
-      props: {
-        name: _value.name
-      }
-    }}
-  >
-    <ProgressCircle value={_value} />
-    <div class="separator"></div>
-    <span class="kpi-num">{_value.progress ?? 0}%</span>
-  </GoalPresenterContainer>
+  <ProgressPresenter task={value} value={_value} {size} {kind} {readonly} />
 {:else if _value !== undefined && _value._class === performance.class.Kpi}
   {@const kpi = asKpi(_value)}
   {#if kpi}

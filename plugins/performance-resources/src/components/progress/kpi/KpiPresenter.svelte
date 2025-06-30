@@ -1,7 +1,7 @@
 <script lang="ts">
   import { PTask, Kpi } from '@hcengineering/performance'
   import KpiProgressCircle from './KpiProgressCircle.svelte'
-  import GoalPresenterContainer from '../GoalPresenterContainer.svelte'
+  import GoalPresenterContainer from '../ProgressPresenterContainer.svelte'
   import { ButtonKind, ButtonSize, eventToHTMLElement, showPopup } from '@hcengineering/ui'
   import KpiReportsPopup from './KpiReportsPopup.svelte'
   import { WithLookup } from '@hcengineering/core'

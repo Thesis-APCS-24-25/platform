@@ -34,6 +34,8 @@
         id = await client.createDoc(performance.class.Progress, space, {
           name: data.name,
           description: data.description,
+          task,
+          progress: null,
           reports: 0
         })
       } else if (progress !== undefined) {

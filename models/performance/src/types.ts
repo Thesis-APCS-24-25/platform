@@ -39,9 +39,10 @@ import task, { type Task } from '@hcengineering/task'
 import {
   Account,
   type Arr,
+  type CollectionSize,
   type Domain,
   IndexKind,
-  Markup,
+  type Markup,
   Ref,
   type RelatedDocument,
   type Role,
@@ -100,6 +101,9 @@ export class TPTask extends TTask implements PTask {
 
 @Model(performance.class.Progress, core.class.Doc, DOMAIN_PERFORMANCE)
 export class TProgress extends TDoc implements Progress {
+  @Prop(TypeRef(performance.class.PTask), performance.string.Task)
+    task!: Ref<PTask>
+
   @Prop(TypeString(), performance.string.Name)
     name!: string
 
@@ -107,16 +111,10 @@ export class TProgress extends TDoc implements Progress {
     description!: string
 
   @Prop(TypeNumber(), performance.string.Value)
-    reports!: number
-
-  @Prop(TypeRef(performance.class.Unit), performance.string.Unit)
-    unit!: Ref<Unit>
+    reports!: CollectionSize<ProgressReport>
 
   @Prop(TypeNumber(), performance.string.Progress)
-    progress!: number
-
-  @Prop(TypeNumber(), performance.string.Target)
-    target!: number
+    progress: number | null
 }
 
 @Model(performance.class.ProgressReport, core.class.AttachedDoc, DOMAIN_PERFORMANCE)
@@ -263,4 +261,10 @@ export class TDefaultReviewSessionData extends TReviewSession implements RolesAs
 export class TDefaultKRAData extends TKRA { }
 
 @Model(performance.class.Kpi, performance.class.Progress)
-export class TKpi extends TProgress implements Kpi {}
+export class TKpi extends TProgress implements Kpi {
+  @Prop(TypeRef(performance.class.Unit), performance.string.Unit)
+    unit!: Ref<Unit>
+
+  @Prop(TypeNumber(), performance.string.Target)
+    target!: number
+}

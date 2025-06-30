@@ -11,18 +11,16 @@ import core, {
   type Doc,
   type Client,
   type QuerySelector,
-  type ObjQueryType
+  type ObjQueryType,
+  type StatusCategory
 } from '@hcengineering/core'
-import {
-  type KRA,
-  type EmployeeKRA,
-  type PTask,
-  type Kpi
-} from '@hcengineering/performance'
+import { type KRA, type EmployeeKRA, type PTask, type Kpi, type Progress, taskCompletionLevelFormula } from '@hcengineering/performance'
 import performance from '../plugin'
 import task, { makeRank } from '@hcengineering/task'
 import { getClient } from '@hcengineering/presentation'
 import type { Member } from '@hcengineering/kra-team'
+import { statusStore } from '@hcengineering/view-resources'
+import { get } from 'svelte/store'
 
 export async function getFirstRank (
   client: TxOperations,
@@ -83,13 +81,18 @@ export async function createKRA (
 export async function calculateCompletionLevel (task: Ref<PTask> | PTask): Promise<number | undefined> {
   const client = getClient()
   async function calculate (task: PTask): Promise<number | undefined> {
+    const status = get(statusStore).byId.get(task.status)
+    const category = status?.category
+    if (category === undefined) {
+      return undefined
+    }
     if (task.progress != null) {
       const p = await client.findOne(performance.class.Progress, { _id: task.progress })
       if (p === undefined) {
         return undefined
       }
-      const rs = (p.progress ?? 0) / (p._class === performance.class.Kpi ? (p as Kpi).target : 100)
-      return isFinite(rs) ? rs : undefined
+      const value = taskCompletionLevelFormula(category, p)
+      return value ?? undefined
     }
   }
 
@@ -122,7 +125,9 @@ async function getKRAsOfTask (client: Client, query: DocumentQuery<PTask>): Prom
     .findOne(performance.class.KRA, { _id: kraQuery }, { projection: { space: 1 } })
     .then((kra) => kra?.space)
   const assignee = query.assignee as QuerySelector<Ref<Member>>
-  const res = (await client.findAll(performance.class.EmployeeKRA, { space, kra: kraQuery, assignee })).map((kra) => kra.kra)
+  const res = (await client.findAll(performance.class.EmployeeKRA, { space, kra: kraQuery, assignee })).map(
+    (kra) => kra.kra
+  )
 
   console.log('getKRAsOfTask', res, query, space)
   return res

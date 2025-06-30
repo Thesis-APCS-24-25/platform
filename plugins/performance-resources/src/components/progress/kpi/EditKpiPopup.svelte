@@ -50,6 +50,8 @@
           description: data.description,
           target: data.target ?? 0,
           unit: data.unit,
+          task: issue,
+          progress: null,
           reports: 0
         })
       } else if (kpi !== undefined) {

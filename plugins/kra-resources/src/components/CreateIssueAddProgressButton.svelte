@@ -7,7 +7,6 @@
   import { Class, Ref } from '@hcengineering/core'
   import { Project } from '@hcengineering/task'
   import { getClient } from '@hcengineering/presentation'
-  import kra from '../plugin'
 
   export let value: Ref<Progress> | undefined = undefined
   export let _class: Ref<Class<Progress>> = performance.class.Progress
