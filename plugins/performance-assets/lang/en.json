@@ -153,6 +153,11 @@
     "Name": "Name",
     "Target": "Target",
     "ProgressReport": "Progress Report",
-    "Value": "Value"
+    "Value": "Value",
+    "Cancel": "Cancel",
+    "AddPerformanceReviewDescription": "Write a review for this employee",
+    "NotGiven": "Not Given",
+    "GradedScore": "Reviewed Score",
+    "NoReviewsYet": "No reviews yet"
   }
 }

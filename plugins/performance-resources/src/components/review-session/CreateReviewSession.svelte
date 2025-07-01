@@ -136,14 +136,14 @@
         detail={performance.string.ReviewSessionEndDetail}
       />
     </div>
-    <div class="flex-row-center clear-mins">
+    <!-- <div class="flex-row-center clear-mins">
       <ToggleButton
         kind="regular"
         size="large"
         bind:value={allowMembersToCommentOnReport}
         label={performance.string.AllowMembersToCommentOnReport}
       />
-    </div>
+    </div> -->
   </svelte:fragment>
 </Card>
 

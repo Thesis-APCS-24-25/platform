@@ -40,6 +40,7 @@ import {
   Account,
   type Arr,
   type CollectionSize,
+  DateRangeMode,
   type Domain,
   IndexKind,
   type Markup,
@@ -76,11 +77,11 @@ export class TPTask extends TTask implements PTask {
   @Index(IndexKind.FullText)
     title!: string
 
-  @Prop(TypeDate(), performance.string.StartDate)
+  @Prop(TypeDate(DateRangeMode.DATETIME), performance.string.StartDate)
   @Index(IndexKind.Indexed)
-    startDate!: number | null
+    startDate!: Timestamp | null
 
-  @Prop(TypeDate(), task.string.DueDate, { editor: modelTask.component.DueDateEditor })
+  @Prop(TypeDate(DateRangeMode.DATETIME), task.string.DueDate, { editor: modelTask.component.DueDateEditor })
   @Index(IndexKind.Indexed)
   declare dueDate: Timestamp | null
 
@@ -114,7 +115,7 @@ export class TProgress extends TDoc implements Progress {
     reports!: CollectionSize<ProgressReport>
 
   @Prop(TypeNumber(), performance.string.Progress)
-    progress: number | null
+    progress!: number | null
 }
 
 @Model(performance.class.ProgressReport, core.class.AttachedDoc, DOMAIN_PERFORMANCE)
