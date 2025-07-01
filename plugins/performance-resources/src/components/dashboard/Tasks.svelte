@@ -1,12 +1,12 @@
 <script lang="ts">
-  import { FindOptions, Ref, SortingOrder } from '@hcengineering/core'
+  import { Doc, FindOptions, Ref, SortingOrder } from '@hcengineering/core'
   import view from '@hcengineering/view'
-  import { ListView } from '@hcengineering/view-resources'
+  import { List, ListSelectionProvider, ListView, SelectDirection } from '@hcengineering/view-resources'
   import performance from '../../plugin'
   import { KRA, PTask, ReviewSession } from '@hcengineering/performance'
   import { createQuery } from '@hcengineering/presentation'
   import ProgressSummaryPresenter from '../progress/ProgressSummaryPresenter.svelte'
-  import { Component } from '@hcengineering/ui'
+  import { Scroller } from '@hcengineering/ui'
 
   export let space: Ref<ReviewSession>
 
@@ -30,20 +30,54 @@
       kra: performance.class.KRA
     }
   }
+
+  let list: List
+  const listProvider = new ListSelectionProvider(
+    (offset: 1 | -1 | 0, of?: Doc, dir?: SelectDirection, noScroll?: boolean) => {
+      if (dir === 'vertical') {
+        // Select next
+        list?.select(offset, of, noScroll)
+      }
+    }
+  )
+  const selection = listProvider.selection
+  let scroll: Scroller
 </script>
 
 <div class="w-full h-full py-4 clear-mins">
-  <ListView
-    props={{
-      readonly: true,
-      disabled: true,
-      editable: false
-    }}
-    createItemDialog={undefined}
-    createItemLabel={undefined}
-    createItemEvent={undefined}
-    viewlet={{
-      viewOptions: [
+  <Scroller bind:this={scroll}>
+    <List
+      bind:this={list}
+      selectedObjectIds={$selection ?? []}
+      {listProvider}
+      props={{
+        readonly: true,
+        disabled: true,
+        editable: false
+      }}
+      createItemDialog={undefined}
+      createItemLabel={undefined}
+      createItemEvent={undefined}
+      config={[
+        '',
+        {
+          key: 'title'
+        },
+        {
+          key: '',
+          presenter: view.component.GrowPresenter
+        },
+        {
+          key: '',
+          presenter: ProgressSummaryPresenter
+        }
+      ]}
+      configurations={undefined}
+      query={{
+        kra: { $in: assignedKRAs }
+      }}
+      {options}
+      viewOptionsConfig={[
         {
           key: 'shouldShowAll',
           type: 'toggle',
@@ -52,41 +86,12 @@
           action: performance.function.ShowEmptyGroups,
           label: view.string.View
         }
-      ]
-    }}
-    config={[
-      '',
-      {
-        key: 'title'
-      },
-      {
-        key: '',
-        presenter: view.component.GrowPresenter
-      },
-      {
-        key: '',
-        presenter: ProgressSummaryPresenter
-      }
-    ]}
-    configurations={undefined}
-    query={{
-      kra: { $in: assignedKRAs }
-    }}
-    {options}
-    viewOptionsConfig={[
-      {
-        key: 'shouldShowAll',
-        type: 'toggle',
-        defaultValue: true,
-        actionTarget: 'category',
-        action: performance.function.ShowEmptyGroups,
-        label: view.string.View
-      }
-    ]}
-    viewOptions={{
-      groupBy: ['assignee', 'kra'],
-      orderBy: ['assignee', SortingOrder.Ascending]
-    }}
-    _class={ performance.class.PTask}
-  />
+      ]}
+      viewOptions={{
+        groupBy: ['assignee', 'kra'],
+        orderBy: ['assignee', SortingOrder.Ascending]
+      }}
+      _class={performance.class.PTask}
+    />
+  </Scroller>
 </div>

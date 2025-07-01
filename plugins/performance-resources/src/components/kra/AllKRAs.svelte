@@ -25,6 +25,7 @@
   export let icon: Asset = performance.icon.Active
   export let label: IntlString = performance.string.KRA
   export let baseQuery: DocumentQuery<Doc> | undefined = undefined
+  export let allowEditKRAStatus: boolean = true
 
   $: baseQuery = {
     ...baseQuery,
@@ -131,9 +132,9 @@
   <Scroller bind:this={scroll} bind:divScroll padding={'0 1rem'} noFade checkForHeaders>
     <div class="flex-col-stretch flex-gap-2">
       {#if currentMode === 'per-kra'}
-        <EmployeeKrAsByKraList {kras} {employeeKras} space={currentSpace} />
+        <EmployeeKrAsByKraList {kras} {employeeKras} space={currentSpace} {allowEditKRAStatus} />
       {:else if currentMode === 'per-employee'}
-        <EmployeeKRAsByEmployeeList {members} {employeeKras} space={currentSpace} />
+        <EmployeeKRAsByEmployeeList {members} {employeeKras} space={currentSpace} {allowEditKRAStatus} />
       {/if}
     </div>
   </Scroller>

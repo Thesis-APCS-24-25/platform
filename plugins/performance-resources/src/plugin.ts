@@ -26,6 +26,7 @@ import {
 
 export default mergeIds(performanceId, performance, {
   string: {
+    NoTasks: '' as IntlString,
     ReportBy: '' as IntlString,
     ReportDate: '' as IntlString,
     KpiName: '' as IntlString,
