@@ -1,5 +1,7 @@
 {
   "string": {
+    "AreYouSureYouWantToRemovePerformanceReview": "Are you sure you want to remove this performance review?",
+    "ScoreIsRequired": "Score is required",
     "ReportBy": "Report By",
     "ReportDate": "Report Date",
     "Report": "Report",
