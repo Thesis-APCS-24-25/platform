@@ -79,7 +79,7 @@
         <span class="unit m-1">
           {unit.symbol}
         </span>
-      {:else}
+      {:else if unit === undefined}
         %
       {/if}
     </svelte:fragment>
@@ -111,7 +111,7 @@
     <span class="unit m-1">
       {unit?.symbol}
     </span>
-  {:else}
+  {:else if unit === undefined}
     %
   {/if}
 {/if}
