@@ -1,5 +1,8 @@
 {
   "string": {
+    "NoMyReportDescription": "Nothing here",
+    "MyReport": "My Report",
+    "MyReports": "My Reports",
     "AreYouSureYouWantToRemovePerformanceReview": "Are you sure you want to remove this performance review?",
     "ScoreIsRequired": "Score is required",
     "ReportBy": "Report By",

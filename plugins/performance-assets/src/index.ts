@@ -24,5 +24,6 @@ loadMetadata(performance.icon, {
   EmployeeKRA: `${icons}#employee-kra`,
   TimeLeft: `${icons}#time-left`,
   Kpi: `${icons}#kpi`,
-  BlockedTask: `${icons}#blocked-task`
+  BlockedTask: `${icons}#blocked-task`,
+  Reports: `${icons}#reports`
 })

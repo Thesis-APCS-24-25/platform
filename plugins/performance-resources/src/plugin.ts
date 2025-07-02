@@ -26,6 +26,9 @@ import {
 
 export default mergeIds(performanceId, performance, {
   string: {
+    NoMyReportDescription: '' as IntlString,
+    MyReport: '' as IntlString,
+    MyReports: '' as IntlString,
     AddNumberPlaceholder: '' as IntlString,
     NoTasks: '' as IntlString,
     ReportBy: '' as IntlString,
@@ -163,6 +166,8 @@ export default mergeIds(performanceId, performance, {
     Performance: '' as Ref<ActionCategory>
   },
   component: {
+    MyReport: '' as AnyComponent,
+    MyReports: '' as AnyComponent,
     ReportUpdateMessage: '' as AnyComponent,
     PTaskKRAStat: '' as AnyComponent,
     RemoveProgressPopup: '' as AnyComponent,

@@ -71,6 +71,8 @@ import RemoveProgressPopup from './components/progress/RemoveProgressPopup.svelt
 import EditKpiPopup from './components/progress/kpi/EditKpiPopup.svelte'
 import PTaskKRAStat from './components/task/PTaskKRAStat.svelte'
 import ReportUpdateMessage from './components/report/ReportUpdateMessage.svelte'
+import MyReports from './components/application/MyReports.svelte'
+import MyReport from './components/application/MyReport.svelte'
 
 export {
   EditKpiPopup,
@@ -126,7 +128,9 @@ export default async (): Promise<Resources> => ({
     ReviewPresenter,
     AssignKraPopup,
     ScorePresenter,
-    ReportUpdateMessage
+    ReportUpdateMessage,
+    MyReport,
+    MyReports
   },
   function: {
     CanRemoveProgress: async (task: PTask | undefined): Promise<boolean> => task?.progress !== undefined,
