@@ -5,7 +5,7 @@
     createFocusManager,
     DatePresenter,
     EditBox,
-    FocusHandler,
+    FocusHandler
   } from '@hcengineering/ui'
   import { createEventDispatcher } from 'svelte'
 
@@ -32,7 +32,7 @@
   let identifier: string = ''
   let currentTeam: Ref<Space> | undefined = $currentTeamStore
 
-  let allowMembersToCommentOnReport: boolean = true
+  const allowMembersToCommentOnReport: boolean = true
 
   $: if (team !== undefined) {
     currentTeam = team._id as Ref<Space>
@@ -40,7 +40,7 @@
 
   $: canSave = name !== '' && startDate !== undefined && endDate !== undefined && currentTeam !== undefined
 
-  async function create(): Promise<void> {
+  async function create (): Promise<void> {
     if (currentTeam !== undefined) {
       await createReviewSession(
         client,

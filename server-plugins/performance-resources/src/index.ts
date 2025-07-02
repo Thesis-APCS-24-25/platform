@@ -67,40 +67,35 @@ export async function OnCreateReport (txes: Tx[], control: TriggerControl): Prom
   for (const tx of txes) {
     const createTx = tx as TxCreateDoc<PerformanceReport>
 
-    result.push(await prepareReport(control, createTx))
-
-    const allReports = await control.findAll(
+    const allReport = (await control.findAll(
       control.ctx,
       performance.class.PerformanceReport,
       {
-        reviewee: createTx.attributes.reviewee,
-        reviewSession: createTx.attributes.reviewSession
+        reviewSession: createTx.attributes.reviewSession,
+        reviewee: createTx.attributes.reviewee
       }
-    )
-    const previousReport = allReports
-      .filter((value) => value._id !== createTx.objectId)
-    result.push(...previousReport.map((value) => control.txFactory.createTxRemoveDoc(
-      value._class,
-      value.space,
-      value._id
-    )))
-
-    // for (const value of previousReport) {
-    //   const reviews = (await control.findAll(
-    //     control.ctx,
-    //     performance.class.PerformanceReview,
-    //     {
-    //       report: value._id
-    //     }
-    //   ))
-    //
-    //   result.push(...reviews.map((value) => control.txFactory.createTxUpdateDoc(
-    //     performance.class.PerformanceReview,
-    //     value.space,
-    //     value._id,
-    //     { report: createTx.objectId }
-    //   )))
-    // }
+    )).sort((a, b) => (a.createdOn as number) - (b.createdOn as number))
+    console.log(allReport)
+    if (allReport.length > 1) {
+      result.push(control.txFactory.createTxRemoveDoc(
+        createTx.objectClass,
+        createTx.objectSpace,
+        createTx.objectId
+      ))
+      const oldReport = allReport[0]
+      result.push(await prepareReport(control, control.txFactory.createTxCreateDoc(
+        createTx.objectClass,
+        createTx.objectSpace,
+        {
+          reviewee: createTx.attributes.reviewee,
+          reviewSession: createTx.attributes.reviewSession,
+          content: null,
+          reviewer: null,
+          score: null
+        },
+        oldReport._id
+      )))
+    }
   }
 
   return result
