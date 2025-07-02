@@ -55,7 +55,10 @@
     'relations',
     'blockedBy',
     'identifier',
-    'goal'
+    'goal',
+    'estimation',
+    'reportedTime',
+    'remainingTime'
   ]
 
   let keys: KeyedAttribute[] = []
