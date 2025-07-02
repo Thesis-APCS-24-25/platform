@@ -68,7 +68,7 @@
       if (key.key === 'startDate') startIndex = i
       else if (key.key === 'dueDate') dueIndex = i
     }
-    if (startIndex === undefined || dueIndex === undefined) return keys
+    if (startIndex === undefined || dueIndex === undefined || startIndex < dueIndex) return keys
     const temp = keys[startIndex]
     keys[startIndex] = keys[dueIndex]
     keys[dueIndex] = temp
