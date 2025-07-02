@@ -322,7 +322,9 @@
     "AddRatingScale": "Add rating scale",
     "UseAsTemplate": "Use as template",
     "SetAssigneeFirst": "Set assignee before choosing KRA",
-    "EmptyEditProgressContent": "No progress tracking is attached to this issue, use the below buttons to add progress tracking"
+    "EmptyEditProgressContent": "No progress tracking is attached to this issue, use the below buttons to add progress tracking",
+    "Edit": "Edit",
+    "NoNote": "No note"
   },
   "status": {}
 }
