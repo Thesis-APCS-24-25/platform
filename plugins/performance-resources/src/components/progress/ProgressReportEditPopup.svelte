@@ -19,7 +19,7 @@
 </script>
 
 {#if attachedToClass === performance.class.Kpi}
-  <KpiReportEditPopup {value} {space} attachedTo={asKpiAttachedTo()} {assignee} />
+  <KpiReportEditPopup {value} {space} attachedTo={asKpiAttachedTo()} {assignee} on:close/>
 {:else}
-  <BaseProgressReportEditPopup {value} {space} {attachedTo} {assignee} />
+  <BaseProgressReportEditPopup {value} {space} {attachedTo} {assignee} on:close/>
 {/if}
