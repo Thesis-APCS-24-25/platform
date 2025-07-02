@@ -25,7 +25,6 @@
   export let icon: Asset = performance.icon.Active
   export let label: IntlString = performance.string.KRA
   export let baseQuery: DocumentQuery<Doc> | undefined = undefined
-  export let allowEditKRAStatus: boolean = true
 
   $: baseQuery = {
     ...baseQuery,
@@ -96,6 +95,7 @@
   // })
 
   $: canCreateKRA = reviewSession?.status === ReviewSessionStatus.Drafting
+  $: allowEditKRAStatus = reviewSession?.status === ReviewSessionStatus.Drafting
 </script>
 
 <Header>
