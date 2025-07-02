@@ -1,10 +1,12 @@
 <script lang="ts">
   import { PersonRefPresenter } from '@hcengineering/contact-resources'
-  import performance, { ProgressReport } from '@hcengineering/performance'
+  import performance, { Progress, ProgressReport } from '@hcengineering/performance'
   import { DatePresenter, Label, showPopup, tooltip } from '@hcengineering/ui'
   import ReportNotePopup from './ReportNotePopup.svelte'
   import { ProgressReportEditPopup } from '@hcengineering/performance-resources'
+  import { Class, Ref } from '@hcengineering/core'
 
+  export let _class: Ref<Class<Progress>> = performance.class.Progress
   export let reports: ProgressReport[] = []
   export let target: number = 100
   $: reports = reports.sort((a, b) => (a.date ?? 0) - (b.date ?? 0))
@@ -36,14 +38,17 @@
     <div class="grid-item bar-container">
       <button
         class="bar flex-row-center justify-center"
-        style:width="{report.value / (target) * 100}%"
-        style:left="{(accumulatedProgress[i] - report.value) / target * 100}%"
+        style:width="{(report.value / target) * 100}%"
+        style:left="{((accumulatedProgress[i] - report.value) / target) * 100}%"
         use:tooltip={{
           component: ReportNotePopup,
-          props: { value: report }
+          props: {
+            value: report
+          }
         }}
         on:click|stopPropagation={() => {
           showPopup(ProgressReportEditPopup, {
+            attachedToClass: _class,
             value: report
           })
         }}
