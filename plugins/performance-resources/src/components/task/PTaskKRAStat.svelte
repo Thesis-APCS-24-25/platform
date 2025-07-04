@@ -31,7 +31,7 @@
   $: total = Promise.all(docs !== undefined ? docs.map(calculateCompletionLevel) : [])
     .then((progresses) => progresses.filter((progress) => progress !== undefined && progress !== null))
     .then((progresses) =>
-      docs !== undefined && docs.length > 0
+      progresses !== undefined && progresses.length > 0
         ? (progresses.reduce((acc, progress) => (acc ?? 0) + (progress ?? 0), 0) ?? 0) / progresses.length
         : 0
     )

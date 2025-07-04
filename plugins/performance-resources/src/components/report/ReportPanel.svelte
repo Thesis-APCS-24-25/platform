@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { PerformanceReport, ReviewSession } from '@hcengineering/performance'
+  import { KRA, PerformanceReport, ReviewSession } from '@hcengineering/performance'
   import { ViewletContentView, ViewletSettingButton } from '@hcengineering/view-resources'
   // import { DatePresenter, ListView } from '@hcengineering/ui'
   import { personAccountByIdStore, personAccountPersonByIdStore, UserInfo } from '@hcengineering/contact-resources'
@@ -29,6 +29,7 @@
   let viewlet: WithLookup<Viewlet> | undefined = undefined
   let viewOptions: ViewOptions | undefined
 
+  let kras: Ref<KRA>[] = []
   const reportQuery = createQuery()
   $: if (_id !== undefined && _class !== undefined) {
     reportQuery.query(
@@ -53,6 +54,17 @@
   $: if (value !== undefined) {
     reviewee = $personAccountByIdStore.get(value.reviewee)
     person = reviewee !== undefined ? $personAccountPersonByIdStore.get(reviewee?.person) : undefined
+    void client.findAll(
+      performance.class.EmployeeKRA,
+      {
+        assignee: person?._id,
+        space: value?.space
+      }
+    ).then((result) => {
+      if (result !== undefined) {
+        kras = result.map((v) => v.kra)
+      }
+    })
   }
 </script>
 
@@ -98,7 +110,10 @@
               if (value?.reviewSession === undefined) return
               await client.createDoc(performance.class.PerformanceReport, value?.reviewSession, {
                 reviewee: value?.reviewee,
-                reviewSession: value?.reviewSession
+                reviewSession: value?.reviewSession,
+                content: null,
+                reviewer: null,
+                score: null
               })
               closePanel()
             }
@@ -120,6 +135,9 @@
         query={{
           _id: {
             $in: value.tasks
+          },
+          kra: {
+            $in: [...kras, null]
           }
         }}
       />

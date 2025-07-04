@@ -6,13 +6,10 @@ import performance, {
   PerformanceReport,
   Progress,
   ReviewSession,
-  Kpi,
   taskCompletionLevelFormula
 } from '@hcengineering/performance'
 import { TriggerControl } from '@hcengineering/server-core'
 import contact from '@hcengineering/contact'
-import taskPlugin from '@hcengineering/task'
-import { stat } from 'fs/promises'
 
 export function addUpdates (
   control: TriggerControl,
@@ -35,6 +32,7 @@ export async function prepareReport (
   control: TriggerControl,
   createTx: TxCreateDoc<PerformanceReport>
 ): Promise<TxUpdateDoc<PerformanceReport>> {
+  console.log(createTx)
   const assignee = (
     await control.findAll(control.ctx, contact.class.PersonAccount, { _id: createTx.attributes.reviewee }, { limit: 1 })
   )[0]
@@ -107,9 +105,9 @@ async function calculateScore (control: TriggerControl, tasks: PTask[], employee
       const progress = find !== undefined && find.length > 0 ? find[0] : undefined
       const score = await getScore(control, task, progress)
       sum += score ?? 0
-      includedTasks += score !== null ? 1 : 0
+      includedTasks += score != null ? 1 : 0
     }
-    score += (sum / includedTasks) * entry.weight
+    if (includedTasks > 0) score += (sum / includedTasks) * entry.weight
   }
   return score
 }

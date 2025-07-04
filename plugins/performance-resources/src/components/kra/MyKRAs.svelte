@@ -100,7 +100,7 @@
         ]}
         configurations={undefined}
         query={{
-          kra: { $in: [...assignedKRAs, null, undefined, performance.ids.NoKRARef] },
+          kra: { $in: [...assignedKRAs, null] },
           assignee: me
         }}
         viewOptionsConfig={[
