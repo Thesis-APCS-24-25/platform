@@ -179,7 +179,7 @@
         <Component is={currentSpecial.component} props={{ ...currentSpecial.componentProps, currentSpace }} />
       {:else if currentSpecial !== undefined}
         <Component is={currentSpecial.component} props={currentSpecial.componentProps} />
-      {:else if currentSpace !== undefined}{/if}
+      {/if}
     </div>
   {/if}
 </div>

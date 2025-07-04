@@ -5,10 +5,10 @@
   import { currentTeam } from '../../utils/team'
   import { ReviewSession } from '@hcengineering/performance'
   import { Breadcrumb, Header } from '@hcengineering/ui'
-  import { Asset, IntlString } from '@hcengineering/platform'
+  import { getCurrentAccount, Ref } from '@hcengineering/core'
+  import { PersonAccount } from '@hcengineering/contact'
 
-  export let icon: Asset | undefined = undefined
-  export let label: IntlString | undefined = undefined
+  const me = getCurrentAccount()._id as Ref<PersonAccount>
 
   let reviewSessions: ReviewSession[] | undefined = undefined
   const query = createQuery()
@@ -29,11 +29,15 @@
 <TableBrowser
   _class={performance.class.PerformanceReport}
   query={{
-    space: { $in: reviewSessions?.map((rs) => rs._id) }
+    space: { $in: reviewSessions?.map((rs) => rs._id) },
+    reviewee: me
   }}
   config={[
     { key: 'space', label: performance.string.ReviewSession },
-    '',
+    {
+      key: '',
+      label: performance.string.Report
+    },
     {
       key: '',
       presenter: performance.component.ScorePresenter,

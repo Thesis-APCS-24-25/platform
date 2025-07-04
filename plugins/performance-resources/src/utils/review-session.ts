@@ -18,7 +18,7 @@ import { currentTeam } from './team'
 import { get } from 'svelte/store'
 import { type PersonAccount } from '@hcengineering/contact'
 import { type Member } from '@hcengineering/kra-team'
-import { personAccountByPersonId, personIdByAccountId } from '@hcengineering/contact-resources'
+import { personIdByAccountId } from '@hcengineering/contact-resources'
 import { getMembersWithRoles } from '@hcengineering/kra-team-resources'
 import kraTeam from '@hcengineering/kra-team'
 
