@@ -268,6 +268,7 @@ const performancePlugin = plugin(performanceId, {
     NoKRARef: '' as Ref<KRA>
   },
   icon: {
+    Reports: '' as Asset,
     BlockedTask: '' as Asset,
     Unit: '' as Asset,
     Kpi: '' as Asset,

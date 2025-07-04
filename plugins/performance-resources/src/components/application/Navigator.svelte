@@ -8,6 +8,7 @@
   import { navigatorModel } from '../../navigation'
   import ActiveReviewSessionNav from './ActiveReviewSessionNav.svelte'
   import DraftingReviewSessionNav from './DraftingReviewSessionNav.svelte'
+  import ConcludedReviewSessionNav from './ConcludedReviewSessionNav.svelte'
   import { Label, Scroller } from '@hcengineering/ui'
   import { NavFooter } from '@hcengineering/workbench-resources'
   import { SpacesNavModel } from '@hcengineering/workbench'
@@ -78,7 +79,7 @@
       {deselect}
       {separate}
     />
-    <SpaceNav
+    <ConcludedReviewSessionNav
       reviewSessions={filter(reviewSessions, concludedReviewSessionModel.id)}
       model={concludedReviewSessionModel}
       {currentSpace}

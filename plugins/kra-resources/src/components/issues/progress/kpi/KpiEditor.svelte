@@ -57,7 +57,7 @@
     </div>
   </div>
   {#if reports}
-    <ReportsBreakdown {reports} target={kpi.target}/>
+    <ReportsBreakdown {reports} target={kpi.target} _class={performance.class.Kpi}/>
   {:else}
     <Loading />
   {/if}

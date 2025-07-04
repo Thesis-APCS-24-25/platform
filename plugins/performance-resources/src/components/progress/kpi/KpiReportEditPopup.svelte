@@ -19,20 +19,22 @@
   const kpiQuery = createQuery()
   let unit: Unit | undefined = undefined
   let kpi: Kpi | undefined = undefined
-  $: kpiQuery.query(
-    performance.class.Kpi,
-    { _id: attachedTo },
-    (res) => {
-      if (res.length > 0) {
-        unit = res[0].$lookup?.unit as Unit | undefined
-        kpi = res[0]
-      } else {
-        unit = undefined
-      }
-    },
-    { limit: 1, lookup: { unit: performance.class.Unit } }
-  )
-
+  $: if (value?.attachedTo !== undefined || attachedTo !== undefined) {
+    kpiQuery.query(
+      performance.class.Kpi,
+      { _id: (value?.attachedTo as Ref<Kpi> | undefined) ?? attachedTo },
+      (res) => {
+        if (res.length > 0) {
+          unit = res[0].$lookup?.unit as Unit | undefined
+          kpi = res[0]
+          console.log('KPI:', kpi)
+        } else {
+          unit = undefined
+        }
+      },
+      { limit: 1, lookup: { unit: performance.class.Unit } }
+    )
+  }
   const object: Partial<AttachedData<ProgressReport>> = {
     value: value?.value,
     date: value?.date,
@@ -105,22 +107,21 @@
         <span class="mr-1">{kpi?.progress ?? 0} +</span>
       </div>
       <div class="clear-mins">
-        <EditBox
-          kind="default-large"
-          bind:value={object.value}
-          format="number"
-          focusIndex={1}
-        />
+        <EditBox kind="default-large" bind:value={object.value} format="number" focusIndex={1} />
       </div>
       <span class="unit">/ {kpi?.target} ({unit?.name})</span>
     </div>
     <div class="mt-3">
-      <EditBox
-        label={kra.string.Note}
-        kind="default" bind:value={object.note} format="text" focusIndex={2} />
+      <EditBox label={kra.string.Note} kind="default" bind:value={object.note} format="text" focusIndex={2} />
     </div>
     <div class="mt-4 mb-4">
-      <ProgressBar value={kpi?.progress ?? 0} max={kpi?.target} additionalValue={object.value} />
+      {#if kpi}
+        <ProgressBar
+          value={(kpi?.progress ?? 0) - (value?.value ?? 0)}
+          max={kpi?.target}
+          additionalValue={object.value - (value?.value ?? 0)}
+        />
+      {/if}
     </div>
   </svelte:fragment>
 </ReportEditPopupBase>

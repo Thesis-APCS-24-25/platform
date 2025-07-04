@@ -18,7 +18,9 @@ import { currentTeam } from './team'
 import { get } from 'svelte/store'
 import { type PersonAccount } from '@hcengineering/contact'
 import { type Member } from '@hcengineering/kra-team'
-import { personIdByAccountId } from '@hcengineering/contact-resources'
+import { personAccountByPersonId, personIdByAccountId } from '@hcengineering/contact-resources'
+import { getMembersWithRoles } from '@hcengineering/kra-team-resources'
+import kraTeam from '@hcengineering/kra-team'
 
 export async function createReviewSession (
   client: TxOperations,
@@ -146,14 +148,22 @@ export async function IsInactiveReviewSessionOfCurrentTeam (space: Space): Promi
   )
 }
 
-export async function allKRAApproved (
-  client: Client,
-  reviewSession: ReviewSession
-): Promise<boolean> {
+export async function allKRAApproved (client: Client, reviewSession: ReviewSession): Promise<boolean> {
+  const team = get(currentTeam)
+  if (team === undefined) {
+    return false
+  }
+  const excludedEmployees = await getMembersWithRoles(team).then(
+    (members) =>
+      members
+        ?.filter(({ roles }) => roles.includes(kraTeam.role.TeamManager))
+        .map(({ person }) => person as Ref<Member>) ?? []
+  )
+
   const kras = await client.findAll(performance.class.EmployeeKRA, {
     space: reviewSession._id
   })
-  return kras.every(kra => kra.status === KRAStatus.Approved)
+  return kras.every((kra) => Boolean(excludedEmployees.includes(kra.assignee)) || kra.status === KRAStatus.Approved)
 }
 
 export async function doKRAWeightCheck (
@@ -163,6 +173,17 @@ export async function doKRAWeightCheck (
   const kraWeights = await client.findAll(performance.class.EmployeeKRA, {
     space: reviewSession._id
   })
+
+  const team = get(currentTeam)
+  if (team === undefined) {
+    return new Map<Ref<Member>, boolean>()
+  }
+  const excludedEmployees = await getMembersWithRoles(team).then(
+    (members) =>
+      members
+        ?.filter(({ roles }) => roles.includes(kraTeam.role.TeamManager))
+        .map(({ person }) => person as Ref<Member>) ?? []
+  )
 
   const members = reviewSession.members ?? []
   let mapped: Map<Ref<Member>, number> = members.reduce((acc, member) => {
@@ -183,7 +204,7 @@ export async function doKRAWeightCheck (
     data.push([employee, weight])
   })
   return data.reduce((acc, [employee, weight]) => {
-    acc.set(employee, Math.abs(weight - 100) === 0)
+    acc.set(employee, (Boolean(excludedEmployees.includes(employee))) || Math.abs(weight - 100) === 0)
     return acc
   }, new Map<Ref<Member>, boolean>())
 }

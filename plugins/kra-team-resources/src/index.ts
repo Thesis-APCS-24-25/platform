@@ -13,6 +13,8 @@ import { get } from 'svelte/store'
 import { type Person } from '@hcengineering/contact'
 import AllMembers from './components/AllMembers.svelte'
 
+export * from './utils'
+
 async function removeMember (doc: Person | Person[]): Promise<void> {
   const team = get(currentTeam)
   if (team === undefined) {
