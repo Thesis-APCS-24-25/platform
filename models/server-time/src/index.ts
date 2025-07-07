@@ -19,7 +19,7 @@ import core, { type Tx } from '@hcengineering/core'
 import { TClass } from '@hcengineering/model-core'
 import { type Resource } from '@hcengineering/platform'
 import serverCore, { type TriggerControl } from '@hcengineering/server-core'
-import tracker from '@hcengineering/tracker'
+import kra from '@hcengineering/kra'
 import serverTime, { type ToDoFactory, type OnToDo } from '@hcengineering/server-time'
 import time, { type ToDo, type WorkSlot } from '@hcengineering/time'
 
@@ -82,11 +82,11 @@ export function createModel (builder: Builder): void {
     }
   })
 
-  builder.mixin(tracker.class.Issue, core.class.Class, serverTime.mixin.ToDoFactory, {
+  builder.mixin(kra.class.Issue, core.class.Class, serverTime.mixin.ToDoFactory, {
     factory: serverTime.function.IssueToDoFactory
   })
 
-  builder.mixin(tracker.class.Issue, core.class.Class, serverTime.mixin.OnToDo, {
+  builder.mixin(kra.class.Issue, core.class.Class, serverTime.mixin.OnToDo, {
     onDone: serverTime.function.IssueToDoDone
   })
 }

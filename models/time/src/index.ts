@@ -46,12 +46,12 @@ import {
 import textEditor from '@hcengineering/text-editor'
 import { TEvent } from '@hcengineering/model-calendar'
 import core, { TAttachedDoc, TClass, TDoc, TType } from '@hcengineering/model-core'
-import tracker from '@hcengineering/model-tracker'
+import kra from '@hcengineering/model-kra'
 import document from '@hcengineering/model-document'
 import view, { createAction } from '@hcengineering/model-view'
 import workbench from '@hcengineering/model-workbench'
 import notification from '@hcengineering/notification'
-import recruit from '@hcengineering/recruit'
+// import recruit from '@hcengineering/recruit'
 import tags from '@hcengineering/tags'
 import { type AnyComponent } from '@hcengineering/ui'
 import {
@@ -156,7 +156,7 @@ export function createModel (builder: Builder): void {
     presenter: time.component.WorkSlotElement
   })
 
-  builder.mixin(tracker.class.Issue, core.class.Class, time.mixin.ItemPresenter, {
+  builder.mixin(kra.class.Issue, core.class.Class, time.mixin.ItemPresenter, {
     presenter: time.component.IssuePresenter
   })
 
@@ -168,9 +168,9 @@ export function createModel (builder: Builder): void {
     presenter: time.component.LeadPresenter
   })
 
-  builder.mixin(recruit.class.Applicant, core.class.Class, time.mixin.ItemPresenter, {
-    presenter: time.component.ApplicantPresenter
-  })
+  // builder.mixin(recruit.class.Applicant, core.class.Class, time.mixin.ItemPresenter, {
+  //   presenter: time.component.ApplicantPresenter
+  // })
 
   builder.mixin(board.class.Card, core.class.Class, time.mixin.ItemPresenter, {
     presenter: time.component.CardPresenter
@@ -216,7 +216,7 @@ export function createModel (builder: Builder): void {
   )
 
   builder.mixin(time.class.ToDo, core.class.Class, view.mixin.IgnoreActions, {
-    actions: [view.action.Open, tracker.action.NewRelatedIssue, view.action.Delete]
+    actions: [view.action.Open, kra.action.NewRelatedIssue, view.action.Delete]
   })
 
   createAction(

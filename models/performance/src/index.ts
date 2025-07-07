@@ -1,6 +1,5 @@
 import { type Builder } from '@hcengineering/model'
 import { performanceId } from '@hcengineering/performance'
-import tracker from '@hcengineering/model-tracker'
 import activity from '@hcengineering/activity'
 import chunter from '@hcengineering/chunter'
 import kraTeam from '@hcengineering/model-kra-team'
@@ -132,10 +131,6 @@ function defineReviewSession (builder: Builder): void {
         }
       ]
     }
-  })
-
-  builder.mixin(performance.class.ReviewSession, core.class.Class, view.mixin.IgnoreActions, {
-    actions: [tracker.action.EditRelatedTargets, tracker.action.NewRelatedIssue]
   })
 
   builder.mixin(performance.class.TypeReviewSessionStatus, core.class.Class, view.mixin.AttributePresenter, {
@@ -311,10 +306,6 @@ function defineReport (builder: Builder): void {
       other: []
     }
   })
-
-  builder.mixin(performance.class.PerformanceReport, core.class.Class, view.mixin.IgnoreActions, {
-    actions: [view.action.Delete, tracker.action.EditRelatedTargets, tracker.action.NewRelatedIssue]
-  })
   //
   // builder.mixin(performance.class.PerformanceReview, core.class.Class, view.mixin.ObjectPresenter, {
   //   presenter: performance.component.ReviewPresenter
@@ -339,7 +330,7 @@ function defineSpaceType (builder: Builder): void {
       statusClass: performance.class.TypeKRAStatus,
       statusCategories: kraCategories,
       allowedAsChildOf: [performance.taskTypes.KRA],
-      icon: tracker.icon.Issue
+      icon: task.icon.Task
     },
     performance.taskTypes.KRA
   )

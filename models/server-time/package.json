@@ -33,7 +33,7 @@
     "@hcengineering/platform": "^0.6.11",
     "@hcengineering/server-time": "^0.6.0",
     "@hcengineering/time": "^0.6.0",
-    "@hcengineering/tracker": "^0.6.24",
+    "@hcengineering/kra": "^0.6.0",
     "@hcengineering/server-core": "^0.6.1",
     "@hcengineering/model-core": "^0.6.0"
   }

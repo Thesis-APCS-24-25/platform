@@ -36,7 +36,7 @@
     "@hcengineering/model-attachment": "^0.6.0",
     "@hcengineering/model-view": "^0.6.0",
     "@hcengineering/model-presentation": "^0.6.0",
-    "@hcengineering/model-tracker": "^0.6.0",
+    "@hcengineering/model-kra": "^0.6.0",
     "@hcengineering/model-contact": "^0.6.1",
     "@hcengineering/model-request": "^0.6.0",
     "@hcengineering/model-print": "^0.6.0",

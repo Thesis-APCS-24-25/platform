@@ -4,11 +4,10 @@ import core from '@hcengineering/model-core'
 import view from '@hcengineering/view'
 import { createAction } from '@hcengineering/model-view'
 import contact from '@hcengineering/model-contact'
-import tracker from '@hcengineering/tracker'
 
 export function defineActions (builder: Builder): void {
   builder.mixin(kraTeam.class.Team, core.class.Class, view.mixin.IgnoreActions, {
-    actions: [tracker.action.EditRelatedTargets, view.action.Leave, view.action.Join]
+    actions: [view.action.Leave, view.action.Join]
   })
 
   builder.mixin(kraTeam.mixin.Member, core.class.Class, view.mixin.IgnoreActions, {
@@ -17,7 +16,6 @@ export function defineActions (builder: Builder): void {
       contact.action.KickEmployee,
       contact.action.MergePersons,
       contact.action.ResendInvite,
-      tracker.action.Relations,
       contact.action.PublicLink
     ]
   })

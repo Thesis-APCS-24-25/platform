@@ -45,7 +45,7 @@ import { createPublicLinkAction } from '@hcengineering/model-guest'
 import { generateClassNotificationTypes } from '@hcengineering/model-notification'
 import preference, { TPreference } from '@hcengineering/model-preference'
 import presentation from '@hcengineering/model-presentation'
-import tracker from '@hcengineering/model-tracker'
+import kra from '@hcengineering/model-kra'
 import view, { actionTemplates, createAction } from '@hcengineering/model-view'
 import workbench from '@hcengineering/model-workbench'
 import notification from '@hcengineering/notification'
@@ -222,7 +222,7 @@ function defineTeamspace (builder: Builder): void {
   // Actions
 
   builder.mixin(document.class.Teamspace, core.class.Class, view.mixin.IgnoreActions, {
-    actions: [tracker.action.EditRelatedTargets, tracker.action.NewRelatedIssue]
+    actions: [kra.action.EditRelatedTargets, kra.action.NewRelatedIssue]
   })
 
   createAction(
@@ -431,7 +431,7 @@ function defineDocument (builder: Builder): void {
   })
 
   builder.mixin(document.class.Document, core.class.Class, view.mixin.IgnoreActions, {
-    actions: [view.action.Open, view.action.OpenInNewTab, tracker.action.NewRelatedIssue]
+    actions: [view.action.Open, view.action.OpenInNewTab, kra.action.NewRelatedIssue]
   })
 
   builder.createDoc(

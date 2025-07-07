@@ -164,6 +164,8 @@
     "AddPerformanceReviewDescription": "Write a review for this employee",
     "NotGiven": "Not Given",
     "GradedScore": "Reviewed Score",
-    "NoReviewsYet": "No reviews yet"
+    "NoReviewsYet": "No reviews yet",
+    "RelatedTo": "Related to",
+    "BlockedBy": "Blocked by"
   }
 }

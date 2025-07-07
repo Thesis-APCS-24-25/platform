@@ -25,7 +25,7 @@ import { type Builder } from '@hcengineering/model'
 import chunter from '@hcengineering/model-chunter'
 import core from '@hcengineering/model-core'
 import request from '@hcengineering/model-request'
-import tracker from '@hcengineering/model-tracker'
+import kra from '@hcengineering/model-kra'
 import { generateClassNotificationTypes } from '@hcengineering/model-notification'
 import view, { classPresenter, createAction } from '@hcengineering/model-view'
 import presentation from '@hcengineering/model-presentation'
@@ -387,7 +387,7 @@ export function createModel (builder: Builder): void {
   })
 
   builder.mixin(documents.class.ControlledDocument, core.class.Class, view.mixin.IgnoreActions, {
-    actions: [tracker.action.NewRelatedIssue]
+    actions: [kra.action.NewRelatedIssue]
   })
 
   builder.mixin(documents.class.DocumentMeta, core.class.Class, view.mixin.ObjectPresenter, {
@@ -706,7 +706,7 @@ export function createModel (builder: Builder): void {
   )
 
   builder.mixin(documents.class.DocumentSpace, core.class.Class, view.mixin.IgnoreActions, {
-    actions: [tracker.action.EditRelatedTargets]
+    actions: [kra.action.EditRelatedTargets]
   })
 
   builder.mixin(documents.class.DocumentSpace, core.class.Class, view.mixin.SpacePresenter, {
@@ -726,11 +726,11 @@ export function createModel (builder: Builder): void {
   })
 
   builder.mixin(documents.class.Project, core.class.Class, view.mixin.IgnoreActions, {
-    actions: [view.action.Delete, view.action.Open, view.action.OpenInNewTab, tracker.action.NewRelatedIssue]
+    actions: [view.action.Delete, view.action.Open, view.action.OpenInNewTab, kra.action.NewRelatedIssue]
   })
 
   builder.mixin(documents.class.ProjectDocument, core.class.Class, view.mixin.IgnoreActions, {
-    actions: [view.action.Delete, tracker.action.NewRelatedIssue]
+    actions: [view.action.Delete, kra.action.NewRelatedIssue]
   })
 
   builder.mixin(documents.class.Document, core.class.Class, view.mixin.ObjectIdentifier, {

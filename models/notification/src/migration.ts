@@ -409,11 +409,11 @@ export const notificationOperation: MigrateOperation = {
             { _class: notification.class.DocNotifyContext, objectClass: chunter.class.Channel },
             { objectSpace: core.space.Space }
           )
-          await client.update<DocNotifyContext>(
-            DOMAIN_DOC_NOTIFY,
-            { _class: notification.class.DocNotifyContext, objectClass: 'recruit:class:Vacancy' as any },
-            { objectSpace: core.space.Space }
-          )
+          // await client.update<DocNotifyContext>(
+          //   DOMAIN_DOC_NOTIFY,
+          //   { _class: notification.class.DocNotifyContext, objectClass: 'recruit:class:Vacancy' as any },
+          //   { objectSpace: core.space.Space }
+          // )
         }
       },
       {
