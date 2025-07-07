@@ -7,12 +7,11 @@
     IconClose,
     IconDelete,
     IconAdd,
-    EditBox,
     showPopup
   } from '@hcengineering/ui'
   import { getClient, MessageBox } from '@hcengineering/presentation'
   import performance from '../../plugin'
-  import { checkPermission, getCurrentAccount, Markup, Ref, WithLookup } from '@hcengineering/core'
+  import { checkPermission, getCurrentAccount, Ref, WithLookup } from '@hcengineering/core'
   import { PerformanceReport } from '@hcengineering/performance'
   import { PersonAccount } from '@hcengineering/contact'
   import kraTeam from '@hcengineering/kra-team'
@@ -136,7 +135,7 @@
               }}
               inheritColor
               tooltip={{
-                label: performance.string.Remove
+                label: performance.string.RemovePerformanceReview
               }}
             />
             <ButtonIcon

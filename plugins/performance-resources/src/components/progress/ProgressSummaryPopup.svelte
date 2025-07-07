@@ -2,11 +2,11 @@
   import { createEventDispatcher } from 'svelte'
   import { DateTimePresenter, resizeObserver } from '@hcengineering/ui'
   import performance, { Progress, PTask } from '@hcengineering/performance'
-  import KpiProgressBar from './kpi/KpiProgressBar.svelte'
   import { WithLookup } from '@hcengineering/core'
   import { createQuery } from '@hcengineering/presentation'
   import { StatePresenter } from '@hcengineering/task-resources'
   import { statusStore } from '@hcengineering/view-resources'
+  import ProgressBar from './ProgressBar.svelte'
 
   const dispatch = createEventDispatcher()
   export let value: WithLookup<PTask>
@@ -68,9 +68,11 @@
       <!-- <Label label={performance.string.StartDate} /> -->
       <DateTimePresenter value={value.startDate} />
     </span>
-    <div class="bar">
-      <KpiProgressBar value={progress?.progress ?? 0} />
-    </div>
+    {#if progress != null}
+      <div class="bar">
+        <ProgressBar value={progress} />
+      </div>
+    {/if}
     <span>
       <DateTimePresenter value={value.dueDate} />
       <!-- <Label label={task.string.DueDate} /> -->

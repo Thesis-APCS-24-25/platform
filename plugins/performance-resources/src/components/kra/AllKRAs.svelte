@@ -134,7 +134,7 @@
       {#if currentMode === 'per-kra'}
         <EmployeeKrAsByKraList {kras} {employeeKras} space={currentSpace} {allowEditKRAStatus} />
       {:else if currentMode === 'per-employee'}
-        <EmployeeKRAsByEmployeeList {members} {employeeKras} space={currentSpace} {allowEditKRAStatus} />
+        <EmployeeKRAsByEmployeeList {members} space={currentSpace} {allowEditKRAStatus} />
       {/if}
     </div>
   </Scroller>

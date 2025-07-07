@@ -24,7 +24,9 @@ export default mergeIds(kraTeamId, kraTeam, {
     AssignWeightForAll: '' as IntlString,
     AssignWeightForAllDescription: '' as IntlString,
     RemoveMember: '' as IntlString,
-    Member: '' as IntlString
+    Member: '' as IntlString,
+    GradeReport: '' as IntlString,
+    GradeReportDescription: '' as IntlString
   },
   component: {
     RolePresenter: '' as AnyComponent,

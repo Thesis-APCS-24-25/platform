@@ -115,7 +115,11 @@
       {@const progressSum = (progress?.progress ?? 0) + (object.value ?? 0) - (value?.value ?? 0)}
       <div class="mt-3">
         <div class="flex-row-center flex-gap-2">
-          <ProgressBar value={progress?.progress ?? 0} additionalValue={object.value - (value?.value ?? 0)} />
+          {#if object.value !== undefined}
+            <ProgressBar value={progress?.progress ?? 0} additionalValue={object.value - (value?.value ?? 0)} />
+          {:else}
+            <ProgressBar value={progress?.progress ?? 0} />
+          {/if}
           <span class:warn-overflow={progressSum > 100}>{progressSum}%</span>
         </div>
       </div>

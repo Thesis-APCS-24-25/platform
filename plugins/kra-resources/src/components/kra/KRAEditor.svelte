@@ -4,7 +4,7 @@
   import performance, { KRA } from '@hcengineering/performance'
   import { KRAEditor } from '@hcengineering/performance-resources'
   import { getClient } from '@hcengineering/presentation'
-  import { ButtonKind, ButtonSize, Label } from '@hcengineering/ui'
+  import { ButtonKind, ButtonSize } from '@hcengineering/ui'
 
   export let value: WithLookup<Issue>
   export let readonly = false
@@ -15,8 +15,8 @@
 
   const client = getClient()
 
-  async function handleChange (newValue: Ref<KRA> | undefined): Promise<void> {
-    if (newValue === undefined || newValue === performance.ids.NoKRARef || newValue === '') {
+  async function handleChange (newValue: Ref<KRA> | null): Promise<void> {
+    if (newValue == null || newValue === performance.ids.NoKRARef || newValue === '') {
       return
     }
     await client.update(value, { kra: newValue })

@@ -159,7 +159,8 @@ export default mergeIds(performanceId, performance, {
     TotalWeightOverflow: '' as IntlString,
     WeightIsZero: '' as IntlString,
     UpdateReport: '' as IntlString,
-    UpdateReportConfirm: '' as IntlString
+    UpdateReportConfirm: '' as IntlString,
+    NoConcludedReviewSession: '' as IntlString
   },
   category: {
     ReviewSessionType: '' as IntlString,
@@ -168,7 +169,6 @@ export default mergeIds(performanceId, performance, {
   component: {
     MyReport: '' as AnyComponent,
     MyReports: '' as AnyComponent,
-    ReportUpdateMessage: '' as AnyComponent,
     PTaskKRAStat: '' as AnyComponent,
     RemoveProgressPopup: '' as AnyComponent,
     SetProgressMenu: '' as AnyComponent,
@@ -209,7 +209,6 @@ export default mergeIds(performanceId, performance, {
     ReviewSessionStatusPresenter: '' as AnyComponent,
     // ReviewSessionStatusRefPresenter: '' as AnyComponent,
     ReviewSessionStatusEditor: '' as AnyComponent,
-    ReviewPresenter: '' as AnyComponent,
     EmployeeKRATotalWeightStat: '' as AnyComponent,
     ReviewEditor: '' as AnyComponent,
     AssignKraPopup: '' as AnyComponent,

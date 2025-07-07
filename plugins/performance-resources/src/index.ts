@@ -49,7 +49,6 @@ import {
 } from './utils/review-session'
 import AllKRAs from './components/kra/AllKRAs.svelte'
 import AllReviewSessions from './components/review-session/AllReviewSessions.svelte'
-import ReviewPresenter from './components/report/ReviewPresenter.svelte'
 import EmployeeKRATotalWeightStat from './components/kra/EmployeeKRATotalWeightStat.svelte'
 import { showEmptyGroups } from '@hcengineering/view-resources'
 import KRAStatusPresenter from './components/kra/KRAStatusPresenter.svelte'
@@ -70,7 +69,6 @@ import { type PTask } from '@hcengineering/performance'
 import RemoveProgressPopup from './components/progress/RemoveProgressPopup.svelte'
 import EditKpiPopup from './components/progress/kpi/EditKpiPopup.svelte'
 import PTaskKRAStat from './components/task/PTaskKRAStat.svelte'
-import ReportUpdateMessage from './components/report/ReportUpdateMessage.svelte'
 import MyReports from './components/application/MyReports.svelte'
 import MyReport from './components/application/MyReport.svelte'
 
@@ -125,10 +123,8 @@ export default async (): Promise<Resources> => ({
     KRAStatistics,
     KRAStatusPresenter,
     AddUnitPopup,
-    ReviewPresenter,
     AssignKraPopup,
     ScorePresenter,
-    ReportUpdateMessage,
     MyReport,
     MyReports
   },

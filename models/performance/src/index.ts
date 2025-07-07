@@ -306,10 +306,6 @@ function defineReport (builder: Builder): void {
       other: []
     }
   })
-  //
-  // builder.mixin(performance.class.PerformanceReview, core.class.Class, view.mixin.ObjectPresenter, {
-  //   presenter: performance.component.ReviewPresenter
-  // })
 }
 
 function defineSpaceType (builder: Builder): void {
@@ -419,18 +415,6 @@ function defineActivity (builder: Builder): void {
   builder.createDoc(activity.class.DocUpdateMessageViewlet, core.space.Model, {
     objectClass: performance.class.PerformanceReport,
     action: 'update'
-    // config: {
-    //   reviewer: {
-    //     icon: performance.icon.Reviewer,
-    //   },
-    //   content: {
-    //     icon: performance.icon.Review,
-    //   },
-    //   score: {
-    //     icon: performance.icon.Score,
-    //   }
-    // }
-    // component: performance.component.ReportUpdateMessage
   })
 
   builder.createDoc(activity.class.ActivityExtension, core.space.Model, {

@@ -2,7 +2,7 @@
   import { Ref, RelatedDocument } from '@hcengineering/core'
   import performance, { PTask } from '@hcengineering/performance'
   import { createQuery, getClient } from '@hcengineering/presentation'
-  import { Button, ButtonKind, ButtonSize, Icon, tooltip } from '@hcengineering/ui'
+  import { Icon, tooltip } from '@hcengineering/ui'
   import BlockedByTooltipPopup from './BlockedByTooltipPopup.svelte'
   import { statusStore } from '@hcengineering/view-resources'
   import task from '@hcengineering/task'
@@ -48,7 +48,11 @@
   >
     <Icon icon={performance.icon.BlockedTask} size="smaller" />
     <span class="font-regular-11">
-      {finishedTasks.length}/{blockedTasks.length}
+      {#if finishedTasks !== undefined}
+        {finishedTasks.length}/{blockedTasks.length}
+      {:else}
+        0
+      {/if}
     </span>
   </button>
 {/if}

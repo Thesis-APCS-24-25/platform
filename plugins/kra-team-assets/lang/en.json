@@ -40,6 +40,8 @@
     "ViewDashboard": "View Dashboard",
     "ViewDashboardDescription": "View Dashboard",
     "CreateReviewSession": "Create Review Session",
-    "CreateReviewSessionDescription": "Create Review Session"
+    "CreateReviewSessionDescription": "Create Review Session",
+    "GradeReport": "Grade Report",
+    "GradeReportDescription": "Grade Report"
   }
 }

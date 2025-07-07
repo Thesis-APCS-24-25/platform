@@ -34,16 +34,18 @@
         </span>
         <Label label={performance.string.Comment} />
       </div>
-      <StyledTextBox
-        {content}
-        alwaysEdit
-        placeholder={performance.string.ReviewContentPlaceholder}
-        enableBackReferences={true}
-        readonly={!editting}
-        on:value={(e) => {
-          content = e.detail
-        }}
-      />
+      {#if content != null}
+        <StyledTextBox
+          {content}
+          alwaysEdit
+          placeholder={performance.string.ReviewContentPlaceholder}
+          enableBackReferences={true}
+          readonly={!editting}
+          on:value={(e) => {
+            content = e.detail ?? ''
+          }}
+        />
+      {/if}
     </div>
 
     <div class="score">

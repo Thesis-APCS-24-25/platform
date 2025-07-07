@@ -116,11 +116,18 @@
     </div>
     <div class="mt-4 mb-4">
       {#if kpi}
-        <ProgressBar
-          value={(kpi?.progress ?? 0) - (value?.value ?? 0)}
-          max={kpi?.target}
-          additionalValue={object.value - (value?.value ?? 0)}
-        />
+        {#if object.value}
+          <ProgressBar
+            value={(kpi?.progress ?? 0) - (value?.value ?? 0)}
+            max={kpi?.target}
+            additionalValue={object.value - (value?.value ?? 0)}
+          />
+        {:else}
+          <ProgressBar
+            value={(kpi?.progress ?? 0) - (value?.value ?? 0)}
+            max={kpi?.target}
+          />
+        {/if}
       {/if}
     </div>
   </svelte:fragment>
