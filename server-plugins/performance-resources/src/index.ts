@@ -13,12 +13,12 @@
 // limitations under the License.
 //
 
-import { Account, PullArray, Ref, Tx, TxCreateDoc, TxUpdateDoc } from '@hcengineering/core'
+import { Account, PullArray, Ref, Tx, TxCreateDoc, TxUpdateDoc, TypedSpace } from '@hcengineering/core'
 import { TriggerControl } from '@hcengineering/server-core'
 import performance, { PerformanceReport, ReviewSession, ReviewSessionStatus } from '@hcengineering/performance'
 import kraTeam, { Team } from '@hcengineering/kra-team'
 import { PersonAccount } from '@hcengineering/contact'
-import { addUpdates, prepareReport } from './utils'
+import { addUpdates, checkRole, prepareReport } from './utils'
 import { OnProgressRemove, OnProgressUpdate } from './progress'
 
 /**
@@ -75,7 +75,6 @@ export async function OnCreateReport (txes: Tx[], control: TriggerControl): Prom
         reviewee: createTx.attributes.reviewee
       }
     )).sort((a, b) => (a.createdOn as number) - (b.createdOn as number))
-    console.log(allReport)
     if (allReport.length > 1) {
       result.push(control.txFactory.createTxRemoveDoc(
         createTx.objectClass,
@@ -112,6 +111,8 @@ export async function OnReviewSessionConclusion (txes: Tx[], control: TriggerCon
       _id: updateTx.objectId
     }))[0]
     for (const member of rs.members) {
+      // skip report for manager
+      if (await checkRole(control, member, kraTeam.role.TeamManager, rs.space as Ref<TypedSpace>)) continue
       const report = control.txFactory.createTxCreateDoc(
         performance.class.PerformanceReport,
         rs._id,
