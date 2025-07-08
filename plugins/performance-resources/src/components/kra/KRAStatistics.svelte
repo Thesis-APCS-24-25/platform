@@ -15,8 +15,7 @@
 <script lang="ts">
   import { floorFractionDigits, Icon, tooltip } from '@hcengineering/ui'
   import { calculateCompletionLevel } from '../../utils/kra'
-  import { Task } from '@hcengineering/task'
-  import { KRA } from '@hcengineering/performance'
+  import { KRA, PTask } from '@hcengineering/performance'
   import { Ref } from '@hcengineering/core'
   import { getClient } from '@hcengineering/presentation'
   import { personAccountByPersonId } from '@hcengineering/contact-resources'
@@ -26,7 +25,7 @@
   const client = getClient()
 
   export let value: Ref<KRA>
-  export let docs: Task[] | undefined = undefined
+  export let docs: PTask[] | undefined = undefined
   export let category: string | undefined = undefined
 
   let completionLevel: number | undefined
@@ -34,7 +33,6 @@
 
   $: if (docs !== undefined && docs.length > 0) {
     const account = $personAccountByPersonId.get(docs[0].assignee ?? '' as Ref<Person>)
-    console.log(value)
     if (account !== undefined && account.length > 0) {
       void client.findOne(
         performance.class.EmployeeKRA,
@@ -48,7 +46,7 @@
     }
   }
   $: count = docs?.length ?? 0
-  $: void Promise.all((docs ?? [{} as unknown as Task])
+  $: void Promise.all((docs ?? [{} as unknown as PTask])
     .map(async (it) => {
       return await calculateCompletionLevel(it._id) ?? 0
     }))

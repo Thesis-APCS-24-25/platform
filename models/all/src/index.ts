@@ -32,7 +32,7 @@ import lead, { leadId, createModel as leadModel } from '@hcengineering/model-lea
 import notification, { notificationId, createModel as notificationModel } from '@hcengineering/model-notification'
 import { preferenceId, createModel as preferenceModel } from '@hcengineering/model-preference'
 import presentation, { presentationId, createModel as presentationModel } from '@hcengineering/model-presentation'
-import recruit, { recruitId, createModel as recruitModel } from '@hcengineering/model-recruit'
+// import recruit, { recruitId, createModel as recruitModel } from '@hcengineering/model-recruit'
 import { requestId, createModel as requestModel } from '@hcengineering/model-request'
 // import { aiBotId, createModel as aiBotModel } from '@hcengineering/model-ai-bot'
 import { serverActivityId, createModel as serverActivityModel } from '@hcengineering/model-server-activity'
@@ -52,18 +52,18 @@ import { serverGuestId, createModel as serverGuestModel } from '@hcengineering/m
 // import { serverInventoryId, createModel as serverInventoryModel } from '@hcengineering/model-server-inventory'
 import { serverLeadId, createModel as serverLeadModel } from '@hcengineering/model-server-lead'
 import { serverNotificationId, createModel as serverNotificationModel } from '@hcengineering/model-server-notification'
-import { serverRecruitId, createModel as serverRecruitModel } from '@hcengineering/model-server-recruit'
+// import { serverRecruitId, createModel as serverRecruitModel } from '@hcengineering/model-server-recruit'
 // import { serverRequestId, createModel as serverRequestModel } from '@hcengineering/model-server-request'
 import { serverSettingId, createModel as serveSettingModel } from '@hcengineering/model-server-setting'
 import { serverTagsId, createModel as serverTagsModel } from '@hcengineering/model-server-tags'
 import { serverTaskId, createModel as serverTaskModel } from '@hcengineering/model-server-task'
 // import { serverTelegramId, createModel as serverTelegramModel } from '@hcengineering/model-server-telegram'
 import { serverTemplatesId, createModel as serverTemplatesModel } from '@hcengineering/model-server-templates'
-import { serverTrackerId, createModel as serverTrackerModel } from '@hcengineering/model-server-tracker'
+// import { serverTrackerId, createModel as serverTrackerModel } from '@hcengineering/model-server-tracker'
 import { serverViewId, createModel as serverViewModel } from '@hcengineering/model-server-view'
 // import { serverAiBotId, createModel as serverAiBotModel } from '@hcengineering/model-server-ai-bot'
 import setting, { settingId, createModel as settingModel } from '@hcengineering/model-setting'
-import { driveId, createModel as driveModel } from '@hcengineering/model-drive'
+// import { driveId, createModel as driveModel } from '@hcengineering/model-drive'
 import { supportId, createModel as supportModel } from '@hcengineering/model-support'
 import { tagsId, createModel as tagsModel } from '@hcengineering/model-tags'
 import { taskId, createModel as taskModel } from '@hcengineering/model-task'
@@ -71,13 +71,13 @@ import { taskId, createModel as taskModel } from '@hcengineering/model-task'
 import { templatesId, createModel as templatesModel } from '@hcengineering/model-templates'
 import { textEditorId, createModel as textEditorModel } from '@hcengineering/model-text-editor'
 import { timeId, createModel as timeModel } from '@hcengineering/model-time'
-import tracker, { trackerId, createModel as trackerModel } from '@hcengineering/model-tracker'
-import { kraId, createModel as kraModel } from '@hcengineering/model-kra'
+// import tracker, { trackerId, createModel as trackerModel } from '@hcengineering/model-tracker'
+import kra, { kraId, createModel as kraModel } from '@hcengineering/model-kra'
 import { kraTeamId, createModel as kraTeamModel } from '@hcengineering/model-kra-team'
 import { uploaderId, createModel as uploaderModel } from '@hcengineering/model-uploader'
 import view, { viewId, createModel as viewModel } from '@hcengineering/model-view'
 import workbench, { workbenchId, createModel as workbenchModel } from '@hcengineering/model-workbench'
-import card, { cardId, createModel as cardModel } from '@hcengineering/model-card'
+// import card, { cardId, createModel as cardModel } from '@hcengineering/model-card'
 import { desktopPreferencesId, createModel as desktopPreferencesModel } from '@hcengineering/model-desktop-preferences'
 
 import document, { documentId, createModel as documentModel } from '@hcengineering/model-document'
@@ -108,7 +108,7 @@ import {
   createModel as serverDocumentsModel
 } from '@hcengineering/model-server-controlled-documents'
 import { serverFulltextId, createModel as serverFulltextModel } from '@hcengineering/model-server-fulltext'
-import { surveyId, createModel as surveyModel } from '@hcengineering/model-survey'
+// import { surveyId, createModel as surveyModel } from '@hcengineering/model-survey'
 import { presenceId, createModel as presenceModel } from '@hcengineering/model-presence'
 import { performanceId, createModel as performanceModel } from '@hcengineering/model-performance'
 import { serverPerformanceId, createModel as serverPerformanceModel } from '@hcengineering/model-server-performance'
@@ -200,18 +200,18 @@ export default function buildModel (enabled: string[] = ['*'], disabled: string[
         classFilter: defaultFilter
       }
     ],
-    [
-      recruitModel,
-      recruitId,
-      {
-        label: recruit.string.ConfigLabel,
-        description: recruit.string.ConfigDescription,
-        enabled: true,
-        beta: false,
-        icon: recruit.icon.RecruitApplication,
-        classFilter: defaultFilter
-      }
-    ],
+    // [
+    //   recruitModel,
+    //   recruitId,
+    //   {
+    //     label: recruit.string.ConfigLabel,
+    //     description: recruit.string.ConfigDescription,
+    //     enabled: true,
+    //     beta: false,
+    //     icon: recruit.icon.RecruitApplication,
+    //     classFilter: defaultFilter
+    //   }
+    // ],
     [settingModel, settingId],
     // [
     //   telegramModel,
@@ -284,26 +284,26 @@ export default function buildModel (enabled: string[] = ['*'], disabled: string[
       kraModel,
       kraId,
       {
-        label: tracker.string.ConfigLabel,
-        description: tracker.string.ConfigDescription,
+        label: kra.string.ConfigLabel,
+        description: kra.string.ConfigDescription,
         enabled: true,
         beta: false,
-        icon: tracker.icon.TrackerApplication,
+        icon: kra.icon.TrackerApplication,
         classFilter: defaultFilter
       }
     ],
-    [
-      trackerModel,
-      trackerId,
-      {
-        label: tracker.string.ConfigLabel,
-        description: tracker.string.ConfigDescription,
-        enabled: true,
-        beta: false,
-        icon: tracker.icon.TrackerApplication,
-        classFilter: defaultFilter
-      }
-    ],
+    // [
+    //   trackerModel,
+    //   trackerId,
+    //   {
+    //     label: tracker.string.ConfigLabel,
+    //     description: tracker.string.ConfigDescription,
+    //     enabled: true,
+    //     beta: false,
+    //     icon: tracker.icon.TrackerApplication,
+    //     classFilter: defaultFilter
+    //   }
+    // ],
     [
       documentModel,
       documentId,
@@ -380,19 +380,19 @@ export default function buildModel (enabled: string[] = ['*'], disabled: string[
     // ],
     [printModel, printId],
     // [aiBotModel, aiBotId],
-    [
-      cardModel,
-      cardId,
-      {
-        label: card.string.Cards,
-        description: card.string.ConfigDescription,
-        enabled: false,
-        beta: true,
-        icon: card.icon.Card,
-        classFilter: defaultFilter
-      }
-    ],
-    [driveModel, driveId],
+    // [
+    //   cardModel,
+    //   cardId,
+    //   {
+    //     label: card.string.Cards,
+    //     description: card.string.ConfigDescription,
+    //     enabled: false,
+    //     beta: true,
+    //     icon: card.icon.Card,
+    //     classFilter: defaultFilter
+    //   }
+    // ],
+    // [driveModel, driveId],
     [
       documentsModel,
       documentsId,
@@ -446,7 +446,7 @@ export default function buildModel (enabled: string[] = ['*'], disabled: string[
     //     classFilter: defaultFilter
     //   }
     // ],
-    [surveyModel, surveyId],
+    // [surveyModel, surveyId],
     [presenceModel, presenceId],
 
     [serverCoreModel, serverCoreId],
@@ -459,9 +459,9 @@ export default function buildModel (enabled: string[] = ['*'], disabled: string[
     [serverLeadModel, serverLeadId],
     [serverTagsModel, serverTagsId],
     [serverTaskModel, serverTaskId],
-    [serverTrackerModel, serverTrackerId],
+    // [serverTrackerModel, serverTrackerId],
     [serverCalendarModel, serverCalendarId],
-    [serverRecruitModel, serverRecruitId],
+    // [serverRecruitModel, serverRecruitId],
     // [serverGmailModel, serverGmailId],
     [serverTemplatesModel, serverTemplatesId],
     // [serverTelegramModel, serverTelegramId],

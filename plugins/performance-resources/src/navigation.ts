@@ -9,7 +9,7 @@ import { currentTeam } from './utils/team'
 import { checkMyPermission, permissionsStore } from '@hcengineering/view-resources'
 import kraTeam from '@hcengineering/kra-team'
 
-export function getReviewSessionLink (_id: Ref<ReviewSession>): Location {
+export function getReviewSessionLink(_id: Ref<ReviewSession>): Location {
   const loc = getCurrentResolvedLocation()
   loc.path.length = 2
   loc.fragment = undefined
@@ -20,11 +20,11 @@ export function getReviewSessionLink (_id: Ref<ReviewSession>): Location {
   return loc
 }
 
-export function isKRAId (shortLink: string): boolean {
+export function isKRAId(shortLink: string): boolean {
   return /^\S+-\d+$/.test(shortLink)
 }
 
-export async function getKRAIdByIdentifier (identifier: string): Promise<Ref<KRA> | undefined> {
+export async function getKRAIdByIdentifier(identifier: string): Promise<Ref<KRA> | undefined> {
   if (!isKRAId(identifier)) return
   const client = getClient()
   const issue = await client.findOne(performance.class.KRA, { identifier })
@@ -32,7 +32,7 @@ export async function getKRAIdByIdentifier (identifier: string): Promise<Ref<KRA
   return issue?._id
 }
 
-export function parseKRAId (shortLink?: string): Ref<KRA> | undefined {
+export function parseKRAId(shortLink?: string): Ref<KRA> | undefined {
   if (shortLink === undefined) {
     return undefined
   }
@@ -43,7 +43,7 @@ export function parseKRAId (shortLink?: string): Ref<KRA> | undefined {
   return undefined
 }
 
-export function getKRAIdFromFragment (fragment: string): Ref<KRA> | undefined {
+export function getKRAIdFromFragment(fragment: string): Ref<KRA> | undefined {
   const [, id] = decodeURIComponent(fragment).split('|')
 
   if (id == null) {
@@ -60,19 +60,27 @@ export const navigatorModel = derived([currentTeam, permissionsStore], ([team, p
   const canCreateRS = checkMyPermission(kraTeam.permission.CreateReviewSession, team, permissionsStore)
   const canViewDashboard = checkMyPermission(kraTeam.permission.ViewDashboard, team, permissionsStore)
   const nav: NavigatorModel = {
-    specials: canCreateRS
-      ? [
-          {
-            id: 'all-review-sessions',
-            label: performance.string.AllReviewSessions,
-            component: performance.component.AllReviewSessions,
-            icon: performance.icon.ReviewSession,
-            componentProps: {
-              _class: performance.class.ReviewSession
+    specials: [
+      ...(canCreateRS
+        ? [
+            {
+              id: 'all-review-sessions',
+              label: performance.string.AllReviewSessions,
+              component: performance.component.AllReviewSessions,
+              icon: performance.icon.ReviewSession,
+              componentProps: {
+                _class: performance.class.ReviewSession
+              }
             }
-          }
-        ]
-      : [],
+          ]
+        : []),
+      {
+        id: 'my-reports',
+        label: performance.string.MyReports,
+        component: performance.component.MyReports,
+        icon: performance.icon.Reports
+      }
+    ],
 
     spaces: [
       {
@@ -98,7 +106,10 @@ export const navigatorModel = derived([currentTeam, permissionsStore], ([team, p
           {
             id: 'kras',
             label: performance.string.AssignedKRAs,
-            component: performance.component.AllKRAs
+            component: performance.component.AllKRAs,
+            componentProps: {
+              allowEditKRAStatus: false
+            }
           }
         ]
       },
@@ -136,10 +147,18 @@ export const navigatorModel = derived([currentTeam, permissionsStore], ([team, p
           {
             id: 'kras',
             label: performance.string.AssignedKRAs,
-            component: performance.component.AllKRAs
+            component: performance.component.AllKRAs,
+            componentProps: {
+              allowEditKRAStatus: false
+            }
           },
           {
-            id: 'my-reports',
+            id: 'my-report',
+            label: performance.string.MyReport,
+            component: performance.component.MyReport
+          },
+          {
+            id: 'reports',
             position: 'bottom',
             label: performance.string.PerformanceReports,
             component: performance.component.PerformanceReports,

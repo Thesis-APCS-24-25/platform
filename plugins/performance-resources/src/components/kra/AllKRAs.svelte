@@ -95,6 +95,7 @@
   // })
 
   $: canCreateKRA = reviewSession?.status === ReviewSessionStatus.Drafting
+  $: allowEditKRAStatus = reviewSession?.status === ReviewSessionStatus.Drafting
 </script>
 
 <Header>
@@ -131,9 +132,9 @@
   <Scroller bind:this={scroll} bind:divScroll padding={'0 1rem'} noFade checkForHeaders>
     <div class="flex-col-stretch flex-gap-2">
       {#if currentMode === 'per-kra'}
-        <EmployeeKrAsByKraList {kras} {employeeKras} space={currentSpace} />
+        <EmployeeKrAsByKraList {kras} {employeeKras} space={currentSpace} {allowEditKRAStatus} />
       {:else if currentMode === 'per-employee'}
-        <EmployeeKRAsByEmployeeList {members} {employeeKras} space={currentSpace} />
+        <EmployeeKRAsByEmployeeList {members} space={currentSpace} {allowEditKRAStatus} />
       {/if}
     </div>
   </Scroller>

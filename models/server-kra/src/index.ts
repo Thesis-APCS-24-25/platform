@@ -59,13 +59,6 @@ export function createModel (builder: Builder): void {
   })
 
   builder.createDoc(serverCore.class.Trigger, core.space.Model, {
-    trigger: serverKra.trigger.OnGoalUpdate,
-    txMatch: {
-      objectClass: { $in: [kra.class.Goal, kra.class.Report] }
-    }
-  })
-
-  builder.createDoc(serverCore.class.Trigger, core.space.Model, {
     trigger: serverKra.trigger.OnProjectRemove,
     txMatch: {
       _class: core.class.TxRemoveDoc,
@@ -77,14 +70,6 @@ export function createModel (builder: Builder): void {
     trigger: serverKra.trigger.OnWorkspaceOwnerAdded,
     txMatch: {
       objectClass: contact.class.PersonAccount
-    }
-  })
-
-  builder.createDoc(serverCore.class.Trigger, core.space.Model, {
-    trigger: serverKra.trigger.OnGoalRemove,
-    txMatch: {
-      _class: core.class.TxRemoveDoc,
-      objectClass: kra.class.Goal
     }
   })
 

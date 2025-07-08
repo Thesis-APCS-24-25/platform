@@ -34,6 +34,14 @@
     "AddMember": "Add member",
     "CreateKraDescription": "Create KRA",
     "Add": "Add Member",
-    "ChooseMember": "Choose Member"
+    "ChooseMember": "Choose Member",
+    "AssignWeightForAll": "Assign Weight for All",
+    "AssignWeightForAllDescription": "Assign Weight for all Team Members",
+    "ViewDashboard": "View Dashboard",
+    "ViewDashboardDescription": "View Dashboard",
+    "CreateReviewSession": "Create Review Session",
+    "CreateReviewSessionDescription": "Create Review Session",
+    "GradeReport": "Grade Report",
+    "GradeReportDescription": "Grade Report"
   }
 }

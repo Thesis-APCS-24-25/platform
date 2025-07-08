@@ -97,7 +97,6 @@ import EditIssueTemplate from './components/templates/EditIssueTemplate.svelte'
 import TemplateEstimationEditor from './components/templates/EstimationEditor.svelte'
 import {
   activeProjects,
-  calculateCompletionLevel,
   getAllPriority,
   getIssueChatTitle,
   getIssueStatusCategories,
@@ -122,19 +121,8 @@ import { settingId } from '@hcengineering/setting'
 import { getAllStates } from '@hcengineering/task-resources'
 import EstimationValueEditor from './components/issues/timereport/EstimationValueEditor.svelte'
 import TimePresenter from './components/issues/timereport/TimePresenter.svelte'
-import GoalPresenter from './components/issues/goal/GoalPresenter.svelte'
-import KpiPresenter from './components/issues/goal/kpi/KpiPresenter.svelte'
-import RatingScalePresenter from './components/issues/goal/ratingscale/RatingScalePresenter.svelte'
-import KpiObjectPresenter from './components/issues/goal/kpi/KpiObjectPresenter.svelte'
-import AddUnitPopup from './components/issues/goal/unit/AddUnitPopup.svelte'
-import Report from './components/issues/goal/Report.svelte'
-import UnitPresenter from './components/issues/goal/unit/UnitPresenter.svelte'
-import GoalObjectPresenter from './components/issues/goal/GoalObjectPresenter.svelte'
-import RatingScaleObjectPresenter from './components/issues/goal/ratingscale/RatingScaleObjectPresenter.svelte'
 import './styles/_colors.scss'
 import KRAEditor from './components/kra/KRAEditor.svelte'
-import AddGoalPopup from './components/issues/goal/AddGoalPopup.svelte'
-import AddGoalActionPopup from './components/issues/goal/AddGoalActionPopup.svelte'
 
 export { default as AssigneeEditor } from './components/issues/AssigneeEditor.svelte'
 export { default as SubIssueList } from './components/issues/edit/SubIssueList.svelte'
@@ -289,7 +277,6 @@ export default async (): Promise<Resources> => ({
     EditIssue,
     NewIssueHeader,
     SetDueDateActionPopup,
-    AddGoalActionPopup,
     SetParentIssueActionPopup,
     IssuesView,
     KanbanView,
@@ -330,16 +317,6 @@ export default async (): Promise<Resources> => ({
     IssueExtra,
     IssueStatusPresenter,
     LabelsView,
-    GoalPresenter,
-    KpiPresenter,
-    RatingScalePresenter,
-    Report,
-    KpiObjectPresenter,
-    AddUnitPopup,
-    UnitPresenter,
-    GoalObjectPresenter,
-    RatingScaleObjectPresenter,
-    AddGoalPopup,
     KRAEditor
   },
   completion: {
@@ -367,14 +344,7 @@ export default async (): Promise<Resources> => ({
     GetVisibleFilters: getVisibleFilters,
     IssueChatTitleProvider: getIssueChatTitle,
     IsProjectJoined: async (project: Project) => project.members.includes(getCurrentAccount()._id),
-    GetIssueStatusCategories: getIssueStatusCategories,
-    CalculateGoal: calculateCompletionLevel,
-    CanAddGoal: async (issue: Issue | undefined): Promise<boolean> => {
-      console.debug('CanAddGoal', issue)
-      if (issue === undefined) return false
-      if (issue.goal != null) return false
-      return true
-    }
+    GetIssueStatusCategories: getIssueStatusCategories
   },
   actionImpl: {
     Move: move,

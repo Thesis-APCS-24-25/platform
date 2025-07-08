@@ -1,23 +1,24 @@
 <script lang="ts">
-  import { Ref, SortingOrder, Space, getCurrentAccount } from '@hcengineering/core'
+  import { Doc, Ref, SortingOrder, Space, getCurrentAccount } from '@hcengineering/core'
   import { Breadcrumb, Header, Scroller } from '@hcengineering/ui'
   import { createQuery } from '@hcengineering/presentation'
   import performance from '../../plugin'
   import { PersonAccount } from '@hcengineering/contact'
-  import { KRA, WithKRA } from '@hcengineering/performance'
-  import { List, ListSelectionProvider } from '@hcengineering/view-resources'
-  import ProgressPresenter from './ProgressPresenter.svelte'
+  import { KRA, PTask } from '@hcengineering/performance'
+  import { List, ListSelectionProvider, SelectDirection } from '@hcengineering/view-resources'
   import view from '@hcengineering/view'
   import AssignTaskPopup from './AssignTaskPopup.svelte'
   import { personIdByAccountId } from '@hcengineering/contact-resources'
+  import ProgressSummaryPresenter from '../progress/ProgressSummaryPresenter.svelte'
+  import BlockedByPresenter from '../task/BlockedByPresenter.svelte'
 
   export let currentSpace: Ref<Space>
 
   const userId = getCurrentAccount()._id as Ref<PersonAccount>
   const me = $personIdByAccountId.get(getCurrentAccount()._id as Ref<PersonAccount>)
   const actionItemQuery = createQuery()
-  let tasks: WithKRA[] = []
-  $: actionItemQuery.query(performance.mixin.WithKRA, {}, (res) => {
+  let tasks: PTask[] = []
+  $: actionItemQuery.query(performance.class.PTask, {}, (res) => {
     if (res !== undefined) {
       tasks = res
     }
@@ -36,13 +37,23 @@
       if (res !== undefined) {
         const kraSet = new Set(res.map((item) => item.kra))
         assignedKRAs = Array.from(kraSet)
+        console.log('assignedKRAs', assignedKRAs)
       }
     }
   )
 
   let scroll: Scroller
   let divScroll: HTMLDivElement
-  const listProvider = new ListSelectionProvider((offset: 1 | -1 | 0) => {})
+  let list: List
+  const listProvider = new ListSelectionProvider(
+    (offset: 1 | -1 | 0, of?: Doc, dir?: SelectDirection, noScroll?: boolean) => {
+      if (dir === 'vertical') {
+        // Select next
+        list?.select(offset, of, noScroll)
+      }
+    }
+  )
+  const selection = listProvider.selection
 </script>
 
 <Header>
@@ -53,15 +64,24 @@
   <Scroller bind:this={scroll} bind:divScroll padding={'0 1rem'} noFade checkForHeaders>
     <div class="flex-col-stretch flex-gap-2">
       <List
+        bind:this={list}
+        selectedObjectIds={$selection ?? []}
         {listProvider}
         createItemLabel={performance.string.CreateActionItem}
         createItemDialog={AssignTaskPopup}
         createItemDialogProps={{
-          assignee: me
+          assignee: me,
+          shouldSaveDraft: false
         }}
-        _class={performance.mixin.WithKRA}
+        _class={performance.class.PTask}
         config={[
-          '',
+          {
+            key: '',
+            displayProps: {
+              fixed: 'right',
+              key: 'id'
+            }
+          },
           {
             key: 'title'
           },
@@ -70,16 +90,17 @@
             presenter: view.component.GrowPresenter
           },
           {
+            key: 'blockedBy',
+            presenter: BlockedByPresenter
+          },
+          {
             key: '',
-            presenter: ProgressPresenter,
-            props: {
-              readonly: true
-            }
+            presenter: ProgressSummaryPresenter
           }
         ]}
         configurations={undefined}
         query={{
-          kra: { $in: [...assignedKRAs, null, undefined, performance.ids.NoKRARef] },
+          kra: { $in: [...assignedKRAs, null] },
           assignee: me
         }}
         viewOptionsConfig={[

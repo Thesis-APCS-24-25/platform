@@ -10,6 +10,7 @@
   export let kra: Ref<KRA> | undefined = undefined
   export let space: Ref<ReviewSession> | undefined = undefined
   export let assignee: Ref<Person> | undefined = undefined
+  export let shouldSaveDraft: boolean = false
 
   const client = getClient()
   const hierarchy = client.getHierarchy()
@@ -55,7 +56,8 @@
           is={selectedFactory.component}
           props={{
             kra,
-            assignee
+            assignee,
+            shouldSaveDraft
           }}
           on:close
         />

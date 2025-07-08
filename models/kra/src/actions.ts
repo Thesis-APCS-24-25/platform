@@ -272,27 +272,6 @@ export function createActions(builder: Builder, issuesId: string, myIssuesId: st
     kra.action.SetParent
   )
 
-  createAction(builder, {
-    action: view.actionImpl.ShowPopup,
-    actionProps: {
-      component: kra.component.AddGoalActionPopup,
-      element: 'top',
-      fillProps: {
-        _objects: 'value'
-      }
-    },
-    label: kra.string.AddGoal,
-    icon: kra.icon.Goal,
-    input: 'none',
-    category: kra.category.Tracker,
-    visibilityTester: kra.function.CanAddGoal,
-    target: kra.class.Issue,
-    context: {
-      mode: ['context'],
-      application: kra.app.Tracker,
-      group: 'associate'
-    }
-  })
   createAction(
     builder,
     {

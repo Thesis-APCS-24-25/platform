@@ -17,13 +17,12 @@
   import { Analytics } from '@hcengineering/analytics'
   import { Attachment } from '@hcengineering/attachment'
   import { AttachmentPresenter, AttachmentStyledBox } from '@hcengineering/attachment-resources'
-  import { Employee, Person } from '@hcengineering/contact'
+  import { Employee } from '@hcengineering/contact'
   import core, {
     Account,
     Class,
     Doc,
     DocData,
-    DocumentQuery,
     Ref,
     SortingOrder,
     fillDefaults,
@@ -49,7 +48,7 @@
     getMarkup
   } from '@hcengineering/presentation'
   import tags, { TagElement, TagReference } from '@hcengineering/tags'
-  import { Task, TaskType, makeRank } from '@hcengineering/task'
+  import { TaskType, makeRank } from '@hcengineering/task'
   import { TaskKindSelector } from '@hcengineering/task-resources'
   import { EmptyMarkup, isEmptyMarkup } from '@hcengineering/text'
   import {
@@ -82,7 +81,7 @@
 
   import { generateIssueShortLink, updateIssueRelation } from '../issues'
   import tracker from '../plugin'
-  import performance, { KRA, WithKRA } from '@hcengineering/performance'
+  import performance, { KRA, Progress } from '@hcengineering/performance'
   import SetParentIssueActionPopup from './SetParentIssueActionPopup.svelte'
   import SubIssues from './SubIssues.svelte'
   import AssigneeEditor from './issues/AssigneeEditor.svelte'
@@ -91,8 +90,9 @@
   import PriorityEditor from './issues/PriorityEditor.svelte'
   import StatusEditor from './issues/StatusEditor.svelte'
   import ProjectPresenter from './projects/ProjectPresenter.svelte'
-  import AddGoalPopup from './issues/goal/AddGoalPopup.svelte'
-  import CreateIssueGoalDisplay from './issues/goal/CreateIssueGoalDisplay.svelte'
+  import { KRABox } from '@hcengineering/performance-resources'
+  import CreateIssueProgressDisplay from './issues/progress/CreateIssueProgressDisplay.svelte'
+  import CreateIssueAddProgressButton from './CreateIssueAddProgressButton.svelte'
 
   export let space: Ref<Project> | undefined
   export let status: Ref<IssueStatus> | undefined = undefined
@@ -134,6 +134,8 @@
 
   let template: IssueTemplate | undefined = undefined
   const templateQuery = createQuery()
+
+  let progressClass: Ref<Class<Progress>> = performance.class.Progress
 
   function objectChange (object: IssueDraft, empty: any): void {
     if (shouldSaveDraft) {
@@ -178,6 +180,7 @@
       priority: priority ?? IssuePriority.NoPriority,
       space: _space as Ref<Project>,
       dueDate: null,
+      startDate: null,
       attachments: 0,
       estimation: 0,
       status,
@@ -185,7 +188,7 @@
       labels: [],
       parentIssue: parentIssue?._id,
       subIssues: [],
-      kra: kra ?? performance.ids.NoKRARef
+      kra
     }
     if (originalIssue !== undefined && !ignoreOriginal) {
       const res: IssueDraft = {
@@ -193,6 +196,7 @@
         status: originalIssue.status,
         priority: originalIssue.priority,
         dueDate: originalIssue.dueDate,
+        startDate: originalIssue.startDate,
         assignee: originalIssue.assignee,
         estimation: originalIssue.estimation,
         parentIssue: originalIssue.parents[0]?.parentId,
@@ -247,8 +251,8 @@
   function resetObject (): void {
     templateId = undefined
     template = undefined
-    void clearGoal().then(() => {
-      object.goal = undefined
+    void clearProgress().then(() => {
+      object.progress = undefined
     })
     object = getDefaultObject(undefined, true)
     fillDefaults(hierarchy, object, tracker.class.Issue)
@@ -304,6 +308,7 @@
         space: _space as Ref<Project>,
         subIssues: [],
         dueDate: null,
+        startDate: null,
         labels:
           p.labels !== undefined
             ? (p.labels
@@ -313,8 +318,7 @@
                 })
                 .filter((p) => p !== undefined) as TagReference[])
             : [],
-        status: currentProject?.defaultIssueStatus,
-        kra: performance.ids.NoKRARef
+        status: currentProject?.defaultIssueStatus
       }
     })
 
@@ -503,7 +507,9 @@
         childInfo: [],
         kind,
         identifier,
-        goal: object.goal
+        kra: object.kra ?? null,
+        progress: object.progress ?? null,
+        startDate: object.startDate
       }
 
       if (!isEmptyMarkup(object.description)) {
@@ -542,10 +548,6 @@
           }
         }
       }
-      await operations.createMixin<Task, WithKRA>(_id, tracker.class.Issue, object.space, performance.mixin.WithKRA, {
-        kra: object.kra ?? performance.ids.NoKRARef
-      })
-
       await descriptionBox?.createAttachments(_id, operations)
       const result = await operations.commit()
 
@@ -734,55 +736,12 @@
     preferences
   }
 
-  function setGoal (): void {
-    showPopup(
-      AddGoalPopup,
-      {
-        issue: object._id,
-        space: object.space,
-        canEditIssue: false
-      },
-      'top',
-      (goal) => {
-        if (goal !== undefined) {
-          object.goal = goal
-        }
-      }
-    )
-  }
-
-  async function clearGoal (): Promise<void> {
-    if (object.goal === undefined) {
+  async function clearProgress (): Promise<void> {
+    if (object.progress === undefined) {
       return
     }
-    await client.removeDoc(tracker.class.Goal, object.space, object.goal)
-    object.goal = undefined
-  }
-
-  let krasOfAssignee: Ref<KRA>[] | undefined
-  let kraDocQuery: DocumentQuery<KRA> = { _id: { $in: [performance.ids.NoKRARef] } }
-
-  $: if (assignee != null) {
-    updateKRAs(assignee)
-  }
-
-  function updateKRAs (assignee: Ref<Person>): void {
-    void client.findAll(
-      performance.class.EmployeeKRA,
-      {
-        assignee
-      }
-    ).then((result) => {
-      if (result !== undefined && result.length > 0) {
-        krasOfAssignee = result.map(it => it.kra)
-        kraDocQuery = {
-          _id: { $in: krasOfAssignee }
-        }
-      } else {
-        kraDocQuery = { _id: { $in: [performance.ids.NoKRARef] } }
-        krasOfAssignee = undefined
-      }
-    })
+    await client.removeDoc(performance.class.Progress, object.space, object.progress)
+    object.progress = undefined
   }
 </script>
 
@@ -920,9 +879,9 @@
       bind:subIssues={object.subIssues}
     />
   {/if}
-  {#if object.goal !== undefined}
-    <div id="goal-editor">
-      <CreateIssueGoalDisplay goal={object.goal} onRemove={clearGoal} />
+  {#if object.progress !== undefined}
+    <div id="progress-editor">
+      <CreateIssueProgressDisplay progress={object.progress} onRemove={clearProgress} _class={progressClass}/>
     </div>
   {/if}
   <DocCreateExtComponent manager={docCreateManager} kind={'body'} space={currentProject} props={extraProps} />
@@ -973,7 +932,6 @@
         on:change={({ detail }) => {
           isAssigneeTouched = true
           object.assignee = detail
-          updateKRAs(detail)
           manager.setFocusPos(5)
         }}
       />
@@ -996,9 +954,20 @@
         object.labels = object.labels.filter((it) => it._id !== evt.detail)
       }}
     />
-    <div id="duedate-editor" class="new-line">
+    <div id="startdate-editor" class="new-line">
       <DatePresenter
         focusIndex={10}
+        label={tracker.string.StartDate}
+        bind:value={object.startDate}
+        labelNull={tracker.string.StartDate}
+        kind={'regular'}
+        size={'large'}
+        editable
+      />
+    </div>
+    <div id="duedate-editor" class="new-line">
+      <DatePresenter
+        focusIndex={11}
         bind:value={object.dueDate}
         labelNull={tracker.string.DueDate}
         kind={'regular'}
@@ -1008,7 +977,7 @@
     </div>
     <div id="parentissue-editor" class="new-line">
       <Button
-        focusIndex={11}
+        focusIndex={12}
         icon={tracker.icon.Parent}
         label={object.parentIssue != null ? tracker.string.RemoveParent : tracker.string.SetParent}
         kind={'regular'}
@@ -1017,38 +986,31 @@
         on:click={object.parentIssue != null ? clearParentIssue : setParentIssue}
       />
     </div>
-    <div id="goal-editor" class="new-line">
-      <Button
-        focusIndex={12}
-        icon={tracker.icon.Goal}
-        label={object.goal != null ? tracker.string.RemoveGoal : tracker.string.SetGoal}
-        kind={'regular'}
-        size={'large'}
-        notSelected={object.goal === undefined}
-        on:click={object.goal != null ? clearGoal : setGoal}
+    <div id="progress-editor" class="new-line">
+      <CreateIssueAddProgressButton
+        bind:value={object.progress}
+        bind:_class={progressClass}
+        task={object._id}
+        space={object.space}
+        focusIndex={13}
+        icon={performance.icon.Progress}
+        label={object.progress != null ? performance.string.RemoveProgress : performance.string.SetProgress}
       />
       <DocCreateExtComponent manager={docCreateManager} kind={'pool'} space={currentProject} props={extraProps} />
     </div>
     <div id="kra-editor" class="new-line">
-      <ObjectBox
-        searchField={'title'}
-        focusIndex={13}
+      <KRABox
+        focusIndex={14}
+        bind:value={object.kra}
+        assignee={object.assignee ?? undefined}
+        readonly={object.assignee == null}
+        placeholder={object.assignee == null ? tracker.string.SetAssigneeFirst : performance.string.NoKRASelected}
+        showTooltip={{
+          label: assignee === undefined ? tracker.string.SetAssigneeFirst : undefined
+        }}
         kind={'regular'}
         size={'large'}
-        groupBy={'space'}
-        label={performance.string.SetKRA}
-        readonly={krasOfAssignee === undefined}
-        showTooltip={{
-          label: (krasOfAssignee === undefined ? tracker.string.SetAssigneeFirst : undefined)
-        }}
-        icon={performance.icon.KRA}
-        placeholder={performance.string.KRA}
         allowDeselect
-        showNavigate={false}
-        bind:value={object.kra}
-        _class={performance.class.KRA}
-        placeholderIcon={performance.icon.KRA}
-        docQuery={kraDocQuery}
       />
     </div>
   </svelte:fragment>

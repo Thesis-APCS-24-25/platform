@@ -17,7 +17,7 @@ import type { Asset, IntlString, Metadata, Resource } from '@hcengineering/platf
 import { mergeIds } from '@hcengineering/platform'
 import type { ObjectSearchCategory, ObjectSearchFactory } from '@hcengineering/presentation'
 import { type Task, type ProjectType } from '@hcengineering/task'
-import tracker, { kraId, type IssueDraft, type Issue, type GoalAggregateFunction } from '@hcengineering/kra'
+import tracker, { kraId, type IssueDraft, type Issue } from '@hcengineering/kra'
 import { type AnyComponent, type Location } from '@hcengineering/ui'
 import {
   type ViewActionAvailabilityFunction,
@@ -44,34 +44,31 @@ export default mergeIds(kraId, tracker, {
     IssueCategory: '' as Ref<ObjectSearchCategory>
   },
   string: {
+    Edit: '' as IntlString,
+    RemoveProgress: '' as IntlString,
+    EmptyEditProgressContent: '' as IntlString,
+    NoProgressAttached: '' as IntlString,
+    Note: '' as IntlString,
+    NoNote: '' as IntlString,
+    SetKpi: '' as IntlString,
+    SetProgress: '' as IntlString,
     UseAsTemplate: '' as IntlString,
     AddKpi: '' as IntlString,
-    AddRatingScale: '' as IntlString,
     Template: '' as IntlString,
     ChooseTemplate: '' as IntlString,
     CreateFrom: '' as IntlString,
     KpiName: '' as IntlString,
-    RatingScaleName: '' as IntlString,
-    EditGoal: '' as IntlString,
-    SetGoal: '' as IntlString,
-    RemoveGoal: '' as IntlString,
     AddDescriptionPlaceholder: '' as IntlString,
     AddSymbolPlaceholder: '' as IntlString,
     Prefix: '' as IntlString,
     AddUnit: '' as IntlString,
     SelectUnit: '' as IntlString,
     AddNamePlaceholder: '' as IntlString,
-    SelectGoalType: '' as IntlString,
-    ChooseGoal: '' as IntlString,
     Kpi: '' as IntlString,
-    AddGoal: '' as IntlString,
     KpiReports: '' as IntlString,
     DateOfReport: '' as IntlString,
     ReportDate: '' as IntlString,
     Comment: '' as IntlString,
-    RatingScale: '' as IntlString,
-    NoGoalAttached: '' as IntlString,
-    Goal: '' as IntlString,
     More: '' as IntlString,
     Value: '' as IntlString,
     Target: '' as IntlString,
@@ -339,20 +336,11 @@ export default mergeIds(kraId, tracker, {
     RelatedIssueTargetDescription: '' as IntlString,
     RoleLabel: '' as IntlString,
 
-    RemoveGoalDialogMessage: '' as IntlString,
-    RemoveGoalDialogTitle: '' as IntlString,
-    EditRatingScale: '' as IntlString,
     EditKpi: '' as IntlString,
     AddTargetPlaceholder: '' as IntlString,
     SetAssigneeFirst: '' as IntlString
   },
   component: {
-    AddGoalActionPopup: '' as AnyComponent,
-    AddGoalPopup: '' as AnyComponent,
-    GoalObjectPresenter: '' as AnyComponent,
-    UnitPresenter: '' as AnyComponent,
-    AddUnitPopup: '' as AnyComponent,
-    KpiObjectPresenter: '' as AnyComponent,
     Report: '' as AnyComponent,
     NopeComponent: '' as AnyComponent,
     MyIssues: '' as AnyComponent,
@@ -374,8 +362,6 @@ export default mergeIds(kraId, tracker, {
     PriorityInlineEditor: '' as AnyComponent,
     PriorityRefPresenter: '' as AnyComponent,
     PriorityIconPresenter: '' as AnyComponent,
-    GoalPresenter: '' as AnyComponent,
-    GoalEditor: '' as AnyComponent,
     StatusPresenter: '' as AnyComponent,
     StatusRefPresenter: '' as AnyComponent,
     StatusEditor: '' as AnyComponent,
@@ -409,10 +395,6 @@ export default mergeIds(kraId, tracker, {
     EstimationEditor: '' as AnyComponent,
     TemplateEstimationEditor: '' as AnyComponent,
     DeleteComponentPresenter: '' as AnyComponent,
-    KpiPresenter: '' as AnyComponent,
-    KpiEditor: '' as AnyComponent,
-    RatingScalePresenter: '' as AnyComponent,
-    RatingScaleEditor: '' as AnyComponent,
 
     ComponentSelector: '' as AnyComponent,
 
@@ -427,10 +409,6 @@ export default mergeIds(kraId, tracker, {
     CreateIssueDraft: '' as Metadata<IssueDraft>
   },
   function: {
-    CanAddGoal: '' as Resource<ViewActionAvailabilityFunction<Issue>>,
-    CalculateGoal: '' as Resource<(task: Ref<Task>) => Promise<number | undefined>>,
-    KpiAggregator: '' as Resource<GoalAggregateFunction>,
-    RatingScaleAggregator: '' as Resource<GoalAggregateFunction>,
     IssueTitleProvider: '' as Resource<(client: Client, ref: Ref<Doc>, doc?: Doc) => Promise<string>>,
     IssueIdentifierProvider: '' as Resource<(client: Client, ref: Ref<Doc>, doc?: Doc) => Promise<string>>,
     ComponentTitleProvider: '' as Resource<(client: Client, ref: Ref<Doc>, doc?: Doc) => Promise<string>>,

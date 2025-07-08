@@ -56,4 +56,19 @@ export function createModel (builder: Builder): void {
       objectClass: performance.class.ReviewSession
     }
   })
+
+  builder.createDoc(serverCore.class.Trigger, core.space.Model, {
+    trigger: serverPerformance.trigger.OnProgressUpdate,
+    txMatch: {
+      objectClass: { $in: [performance.class.Progress, performance.class.ProgressReport] }
+    }
+  })
+
+  builder.createDoc(serverCore.class.Trigger, core.space.Model, {
+    trigger: serverPerformance.trigger.OnProgressRemove,
+    txMatch: {
+      _class: core.class.TxRemoveDoc,
+      objectClass: performance.class.Progress
+    }
+  })
 }

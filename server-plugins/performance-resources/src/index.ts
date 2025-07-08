@@ -19,6 +19,7 @@ import performance, { PerformanceReport, ReviewSession, ReviewSessionStatus } fr
 import kraTeam, { Team } from '@hcengineering/kra-team'
 import { PersonAccount } from '@hcengineering/contact'
 import { addUpdates, prepareReport } from './utils'
+import { OnProgressRemove, OnProgressUpdate } from './progress'
 
 /**
  * @public
@@ -62,11 +63,39 @@ export async function OnTeamMemberUpdate (txes: Tx[], control: TriggerControl): 
 
 export async function OnCreateReport (txes: Tx[], control: TriggerControl): Promise<Tx[]> {
   const result: Tx[] = []
-  console.log(txes)
+
   for (const tx of txes) {
     const createTx = tx as TxCreateDoc<PerformanceReport>
 
-    result.push(await prepareReport(control, createTx))
+    const allReport = (await control.findAll(
+      control.ctx,
+      performance.class.PerformanceReport,
+      {
+        reviewSession: createTx.attributes.reviewSession,
+        reviewee: createTx.attributes.reviewee
+      }
+    )).sort((a, b) => (a.createdOn as number) - (b.createdOn as number))
+    console.log(allReport)
+    if (allReport.length > 1) {
+      result.push(control.txFactory.createTxRemoveDoc(
+        createTx.objectClass,
+        createTx.objectSpace,
+        createTx.objectId
+      ))
+      const oldReport = allReport[0]
+      result.push(await prepareReport(control, control.txFactory.createTxCreateDoc(
+        createTx.objectClass,
+        createTx.objectSpace,
+        {
+          reviewee: createTx.attributes.reviewee,
+          reviewSession: createTx.attributes.reviewSession,
+          content: null,
+          reviewer: null,
+          score: null
+        },
+        oldReport._id
+      )))
+    }
   }
 
   return result
@@ -88,7 +117,10 @@ export async function OnReviewSessionConclusion (txes: Tx[], control: TriggerCon
         rs._id,
         {
           reviewee: member as Ref<PersonAccount>,
-          reviewSession: rs._id
+          reviewSession: rs._id,
+          reviewer: null,
+          content: null,
+          score: null
         }
       )
       result.push(report)
@@ -129,6 +161,8 @@ export default async () => ({
     OnTeamMemberUpdate,
     OnCreateReport,
     OnReviewSessionConclusion,
-    OnCreateReviewSession
+    OnCreateReviewSession,
+    OnProgressUpdate,
+    OnProgressRemove
   }
 })

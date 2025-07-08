@@ -51,19 +51,37 @@
     'number',
     'assignee',
     'component',
-    'dueDate',
     'milestone',
     'relations',
     'blockedBy',
     'identifier',
-    'goal'
+    'goal',
+    'estimation',
+    'reportedTime',
+    'remainingTime'
   ]
 
   let keys: KeyedAttribute[] = []
 
+  function sortStartDateAndDueDate (keys: KeyedAttribute[]): KeyedAttribute[] {
+    let startIndex: number | undefined
+    let dueIndex: number | undefined
+
+    for (const [i, key] of keys.entries()) {
+      if (key.key === 'startDate') startIndex = i
+      else if (key.key === 'dueDate') dueIndex = i
+    }
+    if (startIndex === undefined || dueIndex === undefined || startIndex < dueIndex) return keys
+    const temp = keys[startIndex]
+    keys[startIndex] = keys[dueIndex]
+    keys[dueIndex] = temp
+    return keys
+  }
+
   function updateKeys (_class: Ref<Class<Issue>>, ignoreKeys: string[]): void {
     const filtredKeys = getFiltredKeys(hierarchy, _class, ignoreKeys)
     keys = filtredKeys.filter((key) => !isCollectionAttr(hierarchy, key))
+    keys = sortStartDateAndDueDate(keys)
   }
 
   let mixins: Mixin<Doc>[] = []
@@ -184,14 +202,14 @@
     props={{ object: issue, label: tracker.string.AddLabel, readonly }}
   />
 
-  {#if issue.dueDate !== null}
+  <!-- {#if issue.dueDate !== null}
     <div class="divider" />
 
     <span class="labelOnPanel">
       <Label label={tracker.string.DueDate} />
     </span>
     <DueDateEditor value={issue} width={'100%'} editable={!readonly} />
-  {/if}
+  {/if} -->
 
   {#if keys.length > 0}
     <div class="divider" />

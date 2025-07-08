@@ -1,6 +1,5 @@
 import { type Builder } from '@hcengineering/model'
 import { performanceId } from '@hcengineering/performance'
-import tracker from '@hcengineering/model-tracker'
 import activity from '@hcengineering/activity'
 import chunter from '@hcengineering/chunter'
 import kraTeam from '@hcengineering/model-kra-team'
@@ -9,7 +8,7 @@ import task from '@hcengineering/task'
 import { type Status, type Ref, type StatusCategory } from '@hcengineering/core'
 import core from '@hcengineering/model-core'
 import workbench, { type Application } from '@hcengineering/model-workbench'
-import view from '@hcengineering/model-view'
+import view, { classPresenter, createAction } from '@hcengineering/model-view'
 import {
   DOMAIN_PERFORMANCE,
   TDefaultKRAData,
@@ -17,19 +16,24 @@ import {
   TEmployeeKRA,
   TKRA,
   TReviewSession,
-  TMeasureProgress,
   TPerformanceReport,
   TTypeReviewSessionStatus,
-  TProgressPresenter,
-  TPerformanceReview,
+  // TPerformanceReview,
   TActionItemFactory,
-  TTypeKRAStatus
+  TTypeKRAStatus,
+  TProgress,
+  TProgressReport,
+  TPTask,
+  TUnit,
+  TKpi
 } from './types'
 import { defineViewlets } from './viewlets'
+import { defineActions } from './actions'
 
 export { performanceId } from '@hcengineering/performance'
 export { performance as default }
 export { performanceOperation } from './migration'
+export { TPTask }
 
 function defineTeam (builder: Builder): void {
   builder.mixin(kraTeam.class.Team, core.class.Class, view.mixin.SpacePresenter, {
@@ -37,9 +41,29 @@ function defineTeam (builder: Builder): void {
   })
 }
 
-function defineReviewSession (builder: Builder): void {
-  builder.createModel(TReviewSession, TDefaultReviewSessionData, TTypeReviewSessionStatus)
+function defineProgress (builder: Builder): void {
+  //
+  // Unit
+  //
+  builder.mixin(performance.class.Unit, core.class.Class, view.mixin.ObjectPresenter, {
+    presenter: performance.component.UnitPresenter
+  })
 
+  classPresenter(builder, performance.class.Progress, performance.component.ProgressPresenter)
+
+  classPresenter(
+    builder,
+    performance.class.Progress,
+    performance.component.ProgressPresenter,
+    performance.component.ProgressEditor
+  )
+
+  builder.mixin(performance.class.Progress, core.class.Class, view.mixin.ObjectPresenter, {
+    presenter: performance.component.ProgressObjectPresenter
+  })
+}
+
+function defineReviewSession (builder: Builder): void {
   builder.mixin(performance.class.ReviewSession, core.class.Class, view.mixin.SpacePresenter, {
     presenter: performance.component.ReviewSessionSpacePresenter
   })
@@ -81,12 +105,18 @@ function defineReviewSession (builder: Builder): void {
     configOptions: {
       hiddenKeys: ['modifiedOn', 'modifiedBy', 'createdOn', 'createdBy', 'type', 'private', 'owners', 'autojoin']
     },
-    config: ['name', 'reviewSessionStart', 'reviewSessionEnd', 'members', {
-      key: 'status',
-      props: {
-        readonly: true
+    config: [
+      'name',
+      'reviewSessionStart',
+      'reviewSessionEnd',
+      'members',
+      {
+        key: 'status',
+        props: {
+          readonly: true
+        }
       }
-    }],
+    ],
     viewOptions: {
       groupBy: [],
       orderBy: [],
@@ -103,10 +133,6 @@ function defineReviewSession (builder: Builder): void {
     }
   })
 
-  builder.mixin(performance.class.ReviewSession, core.class.Class, view.mixin.IgnoreActions, {
-    actions: [tracker.action.EditRelatedTargets, tracker.action.NewRelatedIssue]
-  })
-
   builder.mixin(performance.class.TypeReviewSessionStatus, core.class.Class, view.mixin.AttributePresenter, {
     presenter: performance.component.ReviewSessionStatusPresenter
   })
@@ -121,14 +147,20 @@ function defineReviewSession (builder: Builder): void {
 }
 
 function defineKRA (builder: Builder): void {
-  builder.createModel(TKRA, TEmployeeKRA, TDefaultKRAData, TActionItemFactory)
-
   builder.mixin(performance.class.TypeKRAStatus, core.class.Class, view.mixin.AttributePresenter, {
     presenter: performance.component.KRAStatusPresenter
   })
 
   builder.mixin(performance.class.EmployeeKRA, core.class.Class, view.mixin.ListHeaderExtra, {
     presenters: [performance.component.EmployeeKRATotalWeightStat]
+  })
+
+  builder.mixin(performance.class.PTask, core.class.Class, view.mixin.ListHeaderExtra, {
+    presenters: [performance.component.PTaskKRAStat]
+  })
+
+  builder.mixin(performance.class.EmployeeKRA, core.class.Class, view.mixin.IgnoreActions, {
+    actions: [view.action.Open, view.action.OpenInNewTab]
   })
 
   builder.mixin(performance.class.KRA, core.class.Class, view.mixin.AttributePresenter, {
@@ -212,11 +244,34 @@ function defineKRA (builder: Builder): void {
       }
     ]
   })
+
+  createAction(
+    builder,
+    {
+      action: performance.actionImpl.ApproveKRA,
+      label: performance.string.ApproveKRA,
+      icon: performance.icon.StatusApproved,
+      input: 'any',
+      category: performance.category.Performance,
+      target: performance.class.EmployeeKRA,
+      context: {
+        mode: ['context', 'browser'],
+        group: 'edit'
+      },
+      visibilityTester: performance.function.CanApproveKRA
+    },
+    performance.action.ApproveKRA
+  )
+
+  builder.createDoc(
+    view.class.ActionCategory,
+    core.space.Model,
+    { label: performance.string.PerformanceApplication, visible: true },
+    performance.category.Performance
+  )
 }
 
 function defineReport (builder: Builder): void {
-  builder.createModel(TPerformanceReport, TPerformanceReview)
-
   builder.mixin(performance.class.PerformanceReport, core.class.Class, view.mixin.ObjectPresenter, {
     presenter: performance.component.ReportPresenter
   })
@@ -233,6 +288,16 @@ function defineReport (builder: Builder): void {
         key: '',
         presenter: performance.component.ReportPresenter,
         label: performance.string.Reviewee
+      },
+      {
+        key: '',
+        presenter: performance.component.ScorePresenter,
+        label: performance.string.ScorePreview
+      },
+      {
+        key: 'score',
+        presenter: performance.component.ScorePresenter,
+        label: performance.string.GradedScore
       }
     ],
     viewOptions: {
@@ -240,14 +305,6 @@ function defineReport (builder: Builder): void {
       orderBy: [],
       other: []
     }
-  })
-
-  builder.mixin(performance.class.PerformanceReport, core.class.Class, view.mixin.IgnoreActions, {
-    actions: [view.action.Delete, tracker.action.EditRelatedTargets, tracker.action.NewRelatedIssue]
-  })
-
-  builder.mixin(performance.class.PerformanceReview, core.class.Class, view.mixin.ObjectPresenter, {
-    presenter: performance.component.ReviewPresenter
   })
 }
 
@@ -269,7 +326,7 @@ function defineSpaceType (builder: Builder): void {
       statusClass: performance.class.TypeKRAStatus,
       statusCategories: kraCategories,
       allowedAsChildOf: [performance.taskTypes.KRA],
-      icon: tracker.icon.Issue
+      icon: task.icon.Task
     },
     performance.taskTypes.KRA
   )
@@ -355,6 +412,16 @@ function defineActivity (builder: Builder): void {
     valueAttr: 'kra'
   })
 
+  builder.createDoc(activity.class.DocUpdateMessageViewlet, core.space.Model, {
+    objectClass: performance.class.PerformanceReport,
+    action: 'update'
+  })
+
+  builder.createDoc(activity.class.ActivityExtension, core.space.Model, {
+    ofClass: performance.class.PerformanceReport,
+    components: { input: { component: chunter.component.ChatMessageInput } }
+  })
+
   builder.createDoc(
     chunter.class.ChatMessageViewlet,
     core.space.Model,
@@ -366,6 +433,17 @@ function defineActivity (builder: Builder): void {
     performance.ids.EmployeeKRAMessageViewlet
   )
 
+  builder.createDoc(
+    chunter.class.ChatMessageViewlet,
+    core.space.Model,
+    {
+      messageClass: chunter.class.ChatMessage,
+      objectClass: performance.class.PerformanceReport,
+      label: chunter.string.LeftComment
+    },
+    performance.ids.PerformanceReportMessageViewlet
+  )
+
   builder.createDoc(activity.class.DocUpdateMessageViewlet, core.space.Model, {
     objectClass: performance.class.EmployeeKRA,
     action: 'update',
@@ -374,17 +452,38 @@ function defineActivity (builder: Builder): void {
 }
 
 export function createModel (builder: Builder): void {
-  builder.createModel(TTypeKRAStatus)
-  builder.createModel(TMeasureProgress)
-  builder.createModel(TProgressPresenter)
+  builder.createModel(
+    TProgress,
+    TKpi,
+    TProgressReport,
+    TPTask,
+    TUnit,
+    TTypeKRAStatus,
+    TPerformanceReport,
+    // TPerformanceReview,
+    TKRA,
+    TEmployeeKRA,
+    TDefaultKRAData,
+    TActionItemFactory,
+    TTypeKRAStatus,
+    TReviewSession,
+    TDefaultReviewSessionData,
+    TTypeReviewSessionStatus
+  )
   defineTeam(builder)
   defineReviewSession(builder)
+  defineProgress(builder)
   defineKRA(builder)
-  defineReport(builder)
   defineActivity(builder)
   defineViewlets(builder)
+  defineReport(builder)
+  defineActions(builder)
 
   defineApplication(builder)
+
+  builder.mixin(performance.class.Unit, core.class.Class, view.mixin.ObjectFactory, {
+    component: performance.component.AddUnitPopup
+  })
 
   builder.createDoc(core.class.DomainIndexConfiguration, core.space.Model, {
     domain: DOMAIN_PERFORMANCE,

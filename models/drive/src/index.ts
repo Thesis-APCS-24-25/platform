@@ -57,7 +57,7 @@ import {
 import { TAttachedDoc, TDoc, TType, TTypedSpace } from '@hcengineering/model-core'
 import presentation from '@hcengineering/model-presentation'
 import print from '@hcengineering/model-print'
-import tracker from '@hcengineering/model-tracker'
+import kra from '@hcengineering/model-kra'
 import view, { type Viewlet, actionTemplates, classPresenter, createAction } from '@hcengineering/model-view'
 import workbench from '@hcengineering/model-workbench'
 import { getEmbeddedLabel } from '@hcengineering/platform'
@@ -290,7 +290,7 @@ function defineDrive (builder: Builder): void {
   // Actions
 
   builder.mixin(drive.class.Drive, core.class.Class, view.mixin.IgnoreActions, {
-    actions: [tracker.action.EditRelatedTargets, print.action.Print, tracker.action.NewRelatedIssue]
+    actions: [kra.action.EditRelatedTargets, print.action.Print, kra.action.NewRelatedIssue]
   })
 
   createAction(
@@ -471,8 +471,8 @@ function defineFolder (builder: Builder): void {
       view.action.Open,
       view.action.OpenInNewTab,
       print.action.Print,
-      tracker.action.EditRelatedTargets,
-      tracker.action.NewRelatedIssue
+      kra.action.EditRelatedTargets,
+      kra.action.NewRelatedIssue
     ]
   })
 
@@ -546,8 +546,8 @@ function defineFileVersion (builder: Builder): void {
       view.action.OpenInNewTab,
       view.action.Delete,
       print.action.Print,
-      tracker.action.EditRelatedTargets,
-      tracker.action.NewRelatedIssue
+      kra.action.EditRelatedTargets,
+      kra.action.NewRelatedIssue
     ]
   })
 
@@ -641,8 +641,8 @@ function defineFile (builder: Builder): void {
       view.action.Open,
       view.action.OpenInNewTab,
       print.action.Print,
-      tracker.action.EditRelatedTargets,
-      tracker.action.NewRelatedIssue
+      kra.action.EditRelatedTargets,
+      kra.action.NewRelatedIssue
     ]
   })
 

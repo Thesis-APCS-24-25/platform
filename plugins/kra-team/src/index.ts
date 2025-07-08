@@ -51,7 +51,8 @@ export default plugin(kraTeamId, {
     CreateReviewSession: '' as Ref<Permission>,
     AssignWeightForAll: '' as Ref<Permission>,
     ApproveKra: '' as Ref<Permission>,
-    CreateKra: '' as Ref<Permission>
+    CreateKra: '' as Ref<Permission>,
+    GradeReport: '' as Ref<Permission>
   },
   spaceType: {
     TeamType: '' as Ref<SpaceType>

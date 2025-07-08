@@ -19,6 +19,7 @@
   import LeaveKRACommentPopup from './LeaveKRACommentPopup.svelte'
   import kraTeam from '@hcengineering/kra-team'
   import { checkTeamPermission } from '../../utils/team'
+  import { approveKRA } from '../../actionImpl'
 
   export let value: EmployeeKRA['status'] | undefined
   export let object: EmployeeKRA
@@ -26,9 +27,12 @@
   export let size: ButtonSize = 'medium'
   export let justify: 'left' | 'center' = 'left'
   export let width: string | undefined = undefined
-  export let disabled = true
+  export let disabled = false
   export let shouldShowAvatar: boolean = true
   export let accent: boolean = false
+
+  let allowEditKRAStatus = false
+  let _disabled = disabled
 
   const dispatch = createEventDispatcher()
   const client = getClient()
@@ -39,11 +43,11 @@
     ...kraStatusAssets[status]
   }))
 
-  $: void checkTeamPermission(
-    client,
-    object.space as Ref<ReviewSession>,
-    kraTeam.permission.ApproveKra
-  ).then((res) => { disabled = !res })
+  $: void checkTeamPermission(client, object.space as Ref<ReviewSession>, kraTeam.permission.ApproveKra).then((res) => {
+    allowEditKRAStatus = res
+  })
+
+  $: _disabled = disabled || !allowEditKRAStatus
 
   function handlePopupOpen (event: MouseEvent): void {
     showPopup(
@@ -55,15 +59,16 @@
   }
 
   async function changeStatus (event: MouseEvent, newStatus: EmployeeKRA['status'] | null | undefined): Promise<void> {
-    if (disabled || newStatus == null || value === newStatus) {
+    if (_disabled || newStatus == null || value === newStatus) {
       return
     }
 
     if (newStatus === value) {
       return
     } else if (newStatus === KRAStatus.Approved) {
+      await approveKRA(object)
       if (object.weight === 0) {
-        return // TODO: handle this
+        return
       }
     } else if (newStatus === KRAStatus.NeedChanges) {
       showPopup(LeaveKRACommentPopup, { object }, eventToHTMLElement(event), async (e) => {
@@ -95,7 +100,7 @@
 {#if kind === 'list'}
   <button
     class="flex-no-shrink clear-mins cursor-pointer content-pointer-events-none"
-    {disabled}
+    disabled={_disabled}
     on:click={handlePopupOpen}
     use:tooltip={{ label }}
   >
@@ -116,7 +121,7 @@
     {justify}
     {size}
     {width}
-    {disabled}
+    disabled={_disabled}
     showTooltip={{ label: performance.string.SetStatus }}
     on:click={handlePopupOpen}
   />

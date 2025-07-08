@@ -143,25 +143,25 @@ async function createDefaults (tx: TxOperations): Promise<void> {
   )
 }
 
-async function createRatingScaleUnit (tx: TxOperations): Promise<void> {
-  const ratingScaleUnit = await tx.findOne(tracker.class.Unit, {
-    _id: tracker.ids.RatingScaleUnit
-  })
-
-  if (ratingScaleUnit === undefined) {
-    await tx.createDoc(
-      tracker.class.Unit,
-      core.space.Workspace,
-      {
-        name: 'Rating scale unit',
-        symbol: 'Point',
-        prefix: false
-      },
-      tracker.ids.RatingScaleUnit
-    )
-  }
-}
-
+// async function createRatingScaleUnit (tx: TxOperations): Promise<void> {
+//   const ratingScaleUnit = await tx.findOne(tracker.class.Unit, {
+//     _id: tracker.ids.RatingScaleUnit
+//   })
+//
+//   if (ratingScaleUnit === undefined) {
+//     await tx.createDoc(
+//       tracker.class.Unit,
+//       core.space.Workspace,
+//       {
+//         name: 'Rating scale unit',
+//         symbol: 'Point',
+//         prefix: false
+//       },
+//       tracker.ids.RatingScaleUnit
+//     )
+//   }
+// }
+//
 async function passIdentifierToParentInfo (client: MigrationClient): Promise<void> {
   const issues = await client.find<Issue>(DOMAIN_TASK, { _class: tracker.class.Issue, 'parents.0': { $exists: true } })
   for (const issue of issues) {
@@ -457,7 +457,6 @@ export const kraOperation: MigrateOperation = {
         func: async (client) => {
           const tx = new TxOperations(client, core.account.System)
           await createDefaults(tx)
-          await createRatingScaleUnit(tx)
         }
       }
     ])

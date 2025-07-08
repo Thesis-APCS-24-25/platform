@@ -1,6 +1,6 @@
 {
   "string": {
-    "TrackerApplication": "KRA Tracker",
+    "TrackerApplication": "Task Tracker",
     "Projects": "Your projects",
     "More": "More",
     "Default": "Default",
@@ -321,7 +321,10 @@
     "AddKpi": "Add KPI",
     "AddRatingScale": "Add rating scale",
     "UseAsTemplate": "Use as template",
-    "SetAssigneeFirst": "Set assignee before choosing KRA"
+    "SetAssigneeFirst": "Set assignee before choosing KRA",
+    "EmptyEditProgressContent": "No progress tracking is attached to this issue, use the below buttons to add progress tracking",
+    "Edit": "Edit",
+    "NoNote": "No note"
   },
   "status": {}
 }

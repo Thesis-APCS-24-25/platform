@@ -18,7 +18,7 @@ import { type Domain, DOMAIN_MODEL, IndexKind, type Ref, type Markup, AccountRol
 import { type Builder, Index, Model, Prop, TypeString, UX, TypeMarkup } from '@hcengineering/model'
 import core, { TDoc, TSpace } from '@hcengineering/model-core'
 import textEditor from '@hcengineering/model-text-editor'
-import tracker from '@hcengineering/model-tracker'
+// import tracker from '@hcengineering/model-tracker'
 import view, { createAction } from '@hcengineering/model-view'
 import { type IntlString, type Resource } from '@hcengineering/platform'
 import setting from '@hcengineering/setting'
@@ -166,7 +166,7 @@ export function createModel (builder: Builder): void {
   )
 
   builder.mixin(templates.class.MessageTemplate, core.class.Class, view.mixin.IgnoreActions, {
-    actions: [view.action.Open, tracker.action.NewRelatedIssue]
+    actions: [view.action.Open]
   })
 
   builder.createDoc(core.class.DomainIndexConfiguration, core.space.Model, {

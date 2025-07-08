@@ -13,14 +13,59 @@
 // limitations under the License.
 //
 
-import { type Space } from '@hcengineering/core'
+import { type Doc, type Ref, type Space } from '@hcengineering/core'
 import performance, { performanceId } from '@hcengineering/performance'
 import { type IntlString, mergeIds, type Resource } from '@hcengineering/platform'
 import { type AnyComponent } from '@hcengineering/ui'
-import { type ViewCategoryAction, type GetAllValuesFunc } from '@hcengineering/view'
+import {
+  type ViewCategoryAction,
+  type GetAllValuesFunc,
+  type ActionCategory,
+  type ViewActionAvailabilityFunction
+} from '@hcengineering/view'
 
 export default mergeIds(performanceId, performance, {
   string: {
+    NoMyReportDescription: '' as IntlString,
+    MyReport: '' as IntlString,
+    MyReports: '' as IntlString,
+    AddNumberPlaceholder: '' as IntlString,
+    NoTasks: '' as IntlString,
+    ReportBy: '' as IntlString,
+    ReportDate: '' as IntlString,
+    KpiName: '' as IntlString,
+    GradedScore: '' as IntlString,
+    ScoreIsRequired: '' as IntlString,
+    AddPerformanceReviewDescription: '' as IntlString,
+    NoReviewsYet: '' as IntlString,
+    AreYouSureYouWantToRemovePerformanceReview: '' as IntlString,
+    Reviewer: '' as IntlString,
+    Cancel: '' as IntlString,
+    AllowMembersToCommentOnReport: '' as IntlString,
+    Score: '' as IntlString,
+    TimeReportDayTypeLabel: '' as IntlString,
+    CurrentWorkDay: '' as IntlString,
+    PreviousWorkDay: '' as IntlString,
+    Note: '' as IntlString,
+    AddProgress: '' as IntlString,
+    AddProgressNamePlaceholder: '' as IntlString,
+    ProgressReport: '' as IntlString,
+    RemoveProgressDialogTitle: '' as IntlString,
+    RemoveProgressDialogMessage: '' as IntlString,
+    Report: '' as IntlString,
+    EditProgress: '' as IntlString,
+    NoProgressAttached: '' as IntlString,
+    Target: '' as IntlString,
+    Name: '' as IntlString,
+    Symbol: '' as IntlString,
+    Unit: '' as IntlString,
+    StartDate: '' as IntlString,
+    BlockedBy: '' as IntlString,
+    RelatedTo: '' as IntlString,
+    Value: '' as IntlString,
+    Goal: '' as IntlString,
+    Date: '' as IntlString,
+    Comment: '' as IntlString,
     LeaveComment: '' as IntlString,
     ReviewSubmitted: '' as IntlString,
     EmployeeKRA: '' as IntlString,
@@ -110,12 +155,32 @@ export default mergeIds(performanceId, performance, {
     EndDateFilterDetail: '' as IntlString,
     ResetFilters: '' as IntlString,
     EmployeeScore: '' as IntlString,
-    RemainingWeight: '' as IntlString
+    RemainingWeight: '' as IntlString,
+    TotalWeightOverflow: '' as IntlString,
+    WeightIsZero: '' as IntlString,
+    UpdateReport: '' as IntlString,
+    UpdateReportConfirm: '' as IntlString,
+    NoConcludedReviewSession: '' as IntlString
   },
   category: {
-    ReviewSessionType: '' as IntlString
+    ReviewSessionType: '' as IntlString,
+    Performance: '' as Ref<ActionCategory>
   },
   component: {
+    MyReport: '' as AnyComponent,
+    MyReports: '' as AnyComponent,
+    PTaskKRAStat: '' as AnyComponent,
+    RemoveProgressPopup: '' as AnyComponent,
+    SetProgressMenu: '' as AnyComponent,
+    KpiPresenter: '' as AnyComponent,
+    AddUnitPopup: '' as AnyComponent,
+    UnitPresenter: '' as AnyComponent,
+    ProgressPresenter: '' as AnyComponent,
+    ProgressEditor: '' as AnyComponent,
+    ProgressObjectEditor: '' as AnyComponent,
+    ProgressObjectPresenter: '' as AnyComponent,
+    AddProgressPopup: '' as AnyComponent,
+    EditProgressPopup: '' as AnyComponent,
     KRAStatusPresenter: '' as AnyComponent,
     KRAWeightEditorWithPopup: '' as AnyComponent,
     PerformanceApplication: '' as AnyComponent,
@@ -144,16 +209,20 @@ export default mergeIds(performanceId, performance, {
     ReviewSessionStatusPresenter: '' as AnyComponent,
     // ReviewSessionStatusRefPresenter: '' as AnyComponent,
     ReviewSessionStatusEditor: '' as AnyComponent,
-    ReviewPresenter: '' as AnyComponent,
     EmployeeKRATotalWeightStat: '' as AnyComponent,
-    ReviewEditor: '' as AnyComponent
+    ReviewEditor: '' as AnyComponent,
+    AssignKraPopup: '' as AnyComponent,
+    ScorePresenter: '' as AnyComponent
   },
   function: {
+    CanRemoveProgress: '' as Resource<ViewActionAvailabilityFunction>,
+    CanAddProgress: '' as Resource<ViewActionAvailabilityFunction>,
     IsReviewSessionOfCurrentTeam: '' as Resource<(space: Space) => Promise<boolean>>,
     IsActiveReviewSessionOfCurrentTeam: '' as Resource<(space: Space) => Promise<boolean>>,
     IsInactiveReviewSessionOfCurrentTeam: '' as Resource<(space: Space) => Promise<boolean>>,
     GetAllKRAStates: '' as GetAllValuesFunc,
     ShowEmptyGroups: '' as ViewCategoryAction,
-    GetAllKRAs: '' as GetAllValuesFunc
+    GetAllKRAs: '' as GetAllValuesFunc,
+    CanApproveKRA: '' as Resource<(doc?: Doc | Doc[]) => Promise<boolean>>
   }
 })

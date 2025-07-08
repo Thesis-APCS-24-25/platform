@@ -127,7 +127,6 @@
   }
 </script>
 
-<!-- TODO: Add proper icon -->
 <Button
   icon={persons.length === 0 ? IconScale : undefined}
   label={persons.length === 0 ? emptyLabel : undefined}

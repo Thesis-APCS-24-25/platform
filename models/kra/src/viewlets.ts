@@ -143,8 +143,8 @@ export function issueConfig (
     },
     {
       key: '',
-      label: kra.string.Goal,
-      presenter: kra.component.GoalPresenter,
+      label: performance.string.Progress,
+      presenter: performance.component.ProgressPresenter,
       props: { kind: 'list', size: 'small' },
       displayProps: {
         fixed: 'right',
@@ -390,10 +390,10 @@ export function defineViewlets (builder: Builder): void {
     view.class.Viewlet,
     core.space.Model,
     {
-      attachTo: performance.mixin.WithKRA,
+      attachTo: performance.class.PTask,
       descriptor: performance.viewlet.TaskList,
+      variant: 'report',
       configOptions: {
-        strict: true,
         hiddenKeys: [
           'title',
           'blockedBy',
@@ -470,8 +470,8 @@ export function defineViewlets (builder: Builder): void {
         },
         {
           key: '',
-          label: kra.string.Goal,
-          presenter: kra.component.GoalPresenter,
+          label: kra.string.Progress,
+          presenter: performance.component.ProgressPresenter,
           props: { kind: 'list', size: 'small' },
           displayProps: {
             key: 'goal',

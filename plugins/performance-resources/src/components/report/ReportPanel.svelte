@@ -1,17 +1,17 @@
 <script lang="ts">
-  import { PerformanceReport, ReviewSession } from '@hcengineering/performance'
+  import { KRA, PerformanceReport, ReviewSession } from '@hcengineering/performance'
   import { ViewletContentView, ViewletSettingButton } from '@hcengineering/view-resources'
   // import { DatePresenter, ListView } from '@hcengineering/ui'
   import { personAccountByIdStore, personAccountPersonByIdStore, UserInfo } from '@hcengineering/contact-resources'
   import { Class, Ref, WithLookup } from '@hcengineering/core'
   import { Person, PersonAccount } from '@hcengineering/contact'
-  import { getClient } from '@hcengineering/presentation'
+  import { getClient, MessageBox, createQuery } from '@hcengineering/presentation'
   import { createEventDispatcher } from 'svelte'
   import { Panel } from '@hcengineering/panel'
   import { Viewlet, ViewOptions } from '@hcengineering/view'
   import ViewletSelector from '@hcengineering/view-resources/src/components/ViewletSelector.svelte'
   import ReviewEditor from './ReviewEditor.svelte'
-  import { IconChevronRight, Label } from '@hcengineering/ui'
+  import { Button, closePanel, IconChevronRight, Label, showPopup } from '@hcengineering/ui'
   import performance from '../../plugin'
 
   const client = getClient()
@@ -29,21 +29,24 @@
   let viewlet: WithLookup<Viewlet> | undefined = undefined
   let viewOptions: ViewOptions | undefined
 
+  let kras: Ref<KRA>[] = []
+  const reportQuery = createQuery()
   $: if (_id !== undefined && _class !== undefined) {
-    void client.findOne(
+    reportQuery.query(
       _class,
       { _id },
+      (result) => {
+        if (result !== undefined) {
+          value = result[0]
+          reviewSession = result[0].$lookup?.reviewSession
+        }
+      },
       {
         lookup: {
           reviewSession: performance.class.ReviewSession
         }
       }
-    ).then((result) => {
-      if (result !== undefined) {
-        value = result
-        reviewSession = result.$lookup?.reviewSession
-      }
-    })
+    )
   }
 
   let content: HTMLElement
@@ -51,6 +54,17 @@
   $: if (value !== undefined) {
     reviewee = $personAccountByIdStore.get(value.reviewee)
     person = reviewee !== undefined ? $personAccountPersonByIdStore.get(reviewee?.person) : undefined
+    void client.findAll(
+      performance.class.EmployeeKRA,
+      {
+        assignee: person?._id,
+        space: value?.space
+      }
+    ).then((result) => {
+      if (result !== undefined) {
+        kras = result.map((v) => v.kra)
+      }
+    })
   }
 </script>
 
@@ -63,49 +77,71 @@
     selectedAside={false}
     isAside={false}
     isPresence={false}
-    isHeader={false}
+    isHeader={true}
     useMaxWidth={true}
     {withoutInput}
     bind:content
-    on:close={() => { dispatch('close') }}
+    on:close={() => {
+      dispatch('close')
+    }}
   >
     <svelte:fragment slot="title">
-      <ViewletSelector
-        bind:viewlet
-        viewletQuery={{ attachTo: performance.mixin.WithKRA }}
-      />
+      <ViewletSelector bind:viewlet viewletQuery={{ attachTo: performance.class.PTask }} />
       <ViewletSettingButton bind:viewOptions bind:viewlet />
       {#if person !== undefined}
-      <div class="title not-active report-title">
-        <Label label={performance.string.PerformanceReport}/>
-        <IconChevronRight size={'small'}/>
-        <span>{reviewSession?.name}</span>
-        <IconChevronRight size={'small'}/>
-        <UserInfo
-          value={person}
-          size={'small'}
-        />
-      </div>
+        <div class="title not-active report-title">
+          <Label label={performance.string.PerformanceReport} />
+          <IconChevronRight size={'small'} />
+          <span>{reviewSession?.name}</span>
+          <IconChevronRight size={'small'} />
+          <UserInfo value={person} size={'small'} />
+        </div>
       {/if}
+    </svelte:fragment>
+    <svelte:fragment slot="header">
+      <Button
+        label={performance.string.UpdateReport}
+        on:click={() => {
+          if (value === undefined) return
+          showPopup(MessageBox, {
+            label: performance.string.UpdateReport,
+            message: performance.string.UpdateReportConfirm,
+            action: async () => {
+              if (value?.reviewSession === undefined) return
+              await client.createDoc(performance.class.PerformanceReport, value?.reviewSession, {
+                reviewee: value?.reviewee,
+                reviewSession: value?.reviewSession,
+                content: null,
+                reviewer: null,
+                score: null
+              })
+              closePanel()
+            }
+          })
+        }}
+      />
     </svelte:fragment>
     {#if viewlet !== undefined && viewOptions}
       {#if value.scorePreview !== undefined}
         <span class="heading-ui-H2">
-          <Label label={performance.string.EmployeeScore}/>: {value.scorePreview}
+          <Label label={performance.string.EmployeeScore} />: {value.scorePreview}
         </span>
       {/if}
       <ViewletContentView
-        _class={performance.mixin.WithKRA}
+        _class={performance.class.PTask}
         space={undefined}
         {viewlet}
         {viewOptions}
         query={{
           _id: {
             $in: value.tasks
+          },
+          kra: {
+            $in: [...kras, null]
           }
         }}
       />
-      <ReviewEditor object={value}/>
+      <ReviewEditor object={value} />
     {/if}
   </Panel>
 {/if}

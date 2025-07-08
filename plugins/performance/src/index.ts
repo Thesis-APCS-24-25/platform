@@ -17,12 +17,17 @@
 import { Person, type PersonAccount } from '@hcengineering/contact'
 import type {
   Arr,
+  AttachedDoc,
   Class,
+  CollectionSize,
   Doc,
+  Markup,
   Mixin,
   Ref,
+  RelatedDocument,
   SpaceType,
   SpaceTypeDescriptor,
+  StatusCategory,
   Timestamp,
   Type
 } from '@hcengineering/core'
@@ -30,8 +35,51 @@ import { Member } from '@hcengineering/kra-team'
 import { Asset, IntlString, plugin, Plugin, Resource } from '@hcengineering/platform'
 import type { Project, ProjectType, Task, TaskType, TaskTypeDescriptor } from '@hcengineering/task'
 import { AnyComponent } from '@hcengineering/ui'
-import { Viewlet, ViewletDescriptor } from '@hcengineering/view'
+import { Action, ViewAction, Viewlet, ViewletDescriptor } from '@hcengineering/view'
 import { ChatMessageViewlet } from '@hcengineering/chunter'
+import task from '@hcengineering/task'
+
+export enum ReportDayType {
+  CurrentWorkDay = 'CurrentWorkDay',
+  PreviousWorkDay = 'PreviousWorkDay'
+}
+
+export interface Progress extends Doc {
+  task: Ref<PTask>
+  name?: string
+  description?: string
+  reports: CollectionSize<Report>
+  progress: number | null
+}
+
+export interface Kpi extends Progress {
+  target: number
+  unit: Ref<Unit>
+}
+
+export interface Unit extends Doc {
+  name: string
+  symbol: string
+  prefix: boolean
+}
+
+export interface ProgressReport extends AttachedDoc {
+  attachedTo: Ref<Progress>
+  attachedToClass: Ref<Class<Progress>>
+  date: Timestamp | null
+  reportBy: Ref<Person> | null
+  value: number
+  note: string
+}
+
+export interface PTask extends Task {
+  title: string
+  startDate: Timestamp | null
+  kra: Ref<KRA> | null
+  progress: Ref<Progress> | null
+  blockedBy?: RelatedDocument[]
+  relations?: RelatedDocument[]
+}
 
 export enum ReviewSessionStatus {
   Drafting,
@@ -51,6 +99,8 @@ export interface ReviewSession extends Project {
   identifier: string
   status?: ReviewSessionStatus
   sequence: number
+
+  allowMembersToCommentOnReport?: boolean
 }
 
 export interface KRA extends Task {
@@ -76,6 +126,26 @@ export interface ProgressPresenter extends Class<Task> {
   presenter: AnyComponent
 }
 
+export function taskCompletionLevelFormula (
+  taskStatusCategory: Ref<StatusCategory>,
+  progress: Progress | null
+): number | null {
+  if (taskStatusCategory === task.statusCategory.Lost) {
+    return null
+  }
+  if (progress?._class === performancePlugin.class.Progress) {
+    return (progress.progress ?? 0) / 100
+  }
+  if (progress?._class === performancePlugin.class.Kpi) {
+    return (progress.progress ?? 0) / (progress as Kpi).target
+  }
+
+  if (progress == null && taskStatusCategory === task.statusCategory.Won) {
+    return 1 // Task is won, no progress is set, so we assume it's completed
+  }
+  return null
+}
+
 /**
  * Allow to create new action items for KRA
  * `component` will be created with `kra` and `assignee` props
@@ -84,37 +154,72 @@ export interface ActionItemFactory extends Class<Task> {
   component: AnyComponent
 }
 
-export interface WithKRA extends Task {
-  kra?: Ref<KRA>
-}
-
 export interface PerformanceReport extends Doc {
   reviewee: Ref<PersonAccount>
   reviewSession: Ref<ReviewSession>
-  tasks?: Arr<Ref<WithKRA>>
-  scorePreview?: number
+  tasks?: Arr<Ref<PTask>>
+  scorePreview?: number // calculated score preview
+
+  score: number | null // final score
+  content: Markup | null // final report content
+  reviewer: Ref<PersonAccount> | null // person who wrote the report
 }
 
-export interface PerformanceReview extends Doc {
-  report: Ref<PerformanceReport>
-  content: string
-  score: number
-}
-
+// export interface PerformanceReview extends Doc {
+//   report: Ref<PerformanceReport>
+//   content: string
+//   score: number
+// }
+//
 export const performanceId = 'performance' as Plugin
 
-export default plugin(performanceId, {
+const performancePlugin = plugin(performanceId, {
   class: {
+    Kpi: '' as Ref<Class<Kpi>>,
+    Progress: '' as Ref<Class<Progress>>,
+    Unit: '' as Ref<Class<Unit>>,
+    ProgressReport: '' as Ref<Class<ProgressReport>>,
+    PTask: '' as Ref<Class<PTask>>,
     ReviewSession: '' as Ref<Class<ReviewSession>>,
     KRA: '' as Ref<Class<KRA>>,
     EmployeeKRA: '' as Ref<Class<EmployeeKRA>>,
     PerformanceReport: '' as Ref<Class<PerformanceReport>>,
-    PerformanceReview: '' as Ref<Class<PerformanceReview>>,
+    // PerformanceReview: '' as Ref<Class<PerformanceReview>>,
     TypeKRAStatus: '' as Ref<Class<Type<KRAStatus>>>,
     TypeReviewSessionStatus: '' as Ref<Class<Type<ReviewSessionStatus>>>
   },
   string: {
+    NotGiven: '' as IntlString,
+    TrackProgress: '' as IntlString,
+    CompletionLevelTracking: '' as IntlString,
+    KpiTracking: '' as IntlString,
+    TrackCompletionLevel: '' as IntlString,
+    TrackKpi: '' as IntlString,
+    SetKpi: '' as IntlString,
+    BlockedTasks: '' as IntlString,
+    FinishedBlockedTasks: '' as IntlString,
+    UnnamedProgress: '' as IntlString,
+    NoKRASelected: '' as IntlString,
+    Progress: '' as IntlString,
+    AddUnit: '' as IntlString,
+    AddNamePlaceholder: '' as IntlString,
+    AddSymbolPlaceholder: '' as IntlString,
+    Prefix: '' as IntlString,
+    SelectUnit: '' as IntlString,
+    Issue: '' as IntlString,
+    AddKpi: '' as IntlString,
+    ChooseTemplate: '' as IntlString,
+    AddTargetPlaceholder: '' as IntlString,
+    UseAsTemplate: '' as IntlString,
+    Edit: '' as IntlString,
+    RemoveGoal: '' as IntlString,
+    Task: '' as IntlString,
+    Reports: '' as IntlString,
+    PassedDays: '' as IntlString,
+    RemainingDays: '' as IntlString,
     KRA: '' as IntlString,
+    RemoveProgress: '' as IntlString,
+    SetProgress: '' as IntlString,
     ReviewSessionStart: '' as IntlString,
     ReviewSessionEnd: '' as IntlString,
     SetKRA: '' as IntlString,
@@ -133,7 +238,8 @@ export default plugin(performanceId, {
     KRACompletionLevel: '' as IntlString,
     ScorePreview: '' as IntlString,
     PerformanceReport: '' as IntlString,
-    ReviewContent: '' as IntlString
+    ReviewContent: '' as IntlString,
+    ApproveKRA: '' as IntlString
   },
   viewlet: {
     TaskList: '' as Ref<ViewletDescriptor>,
@@ -143,19 +249,30 @@ export default plugin(performanceId, {
     ActionItemFactory: '' as Ref<Mixin<ActionItemFactory>>,
     DefaultReviewSessionData: '' as Ref<Mixin<ReviewSession>>,
     DefaultKRAData: '' as Ref<Mixin<KRA>>,
-    WithKRA: '' as Ref<Mixin<WithKRA>>,
     MeasureProgress: '' as Ref<Mixin<MeasureProgress>>,
     ProgressPresenter: '' as Ref<Mixin<ProgressPresenter>>
   },
   taskTypes: {
     KRA: '' as Ref<TaskType>
   },
+  action: {
+    ApproveKRA: '' as Ref<Action<Doc, Record<string, any>>>
+  },
+  actionImpl: {
+    ApproveKRA: '' as ViewAction
+  },
   ids: {
     ClassingProjectType: '' as Ref<ProjectType>,
     EmployeeKRAMessageViewlet: '' as Ref<ChatMessageViewlet>,
+    PerformanceReportMessageViewlet: '' as Ref<ChatMessageViewlet>,
     NoKRARef: '' as Ref<KRA>
   },
   icon: {
+    Reports: '' as Asset,
+    BlockedTask: '' as Asset,
+    Unit: '' as Asset,
+    Kpi: '' as Asset,
+    TimeLeft: '' as Asset,
     EmployeeKRA: '' as Asset,
     ConcludeReviewSession: '' as Asset,
     StatusDrafting: '' as Asset,
@@ -171,6 +288,8 @@ export default plugin(performanceId, {
     StatusInProgress: '' as Asset,
     StatusConcluded: '' as Asset,
     PerformanceReview: '' as Asset,
+    Progress: '' as Asset,
+    WriteReport: '' as Asset,
     EditReview: '' as Asset
   },
   descriptor: {
@@ -181,3 +300,5 @@ export default plugin(performanceId, {
     ReviewSessionType: '' as Ref<SpaceType>
   }
 })
+
+export default performancePlugin

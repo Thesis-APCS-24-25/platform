@@ -1,7 +1,12 @@
 <script lang="ts">
   import { getCurrentAccount, Ref, Space, Timestamp } from '@hcengineering/core'
   import { Card, getClient, SpaceSelector } from '@hcengineering/presentation'
-  import { createFocusManager, DatePresenter, EditBox, FocusHandler } from '@hcengineering/ui'
+  import {
+    createFocusManager,
+    DatePresenter,
+    EditBox,
+    FocusHandler
+  } from '@hcengineering/ui'
   import { createEventDispatcher } from 'svelte'
 
   import performance from '../../plugin'
@@ -9,6 +14,7 @@
   import kraTeam, { Team } from '@hcengineering/kra-team'
   import TeamPresenter from '../team/TeamPresenter.svelte'
   import { currentTeam as currentTeamStore } from '../../utils/team'
+  import ToggleButton from '../ui/ToggleButton.svelte'
 
   // export function canClose (): boolean {
   //   return object.title === ''
@@ -26,13 +32,15 @@
   let identifier: string = ''
   let currentTeam: Ref<Space> | undefined = $currentTeamStore
 
+  const allowMembersToCommentOnReport: boolean = true
+
   $: if (team !== undefined) {
     currentTeam = team._id as Ref<Space>
   }
 
   $: canSave = name !== '' && startDate !== undefined && endDate !== undefined && currentTeam !== undefined
 
-  async function create(): Promise<void> {
+  async function create (): Promise<void> {
     if (currentTeam !== undefined) {
       await createReviewSession(
         client,
@@ -42,7 +50,8 @@
         endDate,
         currentTeam,
         performance.ids.ClassingProjectType,
-        identifier !== '' ? identifier : 'KRA'
+        identifier !== '' ? identifier : 'KRA',
+        allowMembersToCommentOnReport
       )
     }
     dispatch('close', name)
@@ -127,5 +136,19 @@
         detail={performance.string.ReviewSessionEndDetail}
       />
     </div>
+    <!-- <div class="flex-row-center clear-mins">
+      <ToggleButton
+        kind="regular"
+        size="large"
+        bind:value={allowMembersToCommentOnReport}
+        label={performance.string.AllowMembersToCommentOnReport}
+      />
+    </div> -->
   </svelte:fragment>
 </Card>
+
+<style lang="scss">
+  .antiButton {
+    border-radius: 0.375rem;
+  }
+</style>

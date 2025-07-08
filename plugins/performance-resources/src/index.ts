@@ -49,17 +49,55 @@ import {
 } from './utils/review-session'
 import AllKRAs from './components/kra/AllKRAs.svelte'
 import AllReviewSessions from './components/review-session/AllReviewSessions.svelte'
-import ReviewPresenter from './components/report/ReviewPresenter.svelte'
 import EmployeeKRATotalWeightStat from './components/kra/EmployeeKRATotalWeightStat.svelte'
 import { showEmptyGroups } from '@hcengineering/view-resources'
 import KRAStatusPresenter from './components/kra/KRAStatusPresenter.svelte'
+import ProgressPresenter from './components/progress/ProgressPresenter.svelte'
+import AddProgressPopup from './components/progress/AddProgressPopup.svelte'
+import AddUnitPopup from './components/progress/unit/AddUnitPopup.svelte'
+import KRABox from './components/kra/KRABox.svelte'
+import UnitPresenter from './components/progress/unit/UnitPresenter.svelte'
+import ProgressObjectPresenter from './components/progress/ProgressObjectPresenter.svelte'
+import AssignKraPopup from './components/kra/AssignKRAPopup.svelte'
+import { canApproveKRA } from './visibilityTester'
+import { approveKRA } from './actionImpl'
+import ScorePresenter from './components/report/ScorePresenter.svelte'
+import KpiReportEditPopup from './components/progress/kpi/KpiReportEditPopup.svelte'
+import ProgressReportEditPopup from './components/progress/ProgressReportEditPopup.svelte'
+import SetProgressMenu from './components/progress/SetProgressMenu.svelte'
+import { type PTask } from '@hcengineering/performance'
+import RemoveProgressPopup from './components/progress/RemoveProgressPopup.svelte'
+import EditKpiPopup from './components/progress/kpi/EditKpiPopup.svelte'
+import PTaskKRAStat from './components/task/PTaskKRAStat.svelte'
+import MyReports from './components/application/MyReports.svelte'
+import MyReport from './components/application/MyReport.svelte'
 
-export { KRAPresenter, KRAEditor }
+export {
+  EditKpiPopup,
+  KRAPresenter,
+  KRAEditor,
+  AddProgressPopup,
+  KRABox,
+  ProgressObjectPresenter,
+  UnitPresenter,
+  KpiReportEditPopup,
+  ProgressPresenter,
+  ProgressReportEditPopup
+}
 
 export default async (): Promise<Resources> => ({
+  actionImpl: {
+    ApproveKRA: approveKRA
+  },
   component: {
+    PTaskKRAStat,
+    RemoveProgressPopup,
+    SetProgressMenu,
+    ProgressObjectPresenter,
+    UnitPresenter,
     EmployeeKRATotalWeightStat,
     MyKRAs,
+    ProgressPresenter,
     KRAAssigneesEditor,
     KRAAssigneesPresenter,
     CreateReviewSession,
@@ -84,9 +122,15 @@ export default async (): Promise<Resources> => ({
     PerformanceApplication: Performance,
     KRAStatistics,
     KRAStatusPresenter,
-    ReviewPresenter
+    AddUnitPopup,
+    AssignKraPopup,
+    ScorePresenter,
+    MyReport,
+    MyReports
   },
   function: {
+    CanRemoveProgress: async (task: PTask | undefined): Promise<boolean> => task?.progress !== undefined,
+    CanAddProgress: async (task: PTask | undefined): Promise<boolean> => task?.progress === undefined,
     GetAllKRAStates: async (
       query: DocumentQuery<Doc<Space>> | undefined,
       onUpdate: () => void,
@@ -97,6 +141,7 @@ export default async (): Promise<Resources> => ({
     ShowEmptyGroups: showEmptyGroups,
     IsReviewSessionOfCurrentTeam,
     IsActiveReviewSessionOfCurrentTeam,
-    IsInactiveReviewSessionOfCurrentTeam
+    IsInactiveReviewSessionOfCurrentTeam,
+    CanApproveKRA: canApproveKRA
   }
 })

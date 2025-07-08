@@ -3,6 +3,10 @@ import performance from '@hcengineering/performance'
 
 const icons = require('../assets/icons.svg') as string // eslint-disable-line
 loadMetadata(performance.icon, {
+  Unit: `${icons}#unit`,
+  WriteReport: `${icons}#write-report`,
+  Progress: `${icons}#progress`,
+  EditReview: `${icons}#edit-review`,
   StatusApproved: `${icons}#status-approved`,
   StatusNeedChanges: `${icons}#status-need-changes`,
   StatusDrafting: `${icons}#status-drafting`,
@@ -18,5 +22,8 @@ loadMetadata(performance.icon, {
   StartReviewSession: `${icons}#start-review-session`,
   ConcludeReviewSession: `${icons}#conclude-review-session`,
   EmployeeKRA: `${icons}#employee-kra`,
-  EditReview: `${icons}#edit-review`
+  TimeLeft: `${icons}#time-left`,
+  Kpi: `${icons}#kpi`,
+  BlockedTask: `${icons}#blocked-task`,
+  Reports: `${icons}#reports`
 })

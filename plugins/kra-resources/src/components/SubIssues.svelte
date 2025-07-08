@@ -79,6 +79,7 @@
         rank: makeRank(lastOne?.rank, undefined),
         comments: 0,
         subIssues: 0,
+        startDate: null,
         dueDate: null,
         parents,
         reportedTime: 0,
@@ -89,7 +90,8 @@
         childInfo: [],
         kind: subIssue.kind,
         identifier: `${project.identifier}-${number}`,
-        kra: performance.ids.NoKRARef
+        kra: null,
+        progress: null
       }
 
       if (!isEmptyMarkup(subIssue.description)) {

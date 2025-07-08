@@ -4,8 +4,9 @@
   import { DocumentQuery, Ref } from '@hcengineering/core'
   import ReviewSessionRefPresenter from '../review-session/ReviewSessionRefPresenter.svelte'
 
-  export let value: Ref<KRA> | undefined = undefined
+  export let value: Ref<KRA> | null = null
   export let docQuery: DocumentQuery<KRA> = { }
+  export let allowDeselect: boolean = false
 </script>
 
 <ObjectPopup
@@ -14,7 +15,8 @@
   width="large"
   {docQuery}
   closeAfterSelect
-  selected={value}
+  {allowDeselect}
+  selected={value ?? undefined}
   _class={performance.class.KRA}
   searchMode="spotlight"
   on:update

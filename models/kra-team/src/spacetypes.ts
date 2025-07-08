@@ -10,7 +10,8 @@ const permissions = [
   kraTeam.permission.ApproveKra,
   kraTeam.permission.CreateReviewSession,
   kraTeam.permission.ViewDashboard,
-  kraTeam.permission.AssignWeightForAll
+  kraTeam.permission.AssignWeightForAll,
+  kraTeam.permission.GradeReport
 ]
 
 export function defineSpaceTypes (builder: Builder): void {

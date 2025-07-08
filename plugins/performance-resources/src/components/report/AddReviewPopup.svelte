@@ -44,7 +44,7 @@
   }
 
   let _content: string = content ?? ''
-  let _score: number = score
+  let _score: number = score ?? NaN
 </script>
 
 <Card

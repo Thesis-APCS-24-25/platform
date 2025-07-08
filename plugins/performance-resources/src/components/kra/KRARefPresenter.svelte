@@ -6,7 +6,7 @@
   import { Label } from '@hcengineering/ui'
   import { ObjectPresenterType } from '@hcengineering/view'
 
-  export let value: Ref<KRA>
+  export let value: Ref<KRA> | null
   export let inline: boolean = false
   export let accent: boolean = false
   export let shouldShowAvatar: boolean = true
@@ -17,7 +17,7 @@
   export let type: ObjectPresenterType = 'link'
 </script>
 
-{#if value !== undefined && value !== performance.ids.NoKRARef}
+{#if value != null}
   <ObjectPresenter
     objectId={value}
     _class={performance.class.KRA}
@@ -34,7 +34,14 @@
     on:accent-color
   />
 {:else}
-  <span>
+  <span class="placeholder">
     <Label label={performance.string.NoKRA} />
   </span>
 {/if}
+
+<style>
+  .placeholder {
+    color: var(--theme-text-placeholder-color);
+    font-style: italic;
+  }
+</style>

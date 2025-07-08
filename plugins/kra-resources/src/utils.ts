@@ -39,7 +39,6 @@ import task, { getStatusIndex, makeRank, type Task, type ProjectType } from '@hc
 import { activeProjects as taskActiveProjects, taskTypeStore } from '@hcengineering/task-resources'
 import {
   IssuePriority,
-  type Kpi,
   TimeReportDayType,
   type Issue,
   type IssueStatus,
@@ -501,18 +500,19 @@ onClient(() => {
   )
 })
 
-export async function calculateCompletionLevel (taskId: Ref<Task>): Promise<number | undefined> {
-  const client = getClient()
-  const res = await client.findOne(task.class.Task, { _id: taskId })
-  const issue = res as Issue
-  const goal = await client.findOne(tracker.class.Goal, { _id: issue.goal })
-  if (goal === undefined) {
-    return issue.status === tracker.status.Done ? 1 : undefined
-  }
-  if (goal._class === tracker.class.Kpi) {
-    return (goal.progress ?? 0) / (goal as Kpi).target
-  }
-  if (goal._class === tracker.class.RatingScale) {
-    return (goal.progress ?? 0) / 5
-  }
-}
+// TODO: copy this to @hcengineering/performance-resources
+// export async function calculateCompletionLevel (taskId: Ref<Task>): Promise<number | undefined> {
+//   const client = getClient()
+//   const res = await client.findOne(task.class.Task, { _id: taskId })
+//   const issue = res as Issue
+//   const goal = await client.findOne(tracker.class.Goal, { _id: issue.goal })
+//   if (goal === undefined) {
+//     return issue.status === tracker.status.Done ? 1 : undefined
+//   }
+//   if (goal._class === tracker.class.Kpi) {
+//     return (goal.progress ?? 0) / (goal as Kpi).target
+//   }
+//   if (goal._class === tracker.class.RatingScale) {
+//     return (goal.progress ?? 0) / 5
+//   }
+// }

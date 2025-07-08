@@ -32,7 +32,6 @@
   import PriorityEditor from '../issues/PriorityEditor.svelte'
   import StatusEditor from '../issues/StatusEditor.svelte'
   import EstimationEditor from './EstimationEditor.svelte'
-  import performance from '@hcengineering/performance'
 
   export let parendIssueId: Ref<Issue>
   export let project: Project
@@ -73,13 +72,13 @@
       assignee: project.defaultAssignee ?? null,
       status: project.defaultIssueStatus,
       space: project._id,
+      startDate: null,
       dueDate: null,
       subIssues: [],
       attachments: 0,
       labels: [],
       priority: IssuePriority.NoPriority,
-      estimation: 0,
-      kra: performance.ids.NoKRARef
+      estimation: 0
     }
   }
 

@@ -9,16 +9,17 @@
   import KraRefPresenter from './KRARefPresenter.svelte'
   import { Member } from '@hcengineering/kra-team'
 
-  export let value: Ref<KRA>
-  export let onChange: ((ref: Ref<KRA> | undefined) => void | Promise<void>) | undefined
+  export let value: Ref<KRA> | null
+  export let onChange: ((ref: Ref<KRA> | null) => void | Promise<void>) | undefined
   export let readonly = false
   export let kind: ButtonKind = 'primary'
   export let size: ButtonSize = 'large'
   export let shrink: number = 1
   export let width: string | undefined = undefined
   export let object: Task
+  export let focusIndex: number = -1
 
-  async function handleChange(kra: KRA): Promise<void> {
+  async function handleChange (kra: KRA): Promise<void> {
     if (onChange !== undefined && kra !== undefined) {
       await onChange(kra._id)
     }
@@ -35,9 +36,9 @@
     async (result) => {
       if (result !== undefined && result.length > 0) {
         const krasOfAssignee: Ref<KRA>[] | undefined = result.map((it) => it.kra)
-        if (!krasOfAssignee.includes(value)) {
+        if (value != null && !krasOfAssignee.includes(value)) {
           if (onChange !== undefined) {
-            await onChange(performance.ids.NoKRARef)
+            await onChange(null)
           }
         }
         kraDocQuery = {
@@ -45,7 +46,7 @@
         }
       } else {
         if (onChange !== undefined) {
-          await onChange(performance.ids.NoKRARef)
+          await onChange(null)
         }
         kraDocQuery = { _id: { $in: [performance.ids.NoKRARef] } }
       }
@@ -55,6 +56,7 @@
 
 {#if kind === 'list'}
   <Button
+    {focusIndex}
     {kind}
     {size}
     {width}

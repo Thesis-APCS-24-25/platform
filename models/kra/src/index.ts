@@ -36,25 +36,18 @@ import { definePresenters } from './presenters'
 import {
   DOMAIN_KRA,
   TClassicProjectTypeData,
-  TGoal,
   TIssue,
   TIssueStatus,
   TIssueTemplate,
   TIssueTypeData,
-  TKpi,
   TProject,
   TProjectTargetPreference,
-  TRatingScale,
   TRelatedIssueTarget,
-  TReport,
-  TReportAggregator,
   TTimeSpendReport,
   TTypeEstimation,
   TTypeIssuePriority,
   TTypeRemainingTime,
-  TTypeReportedTime,
-  TUnit,
-  TWithKRA
+  TTypeReportedTime
 } from './types'
 import { defineViewlets } from './viewlets'
 
@@ -223,18 +216,6 @@ function defineFilters (builder: Builder): void {
   })
 }
 
-function defineGoalMixin (builder: Builder): void {
-  builder.createModel(TReportAggregator)
-
-  builder.mixin(kra.class.Kpi, core.class.Class, kra.mixin.ReportAggregator, {
-    aggregator: kra.function.KpiAggregator
-  })
-
-  builder.mixin(kra.class.RatingScale, core.class.Class, kra.mixin.ReportAggregator, {
-    aggregator: kra.function.RatingScaleAggregator
-  })
-}
-
 function defineApplication (
   builder: Builder,
   opt: {
@@ -358,12 +339,6 @@ function defineApplication (
 
 export function createModel (builder: Builder): void {
   builder.createModel(
-    TWithKRA,
-    TReport,
-    TUnit,
-    TKpi,
-    TGoal,
-    TRatingScale,
     TProject,
     TIssue,
     TIssueTemplate,
@@ -381,12 +356,6 @@ export function createModel (builder: Builder): void {
     component: kra.component.CreateIssue
   })
 
-  builder.mixin(kra.class.Issue, core.class.Class, performance.mixin.MeasureProgress, {
-    calculate: kra.function.CalculateGoal
-  })
-  builder.mixin(kra.class.Issue, core.class.Class, performance.mixin.ProgressPresenter, {
-    presenter: kra.component.GoalPresenter
-  })
   builder.mixin(kra.class.Issue, core.class.Class, performance.mixin.ActionItemFactory, {
     component: kra.component.CreateIssue
   })
@@ -508,8 +477,6 @@ export function createModel (builder: Builder): void {
   )
 
   defineApplication(builder, { myIssuesId, allIssuesId, issuesId, templatesId, labelsId })
-
-  defineGoalMixin(builder)
 
   defineActions(builder, issuesId, myIssuesId)
 

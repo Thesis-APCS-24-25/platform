@@ -36,9 +36,7 @@
         iconProps={{
           ...(warning
             ? { fill: 'var(--theme-warning-color)' }
-            : {
-                fill: 'var(--theme-won-color)'
-              })
+            : { fill: 'var(--theme-won-color)' })
         }}
       />
       <KraWeightPresenter value={sum} showPercent />

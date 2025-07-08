@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { EmployeeKRA, ReviewSession, WithKRA, type KRA } from '@hcengineering/performance'
+  import { EmployeeKRA, ReviewSession, PTask, type KRA } from '@hcengineering/performance'
   import contact, { PersonAccount } from '@hcengineering/contact'
   import { getClient, createQuery } from '@hcengineering/presentation'
   import performance from '../../plugin'
@@ -14,8 +14,8 @@
 
   type KRAsByEmployee = Record<Ref<Member>, Array<KRA & { weight: number, completionLevel: number }>>
 
-  let tasks: Array<WithKRA> | undefined = undefined
-  let taskCompletion: Record<Ref<WithKRA>, number> | undefined = undefined
+  let tasks: Array<PTask> | undefined = undefined
+  let taskCompletion: Record<Ref<PTask>, number> | undefined = undefined
   let kras: KRA[] | undefined = undefined
   let kraRefs: Ref<KRA>[] | undefined = undefined
   let employeeKras: EmployeeKRA[] = []
@@ -75,7 +75,7 @@
 
   $: if (kraRefs !== undefined) {
     taskQ.query(
-      performance.mixin.WithKRA,
+      performance.class.PTask,
       {
         kra: { $in: kraRefs },
         createdOn: {
@@ -95,7 +95,7 @@
 
   $: if (tasks !== undefined) {
     const updateCompletionLevels = async (): Promise<void> => {
-      const completion: Record<Ref<WithKRA>, number> = {}
+      const completion: Record<Ref<PTask>, number> = {}
       for (const task of tasks ?? []) {
         completion[task._id] = (await calculateCompletionLevel(task._id)) ?? 0
       }
@@ -127,8 +127,8 @@
     employees: Member[],
     kras: KRA[],
     kraAssigns: EmployeeKRA[],
-    tasks: WithKRA[],
-    taskCompletion: Record<Ref<WithKRA>, number>
+    tasks: PTask[],
+    taskCompletion: Record<Ref<PTask>, number>
   ): KRAsByEmployee {
     return employees.reduce<KRAsByEmployee>((acc, employee) => {
       // Get all EmployeeKRA entries for this employee

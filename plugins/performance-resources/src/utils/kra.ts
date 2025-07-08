@@ -7,25 +7,20 @@ import core, {
   type Status,
   type Ref,
   type TxOperations,
-  type Class,
   type Attribute,
   type Doc,
   type Client,
   type QuerySelector,
-  type ObjQueryType
+  type ObjQueryType,
+  type StatusCategory
 } from '@hcengineering/core'
-import {
-  type MeasureProgress,
-  type KRA,
-  type EmployeeKRA,
-  type WithKRA
-} from '@hcengineering/performance'
+import { type KRA, type EmployeeKRA, type PTask, type Kpi, type Progress, taskCompletionLevelFormula } from '@hcengineering/performance'
 import performance from '../plugin'
-import task, { makeRank, type Task } from '@hcengineering/task'
+import task, { makeRank } from '@hcengineering/task'
 import { getClient } from '@hcengineering/presentation'
-import hcTask from '@hcengineering/task'
-import { getResource } from '@hcengineering/platform'
 import type { Member } from '@hcengineering/kra-team'
+import { statusStore } from '@hcengineering/view-resources'
+import { get } from 'svelte/store'
 
 export async function getFirstRank (
   client: TxOperations,
@@ -83,27 +78,29 @@ export async function createKRA (
   )
 }
 
-export async function calculateCompletionLevel (task: Ref<Task> | Task): Promise<number | undefined> {
+export async function calculateCompletionLevel (task: Ref<PTask> | PTask): Promise<number | undefined> {
   const client = getClient()
-  const hierarchy = client.getHierarchy()
-  async function calculate (task: Task): Promise<number | undefined> {
-    const measure = hierarchy.classHierarchyMixin<Class<Task>, MeasureProgress>(
-      task._class,
-      performance.mixin.MeasureProgress
-    )
-    if (measure !== undefined) {
-      const fn = await getResource(measure.calculate)
-      const d = await fn?.(task._id)
-      return d
+  async function calculate (task: PTask): Promise<number | undefined> {
+    const status = get(statusStore).byId.get(task.status)
+    const category = status?.category
+    if (category === undefined) {
+      return undefined
     }
-    return undefined
+    if (task.progress != null) {
+      const p = await client.findOne(performance.class.Progress, { _id: task.progress })
+      if (p === undefined) {
+        return undefined
+      }
+      const value = taskCompletionLevelFormula(category, p)
+      return value ?? undefined
+    }
   }
 
   if (typeof task === 'object') {
     const d = await calculate(task)
     return d
   } else {
-    const _task = await client.findOne(hcTask.class.Task, { _id: task })
+    const _task = await client.findOne(performance.class.PTask, { _id: task })
     if (_task !== undefined) {
       const d = await calculate(_task)
       return d
@@ -117,10 +114,10 @@ async function getKRAsOfEmployeeKRA (client: Client, query: DocumentQuery<Employ
   return res
 }
 
-async function getKRAsOfTask (client: Client, query: DocumentQuery<WithKRA>): Promise<Array<Ref<KRA>>> {
+async function getKRAsOfTask (client: Client, query: DocumentQuery<PTask>): Promise<Array<Ref<KRA>>> {
   // TODO: Refactor when `assignedTo` in `KRA` is added
   let kraQuery: ObjQueryType<Ref<KRA>> = {}
-  if (query.kra === undefined) return []
+  if (query.kra == null) return []
   if (typeof query.kra !== 'string' && query.kra.$in !== undefined) {
     kraQuery = query.kra as QuerySelector<Ref<KRA>>
   }
@@ -128,7 +125,9 @@ async function getKRAsOfTask (client: Client, query: DocumentQuery<WithKRA>): Pr
     .findOne(performance.class.KRA, { _id: kraQuery }, { projection: { space: 1 } })
     .then((kra) => kra?.space)
   const assignee = query.assignee as QuerySelector<Ref<Member>>
-  const res = (await client.findAll(performance.class.EmployeeKRA, { space, kra: kraQuery, assignee })).map((kra) => kra.kra)
+  const res = (await client.findAll(performance.class.EmployeeKRA, { space, kra: kraQuery, assignee })).map(
+    (kra) => kra.kra
+  )
 
   console.log('getKRAsOfTask', res, query, space)
   return res
@@ -145,7 +144,7 @@ export async function getAllKRAs (
   if (hierarchy.isDerived(attr.attributeOf, performance.class.EmployeeKRA)) {
     return await getKRAsOfEmployeeKRA(client, query as DocumentQuery<EmployeeKRA>)
   } else if (hierarchy.isDerived(attr.attributeOf, task.class.Task)) {
-    return await getKRAsOfTask(client, query as DocumentQuery<WithKRA>)
+    return await getKRAsOfTask(client, query as DocumentQuery<PTask>)
   }
   return []
 }
