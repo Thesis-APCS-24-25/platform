@@ -91,13 +91,9 @@ export async function prepareReport (
 }
 
 async function getScore (control: TriggerControl, ptask: PTask, progress: Progress | undefined): Promise<number | null> {
-  // TODO: Handle this commented case properly
-  if (progress === undefined) {
-    const [status] = await control.queryFind(control.ctx, core.class.Status, { _id: ptask.status }, { limit: 1 })
-    if (status?.category === undefined) return 0
-    return taskCompletionLevelFormula(status.category, progress ?? null) ?? 0
-  }
-  return 0
+  const [status] = await control.queryFind(control.ctx, core.class.Status, { _id: ptask.status }, { limit: 1 })
+  if (status?.category === undefined) return 0
+  return taskCompletionLevelFormula(status.category, progress ?? null) ?? 0
 }
 
 async function calculateScore (control: TriggerControl, tasks: PTask[], employeeKras: EmployeeKRA[]): Promise<number> {
