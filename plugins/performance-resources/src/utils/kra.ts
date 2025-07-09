@@ -11,10 +11,9 @@ import core, {
   type Doc,
   type Client,
   type QuerySelector,
-  type ObjQueryType,
-  type StatusCategory
+  type ObjQueryType
 } from '@hcengineering/core'
-import { type KRA, type EmployeeKRA, type PTask, type Kpi, type Progress, taskCompletionLevelFormula } from '@hcengineering/performance'
+import { type KRA, type EmployeeKRA, type PTask, taskCompletionLevelFormula } from '@hcengineering/performance'
 import performance from '../plugin'
 import task, { makeRank } from '@hcengineering/task'
 import { getClient } from '@hcengineering/presentation'
@@ -129,7 +128,6 @@ async function getKRAsOfTask (client: Client, query: DocumentQuery<PTask>): Prom
     (kra) => kra.kra
   )
 
-  console.log('getKRAsOfTask', res, query, space)
   return res
 }
 

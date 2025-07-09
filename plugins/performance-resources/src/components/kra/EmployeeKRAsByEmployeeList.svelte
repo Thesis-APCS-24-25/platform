@@ -1,14 +1,12 @@
 <script lang="ts">
-  import { Doc, getCurrentAccount, Ref, SortingOrder, TypedSpace, WithLookup } from '@hcengineering/core'
-  import { EmployeeKRA } from '@hcengineering/performance'
-  import { List, ListSelectionProvider, ListView, SelectDirection } from '@hcengineering/view-resources'
+  import { Doc, Ref, SortingOrder, TypedSpace } from '@hcengineering/core'
+  import { List, ListSelectionProvider, SelectDirection } from '@hcengineering/view-resources'
   import KraWeightEditorWithPopup from './KRAWeightEditorWithPopup.svelte'
   import performance from '../../plugin'
   import view from '@hcengineering/view'
-  import { Member } from '@hcengineering/kra-team'
   import { Scroller } from '@hcengineering/ui'
 
-  export let members: Ref<Member>[]
+  // export let members: Ref<Member>[]
   export let space: Ref<TypedSpace>
   export let allowEditKRAStatus: boolean = true
   // export let canAssign: boolean = false
@@ -17,12 +15,12 @@
   //   return value === undefined || Math.abs(value - 1) > 0.0001
   // }
 
-  $: members = members.sort((a, b) => {
-    const me = getCurrentAccount().person
-    if (a === me) return -1
-    if (b === me) return 1
-    return 0
-  })
+  // $: members = members.sort((a, b) => {
+  //   const me = getCurrentAccount().person
+  //   if (a === me) return -1
+  //   if (b === me) return 1
+  //   return 0
+  // })
   let list: List
   const listProvider = new ListSelectionProvider(
     (offset: 1 | -1 | 0, of?: Doc, dir?: SelectDirection, noScroll?: boolean) => {

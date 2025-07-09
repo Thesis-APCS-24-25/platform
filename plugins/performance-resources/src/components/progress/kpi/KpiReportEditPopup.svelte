@@ -27,7 +27,7 @@
         if (res.length > 0) {
           unit = res[0].$lookup?.unit as Unit | undefined
           kpi = res[0]
-          console.log('KPI:', kpi)
+          // console.log('KPI:', kpi)
         } else {
           unit = undefined
         }

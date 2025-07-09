@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Ref, Doc, DocumentQuery, WithLookup } from '@hcengineering/core'
+  import { Ref, Doc, DocumentQuery } from '@hcengineering/core'
   import { Asset, IntlString } from '@hcengineering/platform'
   import {
     Breadcrumb,
@@ -15,11 +15,8 @@
   import { createQuery } from '@hcengineering/presentation'
   import CreateKra from './CreateKRA.svelte'
   import EmployeeKRAsByEmployeeList from './EmployeeKRAsByEmployeeList.svelte'
-  import { EmployeeKRA, KRA, ReviewSession, ReviewSessionStatus } from '@hcengineering/performance'
-  import { PersonAccount } from '@hcengineering/contact'
+  import { KRA, ReviewSession, ReviewSessionStatus } from '@hcengineering/performance'
   import EmployeeKrAsByKraList from './EmployeeKRAsByKRAList.svelte'
-  import { Member } from '@hcengineering/kra-team'
-  import { personIdByAccountId } from '@hcengineering/contact-resources'
 
   export let currentSpace: Ref<ReviewSession>
   export let icon: Asset = performance.icon.Active
@@ -49,11 +46,11 @@
   let divScroll: HTMLDivElement
 
   let kras: KRA[] = []
-  let employees: Ref<PersonAccount>[] = []
-  $: members = employees.map((e) => $personIdByAccountId.get(e)).filter((e) => e !== undefined) as Ref<Member>[]
-  let employeeKras: WithLookup<EmployeeKRA>[] = []
+  // let employees: Ref<PersonAccount>[] = []
+  // $: members = employees.map((e) => $personIdByAccountId.get(e)).filter((e) => e !== undefined) as Ref<Member>[]
+  // let employeeKras: WithLookup<EmployeeKRA>[] = []
   const kraQuery = createQuery()
-  const employeeKraQuery = createQuery()
+  // const employeeKraQuery = createQuery()
   const spaceQuery = createQuery()
   let reviewSession: ReviewSession | undefined = undefined
   $: spaceQuery.query(
@@ -64,7 +61,7 @@
     (res) => {
       reviewSession = res[0]
       if (res.length > 0) {
-        employees = (res[0].members ?? []).map((member) => member as Ref<PersonAccount>)
+        // employees = (res[0].members ?? []).map((member) => member as Ref<PersonAccount>)
       }
     }
   )
@@ -78,16 +75,16 @@
     }
   )
 
-  $: employeeKraQuery.query(
-    performance.class.EmployeeKRA,
-    {
-      space: currentSpace,
-      kra: { $in: kras.map((k) => k._id) }
-    },
-    (res) => {
-      employeeKras = res
-    }
-  )
+  // $: employeeKraQuery.query(
+  //   performance.class.EmployeeKRA,
+  //   {
+  //     space: currentSpace,
+  //     kra: { $in: kras.map((k) => k._id) }
+  //   },
+  //   (res) => {
+  //     employeeKras = res
+  //   }
+  // )
 
   // let canAssign = false
   // $: void canAssignKRAs(getClient(), currentSpace).then((result) => {
@@ -132,9 +129,9 @@
   <Scroller bind:this={scroll} bind:divScroll padding={'0 1rem'} noFade checkForHeaders>
     <div class="flex-col-stretch flex-gap-2">
       {#if currentMode === 'per-kra'}
-        <EmployeeKrAsByKraList {kras} {employeeKras} space={currentSpace} {allowEditKRAStatus} />
+        <EmployeeKrAsByKraList {kras} space={currentSpace} {allowEditKRAStatus} />
       {:else if currentMode === 'per-employee'}
-        <EmployeeKRAsByEmployeeList {members} space={currentSpace} {allowEditKRAStatus} />
+        <EmployeeKRAsByEmployeeList space={currentSpace} {allowEditKRAStatus} />
       {/if}
     </div>
   </Scroller>

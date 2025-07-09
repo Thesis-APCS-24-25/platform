@@ -132,7 +132,7 @@ export class TProgressReport extends TAttachedDoc implements ProgressReport {
   @Prop(TypeRef(contact.mixin.Employee), performance.string.ReportBy)
     reportBy!: Ref<Person>
 
-  @Prop(TypeString(), performance.string.Comment)
+  @Prop(TypeMarkup(), performance.string.Comment)
     note!: string
 }
 
