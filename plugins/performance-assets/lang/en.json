@@ -166,6 +166,10 @@
     "GradedScore": "Reviewed Score",
     "NoReviewsYet": "No reviews yet",
     "RelatedTo": "Related to",
-    "BlockedBy": "Blocked by"
+    "BlockedBy": "Blocked by",
+    "ChartTitle": "Employee Performance Progress",
+    "ScoreAxis": "Completion level (%)",
+    "EmployeeAxis": "Employees",
+    "KRABreakdown": "KRA Breakdown"
   }
 }

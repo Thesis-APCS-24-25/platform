@@ -7,6 +7,8 @@
   import { Ref } from '@hcengineering/core'
   import { themeStore } from '@hcengineering/ui'
   import { Member } from '@hcengineering/kra-team'
+  import { translateCB } from '@hcengineering/platform'
+  import performance from '../../plugin'
   // Register all Chart.js components
   Chart.register(...registerables)
 
@@ -22,6 +24,21 @@
 
   themeStore.subscribe(() => {
     updateChart()
+  })
+
+  let scoreAxis: string
+  $: translateCB(performance.string.ScoreAxis, {}, $themeStore.language, (r) => {
+    scoreAxis = r
+  })
+
+  let employeeAxis: string
+  $: translateCB(performance.string.EmployeeAxis, {}, $themeStore.language, (r) => {
+    employeeAxis = r
+  })
+
+  let kraBreakdown: string
+  $: translateCB(performance.string.KRABreakdown, {}, $themeStore.language, (r) => {
+    kraBreakdown = r
   })
 
   const client = getClient()
@@ -114,7 +131,7 @@
           title: {
             color: $themeStore.dark ? 'rgba(255, 255, 255, .8)' : '#rgba(0, 0, 0, .8)',
             display: true,
-            text: 'Performance Score (%)'
+            text: scoreAxis
           },
           grid: {
             display: true,
@@ -126,7 +143,7 @@
           title: {
             color: $themeStore.dark ? 'rgba(255, 255, 255, .8)' : '#rgba(0, 0, 0, .8)',
             display: true,
-            text: 'Employees'
+            text: employeeAxis
           }
         }
       },
@@ -148,9 +165,9 @@
               const employeeKras = krasByEmployee[employee._id]
               if (employeeKras.length === 0) return ''
 
-              let footerText = '\nKRA Breakdown:'
+              let footerText = '\n' + kraBreakdown + ':'
               employeeKras.forEach((kra) => {
-                footerText += `\n${kra.title} (${kra.weight}%): ${kra.completionLevel ?? 0}`
+                footerText += `\n${kra.title} (${kra.weight}%): ${(kra.completionLevel ?? 0) * 100}`
               })
 
               return footerText

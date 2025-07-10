@@ -5,7 +5,7 @@
   import performance from '../../plugin'
   import { Ref, Timestamp, TypedSpace } from '@hcengineering/core'
   import { calculateCompletionLevel } from '../../utils/kra'
-  import { Button, DatePresenter, Loading } from '@hcengineering/ui'
+  import { Button, DatePresenter, Label, Loading } from '@hcengineering/ui'
   import kraTeam, { Member } from '@hcengineering/kra-team'
   import { personByIdStore, personIdByAccountId } from '@hcengineering/contact-resources'
   import ChartComponent from './ChartComponent.svelte'
@@ -174,10 +174,10 @@
 </script>
 
 <div class="chart-container">
-  <h2>Employee Performance Progress</h2>
+  <h2><Label label={performance.string.ChartTitle}/></h2>
 
   {#if employees.length === 0}
-    <div class="no-data">No data available.</div>
+    <div class="no-data"><Label label={performance.string.NoData}/></div>
   {:else}
     <div class="date-filter">
       <DatePresenter

@@ -166,6 +166,10 @@
     "GradedScore": "Điểm đã đánh giá",
     "NoReviewsYet": "Chưa có đánh giá nào",
     "RelatedTo": "Liên quan đến",
-    "BlockedBy": "Bị chặn bởi"
+    "BlockedBy": "Bị chặn bởi",
+    "ChartTitle": "Tiến độ công việc của nhân viên",
+    "ScoreAxis": "Mức độ hoàn thành (%)",
+    "EmployeeAxis": "Nhân viên",
+    "KRABreakdown": "Phân tích chi tiết KRA"
   }
 }
