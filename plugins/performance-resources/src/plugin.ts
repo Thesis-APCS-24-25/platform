@@ -160,7 +160,12 @@ export default mergeIds(performanceId, performance, {
     WeightIsZero: '' as IntlString,
     UpdateReport: '' as IntlString,
     UpdateReportConfirm: '' as IntlString,
-    NoConcludedReviewSession: '' as IntlString
+    NoConcludedReviewSession: '' as IntlString,
+    ChartTitle: '' as IntlString,
+    NoData: '' as IntlString,
+    ScoreAxis: '' as IntlString,
+    EmployeeAxis: '' as IntlString,
+    KRABreakdown: '' as IntlString
   },
   category: {
     ReviewSessionType: '' as IntlString,

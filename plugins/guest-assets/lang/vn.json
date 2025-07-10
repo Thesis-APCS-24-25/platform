@@ -1,0 +1,10 @@
+{
+  "string": {
+    "CreatePublicLink": "Tạo link công khai",
+    "PublicLink": "Link công khai",
+    "Revoke": "Thu hồi",
+    "RevokeConfirmation": "Thao tác này sẽ làm cho link đã chia sẻ trước đó ngừng hoạt động. Bạn có chắc chắn muốn thu hồi link công khai này không?",
+    "LinkWasRevoked": "Link công khai đã bị thu hồi",
+    "Copy": "Sao chép"
+  }
+}

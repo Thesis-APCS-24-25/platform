@@ -3,12 +3,13 @@
   import contact, { PersonAccount } from '@hcengineering/contact'
   import { getClient, createQuery } from '@hcengineering/presentation'
   import performance from '../../plugin'
-  import { Ref, Timestamp } from '@hcengineering/core'
+  import { Ref, Timestamp, TypedSpace } from '@hcengineering/core'
   import { calculateCompletionLevel } from '../../utils/kra'
-  import { Button, DatePresenter, Loading } from '@hcengineering/ui'
+  import { Button, DatePresenter, Label, Loading } from '@hcengineering/ui'
   import kraTeam, { Member } from '@hcengineering/kra-team'
   import { personByIdStore, personIdByAccountId } from '@hcengineering/contact-resources'
   import ChartComponent from './ChartComponent.svelte'
+  import { checkRole } from '../../utils/team'
 
   export let space: Ref<ReviewSession>
 
@@ -35,9 +36,9 @@
     {
       _id: space
     },
-    (res) => {
+    async (res) => {
       if (res.length === 1) {
-        employees = extractMember(res[0])
+        employees = await extractMember(res[0])
       }
     },
     {
@@ -109,8 +110,8 @@
     endDate = undefined
   }
 
-  function extractMember (reviewSession: ReviewSession): Member[] {
-    return reviewSession.members
+  async function extractMember (reviewSession: ReviewSession): Promise<Member[]> {
+    const members = reviewSession.members
       .map((mem) => $personIdByAccountId.get(mem as Ref<PersonAccount>))
       .map((m) => {
         if (m === undefined) return undefined
@@ -120,7 +121,18 @@
         }
         return undefined
       })
-      .filter((m) => m !== undefined) as Member[]
+    const result: Member[] = []
+    for (let i = 0; i < members.length; i++) {
+      const val = members[i]
+      if (val !== undefined && !(await checkRole(
+        val._id,
+        kraTeam.role.TeamManager,
+        reviewSession.space as Ref<TypedSpace>
+      ))) {
+        result.push(val)
+      }
+    }
+    return result
   }
 
   function summarizeKra (
@@ -162,10 +174,10 @@
 </script>
 
 <div class="chart-container">
-  <h2>Employee Performance Progress</h2>
+  <h2><Label label={performance.string.ChartTitle}/></h2>
 
   {#if employees.length === 0}
-    <div class="no-data">No data available.</div>
+    <div class="no-data"><Label label={performance.string.NoData}/></div>
   {:else}
     <div class="date-filter">
       <DatePresenter

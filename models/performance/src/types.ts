@@ -77,11 +77,11 @@ export class TPTask extends TTask implements PTask {
   @Index(IndexKind.FullText)
     title!: string
 
-  @Prop(TypeDate(DateRangeMode.DATETIME), performance.string.StartDate)
+  @Prop(TypeDate(DateRangeMode.DATE), performance.string.StartDate)
   @Index(IndexKind.Indexed)
     startDate!: Timestamp | null
 
-  @Prop(TypeDate(DateRangeMode.DATETIME), task.string.DueDate, { editor: modelTask.component.DueDateEditor })
+  @Prop(TypeDate(DateRangeMode.DATE), task.string.DueDate, { editor: modelTask.component.DueDateEditor })
   @Index(IndexKind.Indexed)
   declare dueDate: Timestamp | null
 
@@ -132,7 +132,7 @@ export class TProgressReport extends TAttachedDoc implements ProgressReport {
   @Prop(TypeRef(contact.mixin.Employee), performance.string.ReportBy)
     reportBy!: Ref<Person>
 
-  @Prop(TypeString(), performance.string.Comment)
+  @Prop(TypeMarkup(), performance.string.Comment)
     note!: string
 }
 

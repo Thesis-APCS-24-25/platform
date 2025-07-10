@@ -37,7 +37,6 @@
       if (res !== undefined) {
         const kraSet = new Set(res.map((item) => item.kra))
         assignedKRAs = Array.from(kraSet)
-        console.log('assignedKRAs', assignedKRAs)
       }
     }
   )

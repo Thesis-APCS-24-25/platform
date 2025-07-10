@@ -3,6 +3,7 @@
   import { ProgressReport } from '@hcengineering/performance'
   import { DatePresenter, Label } from '@hcengineering/ui'
   import kra from '../../../plugin'
+  import { MarkupPresenter } from '@hcengineering/view-resources'
 
   export let value: ProgressReport
 
@@ -23,7 +24,9 @@
     {/if}
 
     {#if !emptyNote}
-      <div class="description">{value.note}</div>
+      <div class="description">
+        <MarkupPresenter value={value.note} />
+      </div>
     {:else}
       <div class="description">
         <Label label={kra.string.NoNote} />
@@ -51,6 +54,7 @@
   .description {
     text-wrap: balance;
     margin-top: 0.5rem;
+    padding: 0.5rem;
   }
 
   .value {

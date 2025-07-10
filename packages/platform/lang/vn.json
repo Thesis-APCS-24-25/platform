@@ -1,0 +1,24 @@
+{
+  "status": {
+    "LoadingPlugin": "Đang tải plugin {plugin}...",
+    "UnknownError": "Lỗi không xác định: {message}",
+    "InvalidId": "Id không hợp lệ: {id}",
+    "BadRequest": "Yêu cầu không hợp lệ",
+    "Forbidden": "Bị cấm",
+    "ExpiredLink": "Liên kết mời này đã hết hạn",
+    "Unauthorized": "Không được ủy quyền",
+    "UnknownMethod": "Phương thức không xác định: {method}",
+    "InternalServerError": "Lỗi máy chủ nội bộ",
+    "MaintenanceWarning": "Bảo trì theo lịch trình trong {time, plural, =1 {chưa đầy một phút} other {# phút}}",
+    "AccountNotFound": "Không tìm thấy tài khoản",
+    "AccountNotConfirmed": "Tài khoản chưa được xác nhận",
+    "WorkspaceNotFound": "Không tìm thấy không gian làm việc",
+    "InvalidPassword": "Mật khẩu không hợp lệ",
+    "AccountAlreadyExists": "Tài khoản đã tồn tại",
+    "WorkspaceRateLimit": "Máy chủ đang bận, vui lòng đợi một lát và thử lại",
+    "AccountAlreadyConfirmed": "Tài khoản đã được xác nhận",
+    "WorkspaceAlreadyExists": "Không gian làm việc đã tồn tại",
+    "InvalidOtp": "Mã không hợp lệ",
+    "InviteNotFound": "Không tìm thấy lời mời với email:{email}."
+  }
+}

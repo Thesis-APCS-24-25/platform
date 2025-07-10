@@ -2,7 +2,7 @@
   import presentation, { Card, createQuery, getClient, MessageBox } from '@hcengineering/presentation'
   import performance from '../../plugin'
   import { ObjectBox, ObjectBoxPopup } from '@hcengineering/view-resources'
-  import { Data, Ref } from '@hcengineering/core'
+  import { Data, Ref, TypedSpace } from '@hcengineering/core'
   import { EmployeeKRA, KRA, KRAStatus, ReviewSession } from '@hcengineering/performance'
   import { personIdByAccountId, PersonRefPresenter } from '@hcengineering/contact-resources'
 
@@ -12,6 +12,7 @@
   import { createEventDispatcher } from 'svelte'
   import { PersonAccount } from '@hcengineering/contact'
   import { assignKRA } from '../../utils/kra-assign'
+  import { checkRole } from '../../utils/team'
 
   export let kra: Ref<KRA> | undefined = undefined
   export let space: Ref<ReviewSession> | undefined = undefined
@@ -30,10 +31,20 @@
     {
       _id: space as Ref<ReviewSession>
     },
-    (res) => {
-      rsMembers =
+    async (res) => {
+      const members =
         (res[0]?.members.map((m) => $personIdByAccountId.get(m as Ref<PersonAccount>)).filter((m) => m !== undefined) as Ref<Member>[]) ??
         []
+      for (let i = 0; i < members.length; i++) {
+        const val = members[i]
+        if (val !== undefined && !(await checkRole(
+          val,
+          kraTeam.role.TeamManager,
+          res[0].space as Ref<TypedSpace>
+        ))) {
+          rsMembers.push(val)
+        }
+      }
     }
   )
   $: ignoreObjects = [...(assigns ?? []), ...(newAssigns ?? [])]
@@ -84,7 +95,6 @@
         newAssigns = []
       }
       newAssigns = [...newAssigns, ...tempAssigns]
-      console.log('newAssigns', newAssigns)
       tempAssigns = []
     }
   }

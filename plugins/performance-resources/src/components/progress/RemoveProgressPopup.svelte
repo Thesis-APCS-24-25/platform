@@ -4,7 +4,6 @@
   import { PTask } from '@hcengineering/performance'
 
   export let object: PTask
-  console.log('RemoveProgressPopup', object)
 
   const client = getClient()
   const action = async (): Promise<void> => {

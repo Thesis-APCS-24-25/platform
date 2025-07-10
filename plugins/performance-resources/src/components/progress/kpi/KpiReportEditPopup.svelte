@@ -2,12 +2,13 @@
   import kra from '../../../plugin'
   import { createQuery, getClient } from '@hcengineering/presentation'
   import { AttachedData, Ref, Space } from '@hcengineering/core'
-  import { EditBox, createFocusManager, FocusHandler } from '@hcengineering/ui'
+  import { EditBox, createFocusManager, FocusHandler, Label } from '@hcengineering/ui'
   import { onMount } from 'svelte'
   import ProgressBar from '../../ui/ProgressBar.svelte'
   import ReportEditPopupBase from '../ReportEditPopupBase.svelte'
   import performance, { Kpi, ProgressReport, Unit } from '@hcengineering/performance'
   import { Person } from '@hcengineering/contact'
+  import { StyledTextBox } from '@hcengineering/text-editor-resources'
 
   export let value: ProgressReport | undefined = undefined
 
@@ -27,7 +28,7 @@
         if (res.length > 0) {
           unit = res[0].$lookup?.unit as Unit | undefined
           kpi = res[0]
-          console.log('KPI:', kpi)
+          // console.log('KPI:', kpi)
         } else {
           unit = undefined
         }
@@ -42,7 +43,7 @@
     note: value?.note
   }
 
-  function validate (object: Partial<AttachedData<ProgressReport>>): AttachedData<ProgressReport> | undefined {
+  function validate(object: Partial<AttachedData<ProgressReport>>): AttachedData<ProgressReport> | undefined {
     const { value, date, reportBy, note } = object
     if (value === undefined || date === undefined || reportBy === undefined) {
       return undefined
@@ -57,7 +58,7 @@
 
   const client = getClient()
 
-  async function save (): Promise<void> {
+  async function save(): Promise<void> {
     if (value === undefined && space !== undefined && attachedTo !== undefined) {
       const validatedObject = validate(object)
       if (validatedObject === undefined) {
@@ -112,7 +113,18 @@
       <span class="unit">/ {kpi?.target} ({unit?.name})</span>
     </div>
     <div class="mt-3">
-      <EditBox label={kra.string.Note} kind="default" bind:value={object.note} format="text" focusIndex={2} />
+      <span class="font-medium-12">
+        <Label label={kra.string.Note} />
+      </span>
+      <StyledTextBox
+        kind="emphasized"
+        content={object.note ?? ''}
+        alwaysEdit
+        enableBackReferences={true}
+        on:value={(e) => {
+          object.note = e.detail ?? ''
+        }}
+      />
     </div>
     <div class="mt-4 mb-4">
       {#if kpi}
@@ -123,10 +135,7 @@
             additionalValue={object.value - (value?.value ?? 0)}
           />
         {:else}
-          <ProgressBar
-            value={(kpi?.progress ?? 0) - (value?.value ?? 0)}
-            max={kpi?.target}
-          />
+          <ProgressBar value={(kpi?.progress ?? 0) - (value?.value ?? 0)} max={kpi?.target} />
         {/if}
       {/if}
     </div>

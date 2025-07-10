@@ -1,14 +1,14 @@
 <script lang="ts">
-  import { Doc, Ref, SortingOrder, WithLookup } from '@hcengineering/core'
-  import { EmployeeKRA, KRA, ReviewSession } from '@hcengineering/performance'
-  import { List, ListSelectionProvider, ListView, SelectDirection } from '@hcengineering/view-resources'
+  import { Doc, Ref, SortingOrder } from '@hcengineering/core'
+  import { KRA, ReviewSession } from '@hcengineering/performance'
+  import { List, ListSelectionProvider, SelectDirection } from '@hcengineering/view-resources'
   import KraWeightEditorWithPopup from './KRAWeightEditorWithPopup.svelte'
   import performance from '../../plugin'
   import view from '@hcengineering/view'
   import { Scroller } from '@hcengineering/ui'
 
   export let kras: KRA[]
-  export let employeeKras: WithLookup<EmployeeKRA>[]
+  // export let employeeKras: WithLookup<EmployeeKRA>[]
   export let space: Ref<ReviewSession>
   export let allowEditKRAStatus: boolean = true
   // export let canAssign: boolean = false
@@ -18,18 +18,18 @@
   //   kraById = new Map(kras.map((kra) => [kra._id, kra]))
   // }
 
-  let mapping = new Map<Ref<KRA>, WithLookup<EmployeeKRA>[]>()
-  $: {
-    mapping = new Map<Ref<KRA>, WithLookup<EmployeeKRA>[]>()
-    for (const employeeKra of employeeKras) {
-      if (employeeKra.kra !== undefined) {
-        if (mapping.get(employeeKra.kra) === undefined) {
-          mapping.set(employeeKra.kra, [])
-        }
-        mapping.get(employeeKra.kra)?.push(employeeKra)
-      }
-    }
-  }
+  // let mapping = new Map<Ref<KRA>, WithLookup<EmployeeKRA>[]>()
+  // $: {
+  //   mapping = new Map<Ref<KRA>, WithLookup<EmployeeKRA>[]>()
+  //   for (const employeeKra of employeeKras) {
+  //     if (employeeKra.kra !== undefined) {
+  //       if (mapping.get(employeeKra.kra) === undefined) {
+  //         mapping.set(employeeKra.kra, [])
+  //       }
+  //       mapping.get(employeeKra.kra)?.push(employeeKra)
+  //     }
+  //   }
+  // }
 
   let list: List
   const listProvider = new ListSelectionProvider(
@@ -42,6 +42,8 @@
   )
   const selection = listProvider.selection
   let scroll: Scroller
+
+  $: createItemDialog = allowEditKRAStatus ? performance.component.AssignKraPopup : undefined
 </script>
 
 {#key kras.length}
@@ -53,7 +55,7 @@
       props={{
         type: 'link'
       }}
-      createItemDialog={performance.component.AssignKraPopup}
+      createItemDialog={createItemDialog}
       createItemLabel={performance.string.AssignKRA}
       config={[
         {
@@ -71,6 +73,10 @@
           key: 'status',
           props: {
             disabled: !allowEditKRAStatus
+          },
+          displayProps: {
+            key: 'status',
+            fixed: 'left'
           }
         },
         {
@@ -80,7 +86,7 @@
             key: 'weight',
             optional: false,
             dividerBefore: true,
-            fixed: 'right'
+            fixed: 'left'
           }
         }
       ]}

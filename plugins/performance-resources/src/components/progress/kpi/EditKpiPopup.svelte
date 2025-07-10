@@ -24,7 +24,7 @@
     unit: kpi?.unit ?? undefined
   }
 
-  $: console.log(data.unit)
+  // $: console.log(data.unit)
   let template: Kpi | undefined = undefined
 
   space = space ?? kpi?.space

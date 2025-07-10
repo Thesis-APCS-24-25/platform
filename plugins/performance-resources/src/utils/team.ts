@@ -1,7 +1,7 @@
 import kraTeam, { type Member, type Team } from '@hcengineering/kra-team'
 import { get, writable } from 'svelte/store'
 import { getClient } from '@hcengineering/presentation'
-import { checkPermission, getCurrentAccount, type TypedSpace, type Ref, type Client, type Permission } from '@hcengineering/core'
+import core, { checkPermission, getCurrentAccount, type TypedSpace, type Ref, type Client, type Permission, type Role } from '@hcengineering/core'
 import { personAccountByPersonId, personIdByAccountId } from '@hcengineering/contact-resources'
 import { type PersonAccount } from '@hcengineering/contact'
 import performance from '../plugin'
@@ -43,4 +43,26 @@ export const checkTeamPermission = async (
     return false
   }
   return await checkPermission(getClient(), permission, reviewSS.space as Ref<TypedSpace>)
+}
+
+export const checkRole = async (
+  member: Ref<Member>,
+  _id: Ref<Role>,
+  _space: Ref<TypedSpace>,
+  space?: TypedSpace
+): Promise<boolean> => {
+  const client = getClient()
+
+  space = space ?? (await client.findOne(core.class.TypedSpace, { _id: _space }))
+  const account = get(personAccountByPersonId).get(member)?.[0]._id
+  const type = await client
+    .getModel()
+    .findOne(core.class.SpaceType, { _id: space?.type }, { lookup: { _id: { roles: core.class.Role } } })
+  const mixin = type?.targetClass
+  if (space === undefined || type === undefined || mixin === undefined) {
+    return false
+  }
+
+  const asMixin = client.getHierarchy().as(space, mixin)
+  return (asMixin as any)[_id]?.includes(account)
 }

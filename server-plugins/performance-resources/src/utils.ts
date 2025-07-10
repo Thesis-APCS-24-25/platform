@@ -1,4 +1,4 @@
-import core, { Account, Ref, Tx, TxCreateDoc, TxUpdateDoc } from '@hcengineering/core'
+import core, { Account, Ref, Role, Tx, TxCreateDoc, TxUpdateDoc, TypedSpace } from '@hcengineering/core'
 import performance, {
   PTask,
   EmployeeKRA,
@@ -10,6 +10,25 @@ import performance, {
 } from '@hcengineering/performance'
 import { TriggerControl } from '@hcengineering/server-core'
 import contact from '@hcengineering/contact'
+
+export async function checkRole (
+  control: TriggerControl,
+  account: Ref<Account>,
+  _id: Ref<Role>,
+  _space: Ref<TypedSpace>,
+  space?: TypedSpace
+): Promise<boolean> {
+  space = space ?? (await control.findAll(control.ctx, core.class.TypedSpace, { _id: _space }, { limit: 1 }))[0]
+  const type = await control.modelDb
+    .findOne(core.class.SpaceType, { _id: space?.type }, { lookup: { _id: { roles: core.class.Role } } })
+  const mixin = type?.targetClass
+  if (space === undefined || type === undefined || mixin === undefined) {
+    return false
+  }
+
+  const asMixin = control.hierarchy.as(space, mixin)
+  return (asMixin as any)[_id]?.includes(account)
+}
 
 export function addUpdates (
   control: TriggerControl,
@@ -72,18 +91,14 @@ export async function prepareReport (
 }
 
 async function getScore (control: TriggerControl, ptask: PTask, progress: Progress | undefined): Promise<number | null> {
-  // TODO: Handle this commented case properly
-  if (progress === undefined) {
-    const [status] = await control.queryFind(control.ctx, core.class.Status, { _id: ptask.status }, { limit: 1 })
-    if (status?.category === undefined) return 0
-    return taskCompletionLevelFormula(status.category, progress ?? null) ?? 0
-  }
-  return 0
+  const [status] = await control.queryFind(control.ctx, core.class.Status, { _id: ptask.status }, { limit: 1 })
+  if (status?.category === undefined) return 0
+  return taskCompletionLevelFormula(status.category, progress ?? null) ?? 0
 }
 
 async function calculateScore (control: TriggerControl, tasks: PTask[], employeeKras: EmployeeKRA[]): Promise<number> {
   const tasksByKras: Record<Ref<KRA>, { tasks: PTask[], weight: number }> = {}
-  let score: number = 0
+  let total: number = 0
   for (const ekra of employeeKras) {
     tasksByKras[ekra.kra] = {
       tasks: [],
@@ -107,7 +122,7 @@ async function calculateScore (control: TriggerControl, tasks: PTask[], employee
       sum += score ?? 0
       includedTasks += score != null ? 1 : 0
     }
-    if (includedTasks > 0) score += (sum / includedTasks) * entry.weight
+    if (includedTasks > 0) total += (sum / includedTasks) * entry.weight
   }
-  return score
+  return total ?? 0
 }
