@@ -87,7 +87,7 @@
     {size}
     {width}
     {disabled}
-    showTooltip={{ label: performance.string.SetStatus }}
+    showTooltip={{ label: performance.string.ReviewSessionStatus }}
     on:click={handlePopupOpen}
   />
 {/if}
