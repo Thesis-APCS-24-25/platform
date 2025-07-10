@@ -2,12 +2,13 @@
   import performance, { Progress, ProgressReport } from '@hcengineering/performance'
   import ReportEditPopupBase from './ReportEditPopupBase.svelte'
   import { AttachedData, Ref, Space } from '@hcengineering/core'
-  import { createFocusManager, EditBox, FocusHandler } from '@hcengineering/ui'
+  import { createFocusManager, EditBox, FocusHandler, Label } from '@hcengineering/ui'
   import kra from '../../plugin'
   import { createQuery, getClient } from '@hcengineering/presentation'
   import { onMount } from 'svelte'
   import { Person } from '@hcengineering/contact'
   import ProgressBar from '../ui/ProgressBar.svelte'
+  import { StyledTextBox } from '@hcengineering/text-editor-resources'
 
   export let value: ProgressReport | undefined = undefined
 
@@ -40,7 +41,7 @@
     note: value?.note
   }
 
-  function validate (object: Partial<AttachedData<ProgressReport>>): AttachedData<ProgressReport> | undefined {
+  function validate(object: Partial<AttachedData<ProgressReport>>): AttachedData<ProgressReport> | undefined {
     const { date, reportBy, value, note } = object
     if (date === undefined || reportBy === undefined || value === undefined) {
       return undefined
@@ -55,7 +56,7 @@
 
   const client = getClient()
 
-  async function save (): Promise<void> {
+  async function save(): Promise<void> {
     if (value === undefined && space !== undefined && attachedTo !== undefined) {
       const validatedObject = validate(object)
       if (validatedObject === undefined) {
@@ -109,7 +110,19 @@
       focusIndex={1}
     />
     <div class="mt-3">
-      <EditBox label={kra.string.Note} kind="default" bind:value={object.note} format="text" focusIndex={2} />
+      <!-- <EditBox label={kra.string.Note} kind="default" bind:value={object.note} format="text" focusIndex={2} /> -->
+      <span class="font-medium-12">
+        <Label label={kra.string.Note} />
+      </span>
+      <StyledTextBox
+        kind="emphasized"
+        content={object.note ?? ''}
+        alwaysEdit
+        enableBackReferences={true}
+        on:value={(e) => {
+          object.note = e.detail ?? ''
+        }}
+      />
     </div>
     {#if progress !== undefined}
       {@const progressSum = (progress?.progress ?? 0) + (object.value ?? 0) - (value?.value ?? 0)}
