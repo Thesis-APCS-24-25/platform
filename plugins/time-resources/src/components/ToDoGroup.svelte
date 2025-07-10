@@ -17,7 +17,7 @@
   import type { WithLookup, IdMap, Ref, Space } from '@hcengineering/core'
   import type { ToDo, WorkSlot } from '@hcengineering/time'
   import type { IntlString } from '@hcengineering/platform'
-  import type { Project } from '@hcengineering/tracker'
+  import type { Project } from '@hcengineering/kra'
   import type { ToDosMode } from '..'
   import { AccordionItem } from '@hcengineering/ui'
   import { getClient } from '@hcengineering/presentation'

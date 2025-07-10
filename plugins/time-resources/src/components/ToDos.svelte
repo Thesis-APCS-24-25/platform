@@ -19,7 +19,7 @@
   import type { PersonAccount } from '@hcengineering/contact'
   import type { IntlString } from '@hcengineering/platform'
   import type { TagElement } from '@hcengineering/tags'
-  import type { Project } from '@hcengineering/tracker'
+  import type { Project } from '@hcengineering/kra'
   import type { ToDosMode } from '..'
   import {
     Scroller,
@@ -35,7 +35,7 @@
   } from '@hcengineering/ui'
   import { getCurrentAccount, toIdMap, SortingOrder } from '@hcengineering/core'
   import { createQuery } from '@hcengineering/presentation'
-  import tracker from '@hcengineering/tracker'
+  import kra from '@hcengineering/kra'
   import tags from '@hcengineering/tags'
   import view from '@hcengineering/view-resources/src/plugin'
   import { getNearest } from '../utils'
@@ -57,7 +57,7 @@
   const projectsQuery = createQuery()
 
   let projects: IdMap<Project> = new Map()
-  projectsQuery.query(tracker.class.Project, { archived: false }, (result) => {
+  projectsQuery.query(kra.class.Project, { archived: false }, (result) => {
     projects = toIdMap(result)
   })
 

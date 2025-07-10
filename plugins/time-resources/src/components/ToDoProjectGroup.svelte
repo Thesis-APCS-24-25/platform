@@ -15,7 +15,7 @@
 
 <script lang="ts">
   import type { IntlString } from '@hcengineering/platform'
-  import type { Project } from '@hcengineering/tracker'
+  import type { Project } from '@hcengineering/kra'
   import type { ToDo } from '@hcengineering/time'
   import type { ToDosMode } from '..'
   import {
@@ -27,7 +27,7 @@
   } from '@hcengineering/ui'
   import { getClient } from '@hcengineering/presentation'
   import { makeRank } from '@hcengineering/task'
-  import tracker from '@hcengineering/tracker'
+  import kra from '@hcengineering/kra'
   import view from '@hcengineering/view'
   import ToDoDraggable from './ToDoDraggable.svelte'
   import ToDoElement from './ToDoElement.svelte'
@@ -47,7 +47,7 @@
   $: icon = project
     ? project.icon === view.ids.IconWithEmoji
       ? IconWithEmoji
-      : project.icon ?? tracker.icon.Home
+      : project.icon ?? kra.icon.Home
     : undefined
   $: iconProps = project
     ? project.icon === view.ids.IconWithEmoji

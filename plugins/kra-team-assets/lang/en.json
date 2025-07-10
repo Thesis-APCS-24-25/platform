@@ -42,6 +42,9 @@
     "CreateReviewSession": "Create Review Session",
     "CreateReviewSessionDescription": "Create Review Session",
     "GradeReport": "Grade Report",
-    "GradeReportDescription": "Grade Report"
+    "GradeReportDescription": "Grade Report",
+    "RemoveMember": "Remove member",
+    "TeamManager": "Team Manager",
+    "TeamMember": "Team Member"
   }
 }

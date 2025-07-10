@@ -38,7 +38,7 @@
   import { getClient } from '@hcengineering/presentation'
   import view from '@hcengineering/view'
   import { Analytics } from '@hcengineering/analytics'
-  import tracker, { Project as Proj } from '@hcengineering/tracker'
+  import kra, { Project as Proj } from '@hcengineering/kra'
   import { TimeEvents } from '@hcengineering/time'
 
   const client = getClient()

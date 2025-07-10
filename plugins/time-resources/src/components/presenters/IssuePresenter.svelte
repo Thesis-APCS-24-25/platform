@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Issue } from '@hcengineering/tracker'
+  import { Issue } from '@hcengineering/kra'
   import { DocReferencePresenter } from '@hcengineering/view-resources'
 
   export let value: Issue

@@ -68,6 +68,7 @@ export const uis = plugin(uiId, {
     SaveDueDate: '' as IntlString,
     NeedsToBeCompletedByThisDate: '' as IntlString,
     English: '' as IntlString,
+    Vietnamese: '' as IntlString,
     Russian: '' as IntlString,
     Spanish: '' as IntlString,
     Portuguese: '' as IntlString,

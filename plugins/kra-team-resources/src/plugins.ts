@@ -25,7 +25,9 @@ export default mergeIds(kraTeamId, kraTeam, {
     AddMember: '' as IntlString,
     Add: '' as IntlString,
     Manager: '' as IntlString,
-    ChooseMember: '' as IntlString
+    ChooseMember: '' as IntlString,
+    TeamManager: '' as IntlString,
+    TeamMember: '' as IntlString
   },
   component: {
     AllMembers: '' as AnyComponent,

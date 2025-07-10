@@ -39,14 +39,6 @@
     async (res) => {
       if (res.length === 1) {
         employees = await extractMember(res[0])
-        // await employees.filter(async (m) => {
-        //   const check = !(await checkRole(
-        //     m._id, kraTeam.role.TeamManager, res[0].space as Ref<TypedSpace>)
-        //   )
-        //   console.log(check)
-        //   return check
-        // })
-        console.log(employees)
       }
     },
     {
