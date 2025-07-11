@@ -73,7 +73,7 @@
             }}
           >
             {#if valueInsideBars[i]}
-              <span class="font-regular-11">{report.value}</span>
+              <span class="font-regular-11" style="color: white">{report.value}</span>
             {/if}
           </button>
           {#if !valueInsideBars[i]}
