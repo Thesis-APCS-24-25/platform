@@ -1,7 +1,9 @@
 import { createAction } from '@hcengineering/model-view'
-import view from '@hcengineering/view'
+import view from '@hcengineering/model-view'
 import performance from './plugin'
 import { type Builder } from '@hcengineering/model'
+import workbench from '@hcengineering/model-workbench'
+import { ReviewSessionStatus } from '@hcengineering/performance'
 
 export function defineActions (builder: Builder): void {
   createAction(builder, {
@@ -44,4 +46,48 @@ export function defineActions (builder: Builder): void {
       group: 'associate'
     }
   })
+
+  createAction(
+    builder,
+    {
+      action: performance.actionImpl.DeleteReviewSession,
+      label: workbench.string.Archive,
+      icon: view.icon.Archive,
+      input: 'focus',
+      category: performance.category.Performance,
+      target: performance.class.ReviewSession,
+      visibilityTester: performance.function.CanArchiveSpace,
+      query: {
+        archived: false
+      },
+      context: {
+        mode: ['context', 'browser'],
+        group: 'edit'
+      },
+      override: [view.action.Archive, view.action.Delete]
+    },
+    performance.action.DeleteReviewSession
+  )
+  createAction(
+    builder,
+    {
+      action: performance.actionImpl.DeleteReviewSession,
+      label: workbench.string.Delete,
+      icon: view.icon.Delete,
+      input: 'focus',
+      category: performance.category.Performance,
+      target: performance.class.ReviewSession,
+      visibilityTester: performance.function.CanArchiveSpace,
+      query: {
+        archived: true,
+        status: { $ne: ReviewSessionStatus.Concluded }
+      },
+      context: {
+        mode: ['context', 'browser'],
+        group: 'edit'
+      },
+      override: [view.action.Archive, view.action.Delete]
+    },
+    performance.action.DeleteProjectClean
+  )
 }

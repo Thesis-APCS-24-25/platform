@@ -23,7 +23,7 @@ import TeamSpacePresenter from './components/navigator/TeamSpacePresenter.svelte
 import KRARefPresenter from './components/kra/KRARefPresenter.svelte'
 import KRAEditor from './components/kra/KRAEditor.svelte'
 import { getAllKRAs } from './utils/kra'
-import { type Attribute, type Doc, type DocumentQuery, type Ref, type Space } from '@hcengineering/core'
+import { checkPermission, getCurrentAccount, type Attribute, type Doc, type DocumentQuery, type Ref, type Space } from '@hcengineering/core'
 import { getAllStates } from '@hcengineering/task-resources'
 import PerformanceDashboard from './components/dashboard/Dashboard.svelte'
 import KRAAssigneesEditor from './components/kra/KRAAssigneesEditor.svelte'
@@ -50,7 +50,7 @@ import {
 import AllKRAs from './components/kra/AllKRAs.svelte'
 import AllReviewSessions from './components/review-session/AllReviewSessions.svelte'
 import EmployeeKRATotalWeightStat from './components/kra/EmployeeKRATotalWeightStat.svelte'
-import { showEmptyGroups } from '@hcengineering/view-resources'
+import { canArchiveSpace, showEmptyGroups } from '@hcengineering/view-resources'
 import KRAStatusPresenter from './components/kra/KRAStatusPresenter.svelte'
 import ProgressPresenter from './components/progress/ProgressPresenter.svelte'
 import AddProgressPopup from './components/progress/AddProgressPopup.svelte'
@@ -65,12 +65,18 @@ import ScorePresenter from './components/report/ScorePresenter.svelte'
 import KpiReportEditPopup from './components/progress/kpi/KpiReportEditPopup.svelte'
 import ProgressReportEditPopup from './components/progress/ProgressReportEditPopup.svelte'
 import SetProgressMenu from './components/progress/SetProgressMenu.svelte'
-import { type PTask } from '@hcengineering/performance'
+import performance, { type ReviewSession, type PTask } from '@hcengineering/performance'
 import RemoveProgressPopup from './components/progress/RemoveProgressPopup.svelte'
 import EditKpiPopup from './components/progress/kpi/EditKpiPopup.svelte'
 import PTaskKRAStat from './components/task/PTaskKRAStat.svelte'
 import MyReports from './components/application/MyReports.svelte'
 import MyReport from './components/application/MyReport.svelte'
+import { getClient, MessageBox } from '@hcengineering/presentation'
+import { showPopup } from '@hcengineering/ui'
+import { currentTeam } from './utils/team'
+import { get } from 'svelte/store'
+import { Team } from '@hcengineering/kra-team'
+import core from '@hcengineering/core'
 
 export {
   EditKpiPopup,
@@ -85,9 +91,44 @@ export {
   ProgressReportEditPopup
 }
 
+async function deleteReviewSession (project: ReviewSession | undefined): Promise<void> {
+  if (project !== undefined) {
+    const client = getClient()
+
+    if (project.archived) {
+      // Clean project and all issues
+      showPopup(MessageBox, {
+        label: performance.string.DeleteReviewSessionName,
+        labelProps: { name: project.name },
+        message: performance.string.DeleteReviewSessionConfirm,
+        action: async () => {
+          const client = getClient()
+          await client.remove(project)
+        }
+      })
+    } else {
+      const anyIssue = await client.findOne(performance.class.KRA, {
+        space: project._id
+      })
+      showPopup(MessageBox, {
+        label: performance.string.ArchiveReviewSessionName,
+        labelProps: { name: project.name },
+        message:
+          anyIssue !== undefined
+            ? performance.string.ReviewSessionHasKRAs
+            : performance.string.ArchiveReviewSessionConfirm,
+        action: async () => {
+          await client.update(project, { archived: true })
+        }
+      })
+    }
+  }
+}
+
 export default async (): Promise<Resources> => ({
   actionImpl: {
-    ApproveKRA: approveKRA
+    ApproveKRA: approveKRA,
+    DeleteReviewSession: deleteReviewSession
   },
   component: {
     PTaskKRAStat,
@@ -142,6 +183,15 @@ export default async (): Promise<Resources> => ({
     IsReviewSessionOfCurrentTeam,
     IsActiveReviewSessionOfCurrentTeam,
     IsInactiveReviewSessionOfCurrentTeam,
-    CanApproveKRA: canApproveKRA
+    CanApproveKRA: canApproveKRA,
+    CanArchiveSpace: async (doc?: Doc | Doc[]): Promise<boolean> => {
+      if (doc === undefined || Array.isArray(doc)) {
+        return false
+      }
+
+      const space = doc as Space
+      const team = space.space as Ref<Team>
+      return await checkPermission(getClient(), core.permission.ArchiveSpace, team)
+    }
   }
 })

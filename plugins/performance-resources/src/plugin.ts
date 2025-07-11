@@ -228,6 +228,8 @@ export default mergeIds(performanceId, performance, {
     GetAllKRAStates: '' as GetAllValuesFunc,
     ShowEmptyGroups: '' as ViewCategoryAction,
     GetAllKRAs: '' as GetAllValuesFunc,
-    CanApproveKRA: '' as Resource<(doc?: Doc | Doc[]) => Promise<boolean>>
+    CanApproveKRA: '' as Resource<(doc?: Doc | Doc[]) => Promise<boolean>>,
+    CanArchiveSpace: '' as Resource<(doc?: Doc | Doc[]) => Promise<boolean>>,
+    CanDeleteSpace: '' as Resource<(doc?: Doc | Doc[]) => Promise<boolean>>
   }
 })

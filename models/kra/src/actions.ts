@@ -28,7 +28,7 @@ import tags from '@hcengineering/tags'
 import { defaultPriorities, issuePriorities } from '@hcengineering/kra-resources/src/types'
 import performance from '@hcengineering/model-performance'
 
-function createGotoSpecialAction(
+function createGotoSpecialAction (
   builder: Builder,
   id: string,
   key: KeyBinding,
@@ -43,7 +43,7 @@ function createGotoSpecialAction(
     query
   })
 }
-export function createActions(builder: Builder, issuesId: string, myIssuesId: string): void {
+export function createActions (builder: Builder, issuesId: string, myIssuesId: string): void {
   createGotoSpecialAction(builder, issuesId, 'keyG->keyE', kra.string.GotoIssues)
   createGotoSpecialAction(builder, issuesId, 'keyG->keyA', kra.string.GotoActive, { mode: 'active' })
   createGotoSpecialAction(builder, issuesId, 'keyG->keyB', kra.string.GotoBacklog, { mode: 'backlog' })
@@ -659,8 +659,11 @@ export function createActions(builder: Builder, issuesId: string, myIssuesId: st
   ignoreActions(builder)
 }
 
-function ignoreActions(builder: Builder): void {
+function ignoreActions (builder: Builder): void {
   builder.mixin(performance.class.PerformanceReport, core.class.Class, view.mixin.IgnoreActions, {
+    actions: [kra.action.NewRelatedIssue]
+  })
+  builder.mixin(performance.class.ReviewSession, core.class.Class, view.mixin.IgnoreActions, {
     actions: [kra.action.NewRelatedIssue]
   })
 }

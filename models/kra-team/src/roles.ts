@@ -1,3 +1,4 @@
+import core from '@hcengineering/model-core'
 import kraTeam from './plugin'
 
 export default [
@@ -15,7 +16,8 @@ export default [
       kraTeam.permission.AssignWeightForAll,
       kraTeam.permission.ViewDashboard,
       kraTeam.permission.CreateReviewSession,
-      kraTeam.permission.GradeReport
+      kraTeam.permission.GradeReport,
+      core.permission.ArchiveSpace
     ]
   }
 ]

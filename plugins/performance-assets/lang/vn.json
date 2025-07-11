@@ -170,6 +170,11 @@
     "ChartTitle": "Tiến độ công việc của nhân viên",
     "ScoreAxis": "Mức độ hoàn thành (%)",
     "EmployeeAxis": "Nhân viên",
-    "KRABreakdown": "Phân tích chi tiết KRA"
+    "KRABreakdown": "Phân tích chi tiết KRA",
+    "DeleteReviewSessionName": "Xóa phiên đánh giá {name}",
+    "DeleteReviewSessionConfirm": "Bạn có chắc chắn muốn xóa phiên đánh giá này không? Thao tác này cũng sẽ xóa tất cả KRA và Báo cáo liên quan đến phiên đánh giá này.",
+    "ArchiveReviewSessionName": "Lưu trữ phiên đánh giá {name}",
+    "ReviewSessionHasKRAs": "Phiên đánh giá này có KRA. Bạn vẫn muốn lưu trữ nó chứ?",
+    "ArchiveReviewSessionConfirm": "Bạn có chắc chắn muốn lưu trữ phiên đánh giá này không? Thao tác này cũng sẽ lưu trữ tất cả KRA và Báo cáo liên quan đến phiên đánh giá này."
   }
 }

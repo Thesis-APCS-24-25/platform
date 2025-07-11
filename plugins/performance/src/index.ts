@@ -239,7 +239,12 @@ const performancePlugin = plugin(performanceId, {
     ScorePreview: '' as IntlString,
     PerformanceReport: '' as IntlString,
     ReviewContent: '' as IntlString,
-    ApproveKRA: '' as IntlString
+    ApproveKRA: '' as IntlString,
+    DeleteReviewSessionName: '' as IntlString,
+    DeleteReviewSessionConfirm: '' as IntlString,
+    ArchiveReviewSessionName: '' as IntlString,
+    ReviewSessionHasKRAs: '' as IntlString,
+    ArchiveReviewSessionConfirm: '' as IntlString
   },
   viewlet: {
     TaskList: '' as Ref<ViewletDescriptor>,
@@ -256,10 +261,13 @@ const performancePlugin = plugin(performanceId, {
     KRA: '' as Ref<TaskType>
   },
   action: {
-    ApproveKRA: '' as Ref<Action<Doc, Record<string, any>>>
+    ApproveKRA: '' as Ref<Action<Doc, Record<string, any>>>,
+    DeleteReviewSession: '' as Ref<Action<Doc, Record<string, any>>>,
+    DeleteReviewSessionClean: '' as Ref<Action<Doc, Record<string, any>>>
   },
   actionImpl: {
-    ApproveKRA: '' as ViewAction
+    ApproveKRA: '' as ViewAction,
+    DeleteReviewSession: '' as ViewAction
   },
   ids: {
     ClassingProjectType: '' as Ref<ProjectType>,

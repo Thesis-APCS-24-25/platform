@@ -170,6 +170,11 @@
     "ChartTitle": "Employee Performance Progress",
     "ScoreAxis": "Completion level (%)",
     "EmployeeAxis": "Employees",
-    "KRABreakdown": "KRA Breakdown"
+    "KRABreakdown": "KRA Breakdown",
+    "DeleteReviewSessionName": "Delete Review Session {name}",
+    "DeleteReviewSessionConfirm": "Are you sure you want to delete this review session? This will also delete all KRAs and Reports related to this review session.",
+    "ArchiveReviewSessionName": "Archive Review Session {name}",
+    "ReviewSessionHasKRAs": "This review session has KRAs. Do you still want to archive it?",
+    "ArchiveReviewSessionConfirm": "Are you sure you want to archive this review session? This will also archive all KRAs and Reports related to this review session."
   }
 }
