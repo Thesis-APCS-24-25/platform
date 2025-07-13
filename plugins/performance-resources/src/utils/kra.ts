@@ -82,7 +82,6 @@ export async function calculateCompletionLevel (task: Ref<PTask> | PTask): Promi
   async function calculate (task: PTask): Promise<number | undefined> {
     const status = get(statusStore).byId.get(task.status)
     const category = status?.category
-    console.log(status, category)
     if (category === undefined) {
       return undefined
     }

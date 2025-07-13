@@ -52,7 +52,7 @@
   $: employeeKraQ.query(
     performance.class.EmployeeKRA,
     {
-      '$lookup.kra.space': space
+      space
     },
     (res) => {
       if (res !== undefined && res.length > 0) {

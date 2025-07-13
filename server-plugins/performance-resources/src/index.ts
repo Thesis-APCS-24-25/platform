@@ -90,7 +90,8 @@ export async function OnCreateReport (txes: Tx[], control: TriggerControl): Prom
           reviewSession: createTx.attributes.reviewSession,
           content: null,
           reviewer: null,
-          score: null
+          score: null,
+          scorePreview: null
         },
         oldReport._id
       )))
@@ -113,16 +114,21 @@ export async function OnReviewSessionConclusion (txes: Tx[], control: TriggerCon
     for (const member of rs.members) {
       // skip report for manager
       if (await checkRole(control, member, kraTeam.role.TeamManager, rs.space as Ref<TypedSpace>)) continue
-      const report = control.txFactory.createTxCreateDoc(
-        performance.class.PerformanceReport,
-        rs._id,
-        {
-          reviewee: member as Ref<PersonAccount>,
-          reviewSession: rs._id,
-          reviewer: null,
-          content: null,
-          score: null
-        }
+      const report = await prepareReport(
+        control,
+        control.txFactory.createTxCreateDoc(
+          performance.class.PerformanceReport,
+          rs._id,
+          {
+            reviewee: member as Ref<PersonAccount>,
+            reviewSession: rs._id,
+            reviewer: null,
+            content: null,
+            score: null,
+            scorePreview: null
+          }
+        ),
+        true
       )
       result.push(report)
     }

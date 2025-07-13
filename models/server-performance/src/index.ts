@@ -45,8 +45,7 @@ export function createModel (builder: Builder): void {
       objectClass: performance.class.ReviewSession,
       _class: core.class.TxUpdateDoc,
       'operations.status': ReviewSessionStatus.Concluded
-    },
-    isAsync: true
+    }
   })
 
   builder.createDoc(serverCore.class.Trigger, core.space.Model, {

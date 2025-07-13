@@ -177,6 +177,7 @@
     "ReviewSessionHasKRAs": "Phiên đánh giá này có KRA. Bạn vẫn muốn lưu trữ nó chứ?",
     "ArchiveReviewSessionConfirm": "Bạn có chắc chắn muốn lưu trữ phiên đánh giá này không? Thao tác này cũng sẽ lưu trữ tất cả KRA và Báo cáo liên quan đến phiên đánh giá này.",
     "RemoveKRAAssigneeMessage": "Bạn có chắc chắn muốn xóa người được giao này khỏi KRA không?",
-    "RemoveKRAAssignee": "Xóa người được giao KRA"
+    "RemoveKRAAssignee": "Xóa người được giao KRA",
+    "NoData": "Không có dữ liệu"
   }
 }

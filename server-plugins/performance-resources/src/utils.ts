@@ -10,6 +10,7 @@ import performance, {
 } from '@hcengineering/performance'
 import { TriggerControl } from '@hcengineering/server-core'
 import contact from '@hcengineering/contact'
+import task from '@hcengineering/task'
 
 export async function checkRole (
   control: TriggerControl,
@@ -49,9 +50,9 @@ export function addUpdates (
 
 export async function prepareReport (
   control: TriggerControl,
-  createTx: TxCreateDoc<PerformanceReport>
-): Promise<TxUpdateDoc<PerformanceReport>> {
-  console.log(createTx)
+  createTx: TxCreateDoc<PerformanceReport>,
+  create: boolean = false
+): Promise<TxUpdateDoc<PerformanceReport> | TxCreateDoc<PerformanceReport>> {
   const assignee = (
     await control.findAll(control.ctx, contact.class.PersonAccount, { _id: createTx.attributes.reviewee }, { limit: 1 })
   )[0]
@@ -75,7 +76,7 @@ export async function prepareReport (
   })
   const tasks2 = await control.findAll(control.ctx, performance.class.PTask, {
     assignee: assignee.person,
-    kra: { $in: kras }
+    kra: { $in: kras.length > 0 ? kras : [] }
   })
   const tasksSet = new Set([...tasks1, ...tasks2])
   const tasks = Array.from(tasksSet)
@@ -84,16 +85,24 @@ export async function prepareReport (
 
   const taskRefs = tasks.map<Ref<PTask>>((task) => task._id)
 
+  if (create) {
+    const create = createTx
+    create.attributes = {
+      ...createTx.attributes,
+      tasks: taskRefs,
+      scorePreview: Math.round(score)
+    }
+    return create
+  }
   return control.txFactory.createTxUpdateDoc(createTx.objectClass, createTx.objectSpace, createTx.objectId, {
     tasks: taskRefs,
-    scorePreview: Number(Number(score).toFixed(0))
+    scorePreview: Math.round(score)
   })
 }
 
-async function getScore (control: TriggerControl, ptask: PTask, progress: Progress | undefined): Promise<number | null> {
-  const [status] = await control.queryFind(control.ctx, core.class.Status, { _id: ptask.status }, { limit: 1 })
-  if (status?.category === undefined) return 0
-  return taskCompletionLevelFormula(status.category, progress ?? null) ?? 0
+async function getScore (control: TriggerControl, ptask: PTask, progress: Progress | null): Promise<number | null> {
+  const [status] = await control.findAll(control.ctx, core.class.Status, { _id: ptask.status }, { limit: 1 })
+  return taskCompletionLevelFormula(status.category ?? task.statusCategory.Lost, progress ?? null) ?? 0
 }
 
 async function calculateScore (control: TriggerControl, tasks: PTask[], employeeKras: EmployeeKRA[]): Promise<number> {
@@ -115,9 +124,11 @@ async function calculateScore (control: TriggerControl, tasks: PTask[], employee
     if (entry.tasks.length === 0) continue
     let includedTasks = 0
     for (const task of entry.tasks) {
-      if (task.progress == null) continue
-      const find = await control.findAll(control.ctx, performance.class.Progress, { _id: task.progress }, { limit: 1 })
-      const progress = find !== undefined && find.length > 0 ? find[0] : undefined
+      let progress: Progress | null = null
+      if (task.progress != null) {
+        const find = await control.findAll(control.ctx, performance.class.Progress, { _id: task.progress }, { limit: 1 })
+        progress = find !== undefined && find.length > 0 ? find[0] : null
+      }
       const score = await getScore(control, task, progress)
       sum += score ?? 0
       includedTasks += score != null ? 1 : 0

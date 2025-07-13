@@ -232,7 +232,7 @@ export class TPerformanceReport extends TDoc implements PerformanceReport {
     tasks?: Arr<Ref<PTask>>
 
   @Prop(TypeNumber(), performance.string.ScorePreview)
-    scorePreview?: number
+    scorePreview!: number | null
 
   @Prop(TypeNumber(), performance.string.Score)
     score!: number | null

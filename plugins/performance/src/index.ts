@@ -158,7 +158,7 @@ export interface PerformanceReport extends Doc {
   reviewee: Ref<PersonAccount>
   reviewSession: Ref<ReviewSession>
   tasks?: Arr<Ref<PTask>>
-  scorePreview?: number // calculated score preview
+  scorePreview: number | null // calculated score preview
 
   score: number | null // final score
   content: Markup | null // final report content
