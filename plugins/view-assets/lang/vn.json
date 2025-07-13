@@ -13,7 +13,7 @@
     "Table": "Bảng",
     "Role": "Vai trò",
     "DeleteObject": "Xóa đối tượng",
-    "DeleteObjectConfirm": "Bạn có muốn xóa {count, plural, =1 {đối tượng này} other {{# } đối tượng này}} không?",
+    "DeleteObjectConfirm": "Bạn có muốn xóa {count, plural, =1 {đối tượng này} other {những đối tượng này}} không?",
     "DeletePopupNoPermissionTitle": "Không đủ quyền để xóa.",
     "DeletePopupNoPermissionLabel": "Vui lòng liên hệ những người trong danh sách dưới đây để họ thực hiện.",
     "DeletePopupCreatorLabel": "Người tạo (chỉ có thể xóa những gì họ đã tạo):",

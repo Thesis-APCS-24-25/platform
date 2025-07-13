@@ -307,6 +307,7 @@
     "SetAssigneeFirst": "Đặt người được giao trước khi chọn KRA",
     "EmptyEditProgressContent": "Không có theo dõi tiến độ nào được thêm vào công việc này, hãy sử dụng các nút bên dưới để thêm theo dõi tiến độ",
     "Edit": "Chỉnh sửa",
-    "NoNote": "Không có ghi chú"
+    "NoNote": "Không có ghi chú",
+    "RemoveProgress": "Xóa tiến độ"
   }
 }

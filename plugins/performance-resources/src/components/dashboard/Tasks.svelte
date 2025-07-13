@@ -1,7 +1,7 @@
 <script lang="ts">
   import { Doc, FindOptions, Ref, SortingOrder } from '@hcengineering/core'
   import view from '@hcengineering/view'
-  import { List, ListSelectionProvider, ListView, SelectDirection } from '@hcengineering/view-resources'
+  import { List, ListSelectionProvider, SelectDirection } from '@hcengineering/view-resources'
   import performance from '../../plugin'
   import { KRA, PTask, ReviewSession } from '@hcengineering/performance'
   import { createQuery } from '@hcengineering/presentation'

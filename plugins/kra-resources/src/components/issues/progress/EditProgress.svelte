@@ -15,7 +15,7 @@
   export let issue: Issue
 
   export let progress: Progress | undefined = undefined
-  console.log('EditProgress', issue, progress)
+  // console.log('EditProgress', issue, progress)
   const progressQuery = createQuery()
   $: if (issue.progress != null) {
     progressQuery.query(performance.class.Progress, { _id: issue.progress }, (res) => {

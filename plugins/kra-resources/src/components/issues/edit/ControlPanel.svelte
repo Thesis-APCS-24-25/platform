@@ -58,7 +58,8 @@
     'goal',
     'estimation',
     'reportedTime',
-    'remainingTime'
+    'remainingTime',
+    'progress'
   ]
 
   let keys: KeyedAttribute[] = []

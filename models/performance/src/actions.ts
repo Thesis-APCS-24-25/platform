@@ -1,5 +1,4 @@
-import { createAction } from '@hcengineering/model-view'
-import view from '@hcengineering/model-view'
+import view, { createAction } from '@hcengineering/model-view'
 import performance from './plugin'
 import { type Builder } from '@hcengineering/model'
 import workbench from '@hcengineering/model-workbench'
@@ -88,6 +87,6 @@ export function defineActions (builder: Builder): void {
       },
       override: [view.action.Archive, view.action.Delete]
     },
-    performance.action.DeleteProjectClean
+    performance.action.DeleteReviewSessionClean
   )
 }

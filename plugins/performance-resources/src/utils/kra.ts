@@ -13,7 +13,7 @@ import core, {
   type QuerySelector,
   type ObjQueryType
 } from '@hcengineering/core'
-import { type KRA, type EmployeeKRA, type PTask, taskCompletionLevelFormula } from '@hcengineering/performance'
+import { type KRA, type EmployeeKRA, type PTask, taskCompletionLevelFormula, type Progress } from '@hcengineering/performance'
 import performance from '../plugin'
 import task, { makeRank } from '@hcengineering/task'
 import { getClient } from '@hcengineering/presentation'
@@ -82,17 +82,19 @@ export async function calculateCompletionLevel (task: Ref<PTask> | PTask): Promi
   async function calculate (task: PTask): Promise<number | undefined> {
     const status = get(statusStore).byId.get(task.status)
     const category = status?.category
+    console.log(status, category)
     if (category === undefined) {
       return undefined
     }
+    let p: Progress | undefined
     if (task.progress != null) {
-      const p = await client.findOne(performance.class.Progress, { _id: task.progress })
+      p = await client.findOne(performance.class.Progress, { _id: task.progress })
       if (p === undefined) {
         return undefined
       }
-      const value = taskCompletionLevelFormula(category, p)
-      return value ?? undefined
     }
+    const value = taskCompletionLevelFormula(category, p ?? null)
+    return value ?? undefined
   }
 
   if (typeof task === 'object') {
