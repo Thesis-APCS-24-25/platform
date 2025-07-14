@@ -57,7 +57,7 @@
             icon={IconClose}
             kind="tertiary"
             size="small"
-            on:click={async () => {
+            on:click={() => {
               editting = false
             }}
             inheritColor
@@ -121,7 +121,7 @@
                   'top',
                   async (confirm) => {
                     if (confirm === true) {
-                      object.content = ''
+                      object.content = null
                       object.score = null
                       object.reviewer = null
                       await client.update(object, {

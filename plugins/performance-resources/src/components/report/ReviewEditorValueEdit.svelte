@@ -15,7 +15,8 @@
   $: if (reviewer == null) {
     reviewer = getCurrentAccount()._id as Ref<PersonAccount>
   }
-  $: editting = !readonly
+
+  $: content = content ?? ''
 </script>
 
 {#if reviewer}
@@ -40,7 +41,7 @@
           alwaysEdit
           placeholder={performance.string.ReviewContentPlaceholder}
           enableBackReferences={true}
-          readonly={!editting}
+          {readonly}
           on:value={(e) => {
             content = e.detail ?? ''
           }}
@@ -50,7 +51,7 @@
 
     <div class="score">
       <div class="flex-row-center flex-gap-1">
-        <input datatype="number" class="score-input" bind:value={score} disabled={!editting} />
+        <input datatype="number" class="score-input" bind:value={score} disabled={readonly} />
         <span class="score-postfix">/100</span>
       </div>
     </div>

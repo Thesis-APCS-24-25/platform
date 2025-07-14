@@ -113,7 +113,8 @@
                 reviewSession: value?.reviewSession,
                 content: null,
                 reviewer: null,
-                score: null
+                score: null,
+                scorePreview: null
               })
               closePanel()
             }
