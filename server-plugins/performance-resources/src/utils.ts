@@ -102,7 +102,7 @@ export async function prepareReport (
 
 async function getScore (control: TriggerControl, ptask: PTask, progress: Progress | null): Promise<number | null> {
   const [status] = await control.findAll(control.ctx, core.class.Status, { _id: ptask.status }, { limit: 1 })
-  return taskCompletionLevelFormula(status.category ?? task.statusCategory.Lost, progress ?? null) ?? 0
+  return taskCompletionLevelFormula(status.category ?? task.statusCategory.UnStarted, progress)
 }
 
 async function calculateScore (control: TriggerControl, tasks: PTask[], employeeKras: EmployeeKRA[]): Promise<number> {

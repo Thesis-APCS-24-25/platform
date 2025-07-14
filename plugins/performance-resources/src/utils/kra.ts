@@ -15,7 +15,7 @@ import core, {
 } from '@hcengineering/core'
 import { type KRA, type EmployeeKRA, type PTask, taskCompletionLevelFormula, type Progress } from '@hcengineering/performance'
 import performance from '../plugin'
-import task, { makeRank } from '@hcengineering/task'
+import taskId, { makeRank } from '@hcengineering/task'
 import { getClient } from '@hcengineering/presentation'
 import type { Member } from '@hcengineering/kra-team'
 import { statusStore } from '@hcengineering/view-resources'
@@ -82,17 +82,11 @@ export async function calculateCompletionLevel (task: Ref<PTask> | PTask): Promi
   async function calculate (task: PTask): Promise<number | undefined> {
     const status = get(statusStore).byId.get(task.status)
     const category = status?.category
-    if (category === undefined) {
-      return undefined
-    }
     let p: Progress | undefined
     if (task.progress != null) {
       p = await client.findOne(performance.class.Progress, { _id: task.progress })
-      if (p === undefined) {
-        return undefined
-      }
     }
-    const value = taskCompletionLevelFormula(category, p ?? null)
+    const value = taskCompletionLevelFormula(category ?? taskId.statusCategory.UnStarted, p ?? null)
     return value ?? undefined
   }
 
@@ -142,7 +136,7 @@ export async function getAllKRAs (
   const hierarchy = client.getHierarchy()
   if (hierarchy.isDerived(attr.attributeOf, performance.class.EmployeeKRA)) {
     return await getKRAsOfEmployeeKRA(client, query as DocumentQuery<EmployeeKRA>)
-  } else if (hierarchy.isDerived(attr.attributeOf, task.class.Task)) {
+  } else if (hierarchy.isDerived(attr.attributeOf, taskId.class.Task)) {
     return await getKRAsOfTask(client, query as DocumentQuery<PTask>)
   }
   return []

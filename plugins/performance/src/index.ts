@@ -143,7 +143,7 @@ export function taskCompletionLevelFormula (
   if (progress == null && taskStatusCategory === task.statusCategory.Won) {
     return 1 // Task is won, no progress is set, so we assume it's completed
   }
-  return null
+  return 0
 }
 
 /**
