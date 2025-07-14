@@ -178,6 +178,7 @@
     "ArchiveReviewSessionConfirm": "Are you sure you want to archive this review session? This will also archive all KRAs and Reports related to this review session.",
     "RemoveKRAAssigneeMessage": "Are you sure you want to remove this assignee from the KRA?",
     "RemoveKRAAssignee": "Remove KRA Assignee",
-    "NoData": "No Data"
+    "NoData": "No Data",
+    "ArchiveReviewSession": "Archive Review Session"
   }
 }

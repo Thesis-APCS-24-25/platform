@@ -165,7 +165,8 @@ export default mergeIds(performanceId, performance, {
     NoData: '' as IntlString,
     ScoreAxis: '' as IntlString,
     EmployeeAxis: '' as IntlString,
-    KRABreakdown: '' as IntlString
+    KRABreakdown: '' as IntlString,
+    ArchiveReviewSession: '' as IntlString
   },
   category: {
     ReviewSessionType: '' as IntlString,

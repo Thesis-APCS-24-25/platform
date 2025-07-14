@@ -1,7 +1,7 @@
 <script lang="ts">
   import { ReviewSession, ReviewSessionStatus } from '@hcengineering/performance'
   import ReviewSessionSpacePresenter from '../review-session/ReviewSessionSpacePresenter.svelte'
-  import { Ref, Space } from '@hcengineering/core'
+  import { getCurrentAccount, Ref, Space } from '@hcengineering/core'
   import { getClient, MessageBox } from '@hcengineering/presentation'
   import performance from '../../plugin'
   import { TreeNode } from '@hcengineering/view-resources'
@@ -10,6 +10,8 @@
   import { navigatorModel } from '../../navigation'
   import { allKRAApproved, doKRAWeightCheck } from '../../utils/review-session'
   import WeightWarningPopup from './WeightWarningPopup.svelte'
+  import { checkRole, currentTeam } from '../../utils/team'
+  import kraTeam, { Member } from '@hcengineering/kra-team'
 
   export let currentSpace: Ref<Space> | undefined
   export let currentSpecial: string | undefined
@@ -17,6 +19,7 @@
   export let separate: boolean = false
   export let reviewSessions: ReviewSession[] = []
 
+  const me = getCurrentAccount()
   const model = $navigatorModel.spaces[1]
 
   $: filtered = reviewSessions.filter((rs) => rs.status === ReviewSessionStatus.Drafting)
@@ -81,7 +84,13 @@
   }
 
   async function getActions (rs: ReviewSession): Promise<Action[]> {
-    return [startReviewSession(rs)]
+    if ($currentTeam === undefined) return []
+    if (await checkRole(
+      me.person as Ref<Member>,
+      kraTeam.role.TeamManager,
+      $currentTeam
+    )) { return [startReviewSession(rs)] }
+    return []
   }
 </script>
 

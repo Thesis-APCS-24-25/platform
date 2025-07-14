@@ -1,6 +1,6 @@
 <script lang="ts">
   import { Ref, Space } from '@hcengineering/core'
-  import { ReviewSession, ReviewSessionStatus } from '@hcengineering/performance'
+  import { ReviewSession } from '@hcengineering/performance'
   import { Project } from '@hcengineering/task'
   import { navigate, type Action } from '@hcengineering/ui'
   import { TreeNode } from '@hcengineering/view-resources'

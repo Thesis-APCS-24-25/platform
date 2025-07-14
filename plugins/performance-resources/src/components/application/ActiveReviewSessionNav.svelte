@@ -1,15 +1,15 @@
 <script lang="ts">
   import { ReviewSession, ReviewSessionStatus } from '@hcengineering/performance'
   import ReviewSessionSpacePresenter from '../review-session/ReviewSessionSpacePresenter.svelte'
-  import { Ref, Space } from '@hcengineering/core'
-  import { createQuery, getClient, MessageBox } from '@hcengineering/presentation'
+  import { getCurrentAccount, Ref, Space } from '@hcengineering/core'
+  import { getClient, MessageBox } from '@hcengineering/presentation'
   import performance from '../../plugin'
-  import { currentTeam } from '../../utils/team'
+  import { checkRole, currentTeam } from '../../utils/team'
   import { TreeNode } from '@hcengineering/view-resources'
   import { SpacesNavModel } from '@hcengineering/workbench'
   import { TreeSeparator } from '@hcengineering/workbench-resources'
-  import { Asset } from '@hcengineering/platform'
-  import { Action, Label, showPopup } from '@hcengineering/ui'
+  import { Action, showPopup } from '@hcengineering/ui'
+  import kraTeam, { Member } from '@hcengineering/kra-team'
 
   export let model: SpacesNavModel
   export let currentSpace: Ref<Space> | undefined
@@ -17,6 +17,8 @@
   export let deselect: boolean = false
   export let separate: boolean = false
   export let reviewSessions: ReviewSession[] = []
+
+  const me = getCurrentAccount()
 
   $: filtered = reviewSessions.filter((rs) => rs.status === ReviewSessionStatus.InProgress)
 
@@ -49,7 +51,13 @@
     }
   }
   async function getActions (rs: ReviewSession): Promise<Action[]> {
-    return [concludeReviewSession(rs)]
+    if ($currentTeam === undefined) return []
+    if (await checkRole(
+      me.person as Ref<Member>,
+      kraTeam.role.TeamManager,
+      $currentTeam
+    )) { return [concludeReviewSession(rs)] }
+    return []
   }
 </script>
 
