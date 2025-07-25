@@ -3,7 +3,6 @@
 Execute:
 ```bash
 sh ./scripts/build.sh
-cd ..
 ```
 
 Accessing the URL http://host.docker.internal:8087 will lead you to the app in development mode.
