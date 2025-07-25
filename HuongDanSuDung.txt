@@ -1,19 +1,15 @@
-## Run in development mode
+## Build and run
 
-Development mode allows for live reloading and a smoother development process.
-
+Execute:
 ```bash
-cd dev/prod
-rush validate
-rushx dev-server
+sh ./scripts/build.sh
+cd ..
 ```
 
-Then go to http://localhost:8080
+Accessing the URL http://host.docker.internal:8087 will lead you to the app in development mode.
 
-Click on "Login with password" link on the bottom of the right panel and use the following login credentials:
+Then go to http://localhost:8080, sign up a new user, and create a workspace.
+Password strength is not enforced, email is not verified, and the user can log in with any password.
 
-```plain
-Email: user1
-Password: 1234
-Workspace: ws1
-```
+Note: login with email code is currently not supported, so use login with password.
+
